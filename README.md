@@ -1,6 +1,5 @@
 # MMM-GoogleAssistant
 
-![]()
 `MMM-GoogleAssistant` is an embedded Google assistant on MagicMirror with audio output only.
 
 ## Description
@@ -23,7 +22,7 @@ npm run update
 
 ## UPDATE HISTORY
 
-**1.0.0 (xx/03/2020)**
+**1.0.0 (10/03/2020)**
   * first release
 
 ## Last Tested
@@ -31,9 +30,5 @@ npm run update
 - RPI 3B+ / raspbian 10 /nodeJS v10.17.0 / npm 6.13.2
 - debian 10 / nodeJS v10.18.0 / npm v6.13.4
 
-## Credits
-- Author :
-  - @eouia
-  - @bugsounet
 - License : MIT
   - **By terms of Google Assistant SDK, You are not allowed to use or provide this module for commercial purpose.**
