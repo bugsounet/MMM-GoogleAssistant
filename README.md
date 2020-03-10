@@ -6,7 +6,7 @@
 ## Description
 - snowboy activator embedded
 - audio output only
-- build from MMM-AssistantMk2 core
+- build from GoogleAssitant library
 - new icons / new sounds
 - builded for performance response
 - just 'pure version' of Google Assistant
