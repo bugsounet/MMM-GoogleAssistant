@@ -9,6 +9,7 @@
 - build from MMM-AssistantMk2 core
 - new icons / new sounds
 - builded for performance response
+- just 'pure version' of Google Assistant
 
 ## Installation & Guides
 Read the docs in [wiki](https://github.com/bugsounet/MMM-GoogleAssistant/wiki)
@@ -36,4 +37,3 @@ npm run update
   - @bugsounet
 - License : MIT
   - **By terms of Google Assistant SDK, You are not allowed to use or provide this module for commercial purpose.**
-
