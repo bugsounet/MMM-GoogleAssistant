@@ -5,7 +5,7 @@
 ## Description
 - snowboy activator embedded
 - audio output only
-- build from GoogleAssitant library
+- build from GoogleAssistant library
 - new icons / new sounds
 - builded for performance response
 - just 'pure version' of Google Assistant
