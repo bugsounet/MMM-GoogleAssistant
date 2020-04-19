@@ -22,6 +22,8 @@ npm run update
 
 ## UPDATE HISTORY
 
+**1.1.0 (19/04/2020)**
+  * upate libraries
 **1.0.0 (10/03/2020)**
   * first release
 
