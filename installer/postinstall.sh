@@ -21,7 +21,7 @@ Installer_dir="$(Installer_get_current_dir)"
 cd "$Installer_dir"
 
 source utils.sh
-source hotword.sh
+source snowboy.sh
 # del last log
 rm installer.log 2>/dev/null
 
@@ -92,10 +92,9 @@ echo
 # install snowboy
 echo
 Installer_yesno "Installing Snowboy..." && (
-  Hotword_CloneSB
-  Hotword_InstSB
-  Hotword_Electron
-  Hotword_CheckSB
+  Snowboy_CloneSB
+  Snowboy_InstSB
+  Snowboy_CheckSB
 )
 
 echo

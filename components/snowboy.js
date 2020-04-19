@@ -73,14 +73,13 @@ class SNOWBOY {
       applyFrontend: false,
       applyModel: "smart_mirror",
       applySensitivity: null,
-      models: [],
-      version: "v1.1.0"
+      models: []
     }
     this.config = Object.assign(this.default, this.config)
   }
   init () {
     var models = new Models();
-    var modelPath = path.resolve(__dirname, "../models")
+    var modelPath = path.resolve(__dirname, "../snowboy/resources/models")
 
     if (this.config.models.length == 0) {
       log("Checking models")
@@ -128,24 +127,26 @@ class SNOWBOY {
         this.callback(true)
         return
       })
-    log(this.default.version + " Initialized...")
+    log("snowboy@bugsounet v" + require('../snowboy/package.json').version + " Initialized...")
     this.start()
   }
   
   start () {
     if (this.mic) return
     this.mic = null
+
     var defaultOption = {
-      device: null,
-      recorder: "sox",
-      audioType: "wav",
-      threshold: 0,
       sampleRate: 16000,
-      endOnSilence: false,
-      debug: this.debug
+      channels: 1,
+      threshold: 0.5,
+      thresholdStart: null,
+      thresholdEnd: null,
+      silence: '1.0',
+      verbose: this.debug,
     }
+
     var Options = Object.assign({}, defaultOption, this.micConfig)
-    this.mic = new Recorder(Options, this.detector, (err)=>{this.callbackErr(err)})
+    this.mic = new Recorder(Options, this.detector, (err,code)=>{this.callbackErr(err,code)})
     log("Starts listening.")
     this.mic.start()
   }
@@ -157,11 +158,17 @@ class SNOWBOY {
     log("Stops listening.")
   }
 
-  callbackErr (err) {
+  callbackErr (err,code) {
     if (err) {
      console.log("[ASSISTANT:SNOWBOY][ERROR] " + err)
      this.stop()
+     console.log("Retry restarting...")
+     setTimeout(() => { this.start() },2000)
      return
+    }
+    if (code == "1") {
+      this.stop()
+      setTimeout(() => { this.start() },2000)
     }
   }
 }

@@ -1,22 +1,19 @@
 'use strict'
 
 var spawn = require('child_process').spawn
-
 var _log = function() {
-    var context = "[ASSISTANT:16]"
+    var context = "[ASSISTANT:REC]"
     return Function.prototype.bind.call(console.log, console, context)
 }()
 
 var log = function() {
   //do nothing
 }
-
-
-
 class LPCM16 {
   constructor (options, streamOut, afterCallback) {
     this.cp = null
     var defaults = {
+      recorder: 'arecord',
       sampleRate: 16000,
       channels: 1,
       compress: false,
@@ -24,22 +21,17 @@ class LPCM16 {
       thresholdStart: null,
       thresholdEnd: null,
       silence: '1.0',
-      verbose: false,
-      recorder: 'rec',
-      debug: false
+      verbose: false
     }
     this.options = Object.assign(defaults, options)
+    if (this.options.verbose == true) log = _log
     this.stream = null
     this.streamOut = streamOut
     this.afterCallback = afterCallback
     this.cp = null
-    this.terminated = false
-    var debug = (this.options.debug) ? this.options.debug : false
-    if (debug == true) log = _log
   }
 
   start () {
-    this.terminated = false
     var options = this.options
     // Capture audio stream
     var cmd, cmdArgs, cmdOptions
@@ -111,35 +103,33 @@ class LPCM16 {
     if (options.device) {
       cmdOptions.env = Object.assign({}, process.env, { AUDIODEV: options.device })
     }
-
     this.cp = spawn(cmd, cmdArgs, cmdOptions)
     this.cp.stderr.on('data', (data) => {
       var dataToString = data.toString()
       if (dataToString.search("WARN" > -1)) {
-        return console.log("[ASSISTANT:16][WARN] " + dataToString)
+        return console.log("[ASSISANT:REC] WARN: " + data.toString())
       } else {
         this.stream.destroy()
         return this.afterCallback(data.toString())
       }
     })
-    this.cp.on("exit", (c,s)=>{
+    this.cp.on("exit", (code,signal)=>{
       this.stream.destroy()
-      this.afterCallback()
+      this.afterCallback(null, code)
     })
 
     this.stream = this.cp.stdout
     log(
-        'START LISTENING',
-        options.channels,
-        'channels with sample rate',
-        options.sampleRate
+      'Start listening',
+      options.channels,
+      'channels, use',
+      options.recorder,
+      'with sample rate',
+      options.sampleRate,
     )
-    this.stream.on('data', (data) => {
-      if (options.verbose) log("Listening " + data.length + " bytes")
-    })
 
-    this.stream.on('end', () => {
-      if (options.verbose) log('END LISTENING')
+    this.stream.on('close', () => {
+     log('Stop listening')
     })
 
     this.stream.pipe(this.streamOut)
@@ -152,10 +142,8 @@ class LPCM16 {
     }
     this.stream.unpipe(this.streamOut)
     this.cp.kill("SIGTERM") // Exit the spawned process, exit gracefully
-    log("STOP LISTENING")
     this.options = null
     this.streamOut = null
-    this.terminated = true
   }
 }
 
