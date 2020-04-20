@@ -30,9 +30,9 @@ Module.register("MMM-GoogleAssistant", {
     },
     snowboy: {
       audioGain: 2.0,
-      applyFrontend: false,
-      applyModel: "smart_mirror",
-      applySensitivity: null
+      Frontend: false,
+      Model: "smart_mirror",
+      Sensitivity: null
     }
   },
 
