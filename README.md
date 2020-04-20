@@ -22,7 +22,7 @@ npm run update
 
 ## UPDATE HISTORY
 
-**1.1.0 (20/04/2020)
+**1.1.0 (20/04/2020)**
   * update to lasted snowboy@bugsounet library
   * update config with this lasted version
 
