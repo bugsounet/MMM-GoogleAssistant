@@ -81,10 +81,11 @@ module.exports = NodeHelper.create({
       this.sound.init()
     }
     else log("Use HTML5 for audio response")
-    this.sendSocketNotification("INITIALIZED")
     this.snowboy = new Snowboy(this.config.snowboy, this.config.micConfig, (detected) => { this.hotwordDetect(detected) } , this.config.debug )
     this.snowboy.init()
+    this.sendSocketNotification("INITIALIZED")
     console.log("[ASSISTANT] Google Assistant is initialized.")
+    this.snowboy.start()
   },
 
   hotwordDetect: function(detected) {
