@@ -144,7 +144,7 @@ class AssistantResponse {
 
   playAudioOutput (response) {
     if (response.audio) {
-      if (this.config.useHTML5) this.audioResponse.src = "/modules/MMM-GoogleAssistant/" + response.audio.uri
+      if (this.config.useHTML5) this.audioResponse.src = "/modules/MMM-GoogleAssistant/" + response.audio.uri +"?response=" + Date.now()
       else this.callbacks.playSound(response.audio.path)
       return true
     }
