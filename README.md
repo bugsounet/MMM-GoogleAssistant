@@ -25,6 +25,7 @@ npm run update
 **1.1.0 (20/04/2020)**
   * update to lasted snowboy@bugsounet library
   * update config with this lasted version
+  * fix always same response on HTML5
 
 **1.0.0 (10/03/2020)**
   * first release
