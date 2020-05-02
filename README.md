@@ -22,6 +22,10 @@ npm run update
 
 ## UPDATE HISTORY
 
+**1.2.0 (02/05/2020)**
+  * update snowboy to @bugsounet/snowboy npm library
+  * display real time transcription
+
 **1.1.0 (20/04/2020)**
   * update to lasted snowboy@bugsounet library
   * update config with this lasted version
