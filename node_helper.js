@@ -5,7 +5,7 @@
 const path = require("path")
 const fs = require("fs")
 const Assistant = require("./components/assistant.js")
-const Snowboy = require("./components/snowboy.js")
+const Snowboy = require("@bugsounet/snowboy").Snowboy
 const Sound = require("./components/sound.js")
 
 var _log = function() {
@@ -46,12 +46,16 @@ module.exports = NodeHelper.create({
     }
   },
 
+  transcription: function(payload) {
+    this.sendSocketNotification("TRANSCRIPTION", payload)
+  },
+
   activateAssistant: function(payload) {
     var assistantConfig = Object.assign({}, this.config.assistantConfig)
     assistantConfig.debug = this.config.debug
     assistantConfig.lang = payload.lang
     assistantConfig.micConfig = this.config.micConfig
-    this.assistant = new Assistant(assistantConfig)
+    this.assistant = new Assistant(assistantConfig, (transcription)=>{this.transcription(transcription)})
 
     var result = null
     this.assistant.activate(payload, (response)=> {
