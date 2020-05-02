@@ -32,6 +32,40 @@
   background-image:url('./resources/mic_white.png');
 }
 
+#ASSISTANT {
+  display: flex;
+}
+
 #ASSISTANT.hidden {
+  display: none;
+}
+
+#ASSISTANT_TRANSCRIPTION {
+    height: 64px;
+    vertical-align: top;
+    margin-left: 4px;
+    font-size: x-large;
+}
+
+#ASSISTANT_TRANSCRIPTION p {
+    height: 64px;
+    box-sizing: border-box;
+    min-height: 64px;
+    min-width: 64px;
+    box-sizing: border-box;
+    line-height: 59px;
+    background-color: #333;
+    color: #FFF;
+    border-radius: 32px;
+    padding: 0 8px;
+    margin: 0px;
+}
+
+#ASSISTANT_TRANSCRIPTION p.error {
+  color:#FF6633;
+  text-align:left;
+}
+
+#ASSISTANT_TRANSCRIPTION.hidden {
   display: none
 }

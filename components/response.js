@@ -25,6 +25,12 @@ class AssistantResponse {
     }
   }
 
+  transcription (payload) {
+    if (payload.transcription) {
+      this.showTranscription(payload.transcription)
+    }
+  }
+
   playChime (sound) {
     if (this.config.useHTML5) {
       this.audioChime.src = "modules/MMM-GoogleAssistant/resources/" + this.chime[sound]
@@ -64,7 +70,21 @@ class AssistantResponse {
     logo.id = "ASSISTANT_STATUS"
     dom.appendChild(logo)
 
+    var transcription = document.createElement("div")
+    transcription.id = "ASSISTANT_TRANSCRIPTION"
+    dom.appendChild(transcription)
+
     return dom
+
+  }
+
+  showTranscription (text, className = "transcription") {
+    var tr = document.getElementById("ASSISTANT_TRANSCRIPTION")
+    tr.innerHTML = ""
+    var t = document.createElement("p")
+    t.className = className
+    t.innerHTML = text
+    tr.appendChild(t)
   }
 
   end () {
@@ -130,6 +150,7 @@ class AssistantResponse {
     }
 
     var normalResponse = (response) => {
+      this.clearTranscription()
       this.status("speak")
       var ao = this.playAudioOutput(response)
       if (ao) {
@@ -149,5 +170,10 @@ class AssistantResponse {
       return true
     }
     return false
+  }
+
+  clearTranscription () {
+    var tr = document.getElementById("ASSISTANT_TRANSCRIPTION")
+    tr.innerHTML = ""
   }
 }

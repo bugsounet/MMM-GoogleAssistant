@@ -15,7 +15,7 @@ var log = function() {
 }
 
 class ASSISTANT {
-  constructor(config) {
+  constructor(config, transcription = () =>{}) {
     var debug = (config.debug) ? config.debug : false
     this.modulePath = config.modulePath
     this.micConfig = config.micConfig
@@ -45,6 +45,7 @@ class ASSISTANT {
     this.debug = debug
     this.micMode = false
     this.mic = null
+    this.transcription= transcription
   }
 
   activate (payload, callback=()=>{}) {
@@ -110,6 +111,7 @@ class ASSISTANT {
     })
     .on('transcription', (data) => {
       log("CONVERSATION:TRANSCRIPTION", data)
+      this.transcription(data)
       this.response.transcription = data
     })
     .on('audio-data', (data) => {

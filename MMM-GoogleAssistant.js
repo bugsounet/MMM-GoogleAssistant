@@ -134,6 +134,9 @@ Module.register("MMM-GoogleAssistant", {
       case "ASSISTANT_AUDIO_RESULT_ENDED":
         this.assistantResponse.end()
         break
+      case "TRANSCRIPTION":
+        this.assistantResponse.transcription(payload)
+        break
     }
   },
 

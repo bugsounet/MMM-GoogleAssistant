@@ -46,12 +46,16 @@ module.exports = NodeHelper.create({
     }
   },
 
+  transcription: function(payload) {
+    this.sendSocketNotification("TRANSCRIPTION", payload)
+  },
+
   activateAssistant: function(payload) {
     var assistantConfig = Object.assign({}, this.config.assistantConfig)
     assistantConfig.debug = this.config.debug
     assistantConfig.lang = payload.lang
     assistantConfig.micConfig = this.config.micConfig
-    this.assistant = new Assistant(assistantConfig)
+    this.assistant = new Assistant(assistantConfig, (transcription)=>{this.transcription(transcription)})
 
     var result = null
     this.assistant.activate(payload, (response)=> {
