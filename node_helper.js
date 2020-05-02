@@ -5,7 +5,7 @@
 const path = require("path")
 const fs = require("fs")
 const Assistant = require("./components/assistant.js")
-const Snowboy = require("./components/snowboy.js")
+const Snowboy = require("@bugsounet/snowboy").Snowboy
 const Sound = require("./components/sound.js")
 
 var _log = function() {
