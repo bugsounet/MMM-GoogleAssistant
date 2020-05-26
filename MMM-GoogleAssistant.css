@@ -1,71 +1,207 @@
-/*  Google Assistant **
-**     Bugsounet     **
+/*********************
+** FullScreen #GA **
+**     BuGsounet    **
 **********************/
 
-/* icons */
-#ASSISTANT_STATUS {
-  min-height:64px;
-  min-width:64px;
-  border-radius:32px;
-  padding:4px;
-  background-color:#333;
-  text-align:center;
-  display:inline-block;
-  line-height:100%;
-  box-sizing: border-box;
-  background-image:url('./resources/standby.png');
-  background-position: 5px 5px;
-  background-repeat: no-repeat;
-  background-size: 85%;
+#GA {
+  width:92vw;
+  height:100%;
+  border:none;
+  border-radius: 20px;
+  background-color:#f3f3f3;
 }
 
-#ASSISTANT_STATUS.standby {
-  background-image:url('./resources/standby.gif');
+#GA.fullscreen_above {
+  width:100%;
 }
 
-#ASSISTANT_STATUS.speak {
-  background-image:url('./resources/speaker_white.png');
+#GA.in {
+  animation-duration: 0.5s;
+  animation-name: fadeInDown;
 }
 
-#ASSISTANT_STATUS.continue,
-#ASSISTANT_STATUS.listen {
-  background-image:url('./resources/mic_white.png');
+#GA.out {
+  animation-duration: 1s;
+  animation-name: fadeOutUp;
 }
 
-#ASSISTANT {
-  display: flex;
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -150%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
-#ASSISTANT.hidden {
-  display: none;
+@keyframes fadeOutUp {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, -200%, 0);
+  }
 }
 
-#ASSISTANT_TRANSCRIPTION {
-    height: 64px;
-    vertical-align: top;
-    margin-left: 4px;
-    font-size: x-large;
-}
-
-#ASSISTANT_TRANSCRIPTION p {
-    height: 64px;
-    box-sizing: border-box;
-    min-height: 64px;
-    min-width: 64px;
-    box-sizing: border-box;
-    line-height: 59px;
-    background-color: #333;
-    color: #FFF;
-    border-radius: 32px;
-    padding: 0 8px;
-    margin: 0px;
-}
-
-#ASSISTANT_TRANSCRIPTION p.error {
-  color:#FF6633;
-  text-align:left;
-}
-
-#ASSISTANT_TRANSCRIPTION.hidden {
+#GA.hidden {
   display: none
+}
+
+#GA_STATUS {
+  -webkit-flex: none;
+          flex: none;
+  height:105px;
+  width:100px;
+  margin-top:4px;
+  margin-left:4px;
+  border-radius: 20px;
+  background-color:#f3f3f3;
+}
+
+#GA_STATUS.reply {
+  background-image:url('./resources/reply.gif');
+  background-position: -60px;
+  background-repeat: no-repeat;
+  background-size: 230%;
+}
+
+#GA_STATUS.error {
+  background-image:url('./resources/error.gif');
+  background-position: -60px;
+  background-repeat: no-repeat;
+  background-size: 230%;
+}
+
+#GA_STATUS.think {
+  background-image:url('./resources/think.gif');
+  background-position: -60px;
+  background-repeat: no-repeat;
+  background-size: 230%;
+}
+
+#GA_STATUS.continue {
+  background-image:url('./resources/continue.gif');
+  background-position: -60px;
+  background-repeat: no-repeat;
+  background-size: 230%;
+}
+
+#GA_STATUS.listen {
+  background-image:url('./resources/listen.gif');
+  background-position: -60px;
+  background-repeat: no-repeat;
+  background-size: 230%;
+}
+
+#GA_STATUS.confirmation {
+  background-image:url('./resources/confirmation.gif');
+  background-position: -60px;
+  background-repeat: no-repeat;
+  background-size: 230%;
+}
+
+#GA_STATUS.standby {
+  background-image:url('./resources/standby.gif');
+  background-position: 0 2px;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+#GA_STATUS.hook {
+  background-image:url('./resources/hook.gif');
+  background-position : -46px -15px;
+  background-repeat: no-repeat;
+  background-size: 195%;
+}
+
+#GA_TRANSCRIPTION {
+  flex: 1 1 auto;
+  vertical-align: top;
+  margin-top: 0px;
+  margin-left: 5px;
+  background-color:#f3f3f3;
+  text-align: left;
+}
+
+#GA_TRANSCRIPTION p {
+  color:#7b858e;
+  margin-top: 30px;
+  margin-left : 10px;
+}
+
+#GA_TRANSCRIPTION.hidden {
+  display: none
+}
+
+#GA_LOGO {
+  -webkit-flex: none;
+          flex: none;
+  width: 150px;
+  height:100px;
+  margin-top: 2px;
+  margin-left: 5px;
+  border-radius: 20px;
+  background-color:#f3f3f3;
+  background-image:url('./resources/AMk2_Small.png');
+  background-position : 2px -5px;
+  background-repeat: no-repeat;
+  background-size: 90%;
+ }
+
+#GA_CONTENER {
+ height : 100%;
+ width : 100%;
+ display: flex;
+}
+
+/*** Helper windows ***/
+
+
+#GA_HELPER {
+  position:absolute;
+  width:100%;
+  height:100%;
+  bottom:0;
+  display:block;
+}
+
+#GA_HELPER.fullscreen_above {
+  position:fixed;
+  height:90%;
+  overflow:auto;
+  border:none;
+  top:10%;
+  left:0;
+  z-index:99998;
+}
+
+#GA_HELPER.hidden {
+   display:none;
+}
+
+#GA_RESULT_WINDOW {
+  position:absolute;
+  width:100%;
+  height:100%;
+  bottom:0;
+  display:block;
+}
+
+#GA_HELPER.hidden #GA_RESULT_WINDOW {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 1s, opacity 1s linear;
+}
+
+#GA_SCREENOUTPUT {
+  width:100%;
+  height:100%;
+  display:block;
+  border:none;
 }

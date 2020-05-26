@@ -2,11 +2,13 @@
 // Module : MMM-GoogleAssistant
 //
 
-const path = require("path")
+
+const exec = require("child_process").exec
 const fs = require("fs")
 const Assistant = require("./components/assistant.js")
+const ScreenParser = require("./components/screenParser.js")
+const ActionManager = require("./components/actionManager.js")
 const Snowboy = require("@bugsounet/snowboy").Snowboy
-const Sound = require("./components/sound.js")
 
 var _log = function() {
   var context = "[ASSISTANT]"
@@ -30,45 +32,73 @@ module.exports = NodeHelper.create({
         this.initialize(payload)
         break
       case "ACTIVATE_ASSISTANT":
-        this.snowboy.stop()
         this.activateAssistant(payload)
+        break
+      case "ASSISTANT_BUSY":
+        this.snowboy.stop()
         break
       case "ASSISTANT_READY":
         this.snowboy.start()
         break
-      case "PLAY_CHIME":
-        var filepath = path.resolve(__dirname, payload)
-        this.sound.play(filepath,true)
-        break
-      case "PLAY_SOUND":
-        this.sound.play(payload)
+      case "SHELLEXEC":
+        var command = payload.command
+        command += (payload.options) ? (" " + payload.options) : ""
+        exec (command, (e,so,se)=> {
+          log("ShellExec command:", command)
+          if (e) console.log("[ASSISTANT] ShellExec Error:" + e)
+          this.sendSocketNotification("SHELLEXEC_RESULT", {
+            executed: payload,
+            result: {
+              error: e,
+              stdOut: so,
+              stdErr: se,
+            }
+          })
+        })
         break
     }
   },
 
-  transcription: function(payload) {
-    this.sendSocketNotification("TRANSCRIPTION", payload)
+  tunnel: function(payload) {
+    this.sendSocketNotification("TUNNEL", payload)
   },
 
   activateAssistant: function(payload) {
+    log("QUERY:", payload)
     var assistantConfig = Object.assign({}, this.config.assistantConfig)
     assistantConfig.debug = this.config.debug
+    assistantConfig.session = payload.session
     assistantConfig.lang = payload.lang
+    assistantConfig.useScreenOutput = payload.useScreenOutput
+    assistantConfig.useAudioOutput = payload.useAudioOutput
     assistantConfig.micConfig = this.config.micConfig
-    this.assistant = new Assistant(assistantConfig, (transcription)=>{this.transcription(transcription)})
+    this.assistant = new Assistant(assistantConfig, (obj)=>{this.tunnel(obj)})
 
+    var parserConfig = {
+      screenOutputCSS: this.config.responseConfig.screenOutputCSS,
+      screenOutputURI: "tmp/lastScreenOutput.html"
+    }
+    var parser = new ScreenParser(parserConfig, this.config.debug)
     var result = null
     this.assistant.activate(payload, (response)=> {
       response.lastQuery = payload
-      if (!response.audio) {
+      if (!(response.screen || response.audio)) {
         response.error = "NO_RESPONSE"
         if (response.transcription && response.transcription.transcription && !response.transcription.done) {
           response.error = "TRANSCRIPTION_FAILS"
         }
       }
       if (response.error == "TOO_SHORT" && response) response.error = null
-      log ("ASSISTANT_RESULT", response)
-      this.sendSocketNotification("ASSISTANT_RESULT", response)
+      if (response.screen) {
+        parser.parse(response, (result)=>{
+          delete result.screen.originalContent
+          log("ASSISTANT_RESULT", result)
+          this.sendSocketNotification("ASSISTANT_RESULT", result)
+        })
+      } else {
+        log ("ASSISTANT_RESULT", response)
+        this.sendSocketNotification("ASSISTANT_RESULT", response)
+      }
     })
   },
 
@@ -80,19 +110,53 @@ module.exports = NodeHelper.create({
     if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/credentials.json")) {
       console.log("[ASSISTANT][ERROR] credentials.json file not found !")
     }
-    if (!this.config.audioConfig.useHTML5) {
-      this.sound = new Sound(this.config.audioConfig, (send) => { this.sendSocketNotification(send) } , this.config.debug )
-      this.sound.init()
-    }
-    else log("Use HTML5 for audio response")
+    log("Response delay is set to " + this.config.responseConfig.delay + ((this.config.responseConfig.delay > 1) ? " seconds" : " second"))
+
     this.snowboy = new Snowboy(this.config.snowboy, this.config.micConfig, (detected) => { this.hotwordDetect(detected) } , this.config.debug )
     this.snowboy.init()
-    this.sendSocketNotification("INITIALIZED")
-    console.log("[ASSISTANT] Google Assistant is initialized.")
-    this.snowboy.start()
+
+    this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED"))
+    if (this.config.useA2D) console.log ("[ASSISTANT] Assistant2Display Server Started")
   },
 
+  loadRecipes: function(callback=()=>{}) {
+    if (this.config.recipes) {
+      let replacer = (key, value) => {
+        if (typeof value == "function") {
+          return "__FUNC__" + value.toString()
+        }
+        return value
+      }
+      var recipes = this.config.recipes
+      for (var i = 0; i < recipes.length; i++) {
+        try {
+          var p = require("./recipes/" + recipes[i]).recipe
+          this.sendSocketNotification("LOAD_RECIPE", JSON.stringify(p, replacer, 2))
+          if (p.actions) this.config.actions = Object.assign({}, this.config.actions, p.actions)
+          console.log("[ASSISTANT] RECIPE_LOADED:", recipes[i])
+        } catch (e) {
+          console.log(`[ASSISTANT] RECIPE_ERROR (${recipes[i]}):`, e.message)
+        }
+      }
+      if (this.config.actions && Object.keys(this.config.actions).length > 0) {
+        var actionConfig = Object.assign({}, this.config.customActionConfig)
+        actionConfig.actions = Object.assign({}, this.config.actions)
+        actionConfig.projectId = this.config.assistantConfig.projectId
+        var Manager = new ActionManager(actionConfig, this.config.debug)
+        Manager.makeAction(callback)
+      } else {
+        log("NO_ACTION_TO_MANAGE")
+        callback()
+      }
+    } else {
+      log("NO_RECIPE_TO_LOAD")
+      callback()
+    }
+  },
+
+  /** Snowboy Callback **/
   hotwordDetect: function(detected) {
     if (detected) this.sendSocketNotification("ASSISTANT_ACTIVATE", { type:"MIC" })
   },
 })
+

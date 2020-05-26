@@ -1,0 +1,13 @@
+{
+  "NO_RESPONSE" : "Désolé, je n'ai pas compris.",
+  "NO_AUDIO_RESPONSE" : " ",
+  "TOO_SHORT" : "Désolé, je n'ai pas compris.",
+  "CONVERSATION_ERROR" : "Erreur de conversation.(Micro mal configuré)",
+
+/* developer mode utils (Bugsounet) */
+  "REPEAT_WORD" : "Répète après moi",
+  "SAY_REPLY" : "AssistantMk2 va répèter le texte suivant: ",
+  "SAY_HELP" : "Vous pouvez demander à `AssistantMk2` de dire du texte avec cette commande.",
+  "QUERY_REPLY" : "AssistantMk2 va être activé.",
+  "QUERY_HELP" : "Vous pouvez commander `AssistantMk2` par texte avec cette commande."
+}

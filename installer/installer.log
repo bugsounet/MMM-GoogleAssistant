@@ -1,0 +1,80 @@
+05/26/20 14:38 Welcome to MMM-GoogleAssistant "2.0.0",
+05/26/20 14:38 postinstall script v1.0.9 by Bugsounet
+05/26/20 14:38 
+05/26/20 14:38 Checking OS...
+05/26/20 14:38 OS Detected: linux-gnu (debian 10 x86_64)
+05/26/20 14:38 
+05/26/20 14:38 Do you want to execute automatic intallation ? [Y/n] 
+05/26/20 14:38 Your choice: 
+05/26/20 14:38 Checking all dependencies...
+05/26/20 14:38 All Dependencies needed are installed !
+05/26/20 14:38 
+05/26/20 14:38 Checking GCC Version...
+05/26/20 14:38 Do you want to check compatible GCC version [Y/n] 
+05/26/20 14:38 Your choice: 
+05/26/20 14:38 GCC 7 is set by default
+05/26/20 14:38 
+05/26/20 14:38 Electron Rebuild
+05/26/20 14:38 Do you want to execute electron rebuild [Y/n] 
+05/26/20 14:38 Your choice: 
+05/26/20 14:38 Installing electron-rebuild...
+05/26/20 14:38 npm notice created a lockfile as package-lock.json. You should commit this file.
+05/26/20 14:38 + electron-rebuild@1.11.0
+05/26/20 14:38 updated 1 package and audited 296 packages in 7.063s
+05/26/20 14:38 
+05/26/20 14:38 1 package is looking for funding
+05/26/20 14:38   run `npm fund` for details
+05/26/20 14:38 
+05/26/20 14:38 found 6 low severity vulnerabilities
+05/26/20 14:38   run `npm audit fix` to fix them, or `npm audit` for details
+05/26/20 14:38 Electron-rebuild installed
+05/26/20 14:38 Execute electron-rebuild...
+05/26/20 14:38 It could takes 10~30 minutes.
+05/26/20 14:38 - Searching dependency tree
+05/26/20 14:42 ✔ Rebuild Complete
+05/26/20 14:42 Electron Rebuild Complete!
+05/26/20 14:42 
+05/26/20 14:42 Snowboy detector embed version
+05/26/20 14:42 If you want to use it, remove your other detector !
+05/26/20 14:42 like: MMM-HotWord or MMM-Snowboy
+05/26/20 14:42 Do you want to use it ? [Y/n] 
+05/26/20 14:46 Your choice: 
+05/26/20 14:46 
+05/26/20 14:46 > @bugsounet/snowboy@1.4.7 install /home/bugs/MagicMirror/modules/MMM-GoogleAssistant/node_modules/@bugsounet/snowboy
+05/26/20 14:46 > bash scripts/installer.sh
+05/26/20 14:46 
+05/26/20 14:46 make : on entre dans le répertoire « /home/bugs/MagicMirror/modules/MMM-GoogleAssistant/node_modules/@bugsounet/snowboy/build »
+05/26/20 14:46   CXX(target) Release/obj.target/snowboy/lib/snowboy.o
+05/26/20 14:46   SOLINK_MODULE(target) Release/obj.target/snowboy.node
+05/26/20 14:46   COPY Release/snowboy.node
+05/26/20 14:46   COPY /home/bugs/MagicMirror/modules/MMM-GoogleAssistant/node_modules/@bugsounet/snowboy/lib/node/binding/Release/node-v64-linux-x64/snowboy.node
+05/26/20 14:46   TOUCH Release/obj.target/action_after_build.stamp
+05/26/20 14:46 make : on quitte le répertoire « /home/bugs/MagicMirror/modules/MMM-GoogleAssistant/node_modules/@bugsounet/snowboy/build »
+05/26/20 14:46 
+05/26/20 14:46 [@bugsounet/snowboy] Do you want to execute electron rebuild ? [Y/n]
+05/26/20 14:46 Your choice: 
+05/26/20 14:46 - Searching dependency tree
+05/26/20 14:46 ✔ Rebuild Complete
+05/26/20 14:46 
+05/26/20 14:46 > @bugsounet/snowboy@1.4.7 postinstall /home/bugs/MagicMirror/modules/MMM-GoogleAssistant/node_modules/@bugsounet/snowboy
+05/26/20 14:46 > tsc -p tsconfig.json
+05/26/20 14:46 
+05/26/20 14:46 + @bugsounet/snowboy@1.4.7
+05/26/20 14:46 added 20 packages from 25 contributors and audited 316 packages in 15.626s
+05/26/20 14:46 
+05/26/20 14:46 3 packages are looking for funding
+05/26/20 14:46   run `npm fund` for details
+05/26/20 14:46 
+05/26/20 14:46 found 6 low severity vulnerabilities
+05/26/20 14:46   run `npm audit fix` to fix them, or `npm audit` for details
+05/26/20 14:46 @bugsounet/snowboy library installed
+05/26/20 14:46 
+05/26/20 14:46 Checking Speaker and Microphone...
+05/26/20 14:46 Do you want check your audio configuration [Y/n] 
+05/26/20 14:46 Your choice: 
+05/26/20 14:46 
+05/26/20 14:46 
+05/26/20 14:46 MMM-GoogleAssistant is now installed !
+05/26/20 14:46 Press [Enter] to continue
+05/26/20 14:46 
+05/26/20 14:46 
