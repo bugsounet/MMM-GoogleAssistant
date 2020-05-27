@@ -2,6 +2,8 @@
 
 `MMM-GoogleAssistant` is an embedded Google assistant on MagicMirror.
 
+![](https://github.com/bugsounet/MMM-GoogleAssistant/blob/dev/resources/GA_Big.png)
+
 ## NEW UPDATES
 
 **2.0.0 (26/05/2020)**
@@ -11,7 +13,7 @@
 
 - FullScreen UI
 
-![](https://raw.githubusercontent.com/bugsounet/MMM-GoogleAssistant/master/resources/previewFS.jpg)
+![](https://github.com/bugsounet/MMM-GoogleAssistant/blob/dev/resources/previewFS.jpg)
 
 ## Installation, update & Guides
 Read the docs in [wiki](https://github.com/bugsounet/MMM-GoogleAssistant/wiki)<br>
