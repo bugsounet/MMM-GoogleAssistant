@@ -1,9 +1,8 @@
 #!/bin/bash
-# +-------------------------------+
-# | updater                       |
-# | Google Assistant by Bugsounet |
-# | Rev 1.0.1                     |
-# +-------------------------------+
+# +------------+
+# | updater    |
+# | Rev 1.0.1  |
+# +------------+
 # get the installer directory
 Installer_get_current_dir () {
   SOURCE="${BASH_SOURCE[0]}"
@@ -20,7 +19,7 @@ Installer_dir="$(Installer_get_current_dir)"
 # move to installler directory
 cd "$Installer_dir"
 source utils.sh
-Installer_info "Welcome to Google Assistant updater !"
+Installer_info "Welcome to GoogleAssistant updater !"
 echo
 
 cd ~/MagicMirror/modules/MMM-GoogleAssistant

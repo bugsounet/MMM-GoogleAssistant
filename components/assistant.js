@@ -1,6 +1,6 @@
 const GoogleAssistant = require("google-assistant")
-const B2M = require("./bufferToMP3.js")
-const Record = require("./lpcm16.js")
+const B2M = require("@bugsounet/buffertomp3")
+const Record = require("@bugsounet/lpcm16")
 
 const path = require("path")
 const fs = require("fs")
@@ -15,15 +15,17 @@ var log = function() {
 }
 
 class ASSISTANT {
-  constructor(config, transcription = () =>{}) {
+  constructor(config, tunnel = ()=>{}) {
     var debug = (config.debug) ? config.debug : false
+    this.session = config.session
     this.modulePath = config.modulePath
     this.micConfig = config.micConfig
+    this.useAudioOutput = config.useAudioOutput
 
     this.assistantConfig = {
       auth:{
-        keyFilePath : path.resolve(config.modulePath, "credentials.json"),
-        savedTokensPath : path.resolve(config.modulePath, "token.json")
+        keyFilePath : path.resolve(config.modulePath, config.credentialPath),
+        savedTokensPath : path.resolve(config.modulePath, config.tokenPath)
       },
       conversationConfig : {
         audio : {
@@ -32,20 +34,26 @@ class ASSISTANT {
           encodingOut: "MP3",
           sampleRateOut: 24000,
         },
+        deviceModelId : config.modelId,
+        deviceId : config.instanceId,
         deviceLocation : {
           coordinates: {
             latitude: config.latitude,
             longitude: config.longitude
           }
         },
+        screen : {
+          isOn: config.useScreenOutput
+        },
         lang: config.lang
       },
     }
+    this.useScreenOutput = config.useScreenOutput
     if (debug == true) log = _log
     this.debug = debug
     this.micMode = false
+    this.tunnel = tunnel
     this.mic = null
-    this.transcription= transcription
   }
 
   activate (payload, callback=()=>{}) {
@@ -76,22 +84,27 @@ class ASSISTANT {
 
   initConversation (originalPayload, conversation, endCallback=(response)=>{}) {
     this.response = {
+      session: this.session,
       error: null,
-      audio: null,
-      transcription: null,
+      action: null,
+      text: null, // text response
+      screen: null, // html response
+      audio: null, // audio response
+      transcription: null, // {transcription:String, done:Boolean} or null
       continue: false,
+      volume: null
     }
 
-    var responseFile = "tmp/response.mp3"
+    var responseFile = "tmp/lastResponse.mp3"
     var filePath = path.resolve(this.modulePath, responseFile)
 
-    var b2m = new B2M ({debug:this.debug, file:filePath})
+    if (this.useAudioOutput) var b2m = new B2M ({debug:this.debug, file:filePath})
     this.mic = null
     if (this.micMode) {
       var defaultOption = {
         device: null,
         recorder: "sox",
-        threshold: 0.5,
+        threshold: 0,
         sampleRate: 16000,
         verbose: false,
         debug: this.debug
@@ -103,6 +116,10 @@ class ASSISTANT {
     }
 
     conversation
+    .on('volume-percent', (percent) => {
+      log("CONVERSATION:VOLUME", percent)
+      this.response.volume = percent
+    })
     .on('end-of-utterance', () => {
       log("CONVERSATION:END_OF_UTTERANCE")
       if (this.micMode && this.mic) {
@@ -111,12 +128,30 @@ class ASSISTANT {
     })
     .on('transcription', (data) => {
       log("CONVERSATION:TRANSCRIPTION", data)
-      this.transcription(data)
+      this.tunnel({type: "TRANSCRIPTION", payload:data})
       this.response.transcription = data
     })
+    .on('device-action', (action) => {
+      log("CONVERSATION:ACTION", action)
+      this.response.action = Object.assign({}, this.response.action, action)
+    })
+    .on('response', (text) => {
+      log("CONVERSATION:RESPONSE", text)
+      if (text) this.response.text = text
+    })
+    .on('screen-data', (screen) => {
+      log("CONVERSATION:SCREEN", typeof screen)
+      if (this.useScreenOutput) {
+        this.response.screen = {
+          originalContent: screen.data.toString("utf8")
+        }
+      }
+    })
     .on('audio-data', (data) => {
-      log("CONVERSATION:AUDIO", data.length)
-      if(data.length) b2m.add(data)
+      if (this.useAudioOutput) {
+        log("CONVERSATION:AUDIO", data.length)
+        if(data.length) b2m.add(data)
+      }
     })
     .on('ended', (error, continueConversation) => {
       log("CONVERSATION_ALL_RESPONSES_RECEIVED")
@@ -134,21 +169,23 @@ class ASSISTANT {
         this.response.transcription = {transcription: originalPayload.key, done: true}
       }
 
-      if (b2m.getAudioLength() > 50) {
-        log("CONVERSATION_PP:RESPONSE_AUDIO_PROCESSED")
-        this.response.audio = {
-          path: filePath,
-          uri : responseFile,
+      if (this.useAudioOutput) {
+        if (b2m.getAudioLength() > 50) {
+          log("CONVERSATION_PP:RESPONSE_AUDIO_PROCESSED")
+          this.response.audio = {
+            path: filePath,
+            uri : responseFile,
+          }
+        } else {
+          log("CONVERSATION_PP:RESPONSE_AUDIO_TOO_SHORT_OR_EMPTY - ", b2m.getAudioLength())
+          this.response.error = "TOO_SHORT"
         }
-      } else {
-        log("CONVERSATION_PP:RESPONSE_AUDIO_TOO_SHORT_OR_EMPTY - ", b2m.getAudioLength())
-        this.response.error = "TOO_SHORT"
+        b2m.close()
       }
-      b2m.close()
       endCallback(this.response)
     })
     .on('error', (error) => {
-      b2m.close()
+      if (this.useAudioOutput) b2m.close()
       log("CONVERSATION_ERROR: " + error)
       this.response.error = "CONVERSATION_ERROR"
       if (error.code == "14") {
@@ -158,6 +195,12 @@ class ASSISTANT {
       conversation.end()
       endCallback(this.response)
     })
+    if (originalPayload.key && originalPayload.type == "WAVEFILE") {
+      var s = fs.createReadStream(originalPayload.key, {highWaterMark:4096}).pipe(conversation)
+    }
+    if (originalPayload.type == "TEXT") {
+      this.tunnel({type: "TRANSCRIPTION", payload:{transcription:originalPayload.key, done:true}})
+    }
   }
   stopListening () {
     if (!this.mic) return
@@ -167,7 +210,7 @@ class ASSISTANT {
   }
 
   afterListening (err) {
-	  if (err) {
+    if (err) {
      log("[ERROR] " + err)
      this.stopListening()
      return
