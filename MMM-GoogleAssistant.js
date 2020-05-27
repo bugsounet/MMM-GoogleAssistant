@@ -30,7 +30,7 @@ Module.register("MMM-GoogleAssistant", {
       useAudioOutput: true,
       useChime: true,
       timer: 5000,
-      delay: 0.5,
+      delay: 500,
       chime: {
         beep: "beep.mp3",
         error: "error.mp3",
@@ -224,9 +224,6 @@ Module.register("MMM-GoogleAssistant", {
           delete payload.callback
           this.assistantActivate(payload, session)
         }
-        else if (payload.type == "TEXT") {
-          this.assistantActivate(payload, session)
-        }
         break
       case "ASSISTANT_WELCOME":
         this.assistantResponse.fullscreen(true)
@@ -312,6 +309,9 @@ Module.register("MMM-GoogleAssistant", {
 
   assistantActivate: function(payload, session) {
     if (this.myStatus.actual != "standby" && !payload.force) return log("Assistant is busy.")
+    if (!this.config.disclaimerformeandjustformesodontuseit) {
+      this.assistantResponse.showError(this.translate("CONVERSATION_ERROR"))
+    }
     if (this.config.useA2D) this.sendNotification("A2D_ASSISTANT_BUSY")
     this.sendSocketNotification("ASSISTANT_BUSY")
     this.lastQuery = null
@@ -328,8 +328,15 @@ Module.register("MMM-GoogleAssistant", {
     var options = Object.assign({}, options, payload)
     setTimeout(() => {
       this.assistantResponse.status(options.type, (options.chime) ? true : false)
-      this.sendSocketNotification("ACTIVATE_ASSISTANT", options)
-    }, this.config.responseConfig.delay * 1000)
+      if (!this.config.disclaimerformeandjustformesodontuseit) {
+        this.assistantResponse.showError(this.translate("CONVERSATION_ERROR"))
+        setTimeout(() => {
+          this.assistantResponse.status("standby")
+          this.assistantResponse.fullscreen (false, this.myStatus)
+          this.sendSocketNotification("ASSISTANT_READY")
+        } , this.config.responseConfig.timer)
+      } else this.sendSocketNotification("ACTIVATE_ASSISTANT", options)
+    }, this.config.responseConfig.delay)
   },
 
   endResponse: function() {

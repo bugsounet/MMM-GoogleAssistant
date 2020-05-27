@@ -297,7 +297,7 @@ class AssistantResponse {
         module.hide(15, {lockString: "GA_LOCKED"})
         GA.className= "in" + (this.fullscreenAbove ? " fullscreen_above": "")
       })
-    } else  if(!(this.secretMode)) {
+    } else  if(!this.secretMode) {
       if (status && status.actual == "standby") { // only on standby mode
         GA.className= "out" + (this.fullscreenAbove ? " fullscreen_above": "")
         this.displayTimer = setTimeout (() => {

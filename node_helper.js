@@ -110,7 +110,7 @@ module.exports = NodeHelper.create({
     if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/credentials.json")) {
       console.log("[ASSISTANT][ERROR] credentials.json file not found !")
     }
-    log("Response delay is set to " + this.config.responseConfig.delay + ((this.config.responseConfig.delay > 1) ? " seconds" : " second"))
+    log("Response delay is set to " + this.config.responseConfig.delay + " ms")
 
     this.snowboy = new Snowboy(this.config.snowboy, this.config.micConfig, (detected) => { this.hotwordDetect(detected) } , this.config.debug )
     this.snowboy.init()
