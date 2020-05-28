@@ -85,7 +85,7 @@ class ACTIONMANAGER {
     fs.writeFile(path.resolve(__dirname, "../tmp/action_package.json"), jsonTxt, "utf8", (err)=>{
       if (err) {
         log("Error - Action package JSON file creation failed:", err.message)
-        callabck()
+        callback()
       } else {
         this.gactionCLI(callback)
       }
@@ -106,11 +106,10 @@ class ACTIONMANAGER {
     var actionFile = path.resolve(__dirname, "../tmp/action_package.json")
     var cdPath = path.resolve(__dirname, "../utility")
     var cmd = `cd ${cdPath}; ./gactions test --action_package ${actionFile} --project ${this.config.projectId}`
-    console.log(cmd)
     callback()
 
     exec(cmd, (e, so, se)=>{
-      console.log(cmd)
+      log("Executing:", cmd)
       if (e) {
         log("Error - Action Package update failed:", e.message)
       } else {
