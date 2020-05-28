@@ -128,19 +128,20 @@ module.exports = NodeHelper.create({
         return value
       }
       var recipes = this.config.recipes
+      var actions = []
       for (var i = 0; i < recipes.length; i++) {
         try {
           var p = require("./recipes/" + recipes[i]).recipe
           this.sendSocketNotification("LOAD_RECIPE", JSON.stringify(p, replacer, 2))
-          if (p.actions) this.config.actions = Object.assign({}, this.config.actions, p.actions)
+          if (p.actions) actions = Object.assign({}, actions, p.actions)
           console.log("[ASSISTANT] RECIPE_LOADED:", recipes[i])
         } catch (e) {
           console.log(`[ASSISTANT] RECIPE_ERROR (${recipes[i]}):`, e.message)
         }
       }
-      if (this.config.actions && Object.keys(this.config.actions).length > 0) {
+      if (actions && Object.keys(actions).length > 0) {
         var actionConfig = Object.assign({}, this.config.customActionConfig)
-        actionConfig.actions = Object.assign({}, this.config.actions)
+        actionConfig.actions = Object.assign({}, actions)
         actionConfig.projectId = this.config.assistantConfig.projectId
         var Manager = new ActionManager(actionConfig, this.config.debug)
         Manager.makeAction(callback)

@@ -35,10 +35,6 @@ Installer_log
 # check version
 Installer_version="$(cat ../package.json | grep version | cut -c14-30 2>/dev/null)"
 
-# Let's start !
-Installer_info "Welcome to $Installer_module $Installer_version"
-Installer_info "postinstall script v$Installer_vinstaller"
-
 echo
 
 # Check not run as root
@@ -47,69 +43,12 @@ if [ "$EUID" -eq 0 ]; then
   exit 1
 fi
 
-# Check platform compatibility
-Installer_info "Checking OS..."
-Installer_checkOS
-if  [ "$platform" == "osx" ]; then
-  Installer_error "OS Detected: $OSTYPE ($os_name $os_version $arch)"
-  Installer_error "You need to read documents/1_install.md for Manual Install"
-  exit 0
-else
-  Installer_success "OS Detected: $OSTYPE ($os_name $os_version $arch)"
-fi
-
-echo
-
-Installer_yesno "Do you want to execute automatic intallation ?" || exit 0
-
-# check dependencies
-dependencies=(git wget libasound2-dev sox libsox-fmt-all gcc-7 libsox-fmt-mp3 build-essential mpg321 vlc libmagic-dev libatlas-base-dev)
-Installer_info "Checking all dependencies..."
-Installer_check_dependencies
-Installer_success "All Dependencies needed are installed !"
-
-echo
-
-# force gcc v7
-Installer_info "Checking GCC Version..."
-Installer_yesno "Do you want to check compatible GCC version" && (
-  Installer_check_gcc7
-  Installer_success "GCC 7 is set by default"
-)
-
-echo
-
 # all is ok than electron-rebuild
-Installer_info "Electron Rebuild"
-Installer_yesno "Do you want to execute electron rebuild" && (
-  Installer_electronrebuild
-  Installer_success "Electron Rebuild Complete!"
-)
+Installer_info "[grpc library]"
+Installer_electronrebuild
+Installer_success "Electron Rebuild Complete!"
 echo
 
-Installer_info "Snowboy detector embed version"
-Installer_warning "If you want to use it, remove your other detector !"
-Installer_warning "like: MMM-HotWord or MMM-Snowboy"
-Installer_yesno "Do you want to use it ?" && (
-  npm install @bugsounet/snowboy --save-dev
-  Installer_success "@bugsounet/snowboy library installed"
-)
-
-# pulse audio and mmap issue
-if Installer_is_installed "pulseaudio"; then
-  if [ "$os_name" == "raspbian" ]; then
-    Installer_warning "RPI Pulseaudio check"
-    Installer_warning "Pulseaudio is installed"
-    Installer_error "You might have some mmap error and no response audio"
-    Installer_warning "if you are not using Bluetooth, you can uninstall pulseaudio"
-    Installer_warning "Note: You can try whithout uninstalling pulseaudio"
-    Installer_warning "by using the play-sound version"
-    Installer_warning "useHTML5: false --- playProgram: \"mpg321\" , playProgram: \"mpg123\" or playProgram: \"cvlc\""
-    Installer_yesno "Do you want uninstall pulseaudio?" && Installer_remove "pulseaudio"
-  fi
-fi
-
-echo
 # Audio out/in checking
 Installer_info "Checking Speaker and Microphone..."
 Installer_yesno "Do you want check your audio configuration" && (

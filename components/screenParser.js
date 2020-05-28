@@ -1,5 +1,4 @@
 const HTMLParser = require("node-html-parser")
-const Cheerio = require("cheerio")
 const path = require("path")
 const fs = require("fs")
 const Entities = require('html-entities').AllHtmlEntities
