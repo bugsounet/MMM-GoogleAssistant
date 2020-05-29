@@ -13,8 +13,6 @@ var log = function() {
 Module.register("MMM-GoogleAssistant", {
   defaults: {
     debug:false,
-    useA2D: false,
-    A2DStopCommand: "stop",
     assistantConfig: {
       lang: "en_US",
       credentialPath: "credentials.json",
@@ -27,18 +25,11 @@ Module.register("MMM-GoogleAssistant", {
     },
     responseConfig: {
       useScreenOutput: true,
+      screenOutputCSS: "screen_output.css",
+      screenOutputTimer: 5000,
+      activateDelay: 500,
       useAudioOutput: true,
-      useChime: true,
-      timer: 5000,
-      delay: 500,
-      chime: {
-        beep: "beep.mp3",
-        error: "error.mp3",
-        continue: "continue.mp3",
-        open: "Google_beep_open.mp3",
-        close: "Google_beep_close.mp3",
-      },
-      screenOutputCSS: "screen_output.css"
+      useChime: true
     },
     micConfig: {
       recorder: "arecord",
@@ -55,6 +46,10 @@ Module.register("MMM-GoogleAssistant", {
       Frontend: true,
       Model: "jarvis",
       Sensitivity: null
+    },
+    A2DServer: {
+      useA2D: false,
+      stopCommand: "stop"
     }
   },
   plugins: {
@@ -86,7 +81,7 @@ Module.register("MMM-GoogleAssistant", {
   start: function () {
     const helperConfig = [
       "debug", "recipes", "customActionConfig", "assistantConfig", "micConfig",
-      "responseConfig", "useA2D", "snowboy"
+      "responseConfig", "A2DServer", "snowboy"
     ]
     this.helperConfig = {}
     if (this.config.debug) log = _log
@@ -116,7 +111,7 @@ Module.register("MMM-GoogleAssistant", {
         return this.Status(status)
       },
       A2D: (response)=> {
-        if (this.config.useA2D)
+        if (this.config.A2DServer.useA2D)
          return this.Assistant2Display(response)
       }
     }
@@ -243,6 +238,10 @@ Module.register("MMM-GoogleAssistant", {
       case "LOAD_RECIPE":
         this.parseLoadedRecipe(payload)
         break
+      case "NOT_INITIALIZED":
+        this.assistantResponse.fullscreen(true)
+        this.assistantResponse.showError(payload)
+        break
       case "INITIALIZED":
         log("Initialized.")
         this.sendNotification("ASSISTANT_READY")
@@ -312,7 +311,7 @@ Module.register("MMM-GoogleAssistant", {
     if (!this.config.disclaimerformeandjustformesodontuseit) {
       this.assistantResponse.showError(this.translate("CONVERSATION_ERROR"))
     }
-    if (this.config.useA2D) this.sendNotification("A2D_ASSISTANT_BUSY")
+    if (this.config.A2DServer.useA2D) this.sendNotification("A2D_ASSISTANT_BUSY")
     this.sendSocketNotification("ASSISTANT_BUSY")
     this.lastQuery = null
     var options = {
@@ -334,13 +333,13 @@ Module.register("MMM-GoogleAssistant", {
           this.assistantResponse.status("standby")
           this.assistantResponse.fullscreen (false, this.myStatus)
           this.sendSocketNotification("ASSISTANT_READY")
-        } , this.config.responseConfig.timer)
+        } , this.config.responseConfig.screenOutputTimer)
       } else this.sendSocketNotification("ACTIVATE_ASSISTANT", options)
-    }, this.config.responseConfig.delay)
+    }, this.config.responseConfig.activateDelay)
   },
 
   endResponse: function() {
-    if (this.config.useA2D) this.sendNotification("A2D_ASSISTANT_READY")
+    if (this.config.A2DServer.useA2D) this.sendNotification("A2D_ASSISTANT_READY")
     this.sendSocketNotification("ASSISTANT_READY")
   },
 
@@ -537,7 +536,7 @@ Module.register("MMM-GoogleAssistant", {
   Assistant2Display: function(response) {
     if (response.lastQuery.secretMode) return
 
-    if (response.transcription && (response.transcription.transcription == this.config.A2DStopCommand))
+    if (response.transcription && (response.transcription.transcription == this.config.A2DServer.stopCommand))
       return this.sendNotification("A2D_STOP")
 
     var opt = {

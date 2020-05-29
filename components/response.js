@@ -10,9 +10,15 @@ class AssistantResponse {
     this.displayTimer = null
     this.allStatus = [ "hook", "standby", "reply", "error", "think", "continue", "listen", "confirmation" ]
     this.secretMode = false
-    this.hookChimed = false
     this.myStatus = { "actual" : "standby" , "old" : "standby" }
     this.loopCount = 0
+    this.chime = {
+      beep: "beep.mp3",
+      error: "error.mp3",
+      continue: "continue.mp3",
+      open: "Google_beep_open.mp3",
+      close: "Google_beep_close.mp3",
+    },
 
     this.audioResponse = new Audio()
     this.audioResponse.autoplay = true
@@ -49,7 +55,7 @@ class AssistantResponse {
 
   playChime (sound, external) {
     if (this.config.useChime && !this.secretMode) {
-      this.audioChime.src = "modules/MMM-GoogleAssistant/resources/" + (external ? sound : this.config.chime[sound])
+      this.audioChime.src = "modules/MMM-GoogleAssistant/resources/" + (external ? sound : this.chime[sound])
     }
   }
 
@@ -162,12 +168,10 @@ class AssistantResponse {
         clearTimeout(this.aliveTimer)
         this.aliveTimer = null
         this.aliveTimer = setTimeout(()=>{
-          if (!this.config.developer) {
-            this.stopResponse(()=>{
-              this.fullscreen(false, this.myStatus)
-            })
-          }
-        }, this.config.timer)
+          this.stopResponse(()=>{
+            this.fullscreen(false, this.myStatus)
+          })
+        }, this.config.screenOutputTimer)
       }
     } else {
       this.status("standby")
@@ -177,7 +181,6 @@ class AssistantResponse {
   }
 
   start (response) {
-    this.hookChimed = false
     this.response = response
     if (this.showing) {
       this.end()
@@ -258,8 +261,7 @@ class AssistantResponse {
   }
 
   playAudioOutput (response) {
-    if (this.secretMode) return false
-    if (response.audio && this.config.useAudioOutput) {
+    if (!this.secretMode && response.audio && this.config.useAudioOutput) {
       this.showing = true
       this.audioResponse.src = this.makeUrl(response.audio.uri)
       return true
@@ -268,8 +270,7 @@ class AssistantResponse {
   }
 
   showScreenOutput (response) {
-    if (this.secretMode) return false
-    if (response.screen && this.config.useScreenOutput) {
+    if (!this.sercretMode && response.screen && this.config.useScreenOutput) {
       if (!response.audio) {
         this.showTranscription(this.callbacks.translate("NO_AUDIO_RESPONSE"))
       }
@@ -278,7 +279,6 @@ class AssistantResponse {
       iframe.src = this.makeUrl(response.screen.uri)
       var winh = document.getElementById("GA_HELPER")
       winh.classList.remove("hidden")
-
       return true
     }
     return false
@@ -297,7 +297,7 @@ class AssistantResponse {
         module.hide(15, {lockString: "GA_LOCKED"})
         GA.className= "in" + (this.fullscreenAbove ? " fullscreen_above": "")
       })
-    } else  if(!this.secretMode) {
+    } else if(!this.secretMode) {
       if (status && status.actual == "standby") { // only on standby mode
         GA.className= "out" + (this.fullscreenAbove ? " fullscreen_above": "")
         this.displayTimer = setTimeout (() => {

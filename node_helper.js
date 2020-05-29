@@ -103,20 +103,29 @@ module.exports = NodeHelper.create({
   },
 
   initialize: function (config) {
+    console.log("[ASSISTANT] MMM-GoogleAssistant Version:", require('./package.json').version)
     this.config = config
     this.config.assistantConfig["modulePath"] = __dirname
+    var error = null
     if (this.config.debug) log = _log
-    console.log("[ASSISTANT] MMM-GoogleAssistant Version:", require('./package.json').version)
-    if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/credentials.json")) {
-      console.log("[ASSISTANT][ERROR] credentials.json file not found !")
+    if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/" + this.config.assistantConfig.credentialPath)) {
+      error = "[ERROR] credentials.json file not found !"
     }
-    log("Response delay is set to " + this.config.responseConfig.delay + " ms")
+    else if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/" + this.config.assistantConfig.tokenPath)) {
+      error = "[ERROR] token.json file not found !"
+    }
+    if (error) {
+      console.log("[ASSISTANT]" + error)
+      return this.sendSocketNotification("NOT_INITIALIZED", error)
+    }
+    log("Activate delay is set to " + this.config.responseConfig.activateDelay + " ms")
 
     this.snowboy = new Snowboy(this.config.snowboy, this.config.micConfig, (detected) => { this.hotwordDetect(detected) } , this.config.debug )
     this.snowboy.init()
 
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED"))
-    if (this.config.useA2D) console.log ("[ASSISTANT] Assistant2Display Server Started")
+    if (this.config.A2DServer.useA2D) console.log ("[ASSISTANT] Assistant2Display Server Started")
+    console.log ("[ASSISTANT] Google Assistant is initialized.")
   },
 
   loadRecipes: function(callback=()=>{}) {
