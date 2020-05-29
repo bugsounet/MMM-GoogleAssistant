@@ -1,7 +1,7 @@
 #!/bin/bash
-# +--------------------------------+
-# | npm postinstall                |
-# +--------------------------------+
+# +-----------------+
+# | npm postinstall |
+# +-----------------+
 
 # get the installer directory
 Installer_get_current_dir () {
@@ -29,19 +29,10 @@ Installer_module="MMM-GoogleAssistant"
 # use beep request questions ?
 Installer_beep=true
 
-# logs in installer.log file
-Installer_log
-
 # check version
 Installer_version="$(cat ../package.json | grep version | cut -c14-30 2>/dev/null)"
 
 echo
-
-# Check not run as root
-if [ "$EUID" -eq 0 ]; then
-  Installer_error "npm install must not be used as root"
-  exit 1
-fi
 
 # all is ok than electron-rebuild
 Installer_info "[grpc library]"

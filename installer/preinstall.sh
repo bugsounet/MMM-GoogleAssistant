@@ -1,7 +1,7 @@
 #!/bin/bash
-# +--------------------------------+
-# | npm preinstall                |
-# +--------------------------------+
+# +----------------+
+# | npm preinstall |
+# +----------------+
 
 # get the installer directory
 Installer_get_current_dir () {
@@ -29,11 +29,10 @@ Installer_module="MMM-GoogleAssistant"
 # use beep request questions ?
 Installer_beep=true
 
-# logs in installer.log file
-Installer_log
-
 # check version
 Installer_version="$(cat ../package.json | grep version | cut -c14-30 2>/dev/null)"
+
+echo
 
 # Let's start !
 Installer_info "Welcome to $Installer_module $Installer_version"

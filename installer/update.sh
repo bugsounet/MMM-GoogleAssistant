@@ -1,8 +1,7 @@
 #!/bin/bash
-# +------------+
-# | updater    |
-# | Rev 1.0.1  |
-# +------------+
+# +---------+
+# | updater |
+# +---------+
 # get the installer directory
 Installer_get_current_dir () {
   SOURCE="${BASH_SOURCE[0]}"
@@ -19,17 +18,20 @@ Installer_dir="$(Installer_get_current_dir)"
 # move to installler directory
 cd "$Installer_dir"
 source utils.sh
-Installer_info "Welcome to GoogleAssistant updater !"
+Installer_info "Welcome to GA updater !"
 echo
 
 cd ~/MagicMirror/modules/MMM-GoogleAssistant
 # deleting package.json because npm install add/update package
-rm -f package.json
-rm -f package-lock.json
+rm -f package.json package-lock.json
 Installer_info "Updating..."
 git pull
 #fresh package.json
 git checkout package.json
-Installer_info "Installing..."
+cd node_modules
+Installer_info "Deleting ALL @bugsounet libraries..."
+rm -rf @bugsounet
+cd ~/MagicMirror/modules/MMM-GoogleAssistant
+Installer_info "Ready for Installing..."
 # launch installer
 npm install

@@ -1,8 +1,7 @@
 #!/bin/bash
-# +------------+
-# | Rebuild    |
-# | Rev 1.0.0  |
-# +------------+
+# +---------+
+# | Rebuild |
+# +---------+
 
 # get the installer directory
 Installer_get_current_dir () {
@@ -22,10 +21,10 @@ cd "$Installer_dir"
 
 source utils.sh
 
-Installer_info "Welcome to GoogleAssistant rebuild script"
+Installer_info "Welcome to GA rebuild script"
 Installer_warning "This script will erase current build"
 Installer_error "Use this script only for the new version of Magic Mirror or developer request"
-Installer_error "recipes, credentials.json, token.json and profiles will be not erased"
+Installer_error "recipes, credentials.json, token.json will be not erased"
 Installer_error "after executing this script, it will restart the installation, you must do it!"
 Installer_error "in this case, Audio check is not necessary" 
 Installer_yesno "Do you want to continue ?" || exit 0
