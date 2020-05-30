@@ -14,7 +14,7 @@ Module.register("MMM-GoogleAssistant", {
   defaults: {
     debug:false,
     assistantConfig: {
-      lang: "en_US",
+      lang: "en-US",
       credentialPath: "credentials.json",
       tokenPath: "token.json",
       projectId: "",
@@ -38,7 +38,7 @@ Module.register("MMM-GoogleAssistant", {
     customActionConfig: {
       autoMakeAction: false,
       autoUpdateAction: false,
-      // actionLocale: "en", // multi language action is not supported yet
+      // actionLocale: "en-US", // multi language action is not supported yet
     },
     snowboy: {
       audioGain: 2.0,
