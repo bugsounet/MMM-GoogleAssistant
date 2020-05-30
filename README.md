@@ -18,18 +18,6 @@
 ## Installation, update & Guides
 Read the docs in [wiki](https://github.com/bugsounet/MMM-GoogleAssistant/wiki)<br>
 
-## Update from 1.x
-Maybe, the simple solution is... don't use it
-
-## Update from 2.x
-Why ? because, you don't use it !
-
-## Update on new MagicMirror version (exemple v2.10.x to v2.11.x)
-```sh
-cd ~/MagicMirror/modules/MMM-GoogleAssistant
-npm run rebuild
-```
-
 ## Last Tested
 - MagicMirror : 2.11.0
 - RPI 4 / raspbian 10 (buster)
