@@ -31,10 +31,9 @@ npm run rebuild
 ```
 
 ## Last Tested
-- MagicMirror : 2.10.0
-- RPI 3B+ / raspbian 10 /nodeJS v10.17.0 / npm 6.13.2
-- MacOS Catalina 10.15.2 / MacBookPro 2017 15" / nodeJS v11.12.0 / npm v6.9.0
-- debian 10 / nodeJS v10.18.0 / npm v6.13.4
+- MagicMirror : 2.11.0
+- RPI 4 / raspbian 10 (buster)
+- debian 10
 
 ## Credits
 - Author :
