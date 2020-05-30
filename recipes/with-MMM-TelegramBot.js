@@ -4,34 +4,26 @@ var recipe = {
       moduleExec: {
         module: ["MMM-GoogleAssistant"],
         exec: (module) => {
-          module.command_q = function(command, handler) {
+          module.telegramQuery= function(command, handler) {
             var query = handler.args
-            module.notificationReceived("ASSISTANT_ACTIVATE", {
+            if (!query) handler.reply("TEXT", this.translate("QUERY_HELP"))
+            else module.socketNotificationReceived("ASSISTANT_ACTIVATE", {
               type: "TEXT",
-              key: query,
-              callback: (response)=>{
-                console.log(response)
-                handler.reply("TEXT", response.screen.text)
-              },
-            }, module)
+              key: query
+            })
           }
           module.sendNotification("TELBOT_REGISTER_COMMAND", {
-            command: "q",
-            callback: "command_q",
-            description: module.translate("QUERY_HELP")
-          })
-          module.sendNotification("TELBOT_REGISTER_COMMAND", {
             command: "query",
-            callback: "telegramCommand",
+            callback: "telegramQuery",
             description: module.translate("QUERY_HELP")
           })
         }
-      },
-    },
+      }
+    }
   },
   plugins: {
     onReady: "TELBOT_READY"
-  },
+  }
 }
 
 exports.recipe = recipe // Don't remove this line.

@@ -17,7 +17,6 @@ var log = function() {
 class ASSISTANT {
   constructor(config, tunnel = ()=>{}) {
     var debug = (config.debug) ? config.debug : false
-    this.session = config.session
     this.modulePath = config.modulePath
     this.micConfig = config.micConfig
     this.useAudioOutput = config.useAudioOutput
@@ -84,7 +83,6 @@ class ASSISTANT {
 
   initConversation (originalPayload, conversation, endCallback=(response)=>{}) {
     this.response = {
-      session: this.session,
       error: null,
       action: null,
       text: null, // text response

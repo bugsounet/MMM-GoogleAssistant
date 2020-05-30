@@ -89,11 +89,10 @@ Module.register("MMM-GoogleAssistant", {
     for(var i = 0; i < helperConfig.length; i++) {
       this.helperConfig[helperConfig[i]] = this.config[helperConfig[i]]
     }
-    this.session = {}
     this.myStatus = { "actual" : "standby" , "old" : "standby" }
     var callbacks = {
-      assistantActivate: (payload, session)=>{
-        this.assistantActivate(payload, session)
+      assistantActivate: (payload)=>{
+        this.assistantActivate(payload)
       },
       postProcess: (response, callback_done, callback_none)=>{
         this.postProcess(response, callback_done, callback_none)
@@ -208,18 +207,6 @@ Module.register("MMM-GoogleAssistant", {
         this.sendSocketNotification("INIT", this.helperConfig)
         this.assistantResponse.prepare()
         break
-      case "ASSISTANT_ACTIVATE":
-        if (sender.name == this.name) {
-          var session = Date.now()
-          this.assistantResponse.setSecret(true)
-          this.session[session] = {
-            callback: payload.callback,
-            sender: sender.name
-          }
-          delete payload.callback
-          this.assistantActivate(payload, session)
-        }
-        break
       case "ASSISTANT_WELCOME":
         this.assistantResponse.fullscreen(true)
         this.assistantActivate({type: "TEXT", key: payload.key, chime: false}, Date.now())
@@ -250,17 +237,6 @@ Module.register("MMM-GoogleAssistant", {
         this.doPlugin("onReady")
         break
       case "ASSISTANT_RESULT":
-        if (payload.session && this.session.hasOwnProperty(payload.session)) {
-          var session = this.session[payload.session]
-          if (typeof session.callback == "function") {
-            MM.getModules().enumerate((module) => {
-              if (module.name == session.sender) {
-                session.callback(Object.assign({}, payload), module)
-              }
-            })
-          }
-          delete this.session[payload.session]
-        }
         if (payload.volume !== null) {
           // Notification to MMM-Volume without recipes
           this.sendNotification("VOLUME_SET", payload.volume)
@@ -271,9 +247,8 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantResponse.tunnel(payload)
         break
       case "ASSISTANT_ACTIVATE":
-        var session = Date.now()
         this.assistantResponse.fullscreen(true)
-        this.assistantActivate(payload, session)
+        this.assistantActivate(payload)
         break
     }
   },
@@ -306,7 +281,7 @@ Module.register("MMM-GoogleAssistant", {
     }
   },
 
-  assistantActivate: function(payload, session) {
+  assistantActivate: function(payload) {
     if (this.myStatus.actual != "standby" && !payload.force) return log("Assistant is busy.")
     if (!this.config.disclaimerformeandjustformesodontuseit) {
       this.assistantResponse.showError(this.translate("CONVERSATION_ERROR"))
@@ -320,7 +295,6 @@ Module.register("MMM-GoogleAssistant", {
       lang: this.config.assistantConfig.lang,
       useScreenOutput: this.config.responseConfig.useScreenOutput,
       useAudioOutput: this.config.responseConfig.useAudioOutput,
-      session: session,
       status: this.myStatus.old,
       chime: true
     }
@@ -523,19 +497,8 @@ Module.register("MMM-GoogleAssistant", {
     this.myStatus=status
   },
 
-  /** Prepared TelegramBot Commands **/
-
-  telegramCommand: function(command, handler) {
-    if (command == "query" && handler.args) {
-      handler.reply("TEXT", this.translate("QUERY_REPLY"))
-      this.socketNotificationReceived("ASSISTANT_ACTIVATE", {key: handler.args})
-    }
-  },
-
 /** Send needed part of response screen to MMM-Assistant2Display **/
   Assistant2Display: function(response) {
-    if (response.lastQuery.secretMode) return
-
     if (response.transcription && (response.transcription.transcription == this.config.A2DServer.stopCommand))
       return this.sendNotification("A2D_STOP")
 

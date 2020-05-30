@@ -9,7 +9,6 @@ class AssistantResponse {
     this.aliveTimer = null
     this.displayTimer = null
     this.allStatus = [ "hook", "standby", "reply", "error", "think", "continue", "listen", "confirmation" ]
-    this.secretMode = false
     this.myStatus = { "actual" : "standby" , "old" : "standby" }
     this.loopCount = 0
     this.chime = {
@@ -35,7 +34,6 @@ class AssistantResponse {
 
   tunnel (payload) {
     if (payload.type == "TRANSCRIPTION") {
-      if (this.secretMode) return
       var startTranscription = false
       if (payload.payload.done) this.status("confirmation")
       if (payload.payload.transcription && !startTranscription) {
@@ -49,31 +47,22 @@ class AssistantResponse {
     // do nothing currently.
   }
 
-  setSecret (secretMode) {
-    this.secretMode = secretMode
-  }
-
   playChime (sound, external) {
-    if (this.config.useChime && !this.secretMode) {
+    if (this.config.useChime) {
       this.audioChime.src = "modules/MMM-GoogleAssistant/resources/" + (external ? sound : this.chime[sound])
     }
   }
 
   status (status, beep) {
-    var Status = document.getElementById("GA_STATUS")
-    for (let [item,value] of Object.entries(this.allStatus)) {
-      if(Status.classList.contains(value)) this.myStatus.old = value
-    } // check old status and store it
     this.myStatus.actual = status
-
+    var Status = document.getElementById("GA_STATUS")
     if (beep && this.myStatus.old != "continue") this.playChime("beep")
     if (status == "error" || status == "continue" ) this.playChime(status)
     if (status == "WAVEFILE" || status == "TEXT") this.myStatus.actual = "think"
     if (status == "MIC") this.myStatus.actual = (this.myStatus.old == "continue") ? "continue" : "listen"
+    if (this.myStatus.actual == this.myStatus.old) return
     log("Status from " + this.myStatus.old + " to " + this.myStatus.actual)
-    if (!this.secretMode || status == "standby") {
-      Status.className = this.myStatus.actual
-    }
+    Status.className = this.myStatus.actual
     this.callbacks.myStatus(this.myStatus) // send status external
     this.callbacks.sendNotification("ASSISTANT_" + this.myStatus.actual.toUpperCase())
     this.myStatus.old = this.myStatus.actual
@@ -134,7 +123,6 @@ class AssistantResponse {
   }
 
   showTranscription (text, className = "transcription") {
-    if (this.secretMode) return
     var tr = document.getElementById("GA_TRANSCRIPTION")
     tr.innerHTML = ""
     var t = document.createElement("p")
@@ -195,7 +183,6 @@ class AssistantResponse {
           key: response.transcription.transcription,
           lang: response.lastQuery.lang,
           useScreenOutput: response.lastQuery.useScreenOutput,
-          session: response.lastQuery.session,
           force: true,
           chime: false
         }, null)
@@ -261,7 +248,7 @@ class AssistantResponse {
   }
 
   playAudioOutput (response) {
-    if (!this.secretMode && response.audio && this.config.useAudioOutput) {
+    if (response.audio && this.config.useAudioOutput) {
       this.showing = true
       this.audioResponse.src = this.makeUrl(response.audio.uri)
       return true
@@ -292,12 +279,12 @@ class AssistantResponse {
     var GA = document.getElementById("GA")
     clearTimeout(this.displayTimer)
     this.displayTimer = null
-    if (active && !this.secretMode) {
+    if (active) {
       MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
-        module.hide(15, {lockString: "GA_LOCKED"})
+        module.hide(250, {lockString: "GA_LOCKED"})
         GA.className= "in" + (this.fullscreenAbove ? " fullscreen_above": "")
       })
-    } else if(!this.secretMode) {
+    } else {
       if (status && status.actual == "standby") { // only on standby mode
         GA.className= "out" + (this.fullscreenAbove ? " fullscreen_above": "")
         this.displayTimer = setTimeout (() => {

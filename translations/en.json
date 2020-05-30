@@ -5,9 +5,6 @@
   "CONVERSATION_ERROR" : "Conversation error. (misconfigured microphone)",
 
 /* developer mode utils (Bugsounet) */
-  "REPEAT_WORD" : "Repeat after me",
-  "SAY_REPLY" : "AssistantMk2 will repeat your text: ",
-  "SAY_HELP" : "You can make `MMM-AssistantMk2` to say some text with this command.",
-  "QUERY_REPLY" : "AssistantMk2 will be activated",
-  "QUERY_HELP" : "You can command `AssistantMk2` by text with this command."
+  "QUERY_REPLY" : "Google Assistant will be activated",
+  "QUERY_HELP" : "You can command `Google Assistant` by text with this command."
 }

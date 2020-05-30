@@ -67,7 +67,6 @@ module.exports = NodeHelper.create({
     log("QUERY:", payload)
     var assistantConfig = Object.assign({}, this.config.assistantConfig)
     assistantConfig.debug = this.config.debug
-    assistantConfig.session = payload.session
     assistantConfig.lang = payload.lang
     assistantConfig.useScreenOutput = payload.useScreenOutput
     assistantConfig.useAudioOutput = payload.useAudioOutput
@@ -138,6 +137,7 @@ module.exports = NodeHelper.create({
       }
       var recipes = this.config.recipes
       var actions = []
+      var error = null
       for (var i = 0; i < recipes.length; i++) {
         try {
           var p = require("./recipes/" + recipes[i]).recipe
@@ -145,7 +145,9 @@ module.exports = NodeHelper.create({
           if (p.actions) actions = Object.assign({}, actions, p.actions)
           console.log("[ASSISTANT] RECIPE_LOADED:", recipes[i])
         } catch (e) {
-          console.log(`[ASSISTANT] RECIPE_ERROR (${recipes[i]}):`, e.message)
+          console.log(`[ASSISTANT] RECIPE_ERROR (${recipes[i]}):`, e.message, e)
+          error = `[ASSISTANT] RECIPE_ERROR (${recipes[i]})`
+          return this.sendSocketNotification("NOT_INITIALIZED", error)
         }
       }
       if (actions && Object.keys(actions).length > 0) {
@@ -153,7 +155,7 @@ module.exports = NodeHelper.create({
         actionConfig.actions = Object.assign({}, actions)
         actionConfig.projectId = this.config.assistantConfig.projectId
         var Manager = new ActionManager(actionConfig, this.config.debug)
-        Manager.makeAction(callback)
+        Manager.makeAction(callback())
       } else {
         log("NO_ACTION_TO_MANAGE")
         callback()
