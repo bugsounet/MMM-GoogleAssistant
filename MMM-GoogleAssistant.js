@@ -40,7 +40,6 @@ Module.register("MMM-GoogleAssistant", {
       autoUpdateAction: false,
       // actionLocale: "en", // multi language action is not supported yet
     },
-    recipes: [],
     snowboy: {
       audioGain: 2.0,
       Frontend: true,
@@ -50,7 +49,8 @@ Module.register("MMM-GoogleAssistant", {
     A2DServer: {
       useA2D: false,
       stopCommand: "stop"
-    }
+    },
+    recipes: [],
   },
   plugins: {
     onReady: [],
@@ -89,7 +89,10 @@ Module.register("MMM-GoogleAssistant", {
     for(var i = 0; i < helperConfig.length; i++) {
       this.helperConfig[helperConfig[i]] = this.config[helperConfig[i]]
     }
-    this.myStatus = { "actual" : "standby" , "old" : "standby" }
+    this.myStatus = {
+      actual: "standby",
+      old : "standby"
+    }
     var callbacks = {
       assistantActivate: (payload)=>{
         this.assistantActivate(payload)
@@ -107,7 +110,7 @@ Module.register("MMM-GoogleAssistant", {
         return this.translate(text)
       },
       myStatus: (status) => {
-        return this.Status(status)
+        this.myStatus = status
       },
       A2D: (response)=> {
         if (this.config.A2DServer.useA2D)
@@ -208,7 +211,6 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantResponse.prepare()
         break
       case "ASSISTANT_WELCOME":
-        this.assistantResponse.fullscreen(true)
         this.assistantActivate({type: "TEXT", key: payload.key, chime: false}, Date.now())
         break
       case "ASSISTANT_START":
@@ -231,10 +233,10 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "INITIALIZED":
         log("Initialized.")
-        this.sendNotification("ASSISTANT_READY")
-        this.sendSocketNotification("ASSISTANT_READY")
         this.assistantResponse.status("standby")
+        this.sendSocketNotification("ASSISTANT_READY")
         this.doPlugin("onReady")
+        if (this.config.A2DServer.useA2D) this.sendNotification("ASSISTANT_READY")
         break
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) {
@@ -247,7 +249,6 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantResponse.tunnel(payload)
         break
       case "ASSISTANT_ACTIVATE":
-        this.assistantResponse.fullscreen(true)
         this.assistantActivate(payload)
         break
     }
@@ -286,6 +287,7 @@ Module.register("MMM-GoogleAssistant", {
     if (!this.config.disclaimerformeandjustformesodontuseit) {
       this.assistantResponse.showError(this.translate("CONVERSATION_ERROR"))
     }
+    this.assistantResponse.fullscreen(true)
     if (this.config.A2DServer.useA2D) this.sendNotification("A2D_ASSISTANT_BUSY")
     this.sendSocketNotification("ASSISTANT_BUSY")
     this.lastQuery = null
@@ -493,10 +495,6 @@ Module.register("MMM-GoogleAssistant", {
     }
   },
 
-  Status: function(status) {
-    this.myStatus=status
-  },
-
 /** Send needed part of response screen to MMM-Assistant2Display **/
   Assistant2Display: function(response) {
     if (response.transcription && (response.transcription.transcription == this.config.A2DServer.stopCommand))
@@ -515,5 +513,5 @@ Module.register("MMM-GoogleAssistant", {
       log("Send A2D Response.")
       this.sendNotification("A2D", opt)
     }
-  },
+  }
 })

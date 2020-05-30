@@ -17,16 +17,12 @@
 
 ## Installation, update & Guides
 Read the docs in [wiki](https://github.com/bugsounet/MMM-GoogleAssistant/wiki)<br>
-[简体中文 Chinese_simplified](./translations/Chinese_simplified/README_zh-CN.md)
+
 ## Update from 1.x
 Maybe, the simple solution is... don't use it
 
 ## Update from 2.x
-
-```sh
-cd ~/MagicMirror/modules/MMM-GoogleAssistant
-npm run update
-```
+Why ? because, you don't use it !
 
 ## Update on new MagicMirror version (exemple v2.10.x to v2.11.x)
 ```sh
@@ -43,7 +39,5 @@ npm run rebuild
 ## Credits
 - Author :
   - @bugsounet
-- Chinese simplified translate :
-  - @wlmqpsc
 - License : MIT
   - **By terms of Google Assistant SDK, You are not allowed to use or provide this module for commercial purpose.**
