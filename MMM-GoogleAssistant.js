@@ -284,9 +284,7 @@ Module.register("MMM-GoogleAssistant", {
 
   assistantActivate: function(payload) {
     if (this.myStatus.actual != "standby" && !payload.force) return log("Assistant is busy.")
-    if (!this.config.disclaimerformeandjustformesodontuseit) {
-      this.assistantResponse.showError(this.translate("CONVERSATION_ERROR"))
-    }
+
     this.assistantResponse.fullscreen(true)
     if (this.config.A2DServer.useA2D) this.sendNotification("A2D_ASSISTANT_BUSY")
     this.sendSocketNotification("ASSISTANT_BUSY")
@@ -303,14 +301,7 @@ Module.register("MMM-GoogleAssistant", {
     var options = Object.assign({}, options, payload)
     setTimeout(() => {
       this.assistantResponse.status(options.type, (options.chime) ? true : false)
-      if (!this.config.disclaimerformeandjustformesodontuseit) {
-        this.assistantResponse.showError(this.translate("CONVERSATION_ERROR"))
-        setTimeout(() => {
-          this.assistantResponse.status("standby")
-          this.assistantResponse.fullscreen (false, this.myStatus)
-          this.sendSocketNotification("ASSISTANT_READY")
-        } , this.config.responseConfig.screenOutputTimer)
-      } else this.sendSocketNotification("ACTIVATE_ASSISTANT", options)
+      this.sendSocketNotification("ACTIVATE_ASSISTANT", options)
     }, this.config.responseConfig.activateDelay)
   },
 
