@@ -92,10 +92,6 @@ Installer_electronrebuild () {
 	cd ..
 	Installer_pwd="$(pwd)"
 	Installer_debug "Current diectory: $Installer_pwd"
-	Installer_info "Installing electron-rebuild..."
-	Installer_debug "npm install --save-dev electron-rebuild"
-	npm install --save-dev electron-rebuild || exit 1
-	Installer_success "Electron-rebuild installed"
 	Installer_info "Execute electron-rebuild..."
 	Installer_warning "It could takes 10~30 minutes."
 	Installer_debug "./node_modules/.bin/electron-rebuild"
