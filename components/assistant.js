@@ -1,6 +1,6 @@
 const GoogleAssistant = require("google-assistant")
 const B2M = require("@bugsounet/node-buffertomp3")
-const Record = require("@bugsounet/lpcm16")
+const Record = require("@bugsounet/node-lpcm16")
 
 const path = require("path")
 const fs = require("fs")
