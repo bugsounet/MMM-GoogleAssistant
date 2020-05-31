@@ -29,9 +29,6 @@ Installer_module="MMM-GoogleAssistant"
 # use beep request questions ?
 Installer_beep=true
 
-# check version
-Installer_version="$(cat ../package.json | grep version | cut -c14-30 2>/dev/null)"
-
 echo
 
 # all is ok than electron-rebuild
