@@ -4,11 +4,6 @@
 
 ![](https://github.com/bugsounet/MMM-GoogleAssistant/blob/dev/resources/GA_Big.png)
 
-## NEW UPDATES
-
-**2.0.0 (26/05/2020)**
- * Initial commit
-
 ## Screenshot
 
 - FullScreen UI
