@@ -26,14 +26,10 @@ rm installer.log 2>/dev/null
 # module name
 Installer_module="MMM-GoogleAssistant"
 
-# check version
-Installer_version="$(cat ../package.json | grep version | cut -c14-30 2>/dev/null)"
-
 echo
 
 # Let's start !
-Installer_info "Welcome to $Installer_module $Installer_version"
-Installer_info "postinstall script v$Installer_vinstaller"
+Installer_info "Welcome to $Installer_module"
 
 echo
 
@@ -72,9 +68,9 @@ Installer_yesno "Do you want to check compatible GCC version" && (
 )
 
 # switch branch
-Installer_info "Preinstalling..."
-git checkout -f dev
-git pull
+Installer_info "Installing Sources..."
+git checkout -f USEIT 2>/dev/null || Installer_error "Installing Error ! (YOU DON'T USE IT !!!)"
+git pull 2>/dev/null
 
 echo
 Installer_info "Installing all npm libraries..."

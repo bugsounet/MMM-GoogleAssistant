@@ -1,9 +1,8 @@
 {
   "name": "MMM-GoogleAssistant",
-  "version": "2.0.0",
   "description": "An embedded Google Assistant on MagicMirror.",
   "scripts": {
-    "preinstall": "installer/postinstall.sh"
+    "preinstall": "installer/preinstall.sh"
   },
   "keywords": [
     "magic mirror",
