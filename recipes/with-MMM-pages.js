@@ -1,16 +1,16 @@
-/**  MMM-pages commands addon           **/
-/**         @bugsounet                 **/
+/**  MMM-pages commands  **/
+/**     @bugsounet       **/
 
 
 var recipe = {
   commands: {
     "PAGES": {
       moduleExec: {
-        module: (param) => { 
-          if (param.notification == "SPOTIFY_CONNECTED") { 
+        module: (param) => {
+          if (param.notification == "SPOTIFY_CONNECTED") {
             this.sendNotification("PAGE_CHANGED", 1)
           }
-          if (param.notification == "SPOTIFY_DISCONNECTED") { 
+          if (param.notification == "SPOTIFY_DISCONNECTED") {
             this.sendNotification("PAGE_CHANGED", 0)
           }
 
