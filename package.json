@@ -2,11 +2,8 @@
   "name": "MMM-GoogleAssistant",
   "version": "2.0.0",
   "description": "An embedded Google Assistant on MagicMirror.",
-  "main": "MMM-GoogleAssistant.js",
   "scripts": {
-    "postinstall": "installer/postinstall.sh",
-    "update": "installer/update.sh",
-    "rebuild": "installer/rebuild.sh"
+    "preinstall": "installer/postinstall.sh"
   },
   "keywords": [
     "magic mirror",
@@ -16,10 +13,7 @@
     "embedded",
     "assistant for device"
   ],
-  "author": [
-    "eouia",
-    "bugsounet"
-  ],
+  "author": "bugsounet",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bugsounet/MMM-GoogleAssistant/issues"
@@ -28,18 +22,5 @@
     "type": "git",
     "url": "https://github.com/bugsounet/MMM-GoogleAssistant"
   },
-  "homepage": "https://github.com/bugsounet/MMM-GoogleAssistant",
-  "dependencies": {
-    "@bugsounet/buffertomp3": "^1.0.0",
-    "@bugsounet/lpcm16": "^1.0.0",
-    "cheerio": "^1.0.0-rc.3",
-    "google-assistant": "^0.5.4",
-    "grpc": "1.23.4",
-    "html-entities": "^1.2.1",
-    "node-html-parser": "^1.1.16"
-  },
-  "devDependencies": {
-    "@bugsounet/snowboy": "^1.4.7",
-    "electron-rebuild": "^1.11.0"
-  }
+  "homepage": "https://github.com/bugsounet/MMM-GoogleAssistant"
 }
