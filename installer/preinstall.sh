@@ -69,7 +69,7 @@ Installer_yesno "Do you want to check compatible GCC version" && (
 
 # switch branch
 Installer_info "Installing Sources..."
-git checkout -f USEIT 2>/dev/null || Installer_error "Installing Error ! (YOU DON'T USE IT !!!)"
+git checkout -f prod 2>/dev/null || Installer_error "Installing Error !"
 git pull 2>/dev/null
 
 echo
