@@ -28,7 +28,7 @@ Installer_info "Updating..."
 git pull
 #fresh package.json
 git checkout package.json
-cd node_modules
+cd ~/MagicMirror/modules/MMM-GoogleAssistant/node_modules
 Installer_info "Deleting ALL @bugsounet libraries..."
 rm -rf @bugsounet
 cd ~/MagicMirror/modules/MMM-GoogleAssistant
