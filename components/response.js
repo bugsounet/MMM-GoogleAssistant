@@ -282,17 +282,19 @@ class AssistantResponse {
     if (active) {
       MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
         module.hide(250, {lockString: "GA_LOCKED"})
-        GA.className= "in" + (this.fullscreenAbove ? " fullscreen_above": "")
       })
+      GA.classList.remove("hidden")
+      GA.className= "in" + (this.fullscreenAbove ? " fullscreen_above": "")
     } else {
       if (status && status.actual == "standby") { // only on standby mode
         GA.className= "out" + (this.fullscreenAbove ? " fullscreen_above": "")
         this.displayTimer = setTimeout (() => {
+            GA.className= "out"
             MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
-              module.show(1000, {lockString: "GA_LOCKED"})
-              GA.className= "hidden out"
+              module.show(250, {lockString: "GA_LOCKED"})
             })
-        }, 1000) // timeout set to 1s for fadeout
+            GA.classList.add("hidden")
+        }, 250) // timeout for fadeout
       }
     }
   }

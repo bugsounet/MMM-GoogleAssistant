@@ -27,7 +27,7 @@ Module.register("MMM-GoogleAssistant", {
       useScreenOutput: true,
       screenOutputCSS: "screen_output.css",
       screenOutputTimer: 5000,
-      activateDelay: 500,
+      activateDelay: 250,
       useAudioOutput: true,
       useChime: true
     },

@@ -16,19 +16,19 @@
 }
 
 #GA.in {
-  animation-duration: 0.5s;
+  animation-duration: 0.25s;
   animation-name: fadeInDown;
 }
 
 #GA.out {
-  animation-duration: 1s;
+  animation-duration: 0.25s;
   animation-name: fadeOutUp;
 }
 
 @keyframes fadeInDown {
   from {
     opacity: 0;
-    transform: translate3d(0, -150%, 0);
+    transform: translate3d(0, -100%, 0);
   }
 
   to {
@@ -45,7 +45,7 @@
 
   to {
     opacity: 0;
-    transform: translate3d(0, -200%, 0);
+    transform: translate3d(0, -100%, 0);
   }
 }
 
