@@ -51,7 +51,6 @@ else
 fi
 
 echo
-
 # check dependencies
 dependencies=(git wget libasound2-dev sox libsox-fmt-all gcc-7 libsox-fmt-mp3 build-essential mpg321 vlc libmagic-dev libatlas-base-dev)
 Installer_info "Checking all dependencies..."
@@ -59,7 +58,6 @@ Installer_check_dependencies
 Installer_success "All Dependencies needed are installed !"
 
 echo
-
 # force gcc v7
 Installer_info "Checking GCC Version..."
 Installer_yesno "Do you want to check compatible GCC version" && (
@@ -67,10 +65,16 @@ Installer_yesno "Do you want to check compatible GCC version" && (
   Installer_success "GCC 7 is set by default"
 )
 
+echo
 # switch branch
 Installer_info "Installing Sources..."
 git checkout -f prod 2>/dev/null || Installer_error "Installing Error !"
 git pull 2>/dev/null
+
+echo
+# apply @sdetweil fix
+Installer_info "Installing @sdetweil sandbox fix..."
+bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/fixsandbox)"
 
 echo
 Installer_info "Installing all npm libraries..."
