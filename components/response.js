@@ -7,7 +7,6 @@ class AssistantResponse {
     this.showing = false
     this.response = null
     this.aliveTimer = null
-    this.displayTimer = null
     this.allStatus = [ "hook", "standby", "reply", "error", "think", "continue", "listen", "confirmation" ]
     this.myStatus = { "actual" : "standby" , "old" : "standby" }
     this.loopCount = 0
@@ -69,31 +68,10 @@ class AssistantResponse {
   }
 
   prepare () {
-    var dom = document.createElement("div")
-    dom.id = "GA_HELPER"
-    dom.classList.add("hidden")
-    if(this.fullscreenAbove) dom.classList.add("fullscreen_above")
-
-    var scoutpan = document.createElement("div")
-    scoutpan.id = "GA_RESULT_WINDOW"
-    var scout = document.createElement("iframe")
-    scout.id = "GA_SCREENOUTPUT"
-    scoutpan.appendChild(scout)
-    dom.appendChild(scoutpan)
-
-    document.body.appendChild(dom)
-  }
-
-  modulePosition () {
-    MM.getModules().withClass("MMM-GoogleAssistant").enumerate((module)=> {
-      if (module.data.position === "fullscreen_above") this.fullscreenAbove = true
-    })
-  }
-
-  getDom () {
-    var dom = document.createElement("div")
-    dom.id = "GA"
-    dom.className= "hidden out"
+    /** Transcription popup **/
+    var GA = document.createElement("div")
+    GA.id = "GA"
+    GA.className= "out"
 
     var contener = document.createElement("div")
     contener.id = "GA_CONTENER"
@@ -109,8 +87,33 @@ class AssistantResponse {
     var logo = document.createElement("div")
     logo.id = "GA_LOGO"
     contener.appendChild(logo)
+    GA.appendChild(contener)
+    document.body.appendChild(GA)
 
-    dom.appendChild(contener)
+    /** Response popup **/
+    var dom = document.createElement("div")
+    dom.id = "GA_HELPER"
+    dom.classList.add("hidden")
+    if(this.fullscreenAbove) dom.classList.add("fullscreen_above")
+
+    var scoutpan = document.createElement("div")
+    scoutpan.id = "GA_RESULT_WINDOW"
+    var scout = document.createElement("iframe")
+    scout.id = "GA_SCREENOUTPUT"
+    scoutpan.appendChild(scout)
+    dom.appendChild(scoutpan)
+    document.body.appendChild(dom)
+  }
+
+  modulePosition () {
+    MM.getModules().withClass("MMM-GoogleAssistant").enumerate((module)=> {
+      if (module.data.position === "fullscreen_above") this.fullscreenAbove = true
+    })
+  }
+
+  getDom () {
+    var dom = document.createElement("div")
+    dom.id = "GA_DOM"
 
     this.modulePosition()
     return dom
@@ -234,8 +237,6 @@ class AssistantResponse {
     this.showing = false
     var winh = document.getElementById("GA_HELPER")
     winh.classList.add("hidden")
-    var iframe = document.getElementById("GA_SCREENOUTPUT")
-    iframe.src = "about:blank"
     this.audioResponse.src = ""
 
     var tr = document.getElementById("GA_TRANSCRIPTION")
@@ -277,24 +278,17 @@ class AssistantResponse {
 
   fullscreen (active, status) {
     var GA = document.getElementById("GA")
-    clearTimeout(this.displayTimer)
-    this.displayTimer = null
     if (active) {
-      MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
-        module.hide(250, {lockString: "GA_LOCKED"})
-      })
-      GA.classList.remove("hidden")
       GA.className= "in" + (this.fullscreenAbove ? " fullscreen_above": "")
+      MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
+        module.hide(500, {lockString: "GA_LOCKED"})
+      })
     } else {
       if (status && status.actual == "standby") { // only on standby mode
         GA.className= "out" + (this.fullscreenAbove ? " fullscreen_above": "")
-        this.displayTimer = setTimeout (() => {
-            GA.className= "out"
-            MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
-              module.show(250, {lockString: "GA_LOCKED"})
-            })
-            GA.classList.add("hidden")
-        }, 250) // timeout for fadeout
+        MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
+          module.show(500, {lockString: "GA_LOCKED"})
+        })
       }
     }
   }

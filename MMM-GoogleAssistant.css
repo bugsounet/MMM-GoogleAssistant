@@ -1,50 +1,67 @@
-/*********************
+/*******************
 ** FullScreen #GA **
-**     BuGsounet    **
-**********************/
+**    BuGsounet   **
+********************/
+
+#GA_DOM {
+  display:none;
+}
 
 #GA {
-  width:92vw;
-  height:100%;
+  height:11%;
   border:none;
   border-radius: 20px;
   background-color:#f3f3f3;
+  transition: opacity 0.5s linear;
 }
 
 #GA.fullscreen_above {
   width:100%;
+  position: fixed;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  border: none;
+  height: 10%;
+  z-index:99998;
 }
 
-#GA.in {
+#GA.in.fullscreen_above {
   animation-duration: 0.25s;
   animation-name: fadeInDown;
 }
 
-#GA.out {
-  animation-duration: 0.25s;
+#GA.out.fullscreen_above {
+  animation-duration: 0.5s;
   animation-name: fadeOutUp;
+}
+
+#GA.in {
+  opacity: 1;
+}
+
+#GA.out {
+  opacity: 0;
 }
 
 @keyframes fadeInDown {
   from {
-    opacity: 0;
     transform: translate3d(0, -100%, 0);
   }
 
   to {
-    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes fadeOutUp {
   from {
-    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 
   to {
-    opacity: 0;
     transform: translate3d(0, -100%, 0);
   }
 }
@@ -56,10 +73,10 @@
 #GA_STATUS {
   -webkit-flex: none;
           flex: none;
-  height:105px;
   width:100px;
   margin-top:4px;
   margin-left:4px;
+  margin-right: 10px;
   border-radius: 20px;
   background-color:#f3f3f3;
 }
@@ -123,16 +140,17 @@
 #GA_TRANSCRIPTION {
   flex: 1 1 auto;
   vertical-align: top;
-  margin-top: 0px;
-  margin-left: 5px;
   background-color:#f3f3f3;
   text-align: left;
+  overflow: hidden;
 }
 
 #GA_TRANSCRIPTION p {
   color:#7b858e;
   margin-top: 30px;
-  margin-left : 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #GA_TRANSCRIPTION.hidden {
@@ -143,7 +161,6 @@
   -webkit-flex: none;
           flex: none;
   width: 150px;
-  height:100px;
   margin-top: 2px;
   margin-left: 5px;
   border-radius: 20px;
@@ -169,6 +186,9 @@
   height:100%;
   bottom:0;
   display:block;
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.5s linear;
 }
 
 #GA_HELPER.fullscreen_above {
@@ -182,7 +202,7 @@
 }
 
 #GA_HELPER.hidden {
-   display:none;
+  opacity: 0;
 }
 
 #GA_RESULT_WINDOW {
@@ -191,12 +211,6 @@
   height:100%;
   bottom:0;
   display:block;
-}
-
-#GA_HELPER.hidden #GA_RESULT_WINDOW {
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s 1s, opacity 1s linear;
 }
 
 #GA_SCREENOUTPUT {

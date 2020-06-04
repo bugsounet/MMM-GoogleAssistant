@@ -200,7 +200,11 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   getDom: function() {
-    return this.assistantResponse.getDom()
+    var dom = document.createElement("div")
+    dom.id = "GA_DOM"
+
+    this.assistantResponse.modulePosition()
+    return dom
   },
 
   notificationReceived: function(noti, payload=null, sender=null) {
