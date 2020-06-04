@@ -29,7 +29,8 @@ Module.register("MMM-GoogleAssistant", {
       screenOutputTimer: 5000,
       activateDelay: 250,
       useAudioOutput: true,
-      useChime: true
+      useChime: true,
+      newChime: false
     },
     micConfig: {
       recorder: "arecord",

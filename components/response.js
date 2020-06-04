@@ -4,6 +4,7 @@ class AssistantResponse {
   constructor (responseConfig, callbacks) {
     this.config = responseConfig
     this.callbacks = callbacks
+    this.newChime = responseConfig.newChime
     this.showing = false
     this.response = null
     this.aliveTimer = null
@@ -11,9 +12,9 @@ class AssistantResponse {
     this.myStatus = { "actual" : "standby" , "old" : "standby" }
     this.loopCount = 0
     this.chime = {
-      beep: "beep.mp3",
-      error: "error.mp3",
-      continue: "continue.mp3",
+      beep: this.newChime ? "beep.mp3" : "Old/beep.mp3",
+      error: this.newChime ? "error.mp3" : "Old/error.mp3",
+      continue: this.newChime ? "continue.mp3" : "Old/continue.mp3",
       open: "Google_beep_open.mp3",
       close: "Google_beep_close.mp3",
     },
@@ -60,10 +61,10 @@ class AssistantResponse {
     if (status == "WAVEFILE" || status == "TEXT") this.myStatus.actual = "think"
     if (status == "MIC") this.myStatus.actual = (this.myStatus.old == "continue") ? "continue" : "listen"
     if (this.myStatus.actual == this.myStatus.old) return
-    log("Status from " + this.myStatus.old + " to " + this.myStatus.actual)
-    Status.className = this.myStatus.actual
     this.callbacks.myStatus(this.myStatus) // send status external
     this.callbacks.sendNotification("ASSISTANT_" + this.myStatus.actual.toUpperCase())
+    log("Status from " + this.myStatus.old + " to " + this.myStatus.actual)
+    Status.className = (this.myStatus.old == "hook") ? "hook" : this.myStatus.actual
     this.myStatus.old = this.myStatus.actual
   }
 
@@ -165,6 +166,8 @@ class AssistantResponse {
 
   start (response) {
     this.response = response
+    clearTimeout(this.aliveTimer)
+    this.aliveTimer = null
     if (this.showing) {
       this.end()
     }
