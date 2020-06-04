@@ -245,7 +245,7 @@ Module.register("MMM-GoogleAssistant", {
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) {
           // Notification to MMM-Volume without recipes
-          this.sendNotification("VOLUME_SET", payload.volume)
+          this.sendNotification("A2D_VOLUME", payload.volume)
         }
         this.assistantResponse.start(payload)
         break
@@ -423,7 +423,7 @@ Module.register("MMM-GoogleAssistant", {
     this.assistantResponse.doCommand(commandId, originalParam, from)
     if (commandId == "action.devices.commands.SetVolume") {
       log("Volume Control:", originalParam)
-      return this.sendNotification("VOLUME_SET", originalParam.volumeLevel)
+      return this.sendNotification("A2D_VOLUME", originalParam.volumeLevel)
     }
     if (this.commands.hasOwnProperty(commandId)) {
       var command = this.commands[commandId]
