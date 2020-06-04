@@ -35,7 +35,11 @@ class AssistantResponse {
   tunnel (payload) {
     if (payload.type == "TRANSCRIPTION") {
       var startTranscription = false
-      if (payload.payload.done) this.status("confirmation")
+      if (payload.payload.done) {
+        this.status("confirmation")
+        var iframe = document.getElementById("GA_SCREENOUTPUT")
+        iframe.src = "about:blank"
+      }
       if (payload.payload.transcription && !startTranscription) {
         this.showTranscription(payload.payload.transcription)
         startTranscription = true
@@ -233,9 +237,9 @@ class AssistantResponse {
     var winh = document.getElementById("GA_HELPER")
     winh.classList.add("hidden")
     this.audioResponse.src = ""
-
     var tr = document.getElementById("GA_TRANSCRIPTION")
     tr.innerHTML = ""
+
     callback()
   }
 
