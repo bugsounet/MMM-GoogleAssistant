@@ -17,10 +17,7 @@
     "embedded",
     "assistant for device"
   ],
-  "author": [
-    "eouia",
-    "bugsounet"
-  ],
+  "author": "bugsounet",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bugsounet/MMM-GoogleAssistant/issues"
