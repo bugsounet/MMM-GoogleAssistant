@@ -200,10 +200,9 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   getDom: function() {
+    this.assistantResponse.modulePosition()
     var dom = document.createElement("div")
     dom.id = "GA_DOM"
-
-    this.assistantResponse.modulePosition()
     return dom
   },
 

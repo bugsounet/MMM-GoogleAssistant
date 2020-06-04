@@ -111,14 +111,6 @@ class AssistantResponse {
     })
   }
 
-  getDom () {
-    var dom = document.createElement("div")
-    dom.id = "GA_DOM"
-
-    this.modulePosition()
-    return dom
-  }
-
   showError (text) {
     this.showTranscription(text, "error")
     this.status("error")
