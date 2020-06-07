@@ -39,10 +39,8 @@ echo
 
 # Audio out/in checking
 Installer_info "Checking Speaker and Microphone..."
-Installer_yesno "Do you want check your audio configuration" && (
-  Installer_checkaudio
-  echo
-  Installer_checkmic
+Installer_yesno "Do you want check your audio output configuration" && (
+  Installer_checkmicv2
   echo
 
   if [ ! -z "$plug_rec" ]; then
