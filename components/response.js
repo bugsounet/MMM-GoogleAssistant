@@ -4,17 +4,17 @@ class AssistantResponse {
   constructor (responseConfig, callbacks) {
     this.config = responseConfig
     this.callbacks = callbacks
+    this.newChime = responseConfig.newChime
     this.showing = false
     this.response = null
     this.aliveTimer = null
-    this.displayTimer = null
     this.allStatus = [ "hook", "standby", "reply", "error", "think", "continue", "listen", "confirmation" ]
     this.myStatus = { "actual" : "standby" , "old" : "standby" }
     this.loopCount = 0
     this.chime = {
-      beep: "beep.mp3",
-      error: "error.mp3",
-      continue: "continue.mp3",
+      beep: this.newChime ? "beep.mp3" : "Old/beep.mp3",
+      error: this.newChime ? "error.mp3" : "Old/error.mp3",
+      continue: this.newChime ? "continue.mp3" : "Old/continue.mp3",
       open: "Google_beep_open.mp3",
       close: "Google_beep_close.mp3",
     },
@@ -35,7 +35,11 @@ class AssistantResponse {
   tunnel (payload) {
     if (payload.type == "TRANSCRIPTION") {
       var startTranscription = false
-      if (payload.payload.done) this.status("confirmation")
+      if (payload.payload.done) {
+        this.status("confirmation")
+        var iframe = document.getElementById("GA_SCREENOUTPUT")
+        iframe.src = "about:blank"
+      }
       if (payload.payload.transcription && !startTranscription) {
         this.showTranscription(payload.payload.transcription)
         startTranscription = true
@@ -61,39 +65,18 @@ class AssistantResponse {
     if (status == "WAVEFILE" || status == "TEXT") this.myStatus.actual = "think"
     if (status == "MIC") this.myStatus.actual = (this.myStatus.old == "continue") ? "continue" : "listen"
     if (this.myStatus.actual == this.myStatus.old) return
-    log("Status from " + this.myStatus.old + " to " + this.myStatus.actual)
-    Status.className = this.myStatus.actual
     this.callbacks.myStatus(this.myStatus) // send status external
     this.callbacks.sendNotification("ASSISTANT_" + this.myStatus.actual.toUpperCase())
+    log("Status from " + this.myStatus.old + " to " + this.myStatus.actual)
+    Status.className = (this.myStatus.old == "hook") ? "hook" : this.myStatus.actual
     this.myStatus.old = this.myStatus.actual
   }
 
   prepare () {
-    var dom = document.createElement("div")
-    dom.id = "GA_HELPER"
-    dom.classList.add("hidden")
-    if(this.fullscreenAbove) dom.classList.add("fullscreen_above")
-
-    var scoutpan = document.createElement("div")
-    scoutpan.id = "GA_RESULT_WINDOW"
-    var scout = document.createElement("iframe")
-    scout.id = "GA_SCREENOUTPUT"
-    scoutpan.appendChild(scout)
-    dom.appendChild(scoutpan)
-
-    document.body.appendChild(dom)
-  }
-
-  modulePosition () {
-    MM.getModules().withClass("MMM-GoogleAssistant").enumerate((module)=> {
-      if (module.data.position === "fullscreen_above") this.fullscreenAbove = true
-    })
-  }
-
-  getDom () {
-    var dom = document.createElement("div")
-    dom.id = "GA"
-    dom.className= "hidden out"
+    /** Transcription popup **/
+    var GA = document.createElement("div")
+    GA.id = "GA"
+    GA.className= "out"
 
     var contener = document.createElement("div")
     contener.id = "GA_CONTENER"
@@ -109,11 +92,28 @@ class AssistantResponse {
     var logo = document.createElement("div")
     logo.id = "GA_LOGO"
     contener.appendChild(logo)
+    GA.appendChild(contener)
+    document.body.appendChild(GA)
 
-    dom.appendChild(contener)
+    /** Response popup **/
+    var dom = document.createElement("div")
+    dom.id = "GA_HELPER"
+    dom.classList.add("hidden")
+    if(this.fullscreenAbove) dom.classList.add("fullscreen_above")
 
-    this.modulePosition()
-    return dom
+    var scoutpan = document.createElement("div")
+    scoutpan.id = "GA_RESULT_WINDOW"
+    var scout = document.createElement("iframe")
+    scout.id = "GA_SCREENOUTPUT"
+    scoutpan.appendChild(scout)
+    dom.appendChild(scoutpan)
+    document.body.appendChild(dom)
+  }
+
+  modulePosition () {
+    MM.getModules().withClass("MMM-GoogleAssistant").enumerate((module)=> {
+      if (module.data.position === "fullscreen_above") this.fullscreenAbove = true
+    })
   }
 
   showError (text) {
@@ -170,6 +170,8 @@ class AssistantResponse {
 
   start (response) {
     this.response = response
+    clearTimeout(this.aliveTimer)
+    this.aliveTimer = null
     if (this.showing) {
       this.end()
     }
@@ -234,12 +236,10 @@ class AssistantResponse {
     this.showing = false
     var winh = document.getElementById("GA_HELPER")
     winh.classList.add("hidden")
-    var iframe = document.getElementById("GA_SCREENOUTPUT")
-    iframe.src = "about:blank"
     this.audioResponse.src = ""
-
     var tr = document.getElementById("GA_TRANSCRIPTION")
     tr.innerHTML = ""
+
     callback()
   }
 
@@ -277,22 +277,17 @@ class AssistantResponse {
 
   fullscreen (active, status) {
     var GA = document.getElementById("GA")
-    clearTimeout(this.displayTimer)
-    this.displayTimer = null
     if (active) {
+      GA.className= "in" + (this.fullscreenAbove ? " fullscreen_above": "")
       MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
-        module.hide(250, {lockString: "GA_LOCKED"})
-        GA.className= "in" + (this.fullscreenAbove ? " fullscreen_above": "")
+        module.hide(500, {lockString: "GA_LOCKED"})
       })
     } else {
       if (status && status.actual == "standby") { // only on standby mode
         GA.className= "out" + (this.fullscreenAbove ? " fullscreen_above": "")
-        this.displayTimer = setTimeout (() => {
-            MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
-              module.show(1000, {lockString: "GA_LOCKED"})
-              GA.className= "hidden out"
-            })
-        }, 1000) // timeout set to 1s for fadeout
+        MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
+          module.show(500, {lockString: "GA_LOCKED"})
+        })
       }
     }
   }

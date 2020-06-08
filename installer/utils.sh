@@ -293,6 +293,36 @@ Installer_checkmic () {
   rm -f $audiofile
  }
 
+Installer_checkmicv2 () {
+  audiofile="testmic.wav"
+  plug_rec="${plug_rec:-plughw:1}"
+  while true; do
+    if Installer_info "Checking audio input..."
+      Installer_yesno "Make sure your microphone is on, press [Yes] and say something.\nPress [No] if you don't want to check." true >/dev/null; then
+      echo
+      Installer_debug "Actual test input config: $plug_rec"
+      rm -f $audiofile
+      arecord -D $plug_rec -r 16000 -c 1 -d 3 -t wav -f S16_LE $audiofile 2>/dev/null || Installer_error "Current configuration not Working !"
+      if [ -f $audiofile ]; then
+        Installer_info "Using default output speaker for playing"
+        play $audiofile || Installer_error "Output device error ! (default speaker not set)"
+        Installer_yesno "Did you hear yourself?" true >/dev/null && break
+      fi
+      echo
+      Installer_warning "Selection of the microphone device"
+      devices="$(arecord -l)"
+      Installer_info "$devices"
+      read -p "Indicate the card # to use [0-9]: " card
+      plug_rec="plughw:$card"
+      Installer_info "you have selected: $plug_rec"
+    else
+      plug_rec=""
+      break
+    fi
+  done
+  rm -f $audiofile
+ }
+
 # Updates alsa user config at ~/.asoundrc
 # $1 - play_hw
 # $2 - rec_hw
