@@ -20,8 +20,6 @@ Installer_dir="$(Installer_get_current_dir)"
 cd "$Installer_dir"
 
 source utils.sh
-# del last log
-rm installer.log 2>/dev/null
 
 # module name
 Installer_module="MMM-GoogleAssistant"
