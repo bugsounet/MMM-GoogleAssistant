@@ -44,10 +44,21 @@ Installer_info "Checking OS..."
 Installer_checkOS
 if  [ "$platform" == "osx" ]; then
   Installer_error "OS Detected: $OSTYPE ($os_name $os_version $arch)"
-  Installer_error "You need to read documents/1_install.md for Manual Install"
+  Installer_error "Automatic installation is not included"
   exit 0
 else
   Installer_success "OS Detected: $OSTYPE ($os_name $os_version $arch)"
+fi
+
+#check pulseaudio
+if Installer_is_installed "pulseaudio"; then
+  if [ "$os_name" == "raspbian" ]; then
+    Installer_warning "RPI pulseaudio check"
+    Installer_error "pulseaudio is installed"
+    Installer_error "Sorry, this module is not compatible with pulseaudio"
+    echo
+    exit 255
+  fi
 fi
 
 echo
@@ -66,15 +77,15 @@ Installer_yesno "Do you want to check compatible GCC version" && (
 )
 
 echo
+# apply @sdetweil fix
+Installer_info "Installing @sdetweil sandbox fix..."
+bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/fixsandbox)"
+
+echo
 # switch branch
 Installer_info "Installing Sources..."
 git checkout -f prod 2>/dev/null || Installer_error "Installing Error !"
 git pull 2>/dev/null
-
-echo
-# apply @sdetweil fix
-Installer_info "Installing @sdetweil sandbox fix..."
-bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/fixsandbox)"
 
 echo
 Installer_info "Installing all npm libraries..."
