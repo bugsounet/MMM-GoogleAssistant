@@ -45,9 +45,18 @@ Installer_checkOS
 if  [ "$platform" == "osx" ]; then
   Installer_error "OS Detected: $OSTYPE ($os_name $os_version $arch)"
   Installer_error "Automatic installation is not included"
-  exit 0
+  echo
+  exit 255
 else
-  Installer_success "OS Detected: $OSTYPE ($os_name $os_version $arch)"
+  if  [ "$os_name" == "raspbian" ] && [ "$os_version" -lt 10 ]; then
+    Installer_error "OS Detected: $OSTYPE ($os_name $os_version $arch)"
+    Installer_error "Unfortunately, this module is not compatible your OS"
+    Installer_error "Try to update your OS to the lasted version of raspbian"
+    echo
+    exit 255
+  else
+    Installer_success "OS Detected: $OSTYPE ($os_name $os_version $arch)"
+  fi
 fi
 
 #check pulseaudio
@@ -63,7 +72,7 @@ fi
 
 echo
 # check dependencies
-dependencies=(git wget libasound2-dev sox libsox-fmt-all gcc-7 libsox-fmt-mp3 build-essential mpg321 vlc libmagic-dev libatlas-base-dev)
+dependencies=(git curl libasound2-dev sox libsox-fmt-all gcc-7 libsox-fmt-mp3 build-essential mpg321 vlc libmagic-dev libatlas-base-dev)
 Installer_info "Checking all dependencies..."
 Installer_check_dependencies
 Installer_success "All Dependencies needed are installed !"
