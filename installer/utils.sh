@@ -315,4 +315,14 @@ EOM
     sudo /etc/init.d/alsa-utils restart
 }
 
+Installer_chk () {
+  CHKUSER=$(stat -c '%U' $1)
+  CHKGROUP=$(stat -c '%G' $1)
+  if [ $CHKUSER == "root" ] || [ $CHKGROUP == "root" ]; then
+     Installer_error "Checking $2: $CHKUSER/$CHKGROUP"
+     exit 255
+  fi
+  Installer_success "Checking $2: $CHKUSER/$CHKGROUP"
+}
+
 Installer_debug "[LOADED] utils.sh"
