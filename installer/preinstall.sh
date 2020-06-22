@@ -20,8 +20,6 @@ Installer_dir="$(Installer_get_current_dir)"
 cd "$Installer_dir"
 
 source utils.sh
-# del last log
-rm installer.log 2>/dev/null
 
 # module name
 Installer_module="MMM-GoogleAssistant"
@@ -34,10 +32,14 @@ Installer_info "Welcome to $Installer_module"
 echo
 
 # Check not run as root
+Installer_info "No root checking..."
 if [ "$EUID" -eq 0 ]; then
   Installer_error "npm install must not be used as root"
-  exit 1
+  exit 255
 fi
+Installer_chk "$(pwd)/../" "MMM-GoogleAssistant"
+Installer_chk "$(pwd)/../../../" "MagicMirror"
+echo
 
 # Check platform compatibility
 Installer_info "Checking OS..."
