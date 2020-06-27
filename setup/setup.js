@@ -115,18 +115,90 @@ app.get("/config", (req, res) => {
 })
 
 app.get('/process_get', (req, res) => {
-   response = {
-      var1:req.query.var1,
-      var2:req.query.var2
-   };
-   console.log(response)
-   configAssistant.config = mergeConfig( {} , configAssistant.config, response )
-   console.log ("new config", configAssistant)
+/** response received translate **/
+var response = {
+  module: "MMM-Google-Assistant",
+  position: req.query.position,
+  config: {
+    debug: stringToBool(req.query.debug),
+    assistantConfig: {
+      lang: req.query.lang,
+      credentialPath: req.query.credentials,
+      tokenPath: req.query.token,
+      projectId: req.query.projectId,
+      modelId: req.query.modelId,
+      instanceId: req.query.instanceId,
+      latitude: Number(req.query.latitude),
+      longitude: Number(req.query.longitude),
+    },
+    responseConfig: {
+      useScreenOutput: stringToBool(req.query.useScreenOutput),
+      screenOutputCSS: req.query.screenOutputCSS,
+      screenOutputTimer: Number(req.query.screenOutputTimer),
+      activateDelay: Number(req.query.activateDelay),
+      useAudioOutput: stringToBool(req.query.useAudioOutput),
+      useChime: stringToBool(req.query.useChime),
+      newChime: stringToBool(req.query.newChime)
+    },
+    micConfig: {
+      recorder: req.query.recorder,
+      device: req.query.device
+    },
+    customActionConfig: {
+      autoMakeAction: stringToBool(req.query.autoMakeAction),
+      autoUpdateAction: stringToBool(req.query.autoUpdateAction),
+      //actionLocale: "en-US", // multi language action is not supported yet
+    },
+    snowboy: {
+      audioGain: Number(req.query.audioGain),
+      Frontend: stringToBool(req.query.Frontend),
+      Model: req.query.Model,
+      Sensitivity: Number(req.query.Sensitivity)
+    },
+    A2DServer: {
+      useA2D: stringToBool(req.query.useA2D),
+      stopCommand: req.query.stopCommand
+    },
+    recipes: stringToArray(req.query.recipes),
+  }
+}
+   configAssistant = mergeConfig( {} , configAssistant, response )
+   console.log (configAssistant)
    res.end("Ok!")
 })
 
 var server = app.listen(8081, function () {
    var host = server.address().address
    var port = server.address().port
-   console.log("Running config app")
+   console.log("Running configuration app on port", port)
 })
+
+/***********/
+/** UTILS **/
+/***********/
+
+/** convert string to boolean **/
+function stringToBool(string) {
+  switch(string.toLowerCase().trim())
+  {
+    case true:
+    case "true":
+    case "yes":
+    case 1:
+      return true;
+    case false:
+    case "false":
+    case "no":
+    case 0:
+    case null:
+      return false;
+    default:
+      return false;
+  }
+}
+
+/** convert string to Array **/
+function stringToArray(string) {
+  if (string) return string.split(',')
+  else return []
+}
