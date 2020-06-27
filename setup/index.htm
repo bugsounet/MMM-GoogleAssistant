@@ -1,10 +1,22 @@
 <html>
    <body>
-      
+      <script>
+        this.config = {}
+      </script>
+      <script type="text/javascript" language="javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+      <script type="text/javascript">
+        $.getJSON( "http://127.0.0.1:8081/config" , (config) => {
+            this.config = config
+            console.log("config Object:", config)
+            document.getElementById("module").innerHTML= this.config.module
+        });
+      </script>
       <form action = "http://127.0.0.1:8081/process_get" method = "GET">
          Var1: <input type = "text" name = "var1">  <br>
          Var2: <input type = "text" name = "var2">
          <input type = "submit" value = "Submit">
       </form>
+      Name of module: <span id="module"></span>
+
    </body>
 </html>

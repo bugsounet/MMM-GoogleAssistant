@@ -106,8 +106,12 @@ var app = express();
 
 app.use(express.static('public'));
 app.get('/', function (req, res) {
-   //--->> How send configAssistant object ?
-   res.sendFile( __dirname + "/" + "index.htm", configAssistant)
+   res.sendFile( __dirname + "/index.htm")
+})
+
+app.get("/config", (req, res) => {
+   res.json(configAssistant)
+   console.log("send config")
 })
 
 app.get('/process_get', (req, res) => {
