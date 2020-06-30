@@ -204,6 +204,10 @@ Module.register("MMM-GoogleAssistant", {
     this.assistantResponse.modulePosition()
     var dom = document.createElement("div")
     dom.id = "GA_DOM"
+    /** Hidden the module on start (reserved for fullscreenAbove mode) **/
+    MM.getModules().withClass("MMM-GoogleAssistant").enumerate((module)=> {
+      module.hide(0, {lockString: "GA_LOCKED"})
+    })
     return dom
   },
 

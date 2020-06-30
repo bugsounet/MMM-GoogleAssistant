@@ -1,0 +1,96 @@
+<html>
+   <body>
+      <script type="text/javascript" language="javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+      <script type="text/javascript">
+        $.getJSON( "http://127.0.0.1:8081/config" , (config) => {
+            this.config = config
+            console.log("config Object:", config)
+            document.getElementById("module").innerHTML= this.config.module
+            document.getElementById("position").value= this.config.position
+            document.getElementById("debug").value= this.config.config.debug
+            /** assistantConfig **/
+            document.getElementById("lang").value= this.config.config.assistantConfig.lang
+            document.getElementById("credentials").value= this.config.config.assistantConfig.credentialPath
+            document.getElementById("token").value= this.config.config.assistantConfig.tokenPath
+            document.getElementById("projectId").value= this.config.config.assistantConfig.projectId
+            document.getElementById("modelId").value= this.config.config.assistantConfig.modelId
+            document.getElementById("instanceId").value= this.config.config.assistantConfig.instanceId
+            document.getElementById("latitude").value= this.config.config.assistantConfig.latitude
+            document.getElementById("longitude").value= this.config.config.assistantConfig.longitude
+            /** responseConfig **/
+            document.getElementById("useScreenOutput").value= this.config.config.responseConfig.useScreenOutput
+            document.getElementById("screenOutputCSS").value= this.config.config.responseConfig.screenOutputCSS
+            document.getElementById("screenOutputTimer").value= this.config.config.responseConfig.screenOutputTimer
+            document.getElementById("activateDelay").value= this.config.config.responseConfig.activateDelay
+            document.getElementById("useAudioOutput").value= this.config.config.responseConfig.useAudioOutput
+            document.getElementById("useChime").value= this.config.config.responseConfig.useChime
+            document.getElementById("newChime").value= this.config.config.responseConfig.newChime
+            /** micConfig **/
+            document.getElementById("recorder").value= this.config.config.micConfig.recorder
+            document.getElementById("device").value= this.config.config.micConfig.device
+            /** customActionConfig **/
+            document.getElementById("autoMakeAction").value= this.config.config.customActionConfig.autoMakeAction
+            document.getElementById("autoUpdateAction").value= this.config.config.customActionConfig.autoUpdateAction
+            /** snowboy **/
+            document.getElementById("audioGain").value= this.config.config.snowboy.audioGain
+            document.getElementById("Frontend").value= this.config.config.snowboy.Frontend
+            document.getElementById("Model").value= this.config.config.snowboy.Model
+            document.getElementById("Sensitivity").value= this.config.config.snowboy.Sensitivity
+            /** A2DServer **/
+            document.getElementById("useA2D").value= this.config.config.A2DServer.useA2D
+            document.getElementById("stopCommand").value= this.config.config.A2DServer.stopCommand
+            /** Recipes **/
+            document.getElementById("recipes").value= this.config.config.recipes
+        });
+      </script>
+
+      Name of module: <span id="module"></span><br><br>
+      <form action = "http://127.0.0.1:8081/process_get" method = "GET">
+         Position: <input id="position" type = "text" name = "position" >  <br><br>
+
+         Configuration<br>
+         debug: <input id="debug" type = "text" name = "debug"><br><br>
+
+         assistantConfig<br>
+         lang: <input id="lang" type = "text" name = "lang"><br>
+         credentials: <input id="credentials" type = "text" name = "credentials"><br>
+         token: <input id="token" type = "text" name = "token"><br>
+         projectId: <input id="projectId" type = "text" name = "projectId"><br>
+         modelId: <input id="modelId" type = "text" name = "modelId"><br>
+         instanceId: <input id="instanceId" type = "text" name = "instanceId"><br>
+         latitude: <input id="latitude" type = "text" name = "latitude"><br>
+         longitude: <input id="longitude" type = "text" name = "longitude"><br><br>
+
+         responseConfig<br>
+         useScreenOutput: <input id="useScreenOutput" type = "text" name = "useScreenOutput"><br>
+         screenOutputCSS: <input id="screenOutputCSS" type = "text" name = "screenOutputCSS"><br>
+         screenOutputTimer: <input id="screenOutputTimer" type = "text" name = "screenOutputTimer"><br>
+         activateDelay: <input id="activateDelay" type = "text" name = "activateDelay"><br>
+         useAudioOutput: <input id="useAudioOutput" type = "text" name = "useAudioOutput"><br>
+         useChime: <input id="useChime" type = "text" name = "useChime"><br>
+         newChime: <input id="newChime" type = "text" name = "newChime"><br><br>
+
+         micConfig<br>
+         recorder: <input id="recorder" type = "text" name = "recorder"><br>
+         device: <input id="device" type = "text" name = "device"><br><br>
+
+         customActionConfig<br>
+         autoMakeAction: <input id="autoMakeAction" type = "text" name = "autoMakeAction"><br>
+         autoUpdateAction: <input id="autoUpdateAction" type = "text" name = "autoUpdateAction"><br><br>
+
+         snowboy<br>
+         audioGain: <input id="audioGain" type = "text" name = "audioGain"><br>
+         Frontend: <input id="Frontend" type = "text" name = "Frontend"><br>
+         Model: <input id="Model" type = "text" name = "Model"><br>
+         Sensitivity: <input id="Sensitivity" type = "text" name = "Sensitivity"><br><br>
+
+         A2DServer<br>
+         useA2D: <input id="useA2D" type = "text" name = "useA2D"><br>
+         stopCommand: <input id="stopCommand" type = "text" name = "stopCommand"><br><br>
+
+         Recipes<br>
+         recipes: <input id="recipes" type = "text" name = "recipes"><br><br>
+         <input type = "submit" value = "Apply Config">
+      </form>
+   </body>
+</html>
