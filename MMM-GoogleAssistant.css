@@ -4,7 +4,12 @@
 ********************/
 
 #GA_DOM {
-  display:none;
+  background-image: url(./resources/GA_Big.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+  width: 100%;
+  position: fixed;
 }
 
 #GA {
@@ -13,13 +18,14 @@
   border-radius: 20px;
   background-color:#f3f3f3;
   transition: opacity 0.5s linear;
+  position: absolute;
+  width: 100%;
 }
 
 #GA.fullscreen_above {
   width:100%;
   position: fixed;
   width: 100%;
-  position: fixed;
   left: 0;
   top: 0;
   overflow: auto;
