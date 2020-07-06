@@ -5,10 +5,12 @@
 
 const exec = require("child_process").exec
 const fs = require("fs")
+const path = require("path")
 const Assistant = require("./components/assistant.js")
 const ScreenParser = require("./components/screenParser.js")
 const ActionManager = require("./components/actionManager.js")
 const Snowboy = require("@bugsounet/snowboy").Snowboy
+const Player = require("./components/sound.js")
 
 var _log = function() {
   var context = "[ASSISTANT]"
@@ -55,6 +57,13 @@ module.exports = NodeHelper.create({
             }
           })
         })
+        break
+      case "PLAY_AUDIO":
+        this.player.play(payload)
+        break
+      case "PLAY_CHIME":
+        let filePath = path.resolve(__dirname, payload)
+        this.player.play(filePath, false)
         break
     }
   },
@@ -124,6 +133,11 @@ module.exports = NodeHelper.create({
 
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED"))
     if (this.config.A2DServer.useA2D) console.log ("[ASSISTANT] Assistant2Display Server Started")
+    if (this.config.responseConfig.useNative) {
+      this.player = new Player(this.config.responseConfig, (ended) => { this.sendSocketNotification(ended) } , this.config.debug )
+      console.log("[ASSISTANT] Use native program (" + this.config.responseConfig.playProgram + ") for audio response")
+      this.player.init()
+    }
     console.log ("[ASSISTANT] Google Assistant is initialized.")
   },
 

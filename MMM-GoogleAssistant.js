@@ -30,7 +30,9 @@ Module.register("MMM-GoogleAssistant", {
       activateDelay: 250,
       useAudioOutput: true,
       useChime: true,
-      newChime: false
+      newChime: false,
+      useNative: false,
+      playProgram: "mpg321"
     },
     micConfig: {
       recorder: "arecord",
@@ -107,6 +109,9 @@ Module.register("MMM-GoogleAssistant", {
       sendNotification: (noti, payload=null) => {
         this.sendNotification(noti, payload)
       },
+      sendSocketNotification: (noti, payload=null) => {
+        this.sendSocketNotification(noti,payload)
+      },
       translate: (text) => {
         return this.translate(text)
       },
@@ -116,6 +121,12 @@ Module.register("MMM-GoogleAssistant", {
       A2D: (response)=> {
         if (this.config.A2DServer.useA2D)
          return this.Assistant2Display(response)
+      },
+      sendAudio: (file) => {
+        this.sendSocketNotification("PLAY_AUDIO", file)
+      },
+      sendChime: (chime) => {
+        this.sendSocketNotification("PLAY_CHIME", chime)
       }
     }
     this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
@@ -258,6 +269,9 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "ASSISTANT_ACTIVATE":
         this.assistantActivate(payload)
+        break
+      case "AUDIO_END":
+        this.assistantResponse.end()
         break
     }
   },
