@@ -17,18 +17,19 @@ class AssistantResponse {
       continue: this.newChime ? "continue.mp3" : "Old/continue.mp3",
       open: "Google_beep_open.mp3",
       close: "Google_beep_close.mp3",
-    },
+    }
 
-    this.audioResponse = new Audio()
-    this.audioResponse.autoplay = true
-    this.audioResponse.addEventListener("ended", ()=>{
-      log("audio end")
-      this.end()
-    })
+    if (!this.config.useNative) {
+      this.audioResponse = new Audio()
+      this.audioResponse.autoplay = true
+      this.audioResponse.addEventListener("ended", ()=>{
+        log("audio end")
+        this.end()
+      })
 
-    this.audioChime = new Audio()
-    this.audioChime.autoplay = true
-
+      this.audioChime = new Audio()
+      this.audioChime.autoplay = true
+    }
     this.fullscreenAbove = false
   }
 
@@ -53,7 +54,8 @@ class AssistantResponse {
 
   playChime (sound, external) {
     if (this.config.useChime) {
-      this.audioChime.src = "modules/MMM-GoogleAssistant/resources/" + (external ? sound : this.chime[sound])
+      if (this.config.useNative) this.callbacks.sendSocketNotification("PLAY_CHIME", "resources/" + (external ? sound : this.chime[sound]))
+      else this.audioChime.src = "modules/MMM-GoogleAssistant/resources/" + (external ? sound : this.chime[sound])
     }
   }
 
@@ -236,7 +238,7 @@ class AssistantResponse {
     this.showing = false
     var winh = document.getElementById("GA_HELPER")
     winh.classList.add("hidden")
-    this.audioResponse.src = ""
+    if (!this.config.useNative) this.audioResponse.src = ""
     var tr = document.getElementById("GA_TRANSCRIPTION")
     tr.innerHTML = ""
 
@@ -250,7 +252,8 @@ class AssistantResponse {
   playAudioOutput (response) {
     if (response.audio && this.config.useAudioOutput) {
       this.showing = true
-      this.audioResponse.src = this.makeUrl(response.audio.uri)
+      if (this.config.useNative) this.callbacks.sendAudio(response.audio.path)
+      else this.audioResponse.src = this.makeUrl(response.audio.uri)
       return true
     }
     return false
