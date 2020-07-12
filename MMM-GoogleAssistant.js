@@ -83,9 +83,19 @@ Module.register("MMM-GoogleAssistant", {
 
   start: function () {
     const helperConfig = [
-      "debug", "recipes", "customActionConfig", "assistantConfig", "micConfig",
-      "responseConfig", "A2DServer", "snowboy"
+      "debug", "dev", "recipes", "customActionConfig", "assistantConfig", "micConfig",
+      "responseConfig", "A2DServer", "snowboy", "files"
     ]
+    var files= [
+      "modules/MMM-GoogleAssistant/node_helper.js",
+      "modules/MMM-GoogleAssistant/MMM-GoogleAssistant.js",
+      "modules/MMM-GoogleAssistant/components/actionManager.js",
+      "modules/MMM-GoogleAssistant/components/assistant.js",
+      "modules/MMM-GoogleAssistant/components/response.js",
+      "modules/MMM-GoogleAssistant/components/screenParser.js",
+      "modules/MMM-GoogleAssistant/components/sound.js"
+    ]
+    this.defaults.files = files
     this.helperConfig = {}
     if (this.config.debug) log = _log
     this.config = this.configAssignment({}, this.defaults, this.config)
