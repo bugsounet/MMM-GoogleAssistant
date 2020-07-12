@@ -9,6 +9,7 @@ const path = require("path")
 const Assistant = require("./components/assistant.js")
 const ScreenParser = require("./components/screenParser.js")
 const ActionManager = require("./components/actionManager.js")
+const MD5 = require("@bugsounet/md5")
 const Snowboy = require("@bugsounet/snowboy").Snowboy
 const Player = require("./components/sound.js")
 
@@ -31,7 +32,8 @@ module.exports = NodeHelper.create({
   socketNotificationReceived: function (noti, payload) {
     switch (noti) {
       case "INIT":
-        this.initialize(payload)
+        console.log("[ASSISTANT] MMM-GoogleAssistant Version:", require('./package.json').version)
+        new MD5(payload, () => { this.initialize(payload) })
         break
       case "ACTIVATE_ASSISTANT":
         this.activateAssistant(payload)
@@ -111,7 +113,6 @@ module.exports = NodeHelper.create({
   },
 
   initialize: function (config) {
-    console.log("[ASSISTANT] MMM-GoogleAssistant Version:", require('./package.json').version)
     this.config = config
     this.config.assistantConfig["modulePath"] = __dirname
     var error = null
