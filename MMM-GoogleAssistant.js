@@ -12,6 +12,7 @@ var log = function() {
 
 Module.register("MMM-GoogleAssistant", {
   defaults: {
+    name: "GoogleAssistant",
     debug:false,
     assistantConfig: {
       lang: "en-US",
@@ -83,7 +84,7 @@ Module.register("MMM-GoogleAssistant", {
 
   start: function () {
     const helperConfig = [
-      "debug", "dev", "recipes", "customActionConfig", "assistantConfig", "micConfig",
+      "debug", "dev", "name", "recipes", "customActionConfig", "assistantConfig", "micConfig",
       "responseConfig", "A2DServer", "snowboy", "files"
     ]
     var files= [
