@@ -1,4 +1,4 @@
-const GoogleAssistant = require("google-assistant")
+const GoogleAssistant = require("@bugsounet/google-assistant")
 const B2M = require("@bugsounet/node-buffertomp3")
 const Record = require("@bugsounet/node-lpcm16")
 
