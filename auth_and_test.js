@@ -4,7 +4,7 @@
 
 const readline = require('readline');
 const path = require('path');
-const GoogleAssistant = require('google-assistant');
+const GoogleAssistant = require('@bugsounet/google-assistant');
 
 const config = {
   auth: {
