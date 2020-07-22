@@ -10,6 +10,11 @@
 
 ![](https://github.com/bugsounet/MMM-GoogleAssistant/blob/dev/resources/previewFS.jpg)
 
+## Demo videos
+
+- [EN version](https://youtu.be/viE9Ds8IvUQ)
+- [FR version](https://www.youtube.com/watch?v=1hpx4xujqHg)
+
 ## Installation, update & Guides
 Read the docs in [wiki](https://github.com/bugsounet/MMM-GoogleAssistant/wiki)<br>
 
