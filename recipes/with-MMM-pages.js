@@ -1,4 +1,6 @@
 /**  MMM-pages commands  **/
+/**  check every notification received (plugins)**/
+/**  and check status of needed modules for change pages number (moduleExec) **/
 /**     @bugsounet       **/
 
 
