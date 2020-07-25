@@ -5,47 +5,46 @@
 
 var recipe = {
   transcriptionHooks: {
-    "AMK2_REBOOT": {
+    "GA_REBOOT": {
       pattern: "reboot please",
-      command: "AMK2_REBOOT"
+      command: "GA_REBOOT"
     },
-    "AMK2_RESTART": {
+    "GA_RESTART": {
       pattern: "restart please",
-      command: "AMK2_RESTART"
+      command: "GA_RESTART"
     },
-    "AMK2_REBOOT": {
+    "GA_REBOOT": {
       pattern: "shutdown please",
-      command: "AMK2_SHUTDOWN"
-    },
+      command: "GA_SHUTDOWN"
+    }
   },
   
   commands: {
-    "AMK2_REBOOT": {
+    "GA_REBOOT": {
       soundExec: {
         chime: "close",
       },
       shellExec: {
         exec: "sudo reboot now"
-      } 
+      }
     },
-    "AMK2_RESTART": {
+    "GA_RESTART": {
       soundExec: {
         chime: "close",
       },
       shellExec: {
         exec: "pm2 restart 0"
-      } 
+      }
     },
-    "AMK2_SHUTDOWN": {
+    "GA_SHUTDOWN": {
       soundExec: {
         chime: "close",
       },
       shellExec: {
         exec: "sudo shutdown now"
-      }, 
-    },
+      }
+    }
   }
-  
 }
 
 exports.recipe = recipe // Don't remove this line.
