@@ -29,11 +29,13 @@ Installer_beep=true
 
 echo
 
-# all is ok than electron-rebuild
-Installer_info "[grpc library]"
-Installer_electronrebuild
-Installer_success "Electron Rebuild Complete!"
-echo
+# all is ok than electron-rebuild !!!
+# No More needed with my new library ;)
+
+#Installer_info "[grpc library]"
+#Installer_electronrebuild
+#Installer_success "Electron Rebuild Complete!"
+#echo
 
 # Audio out/in checking
 Installer_info "Checking Speaker and Microphone..."
