@@ -27,7 +27,7 @@
     "url": "https://github.com/bugsounet/MMM-GoogleAssistant"
   },
   "homepage": "https://github.com/bugsounet/MMM-GoogleAssistant",
-  "MD5": "7ac4af38399f36eab342f903ba9d23e3",
+  "MD5": "2d045bbdbf2fa46de917af5cd2089aa0",
   "dependencies": {
     "@bugsounet/secure-ga": "^1.0.0"
   }
