@@ -3,8 +3,6 @@
   "NO_AUDIO_RESPONSE" : " ",
   "TOO_SHORT" : "Désolé, je n'ai pas compris.",
   "CONVERSATION_ERROR" : "Erreur de conversation.(Micro mal configuré)",
-
-/* developer mode utils (Bugsounet) */
   "QUERY_REPLY" : "Google Assistant va être activé.",
   "QUERY_HELP" : "Vous pouvez commander `Google Assistant` par texte avec cette commande."
 }
