@@ -62,15 +62,15 @@ else
 fi
 
 #check pulseaudio
-if Installer_is_installed "pulseaudio"; then
-  if [ "$os_name" == "raspbian" ]; then
-    Installer_warning "RPI pulseaudio check"
-    Installer_error "pulseaudio is installed"
-    Installer_error "Sorry, this module is not compatible with pulseaudio"
-    echo
-    exit 255
-  fi
-fi
+#if Installer_is_installed "pulseaudio"; then
+#  if [ "$os_name" == "raspbian" ]; then
+#    Installer_warning "RPI pulseaudio check"
+#    Installer_error "pulseaudio is installed"
+#    Installer_error "Sorry, this module is not compatible with pulseaudio"
+#    echo
+#    exit 255
+#  fi
+#fi
 
 echo
 # check dependencies
