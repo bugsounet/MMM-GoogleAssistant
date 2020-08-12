@@ -3,8 +3,6 @@
   "NO_AUDIO_RESPONSE" : " ",
   "TOO_SHORT" : "Sorry, I don't understand.",
   "CONVERSATION_ERROR" : "Conversation error. (misconfigured microphone)",
-
-/* developer mode utils (Bugsounet) */
   "QUERY_REPLY" : "Google Assistant will be activated",
   "QUERY_HELP" : "You can command `Google Assistant` by text with this command."
 }
