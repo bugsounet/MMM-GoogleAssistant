@@ -29,7 +29,6 @@
 #GA.rotate_above {
   width:100%;
   position: fixed;
-  width: 100%;
   left: 0;
   top: 0;
   overflow: auto;
@@ -41,7 +40,6 @@
 #GA.fullscreen_above {
   width:100%;
   position: fixed;
-  width: 100%;
   left: 0;
   top: 0;
   overflow: auto;
