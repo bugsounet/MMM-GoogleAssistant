@@ -34,20 +34,34 @@ Installer_dir="$(Installer_get_current_dir)"
 # move to installler directory
 cd "$Installer_dir"
 source utils.sh
+if $prompt; then
 Installer_info "Welcome to GA updater !"
 echo
+fi
 
 cd ~/MagicMirror/modules/MMM-GoogleAssistant
 # deleting package.json because npm install add/update package
 rm -f package.json package-lock.json
+
+if $prompt; then
 Installer_info "Updating..."
+fi
+
 git pull
 #fresh package.json
 git checkout package.json
 cd ~/MagicMirror/modules/MMM-GoogleAssistant/node_modules
+
+if $prompt; then
 Installer_info "Deleting ALL @bugsounet libraries..."
+fi
+
 rm -rf @bugsounet
 cd ~/MagicMirror/modules/MMM-GoogleAssistant
+
+if $prompt; then
 Installer_info "Ready for Installing..."
+fi
+
 # launch installer
 npm install
