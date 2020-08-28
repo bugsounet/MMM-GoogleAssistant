@@ -5,7 +5,7 @@
 
 # with or without prompt ?
 p0=$0
-prompt= true
+prompt=true
 # if not 'bash', and some parm specified
 if [ $0 != 'bash' -a "$1." != "." ]; then
         # then executed locally
@@ -15,7 +15,7 @@ fi
 
 if [ $p0 = without-prompt ]; then
   touch no-prompt
-  prompt= false
+  prompt=false
 fi
 
 # get the installer directory
@@ -35,8 +35,8 @@ Installer_dir="$(Installer_get_current_dir)"
 cd "$Installer_dir"
 source utils.sh
 if $prompt; then
-Installer_info "Welcome to GA updater !"
-echo
+  Installer_info "Welcome to GA updater !"
+  echo
 fi
 
 cd ~/MagicMirror/modules/MMM-GoogleAssistant
@@ -44,7 +44,7 @@ cd ~/MagicMirror/modules/MMM-GoogleAssistant
 rm -f package.json package-lock.json
 
 if $prompt; then
-Installer_info "Updating..."
+  Installer_info "Updating..."
 fi
 
 git pull
@@ -53,14 +53,14 @@ git checkout package.json
 cd ~/MagicMirror/modules/MMM-GoogleAssistant/node_modules
 
 if $prompt; then
-Installer_info "Deleting ALL @bugsounet libraries..."
+  Installer_info "Deleting ALL @bugsounet libraries..."
 fi
 
 rm -rf @bugsounet
 cd ~/MagicMirror/modules/MMM-GoogleAssistant
 
 if $prompt; then
-Installer_info "Ready for Installing..."
+  Installer_info "Ready for Installing..."
 fi
 
 # launch installer
