@@ -2,25 +2,23 @@
 # +---------+
 # | updater |
 # +---------+
-# get the installer directory
 
+# with or without prompt ?
 p0=$0
+prompt= true
 # if not 'bash', and some parm specified
 if [ $0 != 'bash' -a "$1." != "." ]; then
         # then executed locally
         # get the parm
         p0=$1
 fi
-echo $0 $1 $2
+
 if [ $p0 = without-prompt ]; then
   touch no-prompt
   prompt= false
-else
-  prompt= true
 fi
-echo $prompt
 
-
+# get the installer directory
 Installer_get_current_dir () {
   SOURCE="${BASH_SOURCE[0]}"
   while [ -h "$SOURCE" ]; do
