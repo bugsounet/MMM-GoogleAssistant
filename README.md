@@ -2,7 +2,6 @@
 
 `MMM-GoogleAssistant` is an embedded Google assistant on MagicMirror.
 
-
 ![](https://github.com/bugsounet/MMM-GoogleAssistant/blob/dev/resources/GA_Big.png)
 
 ## Screenshot
