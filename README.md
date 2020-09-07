@@ -16,4 +16,3 @@ Read the docs in [wiki](https://github.com/bugsounet/MMM-GoogleAssistant/wiki)<b
   - @bugsounet
 - License : MIT
   - **By terms of Google Assistant SDK, You are not allowed to use or provide this module for commercial purpose.**
-
