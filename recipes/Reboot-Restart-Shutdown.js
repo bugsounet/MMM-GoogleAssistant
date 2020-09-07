@@ -13,7 +13,7 @@ var recipe = {
       pattern: "restart please",
       command: "GA_RESTART"
     },
-    "GA_REBOOT": {
+    "GA_SHUTDOWN": {
       pattern: "shutdown please",
       command: "GA_SHUTDOWN"
     }
