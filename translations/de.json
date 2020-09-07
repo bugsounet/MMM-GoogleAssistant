@@ -1,0 +1,8 @@
+{
+  "NO_RESPONSE" : "Entschuldigung, ich verstehe das nicht.",
+  "NO_AUDIO_RESPONSE" : " ",
+  "TOO_SHORT" : "Entschuldigung, ich verstehe das nicht.",
+  "CONVERSATION_ERROR" : "Fehler bei der Konversation. (Falsche Mikrofonkonfiguration)",
+  "QUERY_REPLY" : "Google Assistant wird aktiviert.",
+  "QUERY_HELP" : "Mit `/query` können Texteingaben an Google Assistant übermittelt werden."
+}
