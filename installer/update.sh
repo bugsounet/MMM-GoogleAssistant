@@ -47,6 +47,7 @@ if $prompt; then
   Installer_info "Updating..."
 fi
 
+git reset --hard HEAD
 git pull
 #fresh package.json
 git checkout package.json
