@@ -36,6 +36,7 @@ rm -rf package.json package-lock.json node_modules
 Installer_success "Done."
 echo
 Installer_info "Upgrading GoogleAssistant..."
+git reset --hard HEAD
 git checkout package.json
 git pull
 Installer_success "Done."
