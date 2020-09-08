@@ -5,19 +5,19 @@
 
 var recipe = {
   transcriptionHooks: {
-    "kisskiss": {
+    "RADIO_PLAY": {
       pattern: "RADIO PLAY",
       command: "RADIO_PLAY"
     },
-    "radio101": {
+    "RADIO_STOP": {
       pattern: "RADIO STOP",
       command: "RADIO_STOP"
     },
-    "radioitalia": {
+    "RADIO_NEXT": {
       pattern: "RADIO NEXT",
       command: "RADIO_NEXT"
     },
-    "radio1": {
+    "RADIO_PREVIOUS": {
       pattern: "RADIO PREVIOUS",
       command: "RADIO_PREVIOUS"
     }
