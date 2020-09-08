@@ -37,7 +37,7 @@ var recipe = {
         notification: "RADIO_STOP"
       },
       soundExec: {
-        chime: "open"
+        chime: "close"
       }
     },
    "RADIO_NEXT": {
