@@ -1,6 +1,6 @@
 {
   "name": "MMM-GoogleAssistant",
-  "version": "2.4.8",
+  "version": "2.4.9",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -27,7 +27,7 @@
     "url": "https://github.com/bugsounet/MMM-GoogleAssistant"
   },
   "homepage": "https://github.com/bugsounet/MMM-GoogleAssistant",
-  "MD5": "113acecfc927d1233622ee7bc112c33f",
+  "MD5": "0080b697fbe8874584e6d9f0a89e7593",
   "dependencies": {
     "@bugsounet/secure-ga": "^1.0.0"
   }
