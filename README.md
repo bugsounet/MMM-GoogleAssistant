@@ -1,7 +1,7 @@
 # MMM-GoogleAssistant
 
 ---
-# **Actually not working with Original MagicMirror !**
+# **Tempory Reopen this Repository !**
 ---
 
 ![](https://img.shields.io/npm/dm/@bugsounet/secure-ga) ![](https://img.shields.io/npm/dt/@bugsounet/secure-ga)
