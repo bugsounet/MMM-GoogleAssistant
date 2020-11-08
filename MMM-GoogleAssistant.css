@@ -223,6 +223,7 @@
 
 #GA_HELPER.hidden {
   opacity: 0;
+  display: none;
 }
 
 #GA_RESULT_WINDOW {

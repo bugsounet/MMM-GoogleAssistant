@@ -42,7 +42,7 @@ var recipe = {
       command: "MEMO_DISPLAY"
     },
     "MEMO_WARNING_IT": {
-      pattern: "Translate_warning_it  (.*)",
+      pattern: "Aggiungi segnale di priorità (.*)",
       command: "MEMO_WARN"
     },
     "MEMO_ADD_EN": {
@@ -222,7 +222,7 @@ var recipe = {
             }
             else if (config.language == "it") {
               var helpMSG = "/MemoWARN <nome memo> <oggetto da aggiungere>"
-              var sendMSG = "Ho aggiunto a " + memoTitle + ": " + item 
+              var sendMSG = "Ho aggiunto il segnale di priorità" + memoTitle + ": " + item 
             }
             else { // default en
               var helpMSG = "/MemoWARN <memo> <warning to ADD>"
