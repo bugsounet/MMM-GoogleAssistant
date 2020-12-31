@@ -2,9 +2,6 @@ var recipe = {
   transcriptionHooks: {
     // Describe your transcriptionHook here.
   },
-  actions: {
-    // Describe your custom Action here.
-  },
   commands: {
     // Describe your command here.
   },
