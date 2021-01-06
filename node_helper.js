@@ -1,1 +1,220 @@
-const exec=require("child_process").exec,fs=require("fs"),path=require("path"),Assistant=require("./components/assistant.js"),ScreenParser=require("./components/screenParser.js"),Snowboy=require("@bugsounet/snowboy").Snowboy,Player=require("@bugsounet/native-sound"),npmCheck=require("@bugsounet/npmcheck"),readJson=require("r-json"),Youtube=require("youtube-api");var _log=Function.prototype.bind.call(console.log,console,"[ASSISTANT]"),log=function(){},NodeHelper=require("node_helper");module.exports=NodeHelper.create({start:function(){this.config={}},socketNotificationReceived:function(e,t){switch(e){case"INIT":console.log("[ASSISTANT] MMM-GoogleAssistant Version:",require("./package.json").version),this.initialize(t);break;case"ACTIVATE_ASSISTANT":this.activateAssistant(t);break;case"ASSISTANT_BUSY":this.snowboy.stop();break;case"ASSISTANT_READY":this.snowboy.start();break;case"SHELLEXEC":var i=t.command;i+=t.options?" "+t.options:"",exec(i,(e,o,s)=>{log("ShellExec command:",i),e&&console.log("[ASSISTANT] ShellExec Error:"+e),this.sendSocketNotification("SHELLEXEC_RESULT",{executed:t,result:{error:e,stdOut:o,stdErr:s}})});break;case"PLAY_AUDIO":this.player.play(t);break;case"PLAY_CHIME":let o=path.resolve(__dirname,t);this.player.play(o,!1);break;case"YouTube_SEARCH":t&&this.YoutubeSearch(t)}},tunnel:function(e){this.sendSocketNotification("TUNNEL",e)},activateAssistant:function(e){log("QUERY:",e);var t=Object.assign({},this.config.assistantConfig);t.debug=this.config.debug,t.lang=e.lang,t.useScreenOutput=e.useScreenOutput,t.useAudioOutput=e.useAudioOutput,t.micConfig=this.config.micConfig,this.assistant=new Assistant(t,e=>{this.tunnel(e)});var i={screenOutputCSS:this.config.responseConfig.screenOutputCSS,screenOutputURI:"tmp/lastScreenOutput.html"},o=new ScreenParser(i,this.config.debug);this.assistant.activate(e,t=>{t.lastQuery=e,t.screen||t.audio||(t.error="NO_RESPONSE",t.transcription&&t.transcription.transcription&&!t.transcription.done&&(t.error="TRANSCRIPTION_FAILS")),"TOO_SHORT"==t.error&&t&&(t.error=null),t.screen?o.parse(t,e=>{delete e.screen.originalContent,log("ASSISTANT_RESULT",e),this.sendSocketNotification("ASSISTANT_RESULT",e)}):(log("ASSISTANT_RESULT",t),this.sendSocketNotification("ASSISTANT_RESULT",t))})},initialize:function(e){this.config=e,this.config.assistantConfig.modulePath=__dirname;var t=null;if(this.config.debug&&(log=_log),fs.existsSync(this.config.assistantConfig.modulePath+"/"+this.config.assistantConfig.credentialPath)?fs.existsSync(this.config.assistantConfig.modulePath+"/"+this.config.assistantConfig.tokenPath)||(t="[ERROR] token.json file not found !"):t="[ERROR] credentials.json file not found !",this.config.A2DServer.useA2D&&this.config.A2DServer.useYouTube)try{const e=readJson(this.config.assistantConfig.modulePath+"/"+this.config.assistantConfig.credentialPath),i=readJson(this.config.assistantConfig.modulePath+"/tokenYT.json");Youtube.authenticate({type:"oauth",client_id:e.installed.client_id,client_secret:e.installed.client_secret,redirect_url:e.installed.redirect_uris,access_token:i.access_token,refresh_token:i.refresh_token});console.log("[ASSISTANT] YouTube Search Function initilized.")}catch(e){console.log("[ASSISTANT] "+e),t="[ERROR] YouTube Search not Set !"}if(t)return console.log("[ASSISTANT]"+t),this.sendSocketNotification("NOT_INITIALIZED",t);if(log("Activate delay is set to "+this.config.responseConfig.activateDelay+" ms"),this.snowboy=new Snowboy(this.config.snowboy,this.config.micConfig,e=>{this.hotwordDetect(e)},this.config.debug),this.snowboy.init(),this.loadRecipes(()=>this.sendSocketNotification("INITIALIZED")),this.config.A2DServer.useA2D&&console.log("[ASSISTANT] Assistant2Display Server Started"),this.config.responseConfig.useNative&&(this.player=new Player(this.config.responseConfig,e=>{this.sendSocketNotification(e)},this.config.debug),console.log("[ASSISTANT] Use native program ("+this.config.responseConfig.playProgram+") for audio response"),this.player.init()),this.config.NPMCheck.useChecker){var i={dirName:__dirname,moduleName:this.name,timer:this.config.NPMCheck.delay,debug:this.config.debug};this.Checker=new npmCheck(i,e=>{this.sendSocketNotification("NPM_UPDATE",e)})}console.log("[ASSISTANT] Google Assistant is initialized.")},loadRecipes:function(e=(()=>{})){if(this.config.recipes){let n=(e,t)=>"function"==typeof t?"__FUNC__"+t.toString():t;for(var t=this.config.recipes,i=null,o=0;o<t.length;o++)try{var s=require("./recipes/"+t[o]).recipe;this.sendSocketNotification("LOAD_RECIPE",JSON.stringify(s,n,2)),console.log("[ASSISTANT] RECIPE_LOADED:",t[o])}catch(e){return console.log(`[ASSISTANT] RECIPE_ERROR (${t[o]}):`,e.message,e),i=`[ASSISTANT] RECIPE_ERROR (${t[o]})`,this.sendSocketNotification("NOT_INITIALIZED",i)}e()}else log("NO_RECIPE_TO_LOAD"),e()},hotwordDetect:function(e){e&&this.sendSocketNotification("ASSISTANT_ACTIVATE",{type:"MIC"})},YoutubeSearch:async function(e){var t=await Youtube.search.list({q:e,part:"snippet",maxResults:1,type:"video"});for(var i in t.data.items){var o=t.data.items[i];console.log("[ASSISTANT] Found YouTube Title: %s - videoId: %s",o.snippet.title,o.id.videoId),this.sendSocketNotification("YouTube_RESULT",o.id.videoId)}}});
+//
+// Module : MMM-GoogleAssistant
+//
+
+
+const exec = require("child_process").exec
+const fs = require("fs")
+const path = require("path")
+const Assistant = require("./components/assistant.js")
+const ScreenParser = require("./components/screenParser.js")
+const Snowboy = require("@bugsounet/snowboy").Snowboy
+const Player = require("@bugsounet/native-sound")
+const npmCheck = require("@bugsounet/npmcheck")
+const readJson = require("r-json")
+const Youtube = require("youtube-api")
+
+var _log = function() {
+  var context = "[ASSISTANT]"
+  return Function.prototype.bind.call(console.log, console, context)
+}()
+
+var log = function() {
+  //do nothing
+}
+
+var NodeHelper = require("node_helper")
+
+module.exports = NodeHelper.create({
+  start: function () {
+    this.config = {}
+  },
+
+  socketNotificationReceived: function (noti, payload) {
+    switch (noti) {
+      case "INIT":
+        console.log("[ASSISTANT] MMM-GoogleAssistant Version:", require('./package.json').version)
+        this.initialize(payload)
+        break
+      case "ACTIVATE_ASSISTANT":
+        this.activateAssistant(payload)
+        break
+      case "ASSISTANT_BUSY":
+        this.snowboy.stop()
+        break
+      case "ASSISTANT_READY":
+        this.snowboy.start()
+        break
+      case "SHELLEXEC":
+        var command = payload.command
+        command += (payload.options) ? (" " + payload.options) : ""
+        exec (command, (e,so,se)=> {
+          log("ShellExec command:", command)
+          if (e) console.log("[ASSISTANT] ShellExec Error:" + e)
+          this.sendSocketNotification("SHELLEXEC_RESULT", {
+            executed: payload,
+            result: {
+              error: e,
+              stdOut: so,
+              stdErr: se,
+            }
+          })
+        })
+        break
+      case "PLAY_AUDIO":
+        this.player.play(payload)
+        break
+      case "PLAY_CHIME":
+        let filePath = path.resolve(__dirname, payload)
+        this.player.play(filePath, false)
+        break
+      case "YouTube_SEARCH":
+        if (payload) this.YoutubeSearch(payload)
+        break
+    }
+  },
+
+  tunnel: function(payload) {
+    this.sendSocketNotification("TUNNEL", payload)
+  },
+
+  activateAssistant: function(payload) {
+    log("QUERY:", payload)
+    var assistantConfig = Object.assign({}, this.config.assistantConfig)
+    assistantConfig.debug = this.config.debug
+    assistantConfig.lang = payload.lang
+    assistantConfig.useScreenOutput = payload.useScreenOutput
+    assistantConfig.useAudioOutput = payload.useAudioOutput
+    assistantConfig.micConfig = this.config.micConfig
+    this.assistant = new Assistant(assistantConfig, (obj)=>{this.tunnel(obj)})
+
+    var parserConfig = {
+      screenOutputCSS: this.config.responseConfig.screenOutputCSS,
+      screenOutputURI: "tmp/lastScreenOutput.html"
+    }
+    var parser = new ScreenParser(parserConfig, this.config.debug)
+    var result = null
+    this.assistant.activate(payload, (response)=> {
+      response.lastQuery = payload
+
+      if (!(response.screen || response.audio)) {
+        response.error = "NO_RESPONSE"
+        if (response.transcription && response.transcription.transcription && !response.transcription.done) {
+          response.error = "TRANSCRIPTION_FAILS"
+        }
+      }
+      if (response.error == "TOO_SHORT" && response) response.error = null
+      if (response.screen) {
+        parser.parse(response, (result)=>{
+          delete result.screen.originalContent
+          log("ASSISTANT_RESULT", result)
+          this.sendSocketNotification("ASSISTANT_RESULT", result)
+        })
+      } else {
+        log ("ASSISTANT_RESULT", response)
+        this.sendSocketNotification("ASSISTANT_RESULT", response)
+      }
+    })
+  },
+
+  initialize: function (config) {
+    this.config = config
+    this.config.assistantConfig["modulePath"] = __dirname
+    var error = null
+    if (this.config.debug) log = _log
+    if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/" + this.config.assistantConfig.credentialPath)) {
+      error = "[ERROR] credentials.json file not found !"
+    }
+    else if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/" + this.config.assistantConfig.tokenPath)) {
+      error = "[ERROR] token.json file not found !"
+    }
+    if (this.config.A2DServer.useA2D && this.config.A2DServer.useYouTube) {
+      try {
+        const CREDENTIALS = readJson(this.config.assistantConfig["modulePath"] + "/" + this.config.assistantConfig.credentialPath)
+        const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokenYT.json")
+        let oauth = Youtube.authenticate({
+          type: "oauth",
+          client_id: CREDENTIALS.installed.client_id,
+          client_secret: CREDENTIALS.installed.client_secret,
+          redirect_url: CREDENTIALS.installed.redirect_uris,
+          access_token: TOKEN.access_token,
+          refresh_token: TOKEN.refresh_token,
+        })
+        console.log ("[ASSISTANT] YouTube Search Function initilized.")
+      } catch (e) {
+        console.log("[ASSISTANT] "+ e)
+        error = "[ERROR] YouTube Search not Set !"
+      }
+    }
+
+    if (error) {
+      console.log("[ASSISTANT]" + error)
+      return this.sendSocketNotification("NOT_INITIALIZED", error)
+    }
+    log("Activate delay is set to " + this.config.responseConfig.activateDelay + " ms")
+
+    this.snowboy = new Snowboy(this.config.snowboy, this.config.micConfig, (detected) => { this.hotwordDetect(detected) } , this.config.debug )
+    this.snowboy.init()
+
+    this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED"))
+    if (this.config.A2DServer.useA2D) console.log ("[ASSISTANT] Assistant2Display Server Started")
+    if (this.config.responseConfig.useNative) {
+      this.player = new Player(this.config.responseConfig, (ended) => { this.sendSocketNotification(ended) } , this.config.debug )
+      console.log("[ASSISTANT] Use native program (" + this.config.responseConfig.playProgram + ") for audio response")
+      this.player.init()
+    }
+    if (this.config.NPMCheck.useChecker) {
+      var cfg = {
+        dirName: __dirname,
+        moduleName: this.name,
+        timer: this.config.NPMCheck.delay,
+        debug: this.config.debug
+      }
+      this.Checker= new npmCheck(cfg, update => { this.sendSocketNotification("NPM_UPDATE", update)} )
+    }
+    console.log ("[ASSISTANT] Google Assistant is initialized.")
+  },
+
+  loadRecipes: function(callback=()=>{}) {
+    if (this.config.recipes) {
+      let replacer = (key, value) => {
+        if (typeof value == "function") {
+          return "__FUNC__" + value.toString()
+        }
+        return value
+      }
+      var recipes = this.config.recipes
+      var error = null
+      for (var i = 0; i < recipes.length; i++) {
+        try {
+          var p = require("./recipes/" + recipes[i]).recipe
+          this.sendSocketNotification("LOAD_RECIPE", JSON.stringify(p, replacer, 2))
+          console.log("[ASSISTANT] RECIPE_LOADED:", recipes[i])
+        } catch (e) {
+          console.log(`[ASSISTANT] RECIPE_ERROR (${recipes[i]}):`, e.message, e)
+          error = `[ASSISTANT] RECIPE_ERROR (${recipes[i]})`
+          return this.sendSocketNotification("NOT_INITIALIZED", error)
+        }
+      }
+      callback()
+    } else {
+      log("NO_RECIPE_TO_LOAD")
+      callback()
+    }
+  },
+
+  /** Snowboy Callback **/
+  hotwordDetect: function(detected) {
+    if (detected) this.sendSocketNotification("ASSISTANT_ACTIVATE", { type:"MIC" })
+  },
+
+ /** YouTube Search **/
+  YoutubeSearch: async function (query) {
+    var results = await Youtube.search.list({q: query, part: 'snippet', maxResults: 1, type: "video"})
+    for(var i in results.data.items) {
+      var item = results.data.items[i]
+      console.log('[ASSISTANT] Found YouTube Title: %s - videoId: %s', item.snippet.title, item.id.videoId)
+      this.sendSocketNotification("YouTube_RESULT", item.id.videoId)
+    }
+  }
+})
