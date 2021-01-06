@@ -33,8 +33,6 @@ class ASSISTANT {
           encodingOut: "MP3",
           sampleRateOut: 24000,
         },
-        deviceModelId : config.modelId,
-        deviceId : config.instanceId,
         deviceLocation : {
           coordinates: {
             latitude: config.latitude,
