@@ -542,6 +542,7 @@ Module.register("MMM-GoogleAssistant", {
       return this.sendNotification("A2D_STOP")
 
     var opt = {
+      "from": "GA",
       "photos": null,
       "urls": null,
       "transcription":null
@@ -558,6 +559,7 @@ Module.register("MMM-GoogleAssistant", {
 
   sendYouTubeResult: function (result) {
     var opt = {
+      "from": "GA",
       "photos": [],
       "urls": ["https://www.youtube.com/watch?v=" + result],
       "transcription": { transcription: "Youtube Search...", done: "false" }
