@@ -11,6 +11,7 @@ var log = function() {
 }
 
 Module.register("MMM-GoogleAssistant", {
+  requiresVersion: "2.15.0",
   defaults: {
     debug:false,
     assistantConfig: {
@@ -37,6 +38,7 @@ Module.register("MMM-GoogleAssistant", {
       device: null,
     },
     snowboy: {
+      useSnowboy: true,
       usePMDL: false,
       PMDLPath: "../../../components",
       audioGain: 2.0,
@@ -261,10 +263,10 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantActivate({type: "TEXT", key: payload.key, chime: false}, Date.now())
         break
       case "ASSISTANT_START":
-        this.sendSocketNotification("ASSISTANT_READY")
+        if (this.config.snowboy.useSnowboy) this.sendSocketNotification("ASSISTANT_READY")
         break
       case "ASSISTANT_STOP":
-        this.sendSocketNotification("ASSISTANT_BUSY")
+        if (this.config.snowboy.useSnowboy) this.sendSocketNotification("ASSISTANT_BUSY")
         break
     }
   },

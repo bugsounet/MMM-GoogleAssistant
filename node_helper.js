@@ -40,10 +40,10 @@ module.exports = NodeHelper.create({
         this.activateAssistant(payload)
         break
       case "ASSISTANT_BUSY":
-        this.snowboy.stop()
+        if (this.config.snowboy.useSnowboy) this.snowboy.stop()
         break
       case "ASSISTANT_READY":
-        this.snowboy.start()
+        if (this.config.snowboy.useSnowboy) this.snowboy.start()
         break
       case "SHELLEXEC":
         var command = payload.command
@@ -153,9 +153,10 @@ module.exports = NodeHelper.create({
     }
     log("Activate delay is set to " + this.config.responseConfig.activateDelay + " ms")
 
-    this.snowboy = new Snowboy(this.config.snowboy, this.config.micConfig, (detected) => { this.hotwordDetect(detected) } , this.config.debug )
-    this.snowboy.init()
-
+    if (this.config.snowboy.useSnowboy) {
+      this.snowboy = new Snowboy(this.config.snowboy, this.config.micConfig, (detected) => { this.hotwordDetect(detected) } , this.config.debug )
+      this.snowboy.init()
+    }
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED"))
     if (this.config.A2DServer.useA2D) console.log ("[ASSISTANT] Assistant2Display Server Started")
     if (this.config.responseConfig.useNative) {
