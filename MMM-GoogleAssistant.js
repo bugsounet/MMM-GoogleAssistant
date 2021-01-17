@@ -268,6 +268,9 @@ Module.register("MMM-GoogleAssistant", {
       case "ASSISTANT_STOP":
         if (this.config.snowboy.useSnowboy) this.sendSocketNotification("ASSISTANT_BUSY")
         break
+      case "GA_ACTIVATE":
+        if (!this.config.snowboy.useSnowboy) this.assistantActivate({ type:"MIC" })
+        break
     }
   },
 
@@ -374,6 +377,7 @@ Module.register("MMM-GoogleAssistant", {
   endResponse: function() {
     if (this.config.A2DServer.useA2D) this.sendNotification("A2D_ASSISTANT_READY")
     this.sendSocketNotification("ASSISTANT_READY")
+    if (!this.config.snowboy.useSnowboy) this.sendNotification("SNOWBOY_START")
   },
 
   postProcess: function (response, callback_done=()=>{}, callback_none=()=>{}) {
