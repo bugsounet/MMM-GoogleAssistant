@@ -20,7 +20,8 @@
 ## Installation, update & Guides
 Read the docs in [wiki](https://github.com/bugsounet/MMM-GoogleAssistant/wiki)<br>
 
-*Support is now *Close**
+* Support is: `close()`
+* If you don't understand: `exit()`
 
 ## Last Tested
 - MagicMirror : 2.11.0
