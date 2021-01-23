@@ -11,7 +11,7 @@ var log = function() {
 }
 
 Module.register("MMM-GoogleAssistant", {
-  requiresVersion: "2.15.0",
+  requiresVersion: "2.14.0",
   defaults: {
     debug:false,
     assistantConfig: {
