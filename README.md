@@ -20,11 +20,10 @@
 ## Installation, update & Guides
 Read the docs in [wiki](https://github.com/bugsounet/MMM-GoogleAssistant/wiki)<br>
 
-* Support is: `close()`
-* If you don't understand: `exit()`
+* Support will be open soon with dedicated forum
 
 ## Last Tested
-- MagicMirror : 2.11.0
+- MagicMirror : 2.14.0
 - RPI 4 / raspbian 10 (buster)
 - debian 10
 
