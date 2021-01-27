@@ -58,9 +58,11 @@ if $prompt; then
   echo
 
   # the end...
+  Installer_error "Support is now moved in a dedicated Server: http://forum.bugsounet.fr"
+  Installer_warning "@bugsounet"
+  echo
   Installer_exit "$Installer_module is now installed !"
 fi
 cd ~/MagicMirror/modules/MMM-GoogleAssistant
 rm -rf no-prompt
-Installer_warning "Support is now moved in a dedicated Server: http://forum.bugsounet.fr"
-Installer_warning "@bugsounet"
+
