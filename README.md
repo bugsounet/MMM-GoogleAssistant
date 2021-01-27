@@ -20,7 +20,7 @@
 ## Installation, update & Guides
 Read the docs in [wiki](https://github.com/bugsounet/MMM-GoogleAssistant/wiki)<br>
 
-* Support will be open soon with dedicated forum
+## [Decicated Support is now open](http://forum.bugsounet.fr)
 
 ## Last Tested
 - MagicMirror : 2.14.0
