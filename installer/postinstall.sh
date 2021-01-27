@@ -62,3 +62,5 @@ if $prompt; then
 fi
 cd ~/MagicMirror/modules/MMM-GoogleAssistant
 rm -rf no-prompt
+Installer_warning "Support is now moved in a dedicated Server: http://forum.bugsounet.fr"
+Installer_warning "@bugsounet"
