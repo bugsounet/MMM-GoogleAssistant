@@ -5,7 +5,7 @@ const Entities = require('html-entities').AllHtmlEntities
 const entities = new Entities()
 
 var _log = function() {
-    var context = "[ASSISTANT:SP]"
+    var context = "[GA:SP]"
     return Function.prototype.bind.call(console.log, console, context)
 }()
 

@@ -6,7 +6,7 @@ const path = require("path")
 const fs = require("fs")
 
 var _log = function() {
-    var context = "[ASSISTANT:AS]"
+    var context = "[GA:AS]"
     return Function.prototype.bind.call(console.log, console, context)
 }()
 

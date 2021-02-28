@@ -2,7 +2,7 @@
 // Module : MMM-GoogleAssistant
 
 var _log = function() {
-  var context = "[ASSISTANT]";
+  var context = "[GA]";
   return Function.prototype.bind.call(console.log, console, context);
 }()
 
@@ -146,11 +146,11 @@ Module.register("MMM-GoogleAssistant", {
        transcriptionHooks: {
           "SEARCH_YouTube": {
             pattern: this.config.A2DServer.youtubeCommand + " (.*)",
-            command: "youtube"
+            command: "GA_youtube"
           },
         },
         commands: {
-          "youtube": {
+          "GA_youtube": {
             moduleExec: {
               module: ["MMM-GoogleAssistant"],
               exec: "__FUNC__(module, params) => { module.sendSocketNotification('YouTube_SEARCH', params[1]) }"
@@ -566,7 +566,7 @@ Module.register("MMM-GoogleAssistant", {
       "from": "GA",
       "photos": [],
       "urls": ["https://www.youtube.com/watch?v=" + result],
-      "transcription": { transcription: "Youtube Search...", done: "false" }
+      "transcription": { transcription: "YouTube Video Player", done: "false" }
     }
     log("Send YouTube Response to A2D.")
     this.sendNotification("A2D", opt)
