@@ -15,7 +15,7 @@ const readJson = require("r-json")
 const Youtube = require("youtube-api")
 
 var _log = function() {
-  var context = "[ASSISTANT]"
+  var context = "[GA]"
   return Function.prototype.bind.call(console.log, console, context)
 }()
 
@@ -33,7 +33,7 @@ module.exports = NodeHelper.create({
   socketNotificationReceived: function (noti, payload) {
     switch (noti) {
       case "INIT":
-        console.log("[ASSISTANT] MMM-GoogleAssistant Version:", require('./package.json').version)
+        console.log("[GA] MMM-GoogleAssistant Version:", require('./package.json').version)
         this.initialize(payload)
         break
       case "ACTIVATE_ASSISTANT":
@@ -50,7 +50,7 @@ module.exports = NodeHelper.create({
         command += (payload.options) ? (" " + payload.options) : ""
         exec (command, (e,so,se)=> {
           log("ShellExec command:", command)
-          if (e) console.log("[ASSISTANT] ShellExec Error:" + e)
+          if (e) console.log("[GA] ShellExec Error:" + e)
           this.sendSocketNotification("SHELLEXEC_RESULT", {
             executed: payload,
             result: {
@@ -140,15 +140,15 @@ module.exports = NodeHelper.create({
           access_token: TOKEN.access_token,
           refresh_token: TOKEN.refresh_token,
         })
-        console.log ("[ASSISTANT] YouTube Search Function initilized.")
+        console.log ("[GA] YouTube Search Function initilized.")
       } catch (e) {
-        console.log("[ASSISTANT] "+ e)
+        console.log("[GA] "+ e)
         error = "[ERROR] YouTube Search not Set !"
       }
     }
 
     if (error) {
-      console.log("[ASSISTANT]" + error)
+      console.log("[GA]" + error)
       return this.sendSocketNotification("NOT_INITIALIZED", error)
     }
     log("Activate delay is set to " + this.config.responseConfig.activateDelay + " ms")
@@ -158,10 +158,10 @@ module.exports = NodeHelper.create({
       this.snowboy.init()
     }
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED"))
-    if (this.config.A2DServer.useA2D) console.log ("[ASSISTANT] Assistant2Display Server Started")
+    if (this.config.A2DServer.useA2D) console.log ("[GA] Assistant2Display Server Started")
     if (this.config.responseConfig.useNative) {
       this.player = new Player(this.config.responseConfig, (ended) => { this.sendSocketNotification(ended) } , this.config.debug )
-      console.log("[ASSISTANT] Use native program (" + this.config.responseConfig.playProgram + ") for audio response")
+      console.log("[GA] Use native program (" + this.config.responseConfig.playProgram + ") for audio response")
       this.player.init()
     }
     if (this.config.NPMCheck.useChecker) {
@@ -173,7 +173,7 @@ module.exports = NodeHelper.create({
       }
       this.Checker= new npmCheck(cfg, update => { this.sendSocketNotification("NPM_UPDATE", update)} )
     }
-    console.log ("[ASSISTANT] Google Assistant is initialized.")
+    console.log ("[GA] Google Assistant is initialized.")
   },
 
   loadRecipes: function(callback=()=>{}) {
@@ -190,10 +190,10 @@ module.exports = NodeHelper.create({
         try {
           var p = require("./recipes/" + recipes[i]).recipe
           this.sendSocketNotification("LOAD_RECIPE", JSON.stringify(p, replacer, 2))
-          console.log("[ASSISTANT] RECIPE_LOADED:", recipes[i])
+          console.log("[GA] RECIPE_LOADED:", recipes[i])
         } catch (e) {
-          console.log(`[ASSISTANT] RECIPE_ERROR (${recipes[i]}):`, e.message, e)
-          error = `[ASSISTANT] RECIPE_ERROR (${recipes[i]})`
+          console.log(`[GA] RECIPE_ERROR (${recipes[i]}):`, e.message, e)
+          error = `[GA] RECIPE_ERROR (${recipes[i]})`
           return this.sendSocketNotification("NOT_INITIALIZED", error)
         }
       }
@@ -214,7 +214,7 @@ module.exports = NodeHelper.create({
     var results = await Youtube.search.list({q: query, part: 'snippet', maxResults: 1, type: "video"})
     for(var i in results.data.items) {
       var item = results.data.items[i]
-      console.log('[ASSISTANT] Found YouTube Title: %s - videoId: %s', item.snippet.title, item.id.videoId)
+      console.log('[GA] Found YouTube Title: %s - videoId: %s', item.snippet.title, item.id.videoId)
       this.sendSocketNotification("YouTube_RESULT", item.id.videoId)
     }
   }
