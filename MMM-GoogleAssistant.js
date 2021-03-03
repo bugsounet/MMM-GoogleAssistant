@@ -142,12 +142,16 @@ Module.register("MMM-GoogleAssistant", {
     this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
     if (this.config.A2DServer.useA2D && this.config.A2DServer.useYouTube) {
       /** Integred YouTube recipe **/
-      var YouTube = {
+      var A2DHooks = {
        transcriptionHooks: {
           "SEARCH_YouTube": {
             pattern: this.config.A2DServer.youtubeCommand + " (.*)",
             command: "GA_youtube"
           },
+          "A2D_Stop": {
+            pattern: this.config.A2DServer.stopCommand,
+            command: "A2D_Stop"
+          }
         },
         commands: {
           "GA_youtube": {
@@ -159,10 +163,19 @@ Module.register("MMM-GoogleAssistant", {
               "chime": "open"
             },
             displayResponse: this.config.A2DServer.displayResponse
+          },
+          "A2D_Stop": {
+            notificationExec: {
+              notification: "A2D_STOP"
+            },
+            soundExec: {
+              "chime": "close"
+            },
+            displayResponse: false
           }
         }
       }
-      this.parseLoadedRecipe(JSON.stringify(YouTube))
+      this.parseLoadedRecipe(JSON.stringify(A2DHooks))
     }
   },
 
@@ -542,9 +555,6 @@ Module.register("MMM-GoogleAssistant", {
 
 /** Send needed part of response screen to MMM-Assistant2Display **/
   Assistant2Display: function(response) {
-    if (response.transcription && (response.transcription.transcription == this.config.A2DServer.stopCommand))
-      return this.sendNotification("A2D_STOP")
-
     var opt = {
       "from": "GA",
       "photos": null,

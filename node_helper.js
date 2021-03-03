@@ -212,10 +212,12 @@ module.exports = NodeHelper.create({
  /** YouTube Search **/
   YoutubeSearch: async function (query) {
     var results = await Youtube.search.list({q: query, part: 'snippet', maxResults: 1, type: "video"})
-    for(var i in results.data.items) {
-      var item = results.data.items[i]
+    try {
+      var item = results.data.items[0]
       console.log('[GA] Found YouTube Title: %s - videoId: %s', item.snippet.title, item.id.videoId)
       this.sendSocketNotification("YouTube_RESULT", item.id.videoId)
+    } catch (e) {
+      console.log("[GA] Youtube Search error or no title found!")
     }
   }
 })
