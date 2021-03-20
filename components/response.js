@@ -71,6 +71,7 @@ class AssistantResponse {
     this.callbacks.sendNotification("ASSISTANT_" + this.myStatus.actual.toUpperCase())
     log("Status from " + this.myStatus.old + " to " + this.myStatus.actual)
     Status.className = (this.myStatus.old == "hook") ? "hook" : this.myStatus.actual
+    if(this.fullscreenAbove) Status.classList.add("fullscreen_above")
     this.myStatus.old = this.myStatus.actual
   }
 
@@ -86,14 +87,17 @@ class AssistantResponse {
 
     var status = document.createElement("div")
     status.id = "GA_STATUS"
+    if(this.fullscreenAbove) status.classList.add("fullscreen_above")
     contener.appendChild(status)
 
     var transcription = document.createElement("div")
     transcription.id = "GA_TRANSCRIPTION"
+    if(this.fullscreenAbove) transcription.classList.add("fullscreen_above")
     contener.appendChild(transcription)
 
     var logo = document.createElement("div")
     logo.id = "GA_LOGO"
+    if(this.fullscreenAbove) logo.classList.add("fullscreen_above")
     contener.appendChild(logo)
     GA.appendChild(contener)
     document.body.appendChild(GA)
