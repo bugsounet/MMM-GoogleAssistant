@@ -94,11 +94,15 @@
   -webkit-flex: none;
           flex: none;
   width:100px;
-  margin-top:4px;
+  /*margin-top:4px;*/
   margin-left:4px;
   margin-right: 10px;
   border-radius: 20px;
   background-color:#f3f3f3;
+}
+
+#GA_STATUS.fullscreen_above {
+  margin-top:6px;
 }
 
 #GA_STATUS.reply {
@@ -152,7 +156,7 @@
 
 #GA_STATUS.hook {
   background-image:url('./resources/hook.gif');
-  background-position : -46px -20px;
+  background-position : -46px -22px;
   background-repeat: no-repeat;
   background-size: 195%;
 }
@@ -167,10 +171,14 @@
 
 #GA_TRANSCRIPTION p {
   color:#7b858e;
-  margin-top: 30px;
+  margin-top: 25px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#GA_TRANSCRIPTION.fullscreen_above {
+  margin-top: 4px;
 }
 
 #GA_TRANSCRIPTION.hidden {
@@ -181,7 +189,6 @@
   -webkit-flex: none;
           flex: none;
   width: 150px;
-  margin-top: 2px;
   margin-left: 5px;
   border-radius: 20px;
   background-color:#f3f3f3;
@@ -189,7 +196,11 @@
   background-position : 2px -5px;
   background-repeat: no-repeat;
   background-size: 90%;
- }
+}
+
+#GA_LOGO.fullscreen_above {
+  margin-top: 4px;
+}
 
 #GA_CONTENER {
  height : 100%;
