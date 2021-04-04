@@ -11,7 +11,7 @@ var log = function() {
 }
 
 Module.register("MMM-GoogleAssistant", {
-  requiresVersion: "2.14.0",
+  requiresVersion: "2.15.0",
   defaults: {
     debug:false,
     assistantConfig: {
@@ -97,7 +97,6 @@ Module.register("MMM-GoogleAssistant", {
     ]
     this.helperConfig = {}
     if (this.config.debug) log = _log
-    this.config = this.configAssignment({}, this.defaults, this.config)
     for(var i = 0; i < helperConfig.length; i++) {
       this.helperConfig[helperConfig[i]] = this.config[helperConfig[i]]
     }
@@ -228,32 +227,6 @@ Module.register("MMM-GoogleAssistant", {
     this.responseHooks = Object.assign({}, this.responseHooks, obj)
   },
 
-  configAssignment : function (result) {
-    var stack = Array.prototype.slice.call(arguments, 1)
-    var item
-    var key
-    while (stack.length) {
-      item = stack.shift()
-      for (key in item) {
-        if (item.hasOwnProperty(key)) {
-          if (
-            typeof result[key] === "object" && result[key]
-            && Object.prototype.toString.call(result[key]) !== "[object Array]"
-          ) {
-            if (typeof item[key] === "object" && item[key] !== null) {
-              result[key] = this.configAssignment({}, result[key], item[key])
-            } else {
-              result[key] = item[key]
-            }
-          } else {
-            result[key] = item[key]
-          }
-        }
-      }
-    }
-    return result
-  },
-
   getDom: function() {
     this.assistantResponse.modulePosition()
     var dom = document.createElement("div")
@@ -269,7 +242,8 @@ Module.register("MMM-GoogleAssistant", {
     this.doPlugin("onNotificationReceived", {notification:noti, payload:payload})
     switch (noti) {
       case "DOM_OBJECTS_CREATED":
-        this.sendSocketNotification("INIT", this.helperConfig)
+        if (this.data.configDeepMerge) this.sendSocketNotification("INIT", this.helperConfig)
+        else return this.showConfigMergeAlert()
         this.assistantResponse.prepare()
         break
       case "ASSISTANT_WELCOME":
@@ -580,5 +554,11 @@ Module.register("MMM-GoogleAssistant", {
     }
     log("Send YouTube Response to A2D.")
     this.sendNotification("A2D", opt)
+  },
+
+  showConfigMergeAlert: function() {
+    this.assistantResponse.prepare()
+    this.assistantResponse.fullscreen(true)
+    this.assistantResponse.showError("[FATAL] Module configuration: ConfigDeepMerge not actived !")
   }
 })
