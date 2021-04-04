@@ -1,1 +1,584 @@
-var _log=Function.prototype.bind.call(console.log,console,"[GA]"),log=function(){};Module.register("MMM-GoogleAssistant",{requiresVersion:"2.14.0",defaults:{debug:!1,assistantConfig:{lang:"en-US",credentialPath:"credentials.json",tokenPath:"token.json",latitude:51.50853,longitude:-.076132},responseConfig:{useScreenOutput:!0,screenOutputCSS:"screen_output.css",screenOutputTimer:5e3,screenRotate:!1,activateDelay:250,useAudioOutput:!0,useChime:!0,newChime:!1,useNative:!1,playProgram:"mpg321"},micConfig:{recorder:"arecord",device:null},snowboy:{useSnowboy:!0,usePMDL:!1,PMDLPath:"../../../components",audioGain:2,Frontend:!0,Model:"jarvis",Sensitivity:null},A2DServer:{useA2D:!1,stopCommand:"stop",useYouTube:!1,youtubeCommand:"youtube",displayResponse:!0},recipes:[],NPMCheck:{useChecker:!0,delay:6e5,useAlert:!0}},plugins:{onReady:[],onNotificationReceived:[],onActivate:[],onStatus:[]},commands:{},transcriptionHooks:{},responseHooks:{},forceResponse:!1,getScripts:function(){return["/modules/MMM-GoogleAssistant/components/response.js"]},getStyles:function(){return["/modules/MMM-GoogleAssistant/MMM-GoogleAssistant.css"]},getTranslations:function(){return{en:"translations/en.json",fr:"translations/fr.json",it:"translations/it.json",de:"translations/de.json"}},start:function(){const s=["debug","dev","recipes","assistantConfig","micConfig","responseConfig","A2DServer","snowboy","NPMCheck"];this.helperConfig={},this.config.debug&&(log=_log),this.config=this.configAssignment({},this.defaults,this.config);for(var e=0;e<s.length;e++)this.helperConfig[s[e]]=this.config[s[e]];this.myStatus={actual:"standby",old:"standby"};var t={assistantActivate:s=>{this.assistantActivate(s)},postProcess:(s,e,t)=>{this.postProcess(s,e,t)},endResponse:()=>{this.endResponse()},sendNotification:(s,e=null)=>{this.sendNotification(s,e)},sendSocketNotification:(s,e=null)=>{this.sendSocketNotification(s,e)},translate:s=>this.translate(s),myStatus:s=>{this.doPlugin("onStatus",{status:s}),this.myStatus=s},A2D:s=>{if(this.config.A2DServer.useA2D)return this.Assistant2Display(s)},sendAudio:s=>{this.sendSocketNotification("PLAY_AUDIO",s)},sendChime:s=>{this.sendSocketNotification("PLAY_CHIME",s)}};if(this.assistantResponse=new AssistantResponse(this.helperConfig.responseConfig,t),this.config.A2DServer.useA2D&&this.config.A2DServer.useYouTube){var o={transcriptionHooks:{SEARCH_YouTube:{pattern:this.config.A2DServer.youtubeCommand+" (.*)",command:"GA_youtube"},A2D_Stop:{pattern:this.config.A2DServer.stopCommand,command:"A2D_Stop"}},commands:{GA_youtube:{moduleExec:{module:["MMM-GoogleAssistant"],exec:"__FUNC__(module, params) => { module.sendSocketNotification('YouTube_SEARCH', params[1]) }"},soundExec:{chime:"open"},displayResponse:this.config.A2DServer.displayResponse},A2D_Stop:{notificationExec:{notification:"A2D_STOP"},soundExec:{chime:"close"},displayResponse:!1}}};this.parseLoadedRecipe(JSON.stringify(o))}},doPlugin:function(s,e){if(this.plugins.hasOwnProperty(s)){var t=this.plugins[s];if(Array.isArray(t)&&t.length>0)for(var o=0;o<t.length;o++){var n=t[o];this.doCommand(n,e,s)}}},registerPluginsObject:function(s){for(var e in this.plugins)if(s.hasOwnProperty(e)){var t=[];Array.isArray(s[e])?t=t.concat(s[e]):t.push(s[e].toString());for(var o=0;o<t.length;o++)this.registerPlugin(e,t[o])}},registerPlugin:function(s,e){this.plugins.hasOwnProperty(s)&&(Array.isArray(e)&&this.plugins[s].concat(e),this.plugins[s].push(e))},registerCommandsObject:function(s){this.commands=Object.assign({},this.commands,s)},registerTranscriptionHooksObject:function(s){this.transcriptionHooks=Object.assign({},this.transcriptionHooks,s)},registerResponseHooksObject:function(s){this.responseHooks=Object.assign({},this.responseHooks,s)},configAssignment:function(s){for(var e,t,o=Array.prototype.slice.call(arguments,1);o.length;)for(t in e=o.shift())e.hasOwnProperty(t)&&("object"==typeof s[t]&&s[t]&&"[object Array]"!==Object.prototype.toString.call(s[t])&&"object"==typeof e[t]&&null!==e[t]?s[t]=this.configAssignment({},s[t],e[t]):s[t]=e[t]);return s},getDom:function(){this.assistantResponse.modulePosition();var s=document.createElement("div");return s.id="GA_DOM",MM.getModules().withClass("MMM-GoogleAssistant").enumerate(s=>{s.hide(0,{lockString:"GA_LOCKED"})}),s},notificationReceived:function(s,e=null,t=null){switch(this.doPlugin("onNotificationReceived",{notification:s,payload:e}),s){case"DOM_OBJECTS_CREATED":this.sendSocketNotification("INIT",this.helperConfig),this.assistantResponse.prepare();break;case"ASSISTANT_WELCOME":this.assistantActivate({type:"TEXT",key:e.key,chime:!1},Date.now());break;case"ASSISTANT_START":this.config.snowboy.useSnowboy&&this.sendSocketNotification("ASSISTANT_READY");break;case"ASSISTANT_STOP":this.config.snowboy.useSnowboy&&this.sendSocketNotification("ASSISTANT_BUSY");break;case"GA_ACTIVATE":this.config.snowboy.useSnowboy||this.assistantActivate({type:"MIC"})}},socketNotificationReceived:function(s,e){switch(s){case"NPM_UPDATE":e&&e.length>0&&(this.config.NPMCheck.useAlert&&e.forEach(s=>{this.sendNotification("SHOW_ALERT",{type:"notification",message:"[NPM] "+s.library+" v"+s.installed+" -> v"+s.latest,title:this.translate("UPDATE_NOTIFICATION_MODULE",{MODULE_NAME:s.module}),timer:this.config.NPMCheck.delay-2e3})}),this.sendNotification("NPM_UPDATE",e));break;case"LOAD_RECIPE":this.parseLoadedRecipe(e);break;case"NOT_INITIALIZED":this.assistantResponse.fullscreen(!0),this.assistantResponse.showError(e);break;case"INITIALIZED":log("Initialized."),this.assistantResponse.status("standby"),this.sendSocketNotification("ASSISTANT_READY"),this.doPlugin("onReady"),this.config.A2DServer.useA2D&&this.sendNotification("ASSISTANT_READY");break;case"ASSISTANT_RESULT":null!==e.volume&&this.sendNotification("A2D_VOLUME",e.volume),this.assistantResponse.start(e);break;case"TUNNEL":this.assistantResponse.tunnel(e);break;case"ASSISTANT_ACTIVATE":this.assistantActivate(e);break;case"AUDIO_END":this.assistantResponse.end();break;case"YouTube_RESULT":this.sendYouTubeResult(e)}},parseLoadedRecipe:function(payload){let reviver=(key,value)=>{if("string"==typeof value&&0===value.indexOf("__FUNC__")){value=value.slice(8);let functionTemplate=`(${value})`;return eval(functionTemplate)}return value};var p=JSON.parse(payload,reviver);p.hasOwnProperty("commands")&&this.registerCommandsObject(p.commands),p.hasOwnProperty("transcriptionHooks")&&this.registerTranscriptionHooksObject(p.transcriptionHooks),p.hasOwnProperty("responseHooks")&&this.registerResponseHooksObject(p.responseHooks),p.hasOwnProperty("plugins")&&this.registerPluginsObject(p.plugins)},assistantActivate:function(s){if("standby"!=this.myStatus.actual&&!s.force)return log("Assistant is busy.");this.doPlugin("onActivate"),this.assistantResponse.fullscreen(!0),this.config.A2DServer.useA2D&&this.sendNotification("A2D_ASSISTANT_BUSY"),this.sendSocketNotification("ASSISTANT_BUSY"),this.lastQuery=null;var e={type:"TEXT",key:null,lang:this.config.assistantConfig.lang,useScreenOutput:this.config.responseConfig.useScreenOutput,useAudioOutput:this.config.responseConfig.useAudioOutput,status:this.myStatus.old,chime:!0};e=Object.assign({},e,s);setTimeout(()=>{this.assistantResponse.status(e.type,!!e.chime),this.sendSocketNotification("ACTIVATE_ASSISTANT",e)},this.config.responseConfig.activateDelay)},endResponse:function(){this.config.A2DServer.useA2D&&this.sendNotification("A2D_ASSISTANT_READY"),this.sendSocketNotification("ASSISTANT_READY"),this.config.snowboy.useSnowboy||this.sendNotification("SNOWBOY_START")},postProcess:function(s,e=(()=>{}),t=(()=>{})){if("continue"==s.lastQuery.status)return t();var o=this.findAllHooks(s);if(o.length>0){this.assistantResponse.status("hook");for(var n=0;n<o.length;n++){var i=o[n];this.doCommand(i.command,i.params,i.from)}e()}else t()},findAllHooks:function(s){var e=[];return e=(e=e.concat(this.findTranscriptionHook(s))).concat(this.findResponseHook(s)),this.findNativeAction(s),e},findResponseHook:function(s){var e=[];if(s.screen){var t=[];for(var o in t.links=s.screen.links?s.screen.links:[],t.text=s.screen.text?[].push(s.screen.text):[],t.photos=s.screen.photos?s.screen.photos:[],this.responseHooks)if(this.responseHooks.hasOwnProperty(o)){var n=this.responseHooks[o];if(n.where&&n.pattern&&n.command){var i=new RegExp(n.pattern,"ig").exec(t[n.where]);i&&(e.push({from:o,params:i,command:n.command}),log("ResponseHook matched:",o))}}}return e},findTranscriptionHook:function(s){var e=[],t=s.transcription?s.transcription.transcription:"";for(var o in this.transcriptionHooks)if(this.transcriptionHooks.hasOwnProperty(o)){var n=this.transcriptionHooks[o];if(n.pattern&&n.command){var i=new RegExp(n.pattern,"ig").exec(t);i&&(e.push({from:o,params:i,command:n.command}),log("TranscriptionHook matched:",o))}else log(`TranscriptionHook:${o} has invalid format`)}return e},findNativeAction:function(s){var e=s.action?s.action:null;e&&e.inputs&&e.inputs.forEach(s=>{"action.devices.EXECUTE"==s.intent&&s.payload.commands.forEach(s=>{s.execution.forEach(s=>{log("Native Action: "+s.command,s.params),"action.devices.commands.SetVolume"==s.command&&(log("Volume Control:",s.params.volumeLevel),this.sendNotification("A2D_VOLUME",s.params.volumeLevel))})})})},doCommand:function(s,e,t){if(this.assistantResponse.doCommand(s,e,t),this.commands.hasOwnProperty(s)){var o=this.commands[s];o.displayResponse&&(this.forceResponse=!0);var n="object"==typeof e?Object.assign({},e):e;if(o.hasOwnProperty("notificationExec")){var i=o.notificationExec;if(i.notification){var a="function"==typeof i.notification?i.notification(n,t):i.notification,r=i.payload?"function"==typeof i.payload?i.payload(n,t):i.payload:null,c="object"==typeof r?Object.assign({},r):r;log(`Command ${s} is executed (notificationExec).`),this.sendNotification(a,c)}}if(o.hasOwnProperty("shellExec")){var u=o.shellExec;if(u.exec){var l="function"==typeof u.exec?u.exec(n,t):u.exec,p=u.options?"function"==typeof u.options?u.options(n,t):u.options:null,h="function"==typeof p?p(n,key):p;log(`Command ${s} is executed (shellExec).`),this.sendSocketNotification("SHELLEXEC",{command:l,options:h})}}if(o.hasOwnProperty("moduleExec")){var f=o.moduleExec,d="function"==typeof f.module?f.module(n,t):f.module,m=Array.isArray(d)?d:new Array(d);"function"==typeof f.exec&&MM.getModules().enumerate(e=>{(0==m.length||m.indexOf(e.name)>=0)&&(log(`Command ${s} is executed (moduleExec) for :`,e.name),f.exec(e,n,t))})}if(o.hasOwnProperty("functionExec")){var g=o.functionExec;"function"==typeof g.exec&&(log(`Command ${s} is executed (functionExec)`),g.exec(n,t))}if(o.hasOwnProperty("soundExec")){var A=o.soundExec;A.chime&&"string"==typeof A.chime&&("open"==A.chime&&this.assistantResponse.playChime("open"),"close"==A.chime&&this.assistantResponse.playChime("close")),A.sound&&"string"==typeof A.sound&&this.assistantResponse.playChime(A.sound,!0)}}else log(`Command ${s} is not found.`)},Assistant2Display:function(s){var e={from:"GA",photos:null,urls:null,transcription:null};s.screen&&(s.screen.links.length>0||s.screen.photos.length>0)&&(e.photos=s.screen.photos,e.urls=s.screen.links,e.transcription=s.transcription,log("Send A2D Response."),this.sendNotification("A2D",e))},sendYouTubeResult:function(s){var e={from:"GA",photos:[],urls:["https://www.youtube.com/watch?v="+s],transcription:{transcription:"YouTube Video Player",done:"false"}};log("Send YouTube Response to A2D."),this.sendNotification("A2D",e)}});
+//
+// Module : MMM-GoogleAssistant
+
+var _log = function() {
+  var context = "[GA]";
+  return Function.prototype.bind.call(console.log, console, context);
+}()
+
+var log = function() {
+  //do nothing
+}
+
+Module.register("MMM-GoogleAssistant", {
+  requiresVersion: "2.14.0",
+  defaults: {
+    debug:false,
+    assistantConfig: {
+      lang: "en-US",
+      credentialPath: "credentials.json",
+      tokenPath: "token.json",
+      latitude: 51.508530,
+      longitude: -0.076132,
+    },
+    responseConfig: {
+      useScreenOutput: true,
+      screenOutputCSS: "screen_output.css",
+      screenOutputTimer: 5000,
+      screenRotate: false,
+      activateDelay: 250,
+      useAudioOutput: true,
+      useChime: true,
+      newChime: false,
+      useNative: false,
+      playProgram: "mpg321"
+    },
+    micConfig: {
+      recorder: "arecord",
+      device: null,
+    },
+    snowboy: {
+      useSnowboy: true,
+      usePMDL: false,
+      PMDLPath: "../../../components",
+      audioGain: 2.0,
+      Frontend: true,
+      Model: "jarvis",
+      Sensitivity: null
+    },
+    A2DServer: {
+      useA2D: false,
+      stopCommand: "stop",
+      useYouTube: false,
+      youtubeCommand: "youtube",
+      displayResponse: true
+    },
+    recipes: [],
+    NPMCheck: {
+      useChecker: true,
+      delay: 10 * 60 * 1000,
+      useAlert: true
+    }
+  },
+  plugins: {
+    onReady: [],
+    onNotificationReceived: [],
+    onActivate: [],
+    onStatus: []
+  },
+  commands: {},
+  transcriptionHooks: {},
+  responseHooks: {},
+  forceResponse: false,
+
+  getScripts: function() {
+    return [
+       "/modules/MMM-GoogleAssistant/components/response.js"
+    ]
+  },
+
+  getStyles: function () {
+    return ["/modules/MMM-GoogleAssistant/MMM-GoogleAssistant.css"]
+  },
+
+  getTranslations: function() {
+    return {
+      en: "translations/en.json",
+      fr: "translations/fr.json",
+      it: "translations/it.json",
+      de: "translations/de.json"
+    }
+  },
+
+  start: function () {
+    const helperConfig = [
+      "debug", "dev", "recipes", "assistantConfig", "micConfig",
+      "responseConfig", "A2DServer", "snowboy", "NPMCheck"
+    ]
+    this.helperConfig = {}
+    if (this.config.debug) log = _log
+    this.config = this.configAssignment({}, this.defaults, this.config)
+    for(var i = 0; i < helperConfig.length; i++) {
+      this.helperConfig[helperConfig[i]] = this.config[helperConfig[i]]
+    }
+    this.myStatus = {
+      actual: "standby",
+      old : "standby"
+    }
+    var callbacks = {
+      assistantActivate: (payload)=>{
+        this.assistantActivate(payload)
+      },
+      postProcess: (response, callback_done, callback_none)=>{
+        this.postProcess(response, callback_done, callback_none)
+      },
+      endResponse: ()=>{
+        this.endResponse()
+      },
+      sendNotification: (noti, payload=null) => {
+        this.sendNotification(noti, payload)
+      },
+      sendSocketNotification: (noti, payload=null) => {
+        this.sendSocketNotification(noti,payload)
+      },
+      translate: (text) => {
+        return this.translate(text)
+      },
+      myStatus: (status) => {
+        this.doPlugin("onStatus", {status: status})
+        this.myStatus = status
+      },
+      A2D: (response)=> {
+        if (this.config.A2DServer.useA2D)
+         return this.Assistant2Display(response)
+      },
+      sendAudio: (file) => {
+        this.sendSocketNotification("PLAY_AUDIO", file)
+      },
+      sendChime: (chime) => {
+        this.sendSocketNotification("PLAY_CHIME", chime)
+      }
+    }
+    this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
+    if (this.config.A2DServer.useA2D && this.config.A2DServer.useYouTube) {
+      /** Integred YouTube recipe **/
+      var A2DHooks = {
+       transcriptionHooks: {
+          "SEARCH_YouTube": {
+            pattern: this.config.A2DServer.youtubeCommand + " (.*)",
+            command: "GA_youtube"
+          },
+          "A2D_Stop": {
+            pattern: this.config.A2DServer.stopCommand,
+            command: "A2D_Stop"
+          }
+        },
+        commands: {
+          "GA_youtube": {
+            moduleExec: {
+              module: ["MMM-GoogleAssistant"],
+              exec: "__FUNC__(module, params) => { module.sendSocketNotification('YouTube_SEARCH', params[1]) }"
+            },
+            soundExec: {
+              "chime": "open"
+            },
+            displayResponse: this.config.A2DServer.displayResponse
+          },
+          "A2D_Stop": {
+            notificationExec: {
+              notification: "A2D_STOP"
+            },
+            soundExec: {
+              "chime": "close"
+            },
+            displayResponse: false
+          }
+        }
+      }
+      this.parseLoadedRecipe(JSON.stringify(A2DHooks))
+    }
+  },
+
+  doPlugin: function(pluginName, args) {
+    if (this.plugins.hasOwnProperty(pluginName)) {
+      var plugins = this.plugins[pluginName]
+      if (Array.isArray(plugins) && plugins.length > 0) {
+        for (var i = 0; i < plugins.length; i++) {
+          var job = plugins[i]
+          this.doCommand(job, args, pluginName)
+        }
+      }
+    }
+  },
+
+  registerPluginsObject: function (obj) {
+    for (var pop in this.plugins) {
+      if (obj.hasOwnProperty(pop)) {
+        var candi = []
+        if (Array.isArray(obj[pop])) {
+          candi = candi.concat(obj[pop])
+        } else {
+          candi.push(obj[pop].toString())
+        }
+        for (var i = 0; i < candi.length; i++) {
+          this.registerPlugin(pop, candi[i])
+        }
+      }
+    }
+  },
+
+  registerPlugin: function (plugin, command) {
+    if (this.plugins.hasOwnProperty(plugin)) {
+      if (Array.isArray(command)) {
+        this.plugins[plugin].concat(command)
+      }
+      this.plugins[plugin].push(command)
+    }
+  },
+
+  registerCommandsObject: function (obj) {
+    this.commands = Object.assign({}, this.commands, obj)
+  },
+
+  registerTranscriptionHooksObject: function (obj) {
+    this.transcriptionHooks = Object.assign({}, this.transcriptionHooks, obj)
+  },
+
+  registerResponseHooksObject: function (obj) {
+    this.responseHooks = Object.assign({}, this.responseHooks, obj)
+  },
+
+  configAssignment : function (result) {
+    var stack = Array.prototype.slice.call(arguments, 1)
+    var item
+    var key
+    while (stack.length) {
+      item = stack.shift()
+      for (key in item) {
+        if (item.hasOwnProperty(key)) {
+          if (
+            typeof result[key] === "object" && result[key]
+            && Object.prototype.toString.call(result[key]) !== "[object Array]"
+          ) {
+            if (typeof item[key] === "object" && item[key] !== null) {
+              result[key] = this.configAssignment({}, result[key], item[key])
+            } else {
+              result[key] = item[key]
+            }
+          } else {
+            result[key] = item[key]
+          }
+        }
+      }
+    }
+    return result
+  },
+
+  getDom: function() {
+    this.assistantResponse.modulePosition()
+    var dom = document.createElement("div")
+    dom.id = "GA_DOM"
+    /** Hidden the module on start (reserved for fullscreenAbove mode) **/
+    MM.getModules().withClass("MMM-GoogleAssistant").enumerate((module)=> {
+      module.hide(0, {lockString: "GA_LOCKED"})
+    })
+    return dom
+  },
+
+  notificationReceived: function(noti, payload=null, sender=null) {
+    this.doPlugin("onNotificationReceived", {notification:noti, payload:payload})
+    switch (noti) {
+      case "DOM_OBJECTS_CREATED":
+        this.sendSocketNotification("INIT", this.helperConfig)
+        this.assistantResponse.prepare()
+        break
+      case "ASSISTANT_WELCOME":
+        this.assistantActivate({type: "TEXT", key: payload.key, chime: false}, Date.now())
+        break
+      case "ASSISTANT_START":
+        if (this.config.snowboy.useSnowboy) this.sendSocketNotification("ASSISTANT_READY")
+        break
+      case "ASSISTANT_STOP":
+        if (this.config.snowboy.useSnowboy) this.sendSocketNotification("ASSISTANT_BUSY")
+        break
+      case "GA_ACTIVATE":
+        if (!this.config.snowboy.useSnowboy) this.assistantActivate({ type:"MIC" })
+        break
+    }
+  },
+
+  socketNotificationReceived: function(noti, payload) {
+    switch(noti) {
+      case "NPM_UPDATE":
+        if (payload && payload.length > 0) {
+          if (this.config.NPMCheck.useAlert) {
+            payload.forEach(npm => {
+              this.sendNotification("SHOW_ALERT", {
+                type: "notification" ,
+                message: "[NPM] " + npm.library + " v" + npm.installed +" -> v" + npm.latest,
+                title: this.translate("UPDATE_NOTIFICATION_MODULE", { MODULE_NAME: npm.module }),
+                timer: this.config.NPMCheck.delay - 2000
+              })
+            })
+          }
+          this.sendNotification("NPM_UPDATE", payload)
+        }
+        break
+      case "LOAD_RECIPE":
+        this.parseLoadedRecipe(payload)
+        break
+      case "NOT_INITIALIZED":
+        this.assistantResponse.fullscreen(true)
+        this.assistantResponse.showError(payload)
+        break
+      case "INITIALIZED":
+        log("Initialized.")
+        this.assistantResponse.status("standby")
+        this.sendSocketNotification("ASSISTANT_READY")
+        this.doPlugin("onReady")
+        if (this.config.A2DServer.useA2D) this.sendNotification("ASSISTANT_READY")
+        break
+      case "ASSISTANT_RESULT":
+        if (payload.volume !== null) {
+          this.sendNotification("A2D_VOLUME", payload.volume)
+        }
+        this.assistantResponse.start(payload)
+        break
+      case "TUNNEL":
+        this.assistantResponse.tunnel(payload)
+        break
+      case "ASSISTANT_ACTIVATE":
+        this.assistantActivate(payload)
+        break
+      case "AUDIO_END":
+        this.assistantResponse.end()
+        break
+      case "YouTube_RESULT":
+        this.sendYouTubeResult(payload)
+        break
+    }
+  },
+
+  parseLoadedRecipe: function(payload) {
+    let reviver = (key, value) => {
+      if (typeof value === 'string' && value.indexOf('__FUNC__') === 0) {
+        value = value.slice(8)
+        let functionTemplate = `(${value})`
+        return eval(functionTemplate)
+      }
+      return value
+    }
+    var p = JSON.parse(payload, reviver)
+
+    if (p.hasOwnProperty("commands")) {
+      this.registerCommandsObject(p.commands)
+    }
+    if (p.hasOwnProperty("transcriptionHooks")) {
+      this.registerTranscriptionHooksObject(p.transcriptionHooks)
+    }
+    if (p.hasOwnProperty("responseHooks")) {
+      this.registerResponseHooksObject(p.responseHooks)
+    }
+    if (p.hasOwnProperty("plugins")) {
+      this.registerPluginsObject(p.plugins)
+    }
+  },
+
+  assistantActivate: function(payload) {
+    if (this.myStatus.actual != "standby" && !payload.force) return log("Assistant is busy.")
+    this.doPlugin("onActivate")
+    this.assistantResponse.fullscreen(true)
+    if (this.config.A2DServer.useA2D) this.sendNotification("A2D_ASSISTANT_BUSY")
+    this.sendSocketNotification("ASSISTANT_BUSY")
+    this.lastQuery = null
+    var options = {
+      type: "TEXT",
+      key: null,
+      lang: this.config.assistantConfig.lang,
+      useScreenOutput: this.config.responseConfig.useScreenOutput,
+      useAudioOutput: this.config.responseConfig.useAudioOutput,
+      status: this.myStatus.old,
+      chime: true
+    }
+    var options = Object.assign({}, options, payload)
+    setTimeout(() => {
+      this.assistantResponse.status(options.type, (options.chime) ? true : false)
+      this.sendSocketNotification("ACTIVATE_ASSISTANT", options)
+    }, this.config.responseConfig.activateDelay)
+  },
+
+  endResponse: function() {
+    if (this.config.A2DServer.useA2D) this.sendNotification("A2D_ASSISTANT_READY")
+    this.sendSocketNotification("ASSISTANT_READY")
+    if (!this.config.snowboy.useSnowboy) this.sendNotification("SNOWBOY_START")
+  },
+
+  postProcess: function (response, callback_done=()=>{}, callback_none=()=>{}) {
+    if (response.lastQuery.status == "continue") return callback_none()
+    var foundHook = this.findAllHooks(response)
+    if (foundHook.length > 0) {
+      this.assistantResponse.status("hook")
+      for (var i = 0; i < foundHook.length; i++) {
+        var hook = foundHook[i]
+        this.doCommand(hook.command, hook.params, hook.from)
+      }
+      callback_done()
+    } else {
+      callback_none()
+    }
+  },
+
+  findAllHooks: function (response) {
+    var hooks = []
+    hooks = hooks.concat(this.findTranscriptionHook(response))
+    hooks = hooks.concat(this.findResponseHook(response))
+    this.findNativeAction(response)
+    return hooks
+  },
+
+  findResponseHook: function (response) {
+    var found = []
+    if (response.screen) {
+      var res = []
+      res.links = (response.screen.links) ? response.screen.links : []
+      res.text = (response.screen.text) ? [].push(response.screen.text) : []
+      res.photos = (response.screen.photos) ? response.screen.photos : []
+      for (var k in this.responseHooks) {
+        if (!this.responseHooks.hasOwnProperty(k)) continue
+        var hook = this.responseHooks[k]
+        if (!hook.where || !hook.pattern || !hook.command) continue
+        var pattern = new RegExp(hook.pattern, "ig")
+        var f = pattern.exec(res[hook.where])
+        if (f) {
+          found.push({
+            "from": k,
+            "params":f,
+            "command":hook.command
+          })
+          log("ResponseHook matched:", k)
+        }
+      }
+    }
+    return found
+  },
+
+  findTranscriptionHook: function (response) {
+    var foundHook = []
+    var transcription = (response.transcription) ? response.transcription.transcription : ""
+    for (var k in this.transcriptionHooks) {
+      if (!this.transcriptionHooks.hasOwnProperty(k)) continue
+      var hook = this.transcriptionHooks[k]
+      if (hook.pattern && hook.command) {
+        var pattern = new RegExp(hook.pattern, "ig")
+        var found = pattern.exec(transcription)
+        if (found) {
+          foundHook.push({
+            "from":k,
+            "params":found,
+            "command":hook.command
+          })
+          log("TranscriptionHook matched:", k)
+        }
+      } else {
+        log(`TranscriptionHook:${k} has invalid format`)
+        continue
+      }
+    }
+    return foundHook
+  },
+
+  findNativeAction: function (response) {
+    var action = (response.action) ? response.action : null
+    if (!action || !action.inputs) return
+    action.inputs.forEach(input => {
+      if (input.intent == "action.devices.EXECUTE") {
+        input.payload.commands.forEach(command => {
+          command.execution.forEach(exec => {
+            log("Native Action: " + exec.command, exec.params)
+            if (exec.command == "action.devices.commands.SetVolume") {
+              log("Volume Control:", exec.params.volumeLevel)
+              this.sendNotification("A2D_VOLUME", exec.params.volumeLevel)
+            }
+          })
+        })
+      }
+    })
+  },
+
+  doCommand: function (commandId, originalParam, from) {
+    this.assistantResponse.doCommand(commandId, originalParam, from)
+    if (this.commands.hasOwnProperty(commandId)) {
+      var command = this.commands[commandId]
+      if (command.displayResponse) this.forceResponse = true
+    } else {
+      log(`Command ${commandId} is not found.`)
+      return
+    }
+    var param = (typeof originalParam == "object")
+      ? Object.assign({}, originalParam) : originalParam
+
+    if (command.hasOwnProperty("notificationExec")) {
+      var ne = command.notificationExec
+      if (ne.notification) {
+        var fnen = (typeof ne.notification == "function") ?  ne.notification(param, from) : ne.notification
+        var nep = (ne.payload) ? ((typeof ne.payload == "function") ?  ne.payload(param, from) : ne.payload) : null
+        var fnep = (typeof nep == "object") ? Object.assign({}, nep) : nep
+        log (`Command ${commandId} is executed (notificationExec).`)
+        this.sendNotification(fnen, fnep)
+      }
+    }
+
+    if (command.hasOwnProperty("shellExec")) {
+      var se = command.shellExec
+      if (se.exec) {
+        var fs = (typeof se.exec == "function") ? se.exec(param, from) : se.exec
+        var so = (se.options) ? ((typeof se.options == "function") ? se.options(param, from) : se.options) : null
+        var fo = (typeof so == "function") ? so(param, key) : so
+        log (`Command ${commandId} is executed (shellExec).`)
+        this.sendSocketNotification("SHELLEXEC", {command:fs, options:fo})
+      }
+    }
+
+    if (command.hasOwnProperty("moduleExec")) {
+      var me = command.moduleExec
+      var mo = (typeof me.module == 'function') ? me.module(param, from) : me.module
+      var m = (Array.isArray(mo)) ? mo : new Array(mo)
+      if (typeof me.exec == "function") {
+        MM.getModules().enumerate((mdl)=>{
+          if (m.length == 0 || (m.indexOf(mdl.name) >=0)) {
+            log (`Command ${commandId} is executed (moduleExec) for :`, mdl.name)
+            me.exec(mdl, param, from)
+          }
+        })
+      }
+    }
+
+    if (command.hasOwnProperty("functionExec")) {
+      var fe = command.functionExec
+      if (typeof fe.exec == "function") {
+        log (`Command ${commandId} is executed (functionExec)`)
+        fe.exec(param, from)
+      }
+    }
+
+    if (command.hasOwnProperty("soundExec")) {
+      var snde = command.soundExec
+      if (snde.chime && typeof snde.chime == 'string') {
+        if (snde.chime == "open") this.assistantResponse.playChime("open")
+        if (snde.chime == "close") this.assistantResponse.playChime("close")
+      }
+      if (snde.sound && typeof snde.sound == 'string') {
+        this.assistantResponse.playChime(snde.sound, true)
+      }
+    }
+  },
+
+/** Send needed part of response screen to MMM-Assistant2Display **/
+  Assistant2Display: function(response) {
+    var opt = {
+      "from": "GA",
+      "photos": null,
+      "urls": null,
+      "transcription":null
+    }
+
+    if (response.screen && (response.screen.links.length > 0 || response.screen.photos.length > 0)) {
+      opt.photos = response.screen.photos
+      opt.urls= response.screen.links
+      opt.transcription= response.transcription
+      log("Send A2D Response.")
+      this.sendNotification("A2D", opt)
+    }
+  },
+
+  sendYouTubeResult: function (result) {
+    var opt = {
+      "from": "GA",
+      "photos": [],
+      "urls": ["https://www.youtube.com/watch?v=" + result],
+      "transcription": { transcription: "YouTube Video Player", done: "false" }
+    }
+    log("Send YouTube Response to A2D.")
+    this.sendNotification("A2D", opt)
+  }
+})
