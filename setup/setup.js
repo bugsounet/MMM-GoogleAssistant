@@ -8,9 +8,6 @@ var defaultModule = {
     lang: "en-US",
     credentialPath: "credentials.json",
     tokenPath: "token.json",
-    projectId: "",
-    modelId: "",
-    instanceId: "",
     latitude: 51.508530,
     longitude: -0.076132,
   },
@@ -18,21 +15,22 @@ var defaultModule = {
     useScreenOutput: true,
     screenOutputCSS: "screen_output.css",
     screenOutputTimer: 5000,
+    screenRotate: false,
     activateDelay: 250,
     useAudioOutput: true,
     useChime: true,
-    newChime: false
+    newChime: false,
+    useNative: false,
+    playProgram: "mpg321"
   },
   micConfig: {
     recorder: "arecord",
     device: null,
   },
-  customActionConfig: {
-    autoMakeAction: false,
-    autoUpdateAction: false,
-    // actionLocale: "en-US", // multi language action is not supported yet
-  },
   snowboy: {
+    useSnowboy: true,
+    usePMDL: false,
+    PMDLPath: "../../../components",
     audioGain: 2.0,
     Frontend: true,
     Model: "jarvis",
@@ -40,9 +38,17 @@ var defaultModule = {
   },
   A2DServer: {
     useA2D: false,
-    stopCommand: "stop"
+    stopCommand: "stop",
+    useYouTube: false,
+    youtubeCommand: "youtube",
+    displayResponse: true
   },
   recipes: [],
+  NPMCheck: {
+    useChecker: true,
+    delay: 10 * 60 * 1000,
+    useAlert: true
+  }
 }
 
 /** Merge function **/
@@ -125,9 +131,6 @@ var response = {
       lang: req.query.lang,
       credentialPath: req.query.credentials,
       tokenPath: req.query.token,
-      projectId: req.query.projectId,
-      modelId: req.query.modelId,
-      instanceId: req.query.instanceId,
       latitude: Number(req.query.latitude),
       longitude: Number(req.query.longitude),
     },
@@ -138,16 +141,13 @@ var response = {
       activateDelay: Number(req.query.activateDelay),
       useAudioOutput: stringToBool(req.query.useAudioOutput),
       useChime: stringToBool(req.query.useChime),
-      newChime: stringToBool(req.query.newChime)
+      newChime: stringToBool(req.query.newChime),
+      useNative: stringToBool(req.query.useNative),
+      playProgram: req.query.playProgram
     },
     micConfig: {
       recorder: req.query.recorder,
       device: req.query.device
-    },
-    customActionConfig: {
-      autoMakeAction: stringToBool(req.query.autoMakeAction),
-      autoUpdateAction: stringToBool(req.query.autoUpdateAction),
-      //actionLocale: "en-US", // multi language action is not supported yet
     },
     snowboy: {
       audioGain: Number(req.query.audioGain),
@@ -164,7 +164,8 @@ var response = {
 }
    configAssistant = mergeConfig( {} , configAssistant, response )
    console.log (configAssistant)
-   res.end("Ok!")
+   //res.send(configAssistant)
+   res.end("ok!")
 })
 
 var server = app.listen(8081, function () {
