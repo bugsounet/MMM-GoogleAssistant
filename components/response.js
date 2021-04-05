@@ -285,15 +285,12 @@ class AssistantResponse {
 
   fullscreen (active, status) {
     var GA = document.getElementById("GA")
-    var dom = document.getElementById("GA_DOM")
+
     if (active) {
       GA.className= "in"
       if (this.fullscreenAbove) {
         if (this.config.screenRotate) GA.classList.add("rotate_above")
         else GA.classList.add("fullscreen_above")
-      }
-      else if (this.config.screenRotate) GA.classList.add("rotate") 
-      if (this.fullscreenAbove) {
         MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
           module.hide(500, {lockString: "GA_LOCKED"})
         })
@@ -301,15 +298,13 @@ class AssistantResponse {
           module.show(500, {lockString: "GA_LOCKED"})
         })
       }
+      else if (this.config.screenRotate) GA.classList.add("rotate")
     } else {
       if (status && status.actual == "standby") { // only on standby mode
         GA.className= "out"
         if (this.fullscreenAbove) {
           if (this.config.screenRotate) GA.classList.add("rotate_above")
           else GA.classList.add("fullscreen_above")
-        }
-        else if (this.config.screenRotate) GA.classList.add("rotate")
-        if (this.fullscreenAbove) {
           MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
             module.show(500, {lockString: "GA_LOCKED"})
           })
@@ -317,6 +312,7 @@ class AssistantResponse {
             module.hide(500, {lockString: "GA_LOCKED"})
           })
         }
+        else if (this.config.screenRotate) GA.classList.add("rotate")
       }
     }
   }
