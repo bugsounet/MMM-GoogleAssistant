@@ -1,5 +1,6 @@
 const path = require("path")
 const fs = require("fs")
+const open = require("open")
 
 /** default module config **/
 var defaultModule = {
@@ -112,7 +113,7 @@ var app = express();
 
 app.use(express.static('public'));
 app.get('/', function (req, res) {
-   res.sendFile( __dirname + "/index.htm")
+  res.sendFile( __dirname + "/index.htm")
 })
 
 app.get("/config", (req, res) => {
@@ -171,7 +172,8 @@ var response = {
 var server = app.listen(8081, function () {
    var host = server.address().address
    var port = server.address().port
-   console.log("Running configuration app on port", port)
+   console.log("Running configuration app on http://127.0.0.1:" + port)
+   open("http://127.0.0.1:8081").catch(() => console.log("Failed to open browser!"))
 })
 
 /***********/

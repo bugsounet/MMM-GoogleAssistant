@@ -47,17 +47,55 @@
 
       Name of module: <span id="module"></span><br><br>
       <form action = "http://127.0.0.1:8081/process_get" method = "GET">
-         Position: <input id="position" type = "text" name = "position" >  <br><br>
+         Position:
+         <select id="position" type = "select" name = "position">
+           <option valeur= "top_bar">top_bar</option>
+           <option valeur= "top_left">top_left</option>
+           <option valeur= "top_center">top_center</option>
+           <option valeur= "top_right">top_right</option>
+           <option valeur= "upper_third">upper_third</option>
+           <option valeur= "middle_center">middle_center</option>
+           <option valeur= "lower_third">lower_third</option>
+           <option valeur= "bottom_left">bottom_left</option>
+           <option valeur= "bottom_center">bottom_center</option>
+           <option valeur= "bottom_right">bottom_right</option>
+           <option valeur= "bottom_bar">bottom_bar</option>
+           <option valeur= "fullscreen_above">fullscreen_above</option>
+           <option valeur= "fullscreen_below">fullscreen_bellow</option>
+         </select>
+         Select module position<br><br>
 
          Configuration<br>
-         debug: <input id="debug" type = "text" name = "debug"><br><br>
+         debug:
+         <select id="debug" type = "select" name = "debug">
+           <option valeur ="true">true</option>
+           <option valeur ="false">false</option>
+         </select>
+         Activate debug mode<br><br>
 
          assistantConfig<br>
-         lang: <input id="lang" type = "text" name = "lang"><br>
-         credentials: <input id="credentials" type = "text" name = "credentials"><br>
-         token: <input id="token" type = "text" name = "token"><br>
-         latitude: <input id="latitude" type = "text" name = "latitude"><br>
-         longitude: <input id="longitude" type = "text" name = "longitude"><br><br>
+         lang:
+         <select id="lang" type = "text" name = "lang">
+           <option valeur ="de-DE">de-DE</option>
+           <option valeur ="en-AU">en-AU</option>
+           <option valeur ="en-CA">en-CA</option>
+           <option valeur ="en-GB">en-GB</option>
+           <option valeur ="en-IN">en-IN</option>
+           <option valeur ="en-US">en-US</option>
+           <option valeur ="fr-CA">fr-CA</option>
+           <option valeur ="fr-FR">fr-FR</option>
+           <option valeur ="it-IT">it-IT</option>
+           <option valeur ="ja-JP">ja-JP</option>
+           <option valeur ="es-ES">es-ES</option>
+           <option valeur ="es-MX">es-MX</option>
+           <option valeur ="ko-KR">ko-KR</option>
+           <option valeur ="pt-BR">pt-BR</option>
+         </select>
+         Select language<br>
+         credentials: <input id="credentials" type = "text" name = "credentials" readonly>credentials file (you have to change this!)<br>
+         token: <input id="token" type = "text" name = "token" readonly>token file (you don't have to change this!)<br>
+         latitude: <input id="latitude" type = "text" name = "latitude">Enter your latitude coordinate<br>
+         longitude: <input id="longitude" type = "text" name = "longitude">Enter your longitude coordinate<br><br>
 
          responseConfig<br>
          useScreenOutput: <input id="useScreenOutput" type = "text" name = "useScreenOutput"><br>
