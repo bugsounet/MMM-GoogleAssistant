@@ -7,8 +7,7 @@
     "preinstall": "installer/preinstall.sh",
     "postinstall": "installer/postinstall.sh",
     "update": "installer/update.sh",
-    "rebuild": "installer/rebuild.sh",
-    "setup": "node setup/setup"
+    "rebuild": "installer/rebuild.sh"
   },
   "keywords": [
     "magic mirror",
