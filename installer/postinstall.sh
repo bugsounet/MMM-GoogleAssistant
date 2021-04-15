@@ -37,25 +37,25 @@ if $prompt; then
   echo
   
   # Audio out/in checking
-  Installer_info "Checking Speaker and Microphone..."
-  Installer_yesno "Do you want check your audio output configuration" && (
-    Installer_checkmicv2
-    echo
+  #Installer_info "Checking Speaker and Microphone..."
+  #Installer_yesno "Do you want check your audio output configuration" && (
+  #  Installer_checkmicv2
+  #  echo
   
-    if [ ! -z "$plug_rec" ]; then
-      Installer_warning "This is your GoogleAssistant micConfig working configuration :"
-      if [ "$os_name" == "raspbian" ]; then
-        Installer_warning "Remember: if you are using RPI, it's better to use arecord program"
-      fi
-      echo
-      Installer_warning "micConfig: {"
-      Installer_warning "  recorder: \"arecord\","
-      Installer_warning "  device: \"$plug_rec\""
-      Installer_warning "},"
-    fi
-  )
+  #  if [ ! -z "$plug_rec" ]; then
+  #    Installer_warning "This is your GoogleAssistant micConfig working configuration :"
+  #    if [ "$os_name" == "raspbian" ]; then
+  #      Installer_warning "Remember: if you are using RPI, it's better to use arecord program"
+  #    fi
+  #    echo
+  #    Installer_warning "micConfig: {"
+  #    Installer_warning "  recorder: \"arecord\","
+  #    Installer_warning "  device: \"$plug_rec\""
+  #    Installer_warning "},"
+  #  fi
+  #)
 
-  echo
+  #echo
 
   # the end...
   Installer_error "Support is now moved in a dedicated Server: http://forum.bugsounet.fr"
