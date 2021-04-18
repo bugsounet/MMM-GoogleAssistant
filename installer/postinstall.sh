@@ -58,7 +58,7 @@ if $prompt; then
   #echo
 
   # the end...
-  Installer_error "Support is now moved in a dedicated Server: http://forum.bugsounet.fr"
+  Installer_warning "Support is now moved in a dedicated Server: http://forum.bugsounet.fr"
   Installer_warning "@bugsounet"
   echo
   Installer_success "$Installer_module is now installed !"
