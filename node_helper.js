@@ -8,7 +8,6 @@ const fs = require("fs")
 const path = require("path")
 const Assistant = require("./components/assistant.js")
 const ScreenParser = require("./components/screenParser.js")
-const Snowboy = require("@bugsounet/snowboy").Snowboy
 const Player = require("@bugsounet/native-sound")
 const npmCheck = require("@bugsounet/npmcheck")
 const readJson = require("r-json")
@@ -38,12 +37,6 @@ module.exports = NodeHelper.create({
         break
       case "ACTIVATE_ASSISTANT":
         this.activateAssistant(payload)
-        break
-      case "ASSISTANT_BUSY":
-        if (this.config.snowboy.useSnowboy) this.snowboy.stop()
-        break
-      case "ASSISTANT_READY":
-        if (this.config.snowboy.useSnowboy) this.snowboy.start()
         break
       case "SHELLEXEC":
         var command = payload.command
@@ -153,10 +146,6 @@ module.exports = NodeHelper.create({
     }
     log("Activate delay is set to " + this.config.responseConfig.activateDelay + " ms")
 
-    if (this.config.snowboy.useSnowboy) {
-      this.snowboy = new Snowboy(this.config.snowboy, this.config.micConfig, (detected) => { this.hotwordDetect(detected) } , this.config.debug )
-      this.snowboy.init()
-    }
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED"))
     if (this.config.A2DServer.useA2D) console.log ("[GA] Assistant2Display Server Started")
     if (this.config.responseConfig.useNative) {
@@ -164,6 +153,7 @@ module.exports = NodeHelper.create({
       console.log("[GA] Use native program (" + this.config.responseConfig.playProgram + ") for audio response")
       this.player.init()
     }
+
     if (this.config.NPMCheck.useChecker) {
       var cfg = {
         dirName: __dirname,
@@ -202,11 +192,6 @@ module.exports = NodeHelper.create({
       log("NO_RECIPE_TO_LOAD")
       callback()
     }
-  },
-
-  /** Snowboy Callback **/
-  hotwordDetect: function(detected) {
-    if (detected) this.sendSocketNotification("ASSISTANT_ACTIVATE", { type:"MIC" })
   },
 
  /** YouTube Search **/
