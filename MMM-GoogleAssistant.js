@@ -19,7 +19,7 @@ Module.register("MMM-GoogleAssistant", {
       credentialPath: "credentials.json",
       tokenPath: "token.json",
       latitude: 51.508530,
-      longitude: -0.076132,
+      longitude: -0.076132
     },
     responseConfig: {
       useScreenOutput: true,
@@ -29,13 +29,12 @@ Module.register("MMM-GoogleAssistant", {
       activateDelay: 250,
       useAudioOutput: true,
       useChime: true,
-      newChime: false,
       useNative: false,
       playProgram: "mpg321"
     },
     micConfig: {
       recorder: "arecord",
-      device: null,
+      device: "plughw:1"
     },
     A2DServer: {
       useA2D: false,
@@ -84,7 +83,7 @@ Module.register("MMM-GoogleAssistant", {
 
   start: function () {
     const helperConfig = [
-      "debug", "dev", "recipes", "assistantConfig", "micConfig",
+      "debug", "recipes", "assistantConfig", "micConfig",
       "responseConfig", "A2DServer", "NPMCheck"
     ]
     this.helperConfig = {}
@@ -274,9 +273,8 @@ Module.register("MMM-GoogleAssistant", {
       case "INITIALIZED":
         log("Initialized.")
         this.assistantResponse.status("standby")
-        this.sendSocketNotification("ASSISTANT_READY")
-        this.doPlugin("onReady")
         if (this.config.A2DServer.useA2D) this.sendNotification("ASSISTANT_READY")
+        this.doPlugin("onReady")
         break
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) {
@@ -349,7 +347,6 @@ Module.register("MMM-GoogleAssistant", {
 
   endResponse: function() {
     if (this.config.A2DServer.useA2D) this.sendNotification("A2D_ASSISTANT_READY")
-    this.sendSocketNotification("ASSISTANT_READY")
     this.sendNotification("SNOWBOY_START")
     this.sendNotification("DETECTOR_START")
   },

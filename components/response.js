@@ -12,9 +12,10 @@ class AssistantResponse {
     this.myStatus = { "actual" : "standby" , "old" : "standby" }
     this.loopCount = 0
     this.chime = {
-      beep: this.newChime ? "beep.mp3" : "Old/beep.mp3",
-      error: this.newChime ? "error.mp3" : "Old/error.mp3",
-      continue: this.newChime ? "continue.mp3" : "Old/continue.mp3",
+      beep: "beep.mp3",
+      error: "error.mp3",
+      continue: "continue.mp3",
+      success: "success.mp3",
       open: "Google_beep_open.mp3",
       close: "Google_beep_close.mp3",
     }
@@ -63,7 +64,8 @@ class AssistantResponse {
     this.myStatus.actual = status
     var Status = document.getElementById("GA_STATUS")
     if (beep && this.myStatus.old != "continue") this.playChime("beep")
-    if (status == "error" || status == "continue" ) this.playChime(status)
+    if (status == "error" || status == "continue") this.playChime(status)
+    if (status == "confirmation") this.playChime("success")
     if (status == "WAVEFILE" || status == "TEXT") this.myStatus.actual = "think"
     if (status == "MIC") this.myStatus.actual = (this.myStatus.old == "continue") ? "continue" : "listen"
     if (this.myStatus.actual == this.myStatus.old) return
