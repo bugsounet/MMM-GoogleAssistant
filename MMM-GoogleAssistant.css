@@ -24,56 +24,6 @@
 .GA-assistant_icon{margin-left: -70px;Zoom: 30%;}
 .GA-bar_icon{height:55px;width:280px;object-fit:contain}.lockup_logo{margin:8px 0 0 0;height:55px}
 
-
-/*
-#GA {
-  height:10%;
-  border:none;
-  border-radius: 20px;
-  background-color:#f3f3f3;
-  transition: opacity 0.5s linear;
-  position: absolute;
-  width: 100%;
-  bottom:0;
-}
-
-#GA.rotate {
-  height:6%;
-}
-
-#GA.rotate_above {
-  width:100%;
-  position: fixed;
-  left: 0;
-  top: 0;
-  overflow: auto;
-  border: none;
-  height: 6%;
-  z-index:99998;
-}
-
-#GA.fullscreen_above {
-  width:100%;
-  position: fixed;
-  left: 0;
-  top: 0;
-  overflow: auto;
-  border: none;
-  height: 10%;
-  z-index:99998;
-}
-
-
-#GA.in.fullscreen_above {
-  animation-duration: 0.25s;
-  animation-name: fadeInDown;
-}
-
-#GA.out.fullscreen_above {
-  animation-duration: 0.5s;
-  animation-name: fadeOutUp;
-}
-*/
 #GA.in {
   animation-duration: 0.25s;
   animation-name: fadeInBottom;
@@ -88,27 +38,22 @@
 @keyframes fadeInBottom {
   from {
     opacity: 0;
-    transform: translate3d(0, 200%, 0);
   }
 
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes fadeOutBottom {
   from {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
   }
 
   to {
     opacity: 0;
-    transform: translate3d(0, 200%, 0);
   }
 }
-
 
 #GA.hidden {
   display: none

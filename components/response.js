@@ -94,7 +94,7 @@ class AssistantResponse {
 
     var GA = document.createElement("div")
     GA.id = "GA"
-    GA.className= "out"
+    GA.className= "hidden out"
 
     /** Response popup **/
     var GAHelper = document.createElement("div")
@@ -178,17 +178,6 @@ class AssistantResponse {
     this.status("error")
     return true
   }
-
-/*
-  showTranscription (text, className = "transcription") {
-    var tr = document.getElementById("GA_TRANSCRIPTION")
-    tr.innerHTML = ""
-    var t = document.createElement("p")
-    t.className = className
-    t.innerHTML = text
-    tr.appendChild(t)
-  }
-*/
 
   showTranscription (text, className = "transcription") {
     var tr = document.getElementById("GA_TRANSCRIPTION")
