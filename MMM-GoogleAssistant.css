@@ -12,6 +12,20 @@
   position: fixed;
 }
 
+#GA {zoom: 60%;}
+#GA-popout{bottom:0;box-sizing:border-box;font-family:"Roboto",sans-serif;font-size:40px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-smoothing:antialiased;position:absolute;transform:translateZ(0);transition:opacity 500ms;transition-timing-function:ease-in-out;overflow:hidden;width:100%}
+#GA-popout div{font-family:'Roboto',arial,sans-serif}
+.GA-popout-shadow{background-image:linear-gradient(-180deg,rgba(0,0,0,0.0) 0%,rgba(0,0,0,0.8) 100%);height:5.4em;width:100%}
+#GA-assistant-main-cards{display: block;}
+#GA-assistant-bar
+.GA-assistant-bar-content{display:flex;background-color:rgba(33,33,33,.99);height:144px;padding:0 112px 0 112px;width:100% box-sizing:border-box;white-space:nowrap}
+.GA-assistant_response{color:#ffffff;font-size:28px;margin:auto 0px}
+.GA-assistant-word-icon{height:55px;margin:auto 0px auto auto}
+.GA-assistant_icon{margin-left: -70px;Zoom: 30%;}
+.GA-bar_icon{height:55px;width:280px;object-fit:contain}.lockup_logo{margin:8px 0 0 0;height:55px}
+
+
+/*
 #GA {
   height:10%;
   border:none;
@@ -20,6 +34,7 @@
   transition: opacity 0.5s linear;
   position: absolute;
   width: 100%;
+  bottom:0;
 }
 
 #GA.rotate {
@@ -48,6 +63,7 @@
   z-index:99998;
 }
 
+
 #GA.in.fullscreen_above {
   animation-duration: 0.25s;
   animation-name: fadeInDown;
@@ -57,131 +73,44 @@
   animation-duration: 0.5s;
   animation-name: fadeOutUp;
 }
-
+*/
 #GA.in {
-  opacity: 1;
+  animation-duration: 0.25s;
+  animation-name: fadeInBottom;
 }
 
 #GA.out {
-  opacity: 0;
+  animation-duration: 0.5s;
+  animation-name: fadeOutBottom;
+  animation-fill-mode: forwards;
 }
 
-@keyframes fadeInDown {
+@keyframes fadeInBottom {
   from {
-    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+    transform: translate3d(0, 200%, 0);
   }
 
   to {
+    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 }
 
-@keyframes fadeOutUp {
+@keyframes fadeOutBottom {
   from {
+    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 
   to {
-    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+    transform: translate3d(0, 200%, 0);
   }
 }
+
 
 #GA.hidden {
-  display: none
-}
-
-#GA_STATUS {
-  -webkit-flex: none;
-          flex: none;
-  width:100px;
-  /*margin-top:4px;*/
-  margin-left:4px;
-  margin-right: 10px;
-  border-radius: 20px;
-  background-color:#f3f3f3;
-}
-
-#GA_STATUS.fullscreen_above {
-  margin-top:6px;
-}
-
-#GA_STATUS.reply {
-  background-image:url('./resources/reply.gif');
-  background-position: -60px;
-  background-repeat: no-repeat;
-  background-size: 230%;
-}
-
-#GA_STATUS.error {
-  background-image:url('./resources/error.gif');
-  background-position: -60px;
-  background-repeat: no-repeat;
-  background-size: 230%;
-}
-
-#GA_STATUS.think {
-  background-image:url('./resources/think.gif');
-  background-position: -60px;
-  background-repeat: no-repeat;
-  background-size: 230%;
-}
-
-#GA_STATUS.continue {
-  background-image:url('./resources/continue.gif');
-  background-position: -60px;
-  background-repeat: no-repeat;
-  background-size: 230%;
-}
-
-#GA_STATUS.listen {
-  background-image:url('./resources/listen.gif');
-  background-position: -60px;
-  background-repeat: no-repeat;
-  background-size: 230%;
-}
-
-#GA_STATUS.confirmation {
-  background-image:url('./resources/confirmation.gif');
-  background-position: -60px;
-  background-repeat: no-repeat;
-  background-size: 230%;
-}
-
-#GA_STATUS.standby {
-  background-image:url('./resources/standby.gif');
-  background-position: 0 2px;
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-#GA_STATUS.hook {
-  background-image:url('./resources/hook.gif');
-  background-position : -46px -22px;
-  background-repeat: no-repeat;
-  background-size: 195%;
-}
-
-#GA_TRANSCRIPTION {
-  flex: 1 1 auto;
-  vertical-align: top;
-  background-color:#f3f3f3;
-  text-align: left;
-  overflow: hidden;
-}
-
-#GA_TRANSCRIPTION p {
-  color:#7b858e;
-  margin-top: 25px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-#GA_TRANSCRIPTION.fullscreen_above {
-  margin-top: 4px;
-}
-
-#GA_TRANSCRIPTION.hidden {
   display: none
 }
 
