@@ -20,7 +20,7 @@ class AssistantResponse {
       close: "Google_beep_close.mp3",
     }
     
-    this.responseStatus = {
+    this.imgStatus = {
       "hook": "/modules/MMM-GoogleAssistant/resources/hook.gif",
       "standby": "/modules/MMM-GoogleAssistant/resources/standby.gif",
       "reply": "/modules/MMM-GoogleAssistant/resources/reply.gif",
@@ -84,52 +84,44 @@ class AssistantResponse {
     this.callbacks.myStatus(this.myStatus) // send status external
     this.callbacks.sendNotification("ASSISTANT_" + this.myStatus.actual.toUpperCase())
     log("Status from " + this.myStatus.old + " to " + this.myStatus.actual)
-    Status.src = (this.myStatus.old == "hook") ? this.responseStatus["hook"] : this.responseStatus[this.myStatus.actual]
+    Status.src = (this.myStatus.old == "hook") ? this.imgStatus["hook"] : this.imgStatus[this.myStatus.actual]
     //if(this.fullscreenAbove) Status.classList.add("fullscreen_above")
     this.myStatus.old = this.myStatus.actual
     
   }
 
   prepare () {
-    /** Transcription popup **/
+
     var GA = document.createElement("div")
     GA.id = "GA"
     GA.className= "out"
-    //if(this.config.screenRotate) GA.classList.add("rotate")
-/*
-    var contener = document.createElement("div")
-    contener.id = "GA_CONTENER"
 
-    var status = document.createElement("div")
-    status.id = "GA_STATUS"
-    if(this.fullscreenAbove) status.classList.add("fullscreen_above")
-    contener.appendChild(status)
+    /** Response popup **/
+    var GAHelper = document.createElement("div")
+    GAHelper.id = "GA_HELPER"
+    GAHelper.classList.add("hidden")
 
-    var transcription = document.createElement("div")
-    transcription.id = "GA_TRANSCRIPTION"
-    if(this.fullscreenAbove) transcription.classList.add("fullscreen_above")
-    contener.appendChild(transcription)
+    var scoutpan = document.createElement("div")
+    scoutpan.id = "GA_RESULT_WINDOW"
+    var scout = document.createElement("iframe")
+    scout.id = "GA_SCREENOUTPUT"
+    scoutpan.appendChild(scout)
+    GAHelper.appendChild(scoutpan)
+    GA.appendChild(GAHelper)
 
-    var logo = document.createElement("div")
-    logo.id = "GA_LOGO"
-    if(this.fullscreenAbove) logo.classList.add("fullscreen_above")
-    contener.appendChild(logo)
-    GA.appendChild(contener)
-*/
+    /** Transcription popup **/
+    var GAResponse = document.createElement("div")
+    GAResponse.id = "GA-Response"
+    GA.appendChild(GAResponse)
 
     var GAInitialFocus= document.createElement("div")
     GAInitialFocus.id = "GA-initial-focus"
     GAInitialFocus.tabindex = -1
-    GA.appendChild(GAInitialFocus)
+    GAResponse.appendChild(GAInitialFocus)
 
     var GAPopout = document.createElement("div")
     GAPopout.id = "GA-popout"
-    GA.appendChild(GAPopout)
-
-    var GAAssistantShadow = document.createElement("div")
-    GAAssistantShadow.id = "GA-assistant-shadow"
-    GAAssistantShadow.className= "GA-popout-shadow"
-    GAPopout.appendChild(GAAssistantShadow)
+    GAResponse.appendChild(GAPopout)
 
     var GAAssistantMainCards = document.createElement("div")
     GAAssistantMainCards.id = "GA-assistant-main-cards"
@@ -173,20 +165,6 @@ class AssistantResponse {
     GAAssistantWordIcon.appendChild(GABarIcon)
 
     document.body.appendChild(GA)
-
-    /** Response popup **/
-    var dom = document.createElement("div")
-    dom.id = "GA_HELPER"
-    dom.classList.add("hidden")
-    if(this.fullscreenAbove) dom.classList.add("fullscreen_above")
-
-    var scoutpan = document.createElement("div")
-    scoutpan.id = "GA_RESULT_WINDOW"
-    var scout = document.createElement("iframe")
-    scout.id = "GA_SCREENOUTPUT"
-    scoutpan.appendChild(scout)
-    dom.appendChild(scoutpan)
-    document.body.appendChild(dom)
   }
 
   modulePosition () {
@@ -368,8 +346,6 @@ class AssistantResponse {
     if (active) {
       GA.className= "in"
       if (this.fullscreenAbove) {
-        //if (this.config.screenRotate) GA.classList.add("rotate_above")
-        //else
         GA.classList.add("fullscreen_above")
         MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
           module.hide(500, {lockString: "GA_LOCKED"})
@@ -378,13 +354,10 @@ class AssistantResponse {
           module.show(500, {lockString: "GA_LOCKED"})
         })
       }
-      //else if (this.config.screenRotate) GA.classList.add("rotate")
     } else {
       if (status && status.actual == "standby") { // only on standby mode
         GA.className= "out"
-        if (this.fullscreenAbove) {
-          //if (this.config.screenRotate) GA.classList.add("rotate_above")
-          //else 
+        if (this.fullscreenAbove) { 
           GA.classList.add("fullscreen_above")
           MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
             module.show(500, {lockString: "GA_LOCKED"})
@@ -393,7 +366,6 @@ class AssistantResponse {
             module.hide(500, {lockString: "GA_LOCKED"})
           })
         }
-        //else if (this.config.screenRotate) GA.classList.add("rotate")
       }
     }
   }
