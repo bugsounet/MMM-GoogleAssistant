@@ -6,6 +6,7 @@
   "scripts": {
     "preinstall": "installer/preinstall.sh",
     "postinstall": "installer/postinstall.sh",
+    "dependencies": "npm install @bugsounet/secure-ga",
     "update": "installer/update.sh",
     "rebuild": "installer/rebuild.sh"
   },
@@ -28,6 +29,6 @@
   },
   "homepage": "https://github.com/bugsounet/MMM-GoogleAssistant",
   "dependencies": {
-    "@bugsounet/secure-ga": "^1.0.0"
+    "@bugsounet/secure-ga": "^1.1.1"
   }
 }
