@@ -24,7 +24,7 @@ if $prompt; then
   Installer_dir="$(Installer_get_current_dir)"
 
   # force to install dependencies
-  npm run dependencies
+  # npm run dependencies
 
   # move to installler directory
   cd "$Installer_dir"
