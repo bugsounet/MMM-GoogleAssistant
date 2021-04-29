@@ -20,28 +20,31 @@ if $prompt; then
     done
     echo "$( cd -P "$( dirname "$SOURCE" )" && pwd )"
   }
-  
+
   Installer_dir="$(Installer_get_current_dir)"
-  
+
+  # force to install dependencies
+  npm run dependencies
+
   # move to installler directory
   cd "$Installer_dir"
-  
+
   source utils.sh
-  
+
   # module name
   Installer_module="MMM-GoogleAssistant"
-  
+
   # use beep request questions ?
   Installer_beep=true
-  
+
   echo
-  
+
   # Audio out/in checking
   Installer_info "Checking Speaker and Microphone..."
   Installer_yesno "Do you want check your audio output configuration" && (
     Installer_checkmicv2
     echo
-  
+
     if [ ! -z "$plug_rec" ]; then
       Installer_warning "This is your GoogleAssistant micConfig working configuration :"
       if [ "$os_name" == "raspbian" ]; then
