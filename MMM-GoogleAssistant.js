@@ -22,7 +22,7 @@ Module.register("MMM-GoogleAssistant", {
       longitude: -0.076132
     },
     responseConfig: {
-      useResponseOutput: false,
+      useResponseOutput: true,
       reponseOutputCSS: "response_output.css",
       screenOutputTimer: 5000,
       activateDelay: 250,
@@ -33,7 +33,7 @@ Module.register("MMM-GoogleAssistant", {
         beep: "beep.mp3",
         error: "error.mp3",
         continue: "continue.mp3",
-        confirmation: "success.mp3",
+        confirmation: "confirmation.mp3",
         open: "Google_beep_open.mp3",
         close: "Google_beep_close.mp3",
       },
