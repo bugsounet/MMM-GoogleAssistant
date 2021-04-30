@@ -31,7 +31,7 @@ class ASSISTANT {
           encodingIn: "LINEAR16",
           sampleRateIn: 16000,
           encodingOut: "MP3",
-          sampleRateOut: 24000,
+          sampleRateOut: 24000
         },
         deviceLocation : {
           coordinates: {

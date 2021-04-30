@@ -31,17 +31,15 @@ class AssistantResponse {
       "confirmation": "/modules/MMM-GoogleAssistant/resources/confirmation.gif"
     }
 
-    if (!this.config.useNative) {
-      this.audioResponse = new Audio()
-      this.audioResponse.autoplay = true
-      this.audioResponse.addEventListener("ended", ()=>{
-        log("audio end")
-        this.end()
-      })
+    this.audioResponse = new Audio()
+    this.audioResponse.autoplay = true
+    this.audioResponse.addEventListener("ended", ()=>{
+      log("audio end")
+      this.end()
+    })
 
-      this.audioChime = new Audio()
-      this.audioChime.autoplay = true
-    }
+    this.audioChime = new Audio()
+    this.audioChime.autoplay = true
     this.fullscreenAbove = false
   }
 
@@ -60,19 +58,13 @@ class AssistantResponse {
     }
   }
 
-  doCommand (commandName, param, from) {
-    // do nothing currently.
-  }
-
   playChime (sound, external) {
     if (this.config.useChime) {
-      if (this.config.useNative) this.callbacks.sendSocketNotification("PLAY_CHIME", "resources/" + (external ? sound : this.chime[sound]))
-      else this.audioChime.src = "modules/MMM-GoogleAssistant/resources/" + (external ? sound : this.chime[sound])
+      this.audioChime.src = "modules/MMM-GoogleAssistant/resources/" + (external ? sound : this.chime[sound])
     }
   }
 
   status (status, beep) {
-    
     this.myStatus.actual = status
     var Status = document.getElementById("GA_STATUS")
     if (beep && this.myStatus.old != "continue") this.playChime("beep")
@@ -289,7 +281,7 @@ class AssistantResponse {
     this.showing = false
     var winh = document.getElementById("GA_HELPER")
     winh.classList.add("hidden")
-    if (!this.config.useNative) this.audioResponse.src = ""
+    this.audioResponse.src = ""
     var tr = document.getElementById("GA_TRANSCRIPTION")
     tr.innerHTML = ""
 
@@ -303,8 +295,7 @@ class AssistantResponse {
   playAudioOutput (response) {
     if (response.audio && this.config.useAudioOutput) {
       this.showing = true
-      if (this.config.useNative) this.callbacks.sendAudio(response.audio.path)
-      else this.audioResponse.src = this.makeUrl(response.audio.uri)
+      this.audioResponse.src = this.makeUrl(response.audio.uri)
       return true
     }
     return false
@@ -335,7 +326,6 @@ class AssistantResponse {
     if (active) {
       GA.className= "in"
       if (this.fullscreenAbove) {
-        GA.classList.add("fullscreen_above")
         MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
           module.hide(500, {lockString: "GA_LOCKED"})
         })
@@ -347,7 +337,6 @@ class AssistantResponse {
       if (status && status.actual == "standby") { // only on standby mode
         GA.className= "out"
         if (this.fullscreenAbove) { 
-          GA.classList.add("fullscreen_above")
           MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
             module.show(500, {lockString: "GA_LOCKED"})
           })

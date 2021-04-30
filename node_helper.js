@@ -7,7 +7,6 @@ const fs = require("fs")
 const path = require("path")
 const Assistant = require("./components/assistant.js")
 const ScreenParser = require("./components/screenParser.js")
-const Player = require("@bugsounet/native-sound")
 const npmCheck = require("@bugsounet/npmcheck")
 const readJson = require("r-json")
 const Youtube = require("youtube-api")
@@ -53,13 +52,6 @@ module.exports = NodeHelper.create({
           })
         })
         break
-      case "PLAY_AUDIO":
-        this.player.play(payload)
-        break
-      case "PLAY_CHIME":
-        let filePath = path.resolve(__dirname, payload)
-        this.player.play(filePath, false)
-        break
       case "YouTube_SEARCH":
         if (payload) this.YoutubeSearch(payload)
         break
@@ -71,7 +63,7 @@ module.exports = NodeHelper.create({
   },
 
   activateAssistant: function(payload) {
-    log("QUERY:", payload)
+    log("ASSISTANT_QUERY:", payload)
     var assistantConfig = Object.assign({}, this.config.assistantConfig)
     assistantConfig.debug = this.config.debug
     assistantConfig.lang = payload.lang
@@ -147,11 +139,6 @@ module.exports = NodeHelper.create({
 
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED"))
     if (this.config.A2DServer.useA2D) console.log ("[GA] Assistant2Display Server Started")
-    if (this.config.responseConfig.useNative) {
-      this.player = new Player(this.config.responseConfig, (ended) => { this.sendSocketNotification(ended) } , this.config.debug )
-      console.log("[GA] Use native program (" + this.config.responseConfig.playProgram + ") for audio response")
-      this.player.init()
-    }
 
     if (this.config.NPMCheck.useChecker) {
       var cfg = {

@@ -36,8 +36,8 @@ class SCREENPARSER {
       str = str.replace(/<style>html,body[^<]+<\/style>/gmi, `<link rel="stylesheet" href="${url}">`)
 
       var ret = HTMLParser.parse(response.screen.originalContent)
-      var dom = ret.querySelector(".popout-content")
-      if (dom) response.screen.text = dom.structuredText
+      var dom = ret.querySelector(".popout-content").querySelector(".show_text_content")
+      response.screen.text = dom ? dom.structuredText : null
       response.screen = this.parseScreenLink(response.screen)
       response.screen.photos = []
       var photos = ret.querySelectorAll(".photo_tv_image")
@@ -75,20 +75,6 @@ class SCREENPARSER {
       var link = links[i]
       while ((r = link.exec(html)) !== null) {
         res.push(entities.decode(r[1]))
-      }
-    }
-    // sometime no YT link was found but displayed on screen, so search with screen.text
-    if (res.length == 0) {
-      var resYT = new RegExp("http[s]?\:\/\/m.youtube\.com\/watch\\?v\=([0-9a-zA-Z\-\_]+)", "ig")
-      var resPL = new RegExp("http[s]?\:\/\/m.youtube\.com\/playlist\\?list\=([a-zA-Z0-9\-\_]+)", "ig")
-      var youtubeVideo = resYT.exec(screen.text)
-      var youtubePlaylist = resPL.exec(screen.text)
-      if (youtubePlaylist) {
-        log("YouTube playlist found:", youtubePlayList[0])
-        res.push(youtubePlayList[0])
-      } else if (youtubeVideo) {
-        log("YouTube video found:", youtubeVideo[0])
-        res.push(youtubeVideo[0])
       }
     }
     screen.links = res

@@ -25,12 +25,9 @@ Module.register("MMM-GoogleAssistant", {
       useScreenOutput: true,
       screenOutputCSS: "screen_output.css",
       screenOutputTimer: 5000,
-      screenRotate: false,
       activateDelay: 250,
       useAudioOutput: true,
       useChime: true,
-      useNative: false,
-      playProgram: "mpg321"
     },
     micConfig: {
       recorder: "arecord",
@@ -121,12 +118,6 @@ Module.register("MMM-GoogleAssistant", {
       A2D: (response)=> {
         if (this.config.A2DServer.useA2D)
          return this.Assistant2Display(response)
-      },
-      sendAudio: (file) => {
-        this.sendSocketNotification("PLAY_AUDIO", file)
-      },
-      sendChime: (chime) => {
-        this.sendSocketNotification("PLAY_CHIME", chime)
       }
     }
     this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
@@ -347,7 +338,6 @@ Module.register("MMM-GoogleAssistant", {
 
   endResponse: function() {
     if (this.config.A2DServer.useA2D) this.sendNotification("A2D_ASSISTANT_READY")
-    this.sendNotification("SNOWBOY_START")
     this.sendNotification("DETECTOR_START")
   },
 
@@ -444,7 +434,6 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   doCommand: function (commandId, originalParam, from) {
-    this.assistantResponse.doCommand(commandId, originalParam, from)
     if (this.commands.hasOwnProperty(commandId)) {
       var command = this.commands[commandId]
       if (command.displayResponse) this.forceResponse = true

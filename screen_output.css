@@ -11,7 +11,7 @@ html,body{background:transparent;margin:0}
 .inactive{opacity:.4}
 #carousel-container{left:0;overflow-x:initial;transition:300ms ease-in-out;transform:translateZ(0)}
 /* Add here your overriding CSS */
-body {zoom:70%;}
+body {zoom:60%;}
 #assistant-main-cards
 .popout-asbar{display:none}
 
