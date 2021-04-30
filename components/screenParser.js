@@ -21,7 +21,7 @@ class SCREENPARSER {
 
   parse(response, endCallback=()=>{}) {
     if (response.screen) {
-      var uri = this.config.screenOutputURI
+      var uri = this.config.responseOutputURI
       var filePath = path.resolve(__dirname, "..", uri)
       if (!response.screen.originalContent) return
       var str = response.screen.originalContent.toString("utf8")
@@ -31,8 +31,9 @@ class SCREENPARSER {
         })
       }
       str = disableTimeoutFromScreenOutput(str)
+      str = str.replace("html", 'html style="zoom:' + this.config.responseOutputZoom + '"')
 
-      var url = "/modules/MMM-GoogleAssistant/" + this.config.screenOutputCSS + "?seed=" + Date.now()
+      var url = "/modules/MMM-GoogleAssistant/" + this.config.responseOutputCSS + "?seed=" + Date.now()
       str = str.replace(/<style>html,body[^<]+<\/style>/gmi, `<link rel="stylesheet" href="${url}">`)
 
       var ret = HTMLParser.parse(response.screen.originalContent)

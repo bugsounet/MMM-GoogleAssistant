@@ -1,5 +1,5 @@
 //
-// Module : MMM-GoogleAssistant
+// Module : MMM-GoogleAssistant v3
 //
 
 const exec = require("child_process").exec
@@ -67,14 +67,15 @@ module.exports = NodeHelper.create({
     var assistantConfig = Object.assign({}, this.config.assistantConfig)
     assistantConfig.debug = this.config.debug
     assistantConfig.lang = payload.lang
-    assistantConfig.useScreenOutput = payload.useScreenOutput
+    assistantConfig.useScreenOutput = payload.useResponseOutput
     assistantConfig.useAudioOutput = payload.useAudioOutput
     assistantConfig.micConfig = this.config.micConfig
     this.assistant = new Assistant(assistantConfig, (obj)=>{this.tunnel(obj)})
 
     var parserConfig = {
-      screenOutputCSS: this.config.responseConfig.screenOutputCSS,
-      screenOutputURI: "tmp/lastScreenOutput.html"
+      responseOutputCSS: this.config.responseConfig.reponseOutputCSS,
+      responseOutputURI: "tmp/responseOutput.html",
+      responseOutputZoom: this.config.responseConfig.zoom.responseOutput
     }
     var parser = new ScreenParser(parserConfig, this.config.debug)
     var result = null

@@ -1,5 +1,5 @@
 //
-// Module : MMM-GoogleAssistant
+// Module : MMM-GoogleAssistant v3
 
 var _log = function() {
   var context = "[GA]";
@@ -22,12 +22,35 @@ Module.register("MMM-GoogleAssistant", {
       longitude: -0.076132
     },
     responseConfig: {
-      useScreenOutput: true,
-      screenOutputCSS: "screen_output.css",
+      useResponseOutput: false,
+      reponseOutputCSS: "response_output.css",
       screenOutputTimer: 5000,
       activateDelay: 250,
       useAudioOutput: true,
       useChime: true,
+      confirmationChime: true,
+      chimes: {
+        beep: "beep.mp3",
+        error: "error.mp3",
+        continue: "continue.mp3",
+        confirmation: "success.mp3",
+        open: "Google_beep_open.mp3",
+        close: "Google_beep_close.mp3",
+      },
+      imgStatus: {
+        hook: "hook.gif",
+        standby: "standby.gif",
+        reply: "reply.gif",
+        error: "error.gif",
+        think: "think.gif",
+        continue: "continue.gif",
+        listen: "listen.gif",
+        confirmation: "confirmation.gif"
+      },
+      zoom: {
+        transcription: "80%",
+        responseOutput: "60%"
+      }
     },
     micConfig: {
       recorder: "arecord",
@@ -324,7 +347,7 @@ Module.register("MMM-GoogleAssistant", {
       type: "TEXT",
       key: null,
       lang: this.config.assistantConfig.lang,
-      useScreenOutput: this.config.responseConfig.useScreenOutput,
+      useResponseOutput: this.config.responseConfig.useResponseOutput,
       useAudioOutput: this.config.responseConfig.useAudioOutput,
       status: this.myStatus.old,
       chime: true

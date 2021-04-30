@@ -11,24 +11,18 @@ class AssistantResponse {
     this.allStatus = [ "hook", "standby", "reply", "error", "think", "continue", "listen", "confirmation" ]
     this.myStatus = { "actual" : "standby" , "old" : "standby" }
     this.loopCount = 0
-    this.chime = {
-      beep: "beep.mp3",
-      error: "error.mp3",
-      continue: "continue.mp3",
-      success: "success.mp3",
-      open: "Google_beep_open.mp3",
-      close: "Google_beep_close.mp3",
-    }
+    this.chime = this.config.chimes
+    var Resources = "/modules/MMM-GoogleAssistant/resources/"
     
     this.imgStatus = {
-      "hook": "/modules/MMM-GoogleAssistant/resources/hook.gif",
-      "standby": "/modules/MMM-GoogleAssistant/resources/standby.gif",
-      "reply": "/modules/MMM-GoogleAssistant/resources/reply.gif",
-      "error": "/modules/MMM-GoogleAssistant/resources/error.gif",
-      "think": "/modules/MMM-GoogleAssistant/resources/think.gif",
-      "continue": "/modules/MMM-GoogleAssistant/resources/continue.gif",
-      "listen": "/modules/MMM-GoogleAssistant/resources/listen.gif",
-      "confirmation": "/modules/MMM-GoogleAssistant/resources/confirmation.gif"
+      "hook": Resources + this.config.imgStatus.hook,
+      "standby": Resources + this.config.imgStatus.standby,
+      "reply": Resources + this.config.imgStatus.reply,
+      "error": Resources + this.config.imgStatus.error,
+      "think": Resources + this.config.imgStatus.think,
+      "continue": Resources + this.config.imgStatus.continue,
+      "listen": Resources + this.config.imgStatus.listen,
+      "confirmation": Resources + this.config.imgStatus.confirmation
     }
 
     this.audioResponse = new Audio()
@@ -69,7 +63,7 @@ class AssistantResponse {
     var Status = document.getElementById("GA_STATUS")
     if (beep && this.myStatus.old != "continue") this.playChime("beep")
     if (status == "error" || status == "continue") this.playChime(status)
-    if (status == "confirmation") this.playChime("success")
+    if (status == "confirmation" && this.config.confirmationChime) this.playChime("confirmation")
     if (status == "WAVEFILE" || status == "TEXT") this.myStatus.actual = "think"
     if (status == "MIC") this.myStatus.actual = (this.myStatus.old == "continue") ? "continue" : "listen"
     if (this.myStatus.actual == this.myStatus.old) return
@@ -86,6 +80,7 @@ class AssistantResponse {
 
     var GA = document.createElement("div")
     GA.id = "GA"
+    GA.style.zoom = this.config.zoom.transcription
     GA.className= "hidden out"
 
     /** Response popup **/
@@ -144,7 +139,7 @@ class AssistantResponse {
     var GAAssistantResponse = document.createElement("span")
     GAAssistantResponse.id= "GA_TRANSCRIPTION"
     GAAssistantResponse.className="GA-assistant_response"
-    GAAssistantResponse.textContent= "What do you think about the design of MMM-GoogleAssistant v3?"
+    GAAssistantResponse.textContent= "~Demo mode of MMM-GoogleAssistant v3~"
     GAAssistantBarContent.appendChild(GAAssistantResponse)
 
     var GAAssistantWordIcon = document.createElement("div")
@@ -190,7 +185,7 @@ class AssistantResponse {
           profile: response.lastQuery.profile,
           key: null,
           lang: response.lastQuery.lang,
-          useScreenOutput: response.lastQuery.useScreenOutput,
+          useResponseOutput: response.lastQuery.useResponseOutput,
           force: true
         }, Date.now())
 
@@ -229,7 +224,7 @@ class AssistantResponse {
           profile: response.lastQuery.profile,
           key: response.transcription.transcription,
           lang: response.lastQuery.lang,
-          useScreenOutput: response.lastQuery.useScreenOutput,
+          useResponseOutput: response.lastQuery.useResponseOutput,
           force: true,
           chime: false
         }, null)
@@ -242,7 +237,7 @@ class AssistantResponse {
           profile: response.lastQuery.profile,
           key: null,
           lang: response.lastQuery.lang,
-          useScreenOutput: response.lastQuery.useScreenOutput,
+          useResponseOutput: response.lastQuery.useResponseOutput,
           force: true
         }, Date.now())
         this.loopCount += 1
@@ -302,7 +297,7 @@ class AssistantResponse {
   }
 
   showScreenOutput (response) {
-    if (!this.sercretMode && response.screen && this.config.useScreenOutput) {
+    if (!this.sercretMode && response.screen && this.config.useResponseOutput) {
       if (!response.audio) {
         this.showTranscription(this.callbacks.translate("NO_AUDIO_RESPONSE"))
       }
