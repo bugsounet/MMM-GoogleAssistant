@@ -1,8 +1,9 @@
-/*******************
-** FullScreen #GA **
-**    BuGsounet   **
-********************/
+/******************
+**   GA css v3   **
+**   BuGsounet   **
+*******************/
 
+/** Main background for fullscreen **/
 #GA_DOM {
   background-image: url(./resources/GA_Big.png);
   background-repeat: no-repeat;
@@ -12,63 +13,78 @@
   position: fixed;
 }
 
-#GA {z-index:99998;}
-#GA-popout{bottom:0;box-sizing:border-box;font-family:"Roboto",sans-serif;font-size:40px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-smoothing:antialiased;position:absolute;transform:translateZ(0);transition:opacity 500ms;transition-timing-function:ease-in-out;overflow:hidden;width:100%}
-#GA-popout div{font-family:'Roboto',arial,sans-serif}
-.GA-popout-shadow{background-image:linear-gradient(-180deg,rgba(0,0,0,0.0) 0%,rgba(0,0,0,0.8) 100%);height:5.4em;width:100%}
-#GA-assistant-main-cards{display: block;}
-#GA-assistant-bar
-.GA-assistant-bar-content{display:flex;background-color:rgba(33,33,33,.99);height:144px;padding:0 112px 0 112px;width:100% box-sizing:border-box;white-space:nowrap}
-.GA-assistant_response{color:#ffffff;font-size:30px;margin:auto 0px;text-overflow: ellipsis;overflow: auto;}
-.GA-assistant-word-icon{height:55px;margin:auto 0px auto auto}
-.GA-assistant_icon{margin-left: -70px;Zoom: 35%;}
-.GA-bar_icon{height:55px;width:280px;object-fit:contain}.lockup_logo{margin:8px 0 0 0;height:55px}
+/** popup display windows **/
+#GA {
+  z-index:99998;
+}
+
+#GA-popout {
+  bottom:0;
+  box-sizing:border-box;
+  font-family:"Roboto",sans-serif;
+  font-size:40px;
+  -webkit-font-smoothing:antialiased;
+  position:absolute;
+  overflow:hidden;
+  width:100%;
+}
+#GA-popout div {
+  font-family:'Roboto',arial,sans-serif
+}
+
+#GA-assistant-bar {
+  display:flex;
+  background-color:rgba(33,33,33,.99);
+  height:144px;
+  padding:0 112px 0 112px;
+  width:100%;
+  box-sizing:border-box;
+  white-space:nowrap;
+}
+.GA-assistant_response {
+  color:#ffffff;
+  font-size:30px;
+  margin:auto 0px;
+  text-overflow: ellipsis;
+  overflow: auto;
+}
+.GA-assistant-word-icon {
+  height:55px;
+  margin:auto 0px auto auto
+}
+.GA-assistant_icon {
+  margin-left: -70px;
+  Zoom: 35%;
+}
+.GA-bar_icon {
+  height:55px;
+  width:280px;
+  object-fit:contain;
+}
+.lockup_logo{
+  margin:8px 0 0 0;
+  height:55px;
+}
 
 #GA.in {
-  animation-duration: 0.25s;
-  animation-name: fadeInBottom;
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.5s linear;
 }
 
 #GA.out {
-  animation-duration: 0.5s;
-  animation-name: fadeOutBottom;
-  animation-fill-mode: forwards;
-}
-
-@keyframes fadeInBottom {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeOutBottom {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 0.5s, opacity 0.5s linear;
 }
 
 #GA.hidden {
   display: none
 }
 
-#GA_CONTENER {
- height : 100%;
- width : 100%;
- display: flex;
-}
+/*** Result Window ***/
 
-/*** Helper windows ***/
-
-
-#GA_HELPER {
+#GA-Result {
   position:absolute;
   width:100%;
   height: 95%;
@@ -79,31 +95,13 @@
   transition: opacity 0.5s linear;
 }
 
-/*
-#GA_HELPER.fullscreen_above {
-  position:fixed;
-  height:90%;
-  overflow:auto;
-  border:none;
-  top:10%;
-  left:0;
-  z-index:99998;
-}
-*/
-
-#GA_HELPER.hidden {
+#GA-Result.hidden {
+  visibility: hidden;
   opacity: 0;
-  display: none;
+  transition: visibility 0s 0.5s, opacity 0.5s linear;
 }
 
-#GA_RESULT_WINDOW {
-  position:absolute;
-  width:100%;
-  height:100%;
-  display:block;
-}
-
-#GA_SCREENOUTPUT {
+#GA-ResultOuput {
   width:100%;
   height:100%;
   display:block;

@@ -37,7 +37,7 @@ class SCREENPARSER {
       str = str.replace(/<style>html,body[^<]+<\/style>/gmi, `<link rel="stylesheet" href="${url}">`)
 
       var ret = HTMLParser.parse(response.screen.originalContent)
-      var dom = ret.querySelector(".popout-content")//.querySelector(".show_text_content")
+      var dom = ret.querySelector(".popout-content")
       response.screen.text = dom ? dom.structuredText : null
       response.text= dom && dom.querySelector(".show_text_content") ? dom.querySelector(".show_text_content").structuredText : null
       response.screen = this.parseScreenLink(response.screen)

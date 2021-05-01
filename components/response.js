@@ -12,17 +12,17 @@ class AssistantResponse {
     this.myStatus = { "actual" : "standby" , "old" : "standby" }
     this.loopCount = 0
     this.chime = this.config.chimes
-    var Resources = "/modules/MMM-GoogleAssistant/resources/"
-    
+    this.resourcesDir = "/modules/MMM-GoogleAssistant/resources/"
+
     this.imgStatus = {
-      "hook": Resources + this.config.imgStatus.hook,
-      "standby": Resources + this.config.imgStatus.standby,
-      "reply": Resources + this.config.imgStatus.reply,
-      "error": Resources + this.config.imgStatus.error,
-      "think": Resources + this.config.imgStatus.think,
-      "continue": Resources + this.config.imgStatus.continue,
-      "listen": Resources + this.config.imgStatus.listen,
-      "confirmation": Resources + this.config.imgStatus.confirmation
+      "hook": this.resourcesDir + this.config.imgStatus.hook,
+      "standby": this.resourcesDir + this.config.imgStatus.standby,
+      "reply": this.resourcesDir + this.config.imgStatus.reply,
+      "error": this.resourcesDir + this.config.imgStatus.error,
+      "think": this.resourcesDir + this.config.imgStatus.think,
+      "continue": this.resourcesDir + this.config.imgStatus.continue,
+      "listen": this.resourcesDir + this.config.imgStatus.listen,
+      "confirmation": this.resourcesDir + this.config.imgStatus.confirmation
     }
 
     this.audioResponse = new Audio()
@@ -42,7 +42,7 @@ class AssistantResponse {
       var startTranscription = false
       if (payload.payload.done) {
         this.status("confirmation")
-        var iframe = document.getElementById("GA_SCREENOUTPUT")
+        var iframe = document.getElementById("GA-ResultOuput")
         iframe.src = "about:blank"
       }
       if (payload.payload.transcription && !startTranscription) {
@@ -54,13 +54,13 @@ class AssistantResponse {
 
   playChime (sound, external) {
     if (this.config.useChime) {
-      this.audioChime.src = "modules/MMM-GoogleAssistant/resources/" + (external ? sound : this.chime[sound])
+      this.audioChime.src = this.resourcesDir + (external ? sound : this.chime[sound])
     }
   }
 
   status (status, beep) {
     this.myStatus.actual = status
-    var Status = document.getElementById("GA_STATUS")
+    var Status = document.getElementById("GA-Status")
     if (beep && this.myStatus.old != "continue") this.playChime("beep")
     if (status == "error" || status == "continue") this.playChime(status)
     if (status == "confirmation" && this.config.confirmationChime) this.playChime("confirmation")
@@ -71,7 +71,6 @@ class AssistantResponse {
     Status.src = (this.myStatus.old == "hook") ? this.imgStatus["hook"] : this.imgStatus[this.myStatus.actual]
     this.callbacks.myStatus(this.myStatus) // send status external
     this.myStatus.old = this.myStatus.actual
-    
   }
 
   prepare () {
@@ -81,71 +80,50 @@ class AssistantResponse {
     GA.className= "hidden out"
 
     /** Response popup **/
-    var GAHelper = document.createElement("div")
-    GAHelper.id = "GA_HELPER"
-    GAHelper.classList.add("hidden")
-
     var scoutpan = document.createElement("div")
-    scoutpan.id = "GA_RESULT_WINDOW"
+    scoutpan.id = "GA-Result"
+    scoutpan.classList.add("hidden")
     var scout = document.createElement("iframe")
-    scout.id = "GA_SCREENOUTPUT"
+    scout.id = "GA-ResultOuput"
     scoutpan.appendChild(scout)
-    GAHelper.appendChild(scoutpan)
-    GA.appendChild(GAHelper)
+    GA.appendChild(scoutpan)
 
     /** Transcription popup **/
     var GAResponse = document.createElement("div")
     GAResponse.id = "GA-Response"
     GA.appendChild(GAResponse)
 
-    var GAInitialFocus= document.createElement("div")
-    GAInitialFocus.id = "GA-initial-focus"
-    GAInitialFocus.tabindex = -1
-    GAResponse.appendChild(GAInitialFocus)
-
     var GAPopout = document.createElement("div")
     GAPopout.id = "GA-popout"
     GAResponse.appendChild(GAPopout)
 
-    var GAAssistantMainCards = document.createElement("div")
-    GAAssistantMainCards.id = "GA-assistant-main-cards"
-    GAPopout.appendChild(GAAssistantMainCards)
-    
     var GAAssistantBar = document.createElement("div")
     GAAssistantBar.id = "GA-assistant-bar"
     GAAssistantBar.className= "GA-popout-asbar"
     GAAssistantBar.tabindex = -1
-    GAAssistantMainCards.appendChild(GAAssistantBar)
-
-    var GAAssistantBarContainer = document.createElement("div")
-    GAAssistantBarContainer.className = "GA-assistant-bar-container"
-    GAAssistantBar.appendChild(GAAssistantBarContainer)
-
-    var GAAssistantBarContent = document.createElement("div")
-    GAAssistantBarContent.className = "GA-assistant-bar-content"
-    GAAssistantBarContainer.appendChild(GAAssistantBarContent)
+    GAPopout.appendChild(GAAssistantBar)
 
     //image status
     var GAAssistantIcon = document.createElement("img")
-    GAAssistantIcon.id= "GA_STATUS"
+    GAAssistantIcon.id= "GA-Status"
     GAAssistantIcon.className="GA-assistant_icon"
-    GAAssistantIcon.src = "/modules/MMM-GoogleAssistant/resources/standby.gif"
-    GAAssistantBarContent.appendChild(GAAssistantIcon)
+    GAAssistantIcon.src = this.resourcesDir + "standby.gif"
+    GAAssistantBar.appendChild(GAAssistantIcon)
 
     //transcription response text
     var GAAssistantResponse = document.createElement("span")
-    GAAssistantResponse.id= "GA_TRANSCRIPTION"
+    GAAssistantResponse.id= "GA-Transcription"
     GAAssistantResponse.className="GA-assistant_response"
     GAAssistantResponse.textContent= "~MMM-GoogleAssistant~"
-    GAAssistantBarContent.appendChild(GAAssistantResponse)
+    GAAssistantBar.appendChild(GAAssistantResponse)
 
     var GAAssistantWordIcon = document.createElement("div")
     GAAssistantWordIcon.className="GA-assistant-word-icon"
-    GAAssistantBarContent.appendChild(GAAssistantWordIcon)
+    GAAssistantBar.appendChild(GAAssistantWordIcon)
 
     var GABarIcon = document.createElement("img")
     GABarIcon.className="GA-bar_icon"
-    GABarIcon.src = "/modules/MMM-GoogleAssistant/resources/assistant_tv_logo.svg"
+    GABarIcon.src = this.resourcesDir + "assistant_tv_logo.svg"
     GAAssistantWordIcon.appendChild(GABarIcon)
 
     document.body.appendChild(GA)
@@ -164,7 +142,7 @@ class AssistantResponse {
   }
 
   showTranscription (text, className = "transcription") { // classname ??
-    var tr = document.getElementById("GA_TRANSCRIPTION")
+    var tr = document.getElementById("GA-Transcription")
     tr.textContent = text
   }
 
@@ -271,11 +249,11 @@ class AssistantResponse {
 
   stopResponse (callback = ()=>{}) {
     this.showing = false
-    var winh = document.getElementById("GA_HELPER")
+    var winh = document.getElementById("GA-Result")
     winh.classList.add("hidden")
     this.audioResponse.src = ""
-    var tr = document.getElementById("GA_TRANSCRIPTION")
-    tr.innerHTML = ""
+    var tr = document.getElementById("GA-Transcription")
+    tr.textContent=""
 
     callback()
   }
@@ -299,9 +277,9 @@ class AssistantResponse {
         this.showTranscription(this.callbacks.translate("NO_AUDIO_RESPONSE"))
       }
       this.showing = true
-      var iframe = document.getElementById("GA_SCREENOUTPUT")
+      var iframe = document.getElementById("GA-ResultOuput")
       iframe.src = this.makeUrl(response.screen.uri)
-      var winh = document.getElementById("GA_HELPER")
+      var winh = document.getElementById("GA-Result")
       winh.classList.remove("hidden")
       return true
     }
