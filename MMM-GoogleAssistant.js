@@ -23,7 +23,7 @@ Module.register("MMM-GoogleAssistant", {
     },
     responseConfig: {
       useResponseOutput: true,
-      reponseOutputCSS: "response_output.css",
+      responseOutputCSS: "response_output.css",
       screenOutputTimer: 5000,
       activateDelay: 250,
       useAudioOutput: true,
@@ -125,18 +125,13 @@ Module.register("MMM-GoogleAssistant", {
       endResponse: ()=>{
         this.endResponse()
       },
-      sendNotification: (noti, payload=null) => {
-        this.sendNotification(noti, payload)
-      },
-      sendSocketNotification: (noti, payload=null) => {
-        this.sendSocketNotification(noti,payload)
-      },
       translate: (text) => {
         return this.translate(text)
       },
       myStatus: (status) => {
         this.doPlugin("onStatus", {status: status})
         this.myStatus = status
+        this.sendNotification("ASSISTANT_" + this.myStatus.actual.toUpperCase())
       },
       A2D: (response)=> {
         if (this.config.A2DServer.useA2D)
@@ -237,9 +232,7 @@ Module.register("MMM-GoogleAssistant", {
     var dom = document.createElement("div")
     dom.id = "GA_DOM"
     /** Hidden the module on start (reserved for fullscreenAbove mode) **/
-    MM.getModules().withClass("MMM-GoogleAssistant").enumerate((module)=> {
-      module.hide(0, {lockString: "GA_LOCKED"})
-    })
+    this.hide(0, {lockString: "GA_LOCKED"})
     return dom
   },
 
@@ -286,6 +279,7 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "INITIALIZED":
         log("Initialized.")
+        this.Version(payload)
         this.assistantResponse.status("standby")
         if (this.config.A2DServer.useA2D) this.sendNotification("ASSISTANT_READY")
         this.doPlugin("onReady")
@@ -556,5 +550,14 @@ Module.register("MMM-GoogleAssistant", {
     this.assistantResponse.prepare()
     this.assistantResponse.fullscreen(true)
     this.assistantResponse.showError("[FATAL] Module configuration: ConfigDeepMerge not actived !")
+  },
+
+  Version: function(version) {
+    this.assistantResponse.showTranscription("~MMM-GoogleAssistant v" + version.version + " - rev:"+ version.rev + "~")
+    this.assistantResponse.fullscreen(true)
+    setTimeout(() => {
+      this.assistantResponse.end()
+      this.assistantResponse.showTranscription("")
+    }, 3000)
   }
 })

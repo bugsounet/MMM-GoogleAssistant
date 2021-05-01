@@ -73,7 +73,7 @@ module.exports = NodeHelper.create({
     this.assistant = new Assistant(assistantConfig, (obj)=>{this.tunnel(obj)})
 
     var parserConfig = {
-      responseOutputCSS: this.config.responseConfig.reponseOutputCSS,
+      responseOutputCSS: this.config.responseConfig.responseOutputCSS,
       responseOutputURI: "tmp/responseOutput.html",
       responseOutputZoom: this.config.responseConfig.zoom.responseOutput
     }
@@ -83,7 +83,7 @@ module.exports = NodeHelper.create({
       response.lastQuery = payload
 
       if (!(response.screen || response.audio)) {
-        response.error = "NO_RESPONSE"
+        if (this.config.responseConfig.useAudioOutput) response.error = "NO_RESPONSE"
         if (response.transcription && response.transcription.transcription && !response.transcription.done) {
           response.error = "TRANSCRIPTION_FAILS"
         }
@@ -107,11 +107,17 @@ module.exports = NodeHelper.create({
     this.config.assistantConfig["modulePath"] = __dirname
     var error = null
     if (this.config.debug) log = _log
+    let Version = {
+      version: require('./package.json').version,
+      rev: require('./package.json').rev
+    }
     if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/" + this.config.assistantConfig.credentialPath)) {
-      error = "[ERROR] credentials.json file not found !"
+      error = "[FATAL] credentials.json file not found !"
+      return this.DisplayError(error)
     }
     else if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/" + this.config.assistantConfig.tokenPath)) {
-      error = "[ERROR] token.json file not found !"
+      error = "[FATAL] token.json file not found !"
+      return this.DisplayError(error)
     }
     if (this.config.A2DServer.useA2D && this.config.A2DServer.useYouTube) {
       try {
@@ -128,17 +134,14 @@ module.exports = NodeHelper.create({
         console.log ("[GA] YouTube Search Function initilized.")
       } catch (e) {
         console.log("[GA] "+ e)
-        error = "[ERROR] YouTube Search not Set !"
+        error = "[FATAL] Youtube: tokenYT.json file not found !"
+        return this.DisplayError(error)
       }
     }
 
-    if (error) {
-      console.log("[GA]" + error)
-      return this.sendSocketNotification("NOT_INITIALIZED", error)
-    }
     log("Activate delay is set to " + this.config.responseConfig.activateDelay + " ms")
 
-    this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED"))
+    this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
     if (this.config.A2DServer.useA2D) console.log ("[GA] Assistant2Display Server Started")
 
     if (this.config.NPMCheck.useChecker) {
@@ -170,7 +173,7 @@ module.exports = NodeHelper.create({
           console.log("[GA] RECIPE_LOADED:", recipes[i])
         } catch (e) {
           console.log(`[GA] RECIPE_ERROR (${recipes[i]}):`, e.message, e)
-          error = `[GA] RECIPE_ERROR (${recipes[i]})`
+          error = `[FATAL] RECIPE_ERROR (${recipes[i]})`
           return this.sendSocketNotification("NOT_INITIALIZED", error)
         }
       }
@@ -191,5 +194,10 @@ module.exports = NodeHelper.create({
     } catch (e) {
       console.log("[GA] Youtube Search error or no title found!")
     }
+  },
+
+  DisplayError: function (error) {
+    console.log("[GA][ERROR]" + error)
+    return this.sendSocketNotification("NOT_INITIALIZED", error)
   }
 })

@@ -182,10 +182,10 @@ class ASSISTANT {
     })
     .on('error', (error) => {
       if (this.useAudioOutput) b2m.close()
-      log("CONVERSATION_ERROR: " + error)
+      console.log("[GA:AS] CONVERSATION_ERROR: " + error)
       this.response.error = "CONVERSATION_ERROR"
       if (error.code == "14") {
-        log (">> This error might happen when improper configuration or invalid Mic setup.")
+        console.log("[GA:AS] >> This error might happen when improper configuration or invalid Mic setup.")
       }
       this.stopListening()
       conversation.end()
@@ -207,7 +207,7 @@ class ASSISTANT {
 
   afterListening (err) {
     if (err) {
-     log("[ERROR] " + err)
+     console.log("[GA:AS][ERROR] " + err)
      this.stopListening()
      return
     }

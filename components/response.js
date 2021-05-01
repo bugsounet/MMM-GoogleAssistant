@@ -67,17 +67,14 @@ class AssistantResponse {
     if (status == "WAVEFILE" || status == "TEXT") this.myStatus.actual = "think"
     if (status == "MIC") this.myStatus.actual = (this.myStatus.old == "continue") ? "continue" : "listen"
     if (this.myStatus.actual == this.myStatus.old) return
-    this.callbacks.myStatus(this.myStatus) // send status external
-    this.callbacks.sendNotification("ASSISTANT_" + this.myStatus.actual.toUpperCase())
     log("Status from " + this.myStatus.old + " to " + this.myStatus.actual)
     Status.src = (this.myStatus.old == "hook") ? this.imgStatus["hook"] : this.imgStatus[this.myStatus.actual]
-    //if(this.fullscreenAbove) Status.classList.add("fullscreen_above")
+    this.callbacks.myStatus(this.myStatus) // send status external
     this.myStatus.old = this.myStatus.actual
     
   }
 
   prepare () {
-
     var GA = document.createElement("div")
     GA.id = "GA"
     GA.style.zoom = this.config.zoom.transcription
@@ -139,7 +136,7 @@ class AssistantResponse {
     var GAAssistantResponse = document.createElement("span")
     GAAssistantResponse.id= "GA_TRANSCRIPTION"
     GAAssistantResponse.className="GA-assistant_response"
-    GAAssistantResponse.textContent= "~Demo mode of MMM-GoogleAssistant v3~"
+    GAAssistantResponse.textContent= "~MMM-GoogleAssistant~"
     GAAssistantBarContent.appendChild(GAAssistantResponse)
 
     var GAAssistantWordIcon = document.createElement("div")
@@ -155,9 +152,9 @@ class AssistantResponse {
   }
 
   modulePosition () {
-    MM.getModules().withClass("MMM-GoogleAssistant").enumerate((module)=> {
-      if (module.data.position === "fullscreen_above") this.fullscreenAbove = true
-    })
+    let position = MM.getModules().withClass("MMM-GoogleAssistant")[0].data.position
+    log("Found position:", position)
+    if (position === "fullscreen_above") this.fullscreenAbove = true
   }
 
   showError (text) {
@@ -166,7 +163,7 @@ class AssistantResponse {
     return true
   }
 
-  showTranscription (text, className = "transcription") {
+  showTranscription (text, className = "transcription") { // classname ??
     var tr = document.getElementById("GA_TRANSCRIPTION")
     tr.textContent = text
   }
@@ -307,6 +304,12 @@ class AssistantResponse {
       var winh = document.getElementById("GA_HELPER")
       winh.classList.remove("hidden")
       return true
+    }
+    else {
+      if (!this.config.useResponseOutput && !this.config.useAudioOutput && response.text) {
+        this.showTranscription(response.text)
+        return true
+      }
     }
     return false
   }
