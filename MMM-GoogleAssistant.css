@@ -69,7 +69,6 @@
 #GA.in {
   visibility: visible;
   opacity: 1;
-  transition: opacity 0.5s linear;
 }
 
 #GA.out {

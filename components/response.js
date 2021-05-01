@@ -79,6 +79,11 @@ class AssistantResponse {
     GA.style.zoom = this.config.zoom.transcription
     GA.className= "hidden out"
 
+    /** hidden the popup on animation end **/
+    GA.addEventListener('transitionend', (a) => {
+      if (a.path[0].className =="out") GA.classList.add("hidden")
+    })
+
     /** Response popup **/
     var scoutpan = document.createElement("div")
     scoutpan.id = "GA-Result"
