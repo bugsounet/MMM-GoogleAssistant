@@ -7,9 +7,9 @@ const fs = require("fs")
 const path = require("path")
 const Assistant = require("./components/assistant.js")
 const ScreenParser = require("./components/screenParser.js")
-const npmCheck = require("@bugsounet/npmcheck")
 const readJson = require("r-json")
 const Youtube = require("youtube-api")
+const npmCheck = require("@bugsounet/npmcheck")
 
 var _log = function() {
   var context = "[GA]"
@@ -111,18 +111,18 @@ module.exports = NodeHelper.create({
       version: require('./package.json').version,
       rev: require('./package.json').rev
     }
-    if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/" + this.config.assistantConfig.credentialPath)) {
+    if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/credentials.json")) {
       error = "[FATAL] credentials.json file not found !"
       return this.DisplayError(error)
     }
-    else if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/" + this.config.assistantConfig.tokenPath)) {
-      error = "[FATAL] token.json file not found !"
+    else if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/tokens/tokenGA.json")) {
+      error = "[FATAL] Assistant: tokenGA.json file not found !"
       return this.DisplayError(error)
     }
     if (this.config.A2DServer.useA2D && this.config.A2DServer.useYouTube) {
       try {
-        const CREDENTIALS = readJson(this.config.assistantConfig["modulePath"] + "/" + this.config.assistantConfig.credentialPath)
-        const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokenYT.json")
+        const CREDENTIALS = readJson(this.config.assistantConfig["modulePath"] + "/credentials.json")
+        const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenYT.json")
         let oauth = Youtube.authenticate({
           type: "oauth",
           client_id: CREDENTIALS.installed.client_id,

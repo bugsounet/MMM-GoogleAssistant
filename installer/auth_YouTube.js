@@ -12,8 +12,8 @@ const mkdirp = require('mkdirp');
 const {OAuth2Client} = require('google-auth-library');
 
 const config = {
-    keyFilePath: path.resolve(__dirname, 'credentials.json'),
-    savedTokensPath: path.resolve(__dirname, 'tokenYT.json'), // where you want the tokens to be saved
+    keyFilePath: path.resolve(__dirname, '../credentials.json'),
+    savedTokensPath: path.resolve(__dirname, '../tokens/tokenYT.json'), // where you want the tokens to be saved
 };
 
 function Auth(config) {

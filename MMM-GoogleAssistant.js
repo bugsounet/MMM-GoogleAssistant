@@ -1,14 +1,10 @@
 //
 // Module : MMM-GoogleAssistant v3
 
-var _log = function() {
+var log = function() {
   var context = "[GA]";
   return Function.prototype.bind.call(console.log, console, context);
 }()
-
-var log = function() {
-  //do nothing
-}
 
 Module.register("MMM-GoogleAssistant", {
   requiresVersion: "2.15.0",
@@ -16,8 +12,6 @@ Module.register("MMM-GoogleAssistant", {
     debug:false,
     assistantConfig: {
       lang: "en-US",
-      credentialPath: "credentials.json",
-      tokenPath: "token.json",
       latitude: 51.508530,
       longitude: -0.076132
     },
@@ -54,7 +48,7 @@ Module.register("MMM-GoogleAssistant", {
     },
     micConfig: {
       recorder: "arecord",
-      device: "plughw:1"
+      device: "default"
     },
     A2DServer: {
       useA2D: false,
@@ -102,12 +96,14 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   start: function () {
+    this.versionTimeout = null
     const helperConfig = [
       "debug", "recipes", "assistantConfig", "micConfig",
       "responseConfig", "A2DServer", "NPMCheck"
     ]
     this.helperConfig = {}
-    if (this.config.debug) log = _log
+    if (!this.config.debug) log = function() { /** do nothing **/ }
+
     for(var i = 0; i < helperConfig.length; i++) {
       this.helperConfig[helperConfig[i]] = this.config[helperConfig[i]]
     }
@@ -136,33 +132,20 @@ Module.register("MMM-GoogleAssistant", {
       A2D: (response)=> {
         if (this.config.A2DServer.useA2D)
          return this.Assistant2Display(response)
-      }
+      },
     }
     this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
-    if (this.config.A2DServer.useA2D && this.config.A2DServer.useYouTube) {
-      /** Integred YouTube recipe **/
-      var A2DHooks = {
-       transcriptionHooks: {
-          "SEARCH_YouTube": {
-            pattern: this.config.A2DServer.youtubeCommand + " (.*)",
-            command: "GA_youtube"
-          },
+
+    /** Assistant2Display part **/
+    if (this.config.A2DServer.useA2D) {
+      var A2DStopHooks = {
+        transcriptionHooks: {
           "A2D_Stop": {
             pattern: this.config.A2DServer.stopCommand,
             command: "A2D_Stop"
           }
         },
         commands: {
-          "GA_youtube": {
-            moduleExec: {
-              module: ["MMM-GoogleAssistant"],
-              exec: "__FUNC__(module, params) => { module.sendSocketNotification('YouTube_SEARCH', params[1]) }"
-            },
-            soundExec: {
-              "chime": "open"
-            },
-            displayResponse: this.config.A2DServer.displayResponse
-          },
           "A2D_Stop": {
             notificationExec: {
               notification: "A2D_STOP"
@@ -174,7 +157,31 @@ Module.register("MMM-GoogleAssistant", {
           }
         }
       }
-      this.parseLoadedRecipe(JSON.stringify(A2DHooks))
+      this.parseLoadedRecipe(JSON.stringify(A2DStopHooks))
+      if (this.config.A2DServer.useYouTube) {
+        /** Integred YouTube recipe **/
+        var A2DYTHooks = {
+         transcriptionHooks: {
+            "SEARCH_YouTube": {
+              pattern: this.config.A2DServer.youtubeCommand + " (.*)",
+              command: "GA_youtube"
+            }
+          },
+          commands: {
+            "GA_youtube": {
+              moduleExec: {
+                module: ["MMM-GoogleAssistant"],
+                exec: "__FUNC__(module, params) => { module.sendSocketNotification('YouTube_SEARCH', params[1]) }"
+              },
+              soundExec: {
+                "chime": "open"
+              },
+              displayResponse: this.config.A2DServer.displayResponse
+            },
+          }
+        }
+        this.parseLoadedRecipe(JSON.stringify(A2DYTHooks))
+      }
     }
   },
 
@@ -331,6 +338,7 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   assistantActivate: function(payload) {
+    clearTimeout(this.versionTimeout)
     if (this.myStatus.actual != "standby" && !payload.force) return log("Assistant is busy.")
     this.doPlugin("onActivate")
     this.assistantResponse.fullscreen(true)
@@ -523,7 +531,7 @@ Module.register("MMM-GoogleAssistant", {
       "from": "GA",
       "photos": null,
       "urls": null,
-      "transcription":null
+      "transcription": null
     }
 
     if (response.screen && (response.screen.links.length > 0 || response.screen.photos.length > 0)) {
@@ -555,9 +563,26 @@ Module.register("MMM-GoogleAssistant", {
   Version: function(version) {
     this.assistantResponse.showTranscription("~MMM-GoogleAssistant v" + version.version + " - rev:"+ version.rev + "~")
     this.assistantResponse.fullscreen(true)
-    setTimeout(() => {
+    this.versionTimeout = setTimeout(() => {
       this.assistantResponse.end()
       this.assistantResponse.showTranscription("")
     }, 3000)
+  },
+
+  /****************************/
+  /*** TelegramBot Commands ***/
+  /****************************/
+  getCommands: function(commander) {
+    commander.add({
+      command: "query",
+      description: this.translate("QUERY_HELP"),
+      callback: "tbQuery"
+    })
+  },
+
+  tbQuery: function(command, handler) {
+    var query = handler.args
+    if (!query) handler.reply("TEXT", this.translate("QUERY_HELP"))
+    else this.socketNotificationReceived("ASSISTANT_ACTIVATE", { type: "TEXT", key: query })
   }
 })

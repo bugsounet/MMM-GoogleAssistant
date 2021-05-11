@@ -8,8 +8,8 @@ const GoogleAssistant = require('@bugsounet/google-assistant');
 
 const config = {
   auth: {
-    keyFilePath: path.resolve(__dirname, 'credentials.json'),
-    savedTokensPath: path.resolve(__dirname, 'token.json'), // where you want the tokens to be saved
+    keyFilePath: path.resolve(__dirname, '../credentials.json'),
+    savedTokensPath: path.resolve(__dirname, '../tokens/tokenGA.json'), // where you want the tokens to be saved
   },
   conversation: {
     lang: 'en-US', // defaults to en-US, but try other ones, it's fun!
@@ -20,11 +20,6 @@ const startConversation = (conversation) => {
   // setup the conversation
   conversation
     .on('response', text => console.log('Assistant Response:', text))
-    // if we've requested a volume level change, get the percentage of the new level
-    .on('volume-percent', percent => console.log('New Volume Percent:', percent))
-    // the device needs to complete an action
-    .on('device-action', action => console.log('Device Action:', action))
-    // once the conversation is ended, see if we need to follow up
     .on('ended', (error, continueConversation) => {
       if (error) {
         console.log('Conversation Ended Error:', error);
