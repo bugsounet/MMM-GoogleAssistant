@@ -4,5 +4,36 @@
   "TOO_SHORT" : "Entschuldigung, ich verstehe das nicht.",
   "CONVERSATION_ERROR" : "Fehler bei der Konversation. (Falsche Mikrofonkonfiguration)",
   "QUERY_REPLY" : "Google Assistant wird aktiviert.",
-  "QUERY_HELP" : "Mit `/query` können Texteingaben an Google Assistant übermittelt werden."
+  "QUERY_HELP" : "Mit `/query` können Texteingaben an Google Assistant übermittelt werden.",
+
+  "RESTART_HELP" : "MagicMirror mit pm2 neu starten.",
+  "RESTART_DONE" : "Neustart wird ausgeführt.",
+  "RESTART_ERROR" : "<id> fehlt!",
+
+  "WAKEUP_HELP": "Display aktivieren und Countdown zurücksetzen.",
+  "WAKEUP_REPLY": "Display wird aktiviert!",
+
+  "HIDE_HELP": "Verstecke angegebenes Modul.",
+  "HIDE_ALREADY": " ist bereits versteckt.",
+  "HIDE_DONE": " ist jetzt versteckt.",
+  "HIDE_LOCKED": " ist durch einen anderen Prozess gesperrt und kann nicht versteckt werden.",
+
+  "SHOW_HELP": "Zeige angegebenes Modul.",
+  "SHOW_ALREADY": " ist bereits angezeigt.",
+  "SHOW_DONE": " wird jetzt angezeigt.",
+  "SHOW_LOCKED": " ist durch einen anderen Prozess gesperrt und kann nicht angezeigt werden.",
+
+  "MODULE_NOTFOUND": "Modul nicht gefunden: ",
+  "MODULE_NAME": "Name des Moduls fehlt.",
+
+  "STOP_HELP": "Beendet eventuelle Aktivität von A2D.",
+  "STOP_A2D": "Stoppe A2D-Aktivität.",
+
+  "A2D_OPEN": "URL öffnen: ",
+  "A2D_INVALID": "Diese URL ist ungültig!",
+  "A2D_HELP": "URL mit A2D öffnen.",
+
+  "VOLUME_HELP": "Stellt die Lautstärke der Audioausgabe ein.",
+
+  "DADDY": "Papa @bugsounet sagte... Nein, nein und nochmals nein!!!"
 }

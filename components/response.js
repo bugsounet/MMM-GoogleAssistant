@@ -28,7 +28,7 @@ class AssistantResponse {
     this.audioResponse = new Audio()
     this.audioResponse.autoplay = true
     this.audioResponse.addEventListener("ended", ()=>{
-      log("audio end")
+      logGA("audio end")
       this.end()
     })
 
@@ -67,7 +67,7 @@ class AssistantResponse {
     if (status == "WAVEFILE" || status == "TEXT") this.myStatus.actual = "think"
     if (status == "MIC") this.myStatus.actual = (this.myStatus.old == "continue") ? "continue" : "listen"
     if (this.myStatus.actual == this.myStatus.old) return
-    log("Status from " + this.myStatus.old + " to " + this.myStatus.actual)
+    logGA("Status from " + this.myStatus.old + " to " + this.myStatus.actual)
     Status.src = (this.myStatus.old == "hook") ? this.imgStatus["hook"] : this.imgStatus[this.myStatus.actual]
     this.callbacks.myStatus(this.myStatus) // send status external
     this.myStatus.old = this.myStatus.actual
@@ -136,7 +136,7 @@ class AssistantResponse {
 
   modulePosition () {
     let position = MM.getModules().withClass("MMM-GoogleAssistant")[0].data.position
-    log("Found position:", position)
+    logGA("Found position:", position)
     if (position === "fullscreen_above") this.fullscreenAbove = true
   }
 
@@ -159,7 +159,7 @@ class AssistantResponse {
       if (response && response.continue) {
         this.loopCount = 0
         this.status("continue")
-        log("Continuous Conversation")
+        logGA("Continuous Conversation")
         this.callbacks.assistantActivate({
           type: "MIC",
           profile: response.lastQuery.profile,
@@ -170,7 +170,7 @@ class AssistantResponse {
         }, Date.now())
 
       } else {
-        log("Conversation ends.")
+        logGA("Conversation ends.")
         this.status("standby")
         this.callbacks.endResponse()
         clearTimeout(this.aliveTimer)
@@ -198,7 +198,7 @@ class AssistantResponse {
 
     if (response.error) {
       if (response.error == "TRANSCRIPTION_FAILS") {
-        log("Transcription Failed. Re-try with text")
+        logGA("Transcription Failed. Re-try with text")
         this.callbacks.assistantActivate({
           type: "TEXT",
           profile: response.lastQuery.profile,
@@ -221,7 +221,7 @@ class AssistantResponse {
           force: true
         }, Date.now())
         this.loopCount += 1
-        log("Loop Continuous Count: "+ this.loopCount + "/3")
+        logGA("Loop Continuous Count: "+ this.loopCount + "/3")
         return
       }
       this.showError(this.callbacks.translate(response.error))
@@ -236,9 +236,9 @@ class AssistantResponse {
       var so = this.showScreenOutput(response)
       var ao = this.playAudioOutput(response)
       if (ao) {
-        log("Wait audio to finish")
+        logGA("Wait audio to finish")
       } else {
-        log("No response")
+        logGA("No response")
         this.end()
       }
     }

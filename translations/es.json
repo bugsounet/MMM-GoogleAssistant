@@ -4,5 +4,36 @@
   "TOO_SHORT" : "Lo siento, no te entiendo..",
   "CONVERSATION_ERROR" : "Error en la conversación. (micrófono sin configurar)",
   "QUERY_REPLY" : "Google Assistant va a ser activado",
-  "QUERY_HELP" : "Puedes usar Google Assistant vía texto con este comando."
+  "QUERY_HELP" : "Puedes usar Google Assistant vía texto con este comando.",
+
+  "RESTART_HELP" : "Reiniciar MagicMirror con pm2",
+  "RESTART_DONE" : "Reiniciado!",
+  "RESTART_ERROR" : "<id> No encontrado !",
+
+  "WAKEUP_HELP": "Pantalla encendida y contador reiniciado",
+  "WAKEUP_REPLY": "Pantalla Encendida!",
+
+  "HIDE_HELP": "Ocultar el módulo deseado",
+  "HIDE_ALREADY": " ya está oculto",
+  "HIDE_DONE": " ahora está oculto",
+  "HIDE_LOCKED": " está bloqueado por otro programa, no puedo ocultarlo",
+
+  "SHOW_HELP": "Mostrar el módulo deseado",
+  "SHOW_ALREADY": " ya está visible",
+  "SHOW_DONE": " ahora está visible",
+  "SHOW_LOCKED": " está bloqueado por otro programa, no puedo mostrarlo",
+
+  "MODULE_NOTFOUND": "No encuentro el Módulo: ",
+  "MODULE_NAME": "Te falta el nombre del módulo",
+
+  "STOP_HELP": "Parar A2D si está activo",
+  "STOP_A2D": "He parado A2D",
+
+  "A2D_OPEN": "Abriendo link: ",
+  "A2D_INVALID": "El link utilizado no es válido!",
+  "A2D_HELP": "Activar Assistant2Display con un link",
+
+  "VOLUME_HELP": "Ajusta el volumen de tu aparato",
+
+  "DADDY": "Papaito @bugsounet dice... NO, NO Y NO !!!"
 }

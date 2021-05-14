@@ -4,5 +4,36 @@
   "TOO_SHORT" : "Perdonami, non riesco a sentire bene.",
   "CONVERSATION_ERROR" : "Faccio fatica a sentire. (Controlla la configurazione del microfono)",
   "QUERY_REPLY" : "Google Assistant si attiva",
-  "QUERY_HELP" : "Puoi comandare `Google Assistant` scrivendo dopo questo comando."
+  "QUERY_HELP" : "Puoi comandare `Google Assistant` scrivendo dopo questo comando.",
+
+  "RESTART_HELP" : "riavvia MagicMirror con pm2",
+  "RESTART_DONE" : "riavvio il MagicMirror!",
+  "RESTART_ERROR" : "<id> mancante!",
+
+  "WAKEUP_HELP": "riaccendi lo schermo e resetta il contatore",
+  "WAKEUP_REPLY": "Riaccensione schermo !",
+
+  "HIDE_HELP": "nascondi il modulo scelto",
+  "HIDE_ALREADY": " è già nascosto",
+  "HIDE_DONE": " è ora nascosto",
+  "HIDE_LOCKED": " è bloccato da un altro programma, non lo posso nascondere",
+
+  "SHOW_HELP": "mostra il modulo indicato",
+  "SHOW_ALREADY": " è già mostrato",
+  "SHOW_DONE": " è ora mostrato",
+  "SHOW_LOCKED": " è già bloccato da un altro programma, non lo posso mostrare",
+
+  "MODULE_NOTFOUND": "modulo non trovato: ",
+  "MODULE_NAME": "nome del modulo mancante",
+
+  "STOP_HELP": "Stop A2D se in funzione",
+  "STOP_A2D": "A2D chiuso",
+
+  "A2D_OPEN": "Apro il collegamento: ",
+  "A2D_INVALID": "Il collegamento non è valido!",
+  "A2D_HELP": "Attiva Assisant2Display con collegamento",
+
+  "VOLUME_HELP": "Imposta il volume del tuo dispositivo",
+
+  "DADDY": "Papà @bugsounet dice... NO,NO E ANCORA NO !!!"
 }

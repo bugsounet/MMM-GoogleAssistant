@@ -4,5 +4,36 @@
   "TOO_SHORT" : "Sorry, I don't understand.",
   "CONVERSATION_ERROR" : "Conversation error. (misconfigured microphone)",
   "QUERY_REPLY" : "Google Assistant will be activated",
-  "QUERY_HELP" : "You can command `Google Assistant` by text with this command."
+  "QUERY_HELP" : "You can command `Google Assistant` by text with this command.",
+
+  "RESTART_HELP" : "restart MagicMirror with pm2",
+  "RESTART_DONE" : "I will restart it !",
+  "RESTART_ERROR" : "<id> missing !",
+
+  "WAKEUP_HELP": "wakeup the screen and restart counter",
+  "WAKEUP_REPLY": "Screen Wake Up !",
+
+  "HIDE_HELP": "hide desired module",
+  "HIDE_ALREADY": " is already hidden",
+  "HIDE_DONE": " is now hidden",
+  "HIDE_LOCKED": " is locked by another program, can't hidden it",
+
+  "SHOW_HELP": "show desired module",
+  "SHOW_ALREADY": " is already shown",
+  "SHOW_DONE": " is now shown",
+  "SHOW_LOCKED": " is already locked by another program, can't show it",
+
+  "MODULE_NOTFOUND": "Module not found: ",
+  "MODULE_NAME": "Name of the module missing",
+
+  "STOP_HELP": "Stop A2D if running",
+  "STOP_A2D": "I stop A2D",
+
+  "A2D_OPEN": "Opening link: ",
+  "A2D_INVALID": "This link is not invalid!",
+  "A2D_HELP": "Activate Assisant2Display with link",
+
+  "VOLUME_HELP": "Set the volume of your device",
+
+  "DADDY": "daddy @bugsounet says... NO,NO AND NO !!!"
 }
