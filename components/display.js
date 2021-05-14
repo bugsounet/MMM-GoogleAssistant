@@ -362,6 +362,7 @@ class Display {
 
 /** Other Cmds **/
   prepare() {
+    this.prepareVolume()
     var dom = document.createElement("div")
     dom.id = "A2D"
     dom.classList.add("hidden")
@@ -514,5 +515,32 @@ class Display {
 
   working () {
     return (this.A2D.youtube.displayed || this.A2D.photos.displayed || this.A2D.links.displayed)
+  }
+
+  /** Volume display **/
+  prepareVolume () {
+    var volume = document.createElement("div")
+    volume.id = "A2D_VOLUME"
+    volume.classList.add("hidden")
+    var volumeText = document.createElement("div")
+    volumeText.id = "A2D_VOLUME_TEXT"
+    volume.appendChild(volumeText)
+    var volumeBar = document.createElement("div")
+    volumeBar.id = "A2D_VOLUME_BAR"
+    volume.appendChild(volumeBar)
+    document.body.appendChild(volume)
+    return volume
+  }
+
+  drawVolume (current) {
+    var volume = document.getElementById("A2D_VOLUME")
+    volume.classList.remove("hidden")
+    var volumeText = document.getElementById("A2D_VOLUME_TEXT")
+    volumeText.innerHTML = this.config.volume.volumeText + " " + current + "%"
+    var volumeBar = document.getElementById("A2D_VOLUME_BAR")
+    volumeBar.style.width = current + "%"
+    setTimeout(()=>{
+      volume.classList.add("hidden")
+    }, 3000)
   }
 }

@@ -3,6 +3,26 @@
 **   BuGsounet   **
 *******************/
 
+/*
+ * Google Color code
+ * 	Green
+ *    Hex: #3cba54
+ *    RGB: 60, 186, 84
+ *  Yellow
+ *    Hex: #f4c20d
+ *    RGB: 244, 194, 13
+ *  Red
+ *    Hex: #db3236
+ *    RGB: 219, 50, 54
+ *  Blue
+ *    Hex: #4885ed
+ *    RGB: 72, 133, 237
+ *
+ * AndroidTV Background
+ *    RGB: 33, 33, 33
+ *    RGB: 25, 25, 25
+*/
+
 /** Main background for fullscreen **/
 #GA_DOM {
   background-image: url(./resources/GA_Big.png);
@@ -534,8 +554,6 @@ progress[value]#A2D_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
   margin-left: 10px;
 }
 
-
-
 #A2D_SPOTIFY.mini #A2D_SPOTIFY_LOGO {
   position: relative;
   text-align: center;
@@ -559,4 +577,45 @@ progress[value]#A2D_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
   align-items: center;
   text-align: center;
   line-height: inherit;
+}
+
+/* Volume */
+#A2D_VOLUME {
+  top: calc(80% - 20px);
+  left: calc(50% - 200px);
+  width:400px;
+  height:40px;
+  background-color:#333;
+  position:fixed;
+  visibility:visible;
+  opacity: 1;
+}
+
+#A2D_VOLUME_TEXT {
+  position:absolute;
+  width:400px;
+  height:40px;
+  top:0;
+  left:0;
+  color:#FFF;
+  text-align:center;
+  font-size:24px;
+  line-height:40px;
+  z-index:9998;
+}
+
+#A2D_VOLUME_BAR {
+  position:absolute;
+  width:400px;
+  height:40px;
+  top:0;
+  left:0;
+  z-index:9999;
+  background-color: rgba(72,133,237, 0.5);
+}
+
+#A2D_VOLUME.hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 1s, opacity 1s linear;
 }

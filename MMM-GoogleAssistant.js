@@ -1,5 +1,9 @@
-//
-// Module : MMM-GoogleAssistant v3
+/**
+ ** Module : MMM-GoogleAssistant v3
+ ** @bugsounet
+ ** ©2021
+ ** support: http://forum.bugsounet.fr
+ **/
 
 logGA = (...args) => { /* do nothing */ }
 logA2D = (...args) => { /* do nothing */ }
@@ -75,7 +79,8 @@ Module.register("MMM-GoogleAssistant", {
       volume: {
         useVolume: false,
         volumePreset: "ALSA",
-        myScript: null
+        myScript: null,
+        volumeText: "Volume:"
       },
       briefToday: {
         useBriefToday: false,
@@ -242,12 +247,11 @@ Module.register("MMM-GoogleAssistant", {
       },
 
       "sendSocketNotification": (noti, params) => {
-        console.log("!!!! sendSocketNotification Warning:", noti, params)
         this.sendSocketNotification(noti, params)
       },
       "sendNotification": (noti, params)=> {
-        //this.sendNotification(noti, params)
-        console.log("!!!! sendNotification Warning:", noti, params)
+        this.sendNotification(noti, params)
+        console.log("!!!! sendNotification Warning:", noti, params) // @to verify is really need ? maybe for detector sleeping ??
       },
       "radioStop": ()=> this.radio.pause(),
       "spotifyStatus": (status) => { // try to use spotify callback to unlock screen ...
@@ -280,8 +284,9 @@ Module.register("MMM-GoogleAssistant", {
         },
         commands: {
           "A2D_Stop": {
-            notificationExec: {
-              notification: "A2D_STOP"
+            moduleExec: {
+              module: ["MMM-GoogleAssistant"],
+              exec: "__FUNC__(module) => { module.stopCommand() }"
             },
             soundExec: {
               "chime": "close"
@@ -533,7 +538,7 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) {
-          this.sendNotification("A2D_VOLUME", payload.volume) // @todo
+          this.sendSocketNotification("VOLUME_SET", payload.volume)
         }
         this.assistantResponse.start(payload)
         break
@@ -665,11 +670,15 @@ Module.register("MMM-GoogleAssistant", {
 
       /** YouTube module callback **/
       case "FINISH_YOUTUBE":
-        console.log("Finish YT")
         this.A2D.youtube.displayed = false
         this.displayA2DResponse.showYT()
         this.displayA2DResponse.A2DUnlock()
         this.displayA2DResponse.resetYT()
+        break
+
+      /** Volume module callback **/
+      case "VOLUME_DONE":
+        this.displayA2DResponse.drawVolume(payload)
         break
     }
   },
@@ -722,7 +731,6 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   endResponse: function() {
-    //if (this.config.A2DServer.useA2D) this.sendNotification("A2D_ASSISTANT_READY")
     this.sendNotification("DETECTOR_START")
   },
 
@@ -809,8 +817,10 @@ Module.register("MMM-GoogleAssistant", {
           command.execution.forEach(exec => {
             logGA("Native Action: " + exec.command, exec.params)
             if (exec.command == "action.devices.commands.SetVolume") {
-              logGA("Volume Control:", exec.params.volumeLevel)
-              this.sendSocketNotification("VOLUME_SET", exec.params.volumeLevel)
+              if (this.config.A2DServer.useA2D && this.config.A2DServer.volume.useVolume) {
+                logGA("Volume Control:", exec.params.volumeLevel)
+                this.sendSocketNotification("VOLUME_SET", exec.params.volumeLevel)
+              }
             }
           })
         })
@@ -899,7 +909,6 @@ Module.register("MMM-GoogleAssistant", {
       opt.urls= response.screen.links
       opt.transcription= response.transcription
       logGA("Send A2D Response.")
-      //this.sendNotification("A2D", opt)
       this.displayA2DResponse.start(opt)
     }
   },
@@ -912,7 +921,6 @@ Module.register("MMM-GoogleAssistant", {
       "transcription": { transcription: "YouTube Video Player", done: "false" }
     }
     logGA("Send YouTube Response to A2D.")
-    //this.sendNotification("A2D", opt)
     this.displayA2DResponse.start(opt)
   },
 
@@ -1378,6 +1386,5 @@ Module.register("MMM-GoogleAssistant", {
     if (this.config.A2DServer.useA2D && this.config.A2DServer.briefToday.useBriefToday && this.config.A2DServer.briefToday.welcome) {
       this.assistantActivate({type: "TEXT", key: this.config.A2DServer.briefToday.welcome, chime: false}, Date.now())
     }
-  },
-
+  }
 })

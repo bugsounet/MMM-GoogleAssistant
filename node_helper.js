@@ -369,7 +369,6 @@ module.exports = NodeHelper.create({
     var callbacks= {
       "sendSocketNotification": (noti, params) => {
         this.sendSocketNotification(noti, params)
-        //logA2D("Addons Notification:", noti,params)
       },
       "screen": (param) => {
         if (this.screen && param == "WAKEUP") this.screen.wakeup()
@@ -424,7 +423,11 @@ module.exports = NodeHelper.create({
     var file = "librespot"
     var filePath = path.resolve(__dirname, "components/librespot/target/release", file)
     var cacheDir = __dirname + "/components/librespot/cache"
-    if (!fs.existsSync(filePath)) return console.log("[LIBRESPOT] librespot is not installed !")
+    if (!fs.existsSync(filePath)) {
+      console.log("[LIBRESPOT] librespot is not installed !")
+      this.sendSocketNotification("WARNING" , "librespot is not installed !")
+      return
+    }
     pm2.connect((err) => {
       if (err) return console.log(err)
       console.log("[PM2] Connected!")
@@ -507,9 +510,11 @@ module.exports = NodeHelper.create({
           this.socketNotificationReceived("SPOTIFY_PLAY", foundForPlay)
         } else {
           logA2D("[SPOTIFY] Search and Play No Result")
+          this.sendSocketNotification("WARNING" , "[SPOTIFY] Search and Play No Result")
         }
       } else { //when fail
         console.log("[GA:A2D] [SPOTIFY] Search and Play failed !")
+        this.sendSocketNotification("WARNING" , "[SPOTIFY] Search and Play failed !")
       }
     })
   },
@@ -519,8 +524,14 @@ module.exports = NodeHelper.create({
     var volumeScript= this.config.A2DServer.volume.myScript ? this.config.A2DServer.volume.myScript : this.volumeScript[this.config.A2DServer.volume.volumePreset]
     var script = volumeScript.replace("#VOLUME#", level)
     exec (script, (err, stdout, stderr)=> {
-      if (err) console.log("[GA:A2D] Set Volume Error:", err)
-      else logA2D("[VOLUME] Set Volume To:", level)
+      if (err) {
+        console.log("[GA:A2D] Set Volume Error:", err.toString())
+        this.sendSocketNotification("WARNING" , err.toString())
+      }
+      else {
+        logA2D("[VOLUME] Set Volume To:", level)
+        this.sendSocketNotification("VOLUME_DONE", level)
+      }
     })
   },
 
