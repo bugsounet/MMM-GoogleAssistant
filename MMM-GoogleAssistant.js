@@ -44,7 +44,8 @@ Module.register("MMM-GoogleAssistant", {
         listen: "listen.gif",
         confirmation: "confirmation.gif",
         information: "information.gif",
-        warning: "warning.gif"
+        warning: "warning.gif",
+        userError: "userError.gif"
       },
       zoom: {
         transcription: "80%",
@@ -115,6 +116,7 @@ Module.register("MMM-GoogleAssistant", {
       },
       governor: {
         useGovernor: false,
+        useCallback: true,
         sleeping: "powersave",
         working: "ondemand"
       },
@@ -124,7 +126,8 @@ Module.register("MMM-GoogleAssistant", {
         delay: 2* 60 * 1000,
         scan: "google.fr",
         command: "pm2 restart 0",
-        showAlert: true
+        showAlert: true,
+        language: config.language
       },
       cast: {
         useCast: false,
@@ -279,6 +282,16 @@ Module.register("MMM-GoogleAssistant", {
       this.spotifyNewVolume = false
       this.userPresence = null
       this.lastPresence = null
+      this.DateTranslate = {
+        day: " " + this.translate("DAY") + " ",
+        days: " " + this.translate("DAYS") + " ",
+        hour: " " + this.translate("HOUR") + " ",
+        hours: " " + this.translate("HOURS") + " ",
+        minute: " " + this.translate("MINUTE") + " ",
+        minutes: " " + this.translate("MINUTES") + " ",
+        second: " " + this.translate("SECOND"),
+        seconds: " " + this.translate("SECONDS")
+      }
       var A2DStopHooks = {
         transcriptionHooks: {
           "A2D_Stop": {
@@ -536,12 +549,17 @@ Module.register("MMM-GoogleAssistant", {
       case "LOAD_RECIPE":
         this.parseLoadedRecipe(payload)
         break
+      case "ERROR":
       case "NOT_INITIALIZED":
         this.assistantResponse.fullscreen(true)
         this.assistantResponse.showError(payload)
+        this.assistantResponse.forceStatusImg("userError")
         break
       case "WARNING":
         this.Warning(payload)
+        break
+      case "INFORMATION":
+        this.Informations(payload)
         break
       case "INITIALIZED":
         logGA("Initialized.")
@@ -610,24 +628,25 @@ Module.register("MMM-GoogleAssistant", {
         this.screenHiding()
         break
 
-      /** internet module **/
+      /** new internet module (v2) **/
       case "INTERNET_DOWN":
-        this.sendNotification("SHOW_ALERT", {
-          type: "alert" ,
-          message: "Internet is DOWN ! Retry: " + payload,
-          title: "Internet Scan",
-          timer: 10000
-        })
-        this.sendSocketNotification("SCREEN_WAKEUP")
+        if (payload.ticks == 1) this.sendSocketNotification("SCREEN_WAKEUP")
+        let FormatedSince = moment(payload.date).fromNow()
+        this.Warning(FormatedSince + ", Internet is DOWN!" , false)
         break
       case "INTERNET_RESTART":
-        this.sendNotification("SHOW_ALERT", {
-          type: "alert" ,
-          message: "Internet is now available! Restarting Magic Mirror...",
-          title: "Internet Scan",
-          timer: 10000
-        })
         this.sendSocketNotification("SCREEN_WAKEUP")
+        this.Informations("Internet is now available! Restarting Magic Mirror...")
+        break
+      case "INTERNET_AVAILABLE":
+        let DateDiff = payload
+        this.sendSocketNotification("SCREEN_WAKEUP")
+        // sport time ! translate the time elapsed since no internet into all languages !!!
+        let FormatedMessage = (DateDiff.day ? (DateDiff.day + (DateDiff.day > 1 ? this.DateTranslate.days : this.DateTranslate.day)) : "")
+          + (DateDiff.hour ? (DateDiff.hour + (DateDiff.hour > 1 ? this.DateTranslate.hours : this.DateTranslate.hour)): "")
+          + (DateDiff.min ? (DateDiff.min + (DateDiff.min > 1 ? this.DateTranslate.minutes : this.DateTranslate.minute)): "")
+          + DateDiff.sec + (DateDiff.sec > 1 ? this.DateTranslate.seconds : this.DateTranslate.second)
+        this.Informations("Internet is now AVAILABLE, after " + FormatedMessage)
         break
       case "INTERNET_PING":
         var ping = document.getElementById("A2D_INTERNET_PING")
@@ -955,35 +974,39 @@ Module.register("MMM-GoogleAssistant", {
     this.warningTimeout = setTimeout(() => {
       this.assistantResponse.end(false)
       this.assistantResponse.showTranscription("")
-    }, 3000)
+    }, this.config.responseConfig.screenOutputTimer)
   },
 
-  Warning: function(warning) {
-    //this.assistantResponse.forceStatusImg("warning")
+  Warning: function(warning, noEnd = true) {
+    this.assistantResponse.warningEvent= true
     console.log("[GA] Warning:", warning)
-    clearTimeout(this.assistantResponse.aliveTimer)
-    this.assistantResponse.aliveTimer = null
     this.assistantResponse.forceStatusImg("warning")
     this.assistantResponse.showTranscription(warning)
+    clearTimeout(this.assistantResponse.aliveTimer)
+    this.assistantResponse.aliveTimer = null
     this.assistantResponse.fullscreen(true)
     this.warningTimeout = setTimeout(() => {
-      this.assistantResponse.end(false)
+      this.assistantResponse.warningEvent= false
+      this.assistantResponse.end(noEnd)
       this.assistantResponse.showTranscription("")
       this.assistantResponse.forceStatusImg("standby")
-    }, 5000)
+    }, this.config.responseConfig.screenOutputTimer)
   },
 
   Informations: function(info) {
+    this.assistantResponse.warningEvent= true
+    console.log("[GA] Warning:", info)
     this.assistantResponse.forceStatusImg("information")
+    this.assistantResponse.showTranscription(info)
     clearTimeout(this.assistantResponse.aliveTimer)
     this.assistantResponse.aliveTimer = null
-    this.assistantResponse.showTranscription(info)
     this.assistantResponse.fullscreen(true)
     this.warningTimeout = setTimeout(() => {
-      this.assistantResponse.end(false)
+      this.assistantResponse.warningEvent= false
+      this.assistantResponse.end()
       this.assistantResponse.showTranscription("")
       this.assistantResponse.forceStatusImg("standby")
-    }, 5000)
+    }, this.config.responseConfig.screenOutputTimer)
   },
 
   /****************************/
@@ -1330,16 +1353,22 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   resume: function() {
-    if (this.A2D.spotify.connected && this.config.A2DServer.spotify.useBottomBar) {
-      this.displayA2DResponse.showSpotify()
-      logA2D("Spotify is resumed.")
+    if (this.config.A2DServer.useA2D && this.config.A2DServer.spotify.useSpotify) {
+      this.A2D = this.displayA2DResponse.A2D
+      if (this.A2D.spotify.connected && this.config.A2DServer.spotify.useBottomBar) {
+        this.displayA2DResponse.showSpotify()
+        logA2D("Spotify is resumed.")
+      }
     }
   },
 
   suspend: function() {
-    if (this.A2D.spotify.connected && this.config.A2DServer.spotify.useBottomBar) {
-      this.displayA2DResponse.hideSpotify()
-      logA2D("Spotify is suspended.")
+    if (this.config.A2DServer.useA2D && this.config.A2DServer.spotify.useSpotify) {
+      this.A2D = this.displayA2DResponse.A2D
+      if (this.A2D.spotify.connected && this.config.A2DServer.spotify.useBottomBar) {
+        this.displayA2DResponse.hideSpotify()
+        logA2D("Spotify is suspended.")
+      }
     }
   },
 
@@ -1408,5 +1437,20 @@ Module.register("MMM-GoogleAssistant", {
     if (this.config.A2DServer.welcome.useWelcome && this.config.A2DServer.welcome.welcome) {
       this.assistantActivate({type: "TEXT", key: this.config.A2DServer.welcome.welcome, chime: false}, Date.now())
     }
+  },
+
+  /** internet utils **/
+  dateDiff: function (date1, date2) {
+    var diff = {}
+    var tmp = date2 - date1
+    tmp = Math.floor(tmp/1000)
+    diff.sec = tmp % 60
+    tmp = Math.floor((tmp-diff.sec)/60)
+    diff.min = tmp % 60
+    tmp = Math.floor((tmp-diff.min)/60)
+    diff.hour = tmp % 24
+    tmp = Math.floor((tmp-diff.hour)/24)
+    diff.day = tmp
+    return diff
   }
 })

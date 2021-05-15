@@ -471,7 +471,7 @@ class Display {
   A2DLock() {
     if (this.A2D.locked) return
     logA2D("Lock Screen")
-    MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
+    MM.getModules().enumerate((module)=> {
       module.hide(15, {lockString: "A2D_LOCKED"})
     })
     if (this.A2D.spotify.connected && this.config.spotify.useBottomBar) this.hideSpotify()
@@ -482,7 +482,7 @@ class Display {
   A2DUnlock () {
     if (!this.A2D.locked || this.working()) return
     logA2D("Unlock Screen")
-    MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
+    MM.getModules().enumerate((module)=> {
       module.show(15, {lockString: "A2D_LOCKED"})
     })
     if (this.A2D.spotify.connected && this.config.spotify.useBottomBar) this.showSpotify()

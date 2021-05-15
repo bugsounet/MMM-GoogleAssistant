@@ -13,6 +13,7 @@ class AssistantResponse {
     this.loopCount = 0
     this.chime = this.config.chimes
     this.resourcesDir = "/modules/MMM-GoogleAssistant/resources/"
+    this.warningEvent = false
 
     this.imgStatus = {
       "hook": this.resourcesDir + this.config.imgStatus.hook,
@@ -24,7 +25,8 @@ class AssistantResponse {
       "listen": this.resourcesDir + this.config.imgStatus.listen,
       "confirmation": this.resourcesDir + this.config.imgStatus.confirmation,
       "information": this.resourcesDir + this.config.imgStatus.information,
-      "warning": this.resourcesDir + this.config.imgStatus.warning
+      "warning": this.resourcesDir + this.config.imgStatus.warning,
+      "userError": this.resourcesDir + this.config.imgStatus.userError
     }
 
     this.audioResponse = new Audio()
@@ -178,21 +180,27 @@ class AssistantResponse {
 
       } else {
         logGA("Conversation ends.")
-        this.status("standby")
-        this.callbacks.endResponse()
-        clearTimeout(this.aliveTimer)
-        this.aliveTimer = null
-        this.aliveTimer = setTimeout(()=>{
-          this.stopResponse(()=>{
-            this.fullscreen(false, this.myStatus)
-          })
-        }, this.config.screenOutputTimer)
+        this.endOrEvent()
       }
     } else {
       this.status("standby")
       this.fullscreen(false, this.myStatus)
       if (cb) this.callbacks.endResponse()
     }
+  }
+
+  endOrEvent() {
+    if (this.warningEvent) return
+    this.warningEvent = false
+    this.status("standby")
+    this.callbacks.endResponse()
+    clearTimeout(this.aliveTimer)
+    this.aliveTimer = null
+    this.aliveTimer = setTimeout(()=>{
+      this.stopResponse(()=>{
+        this.fullscreen(false, this.myStatus)
+      })
+    }, this.config.screenOutputTimer)
   }
 
   start (response) {

@@ -35,5 +35,14 @@
 
   "VOLUME_HELP": "Stellt die Lautstärke der Audioausgabe ein.",
 
-  "DADDY": "Papa @bugsounet sagte... Nein, nein und nochmals nein!!!"
+  "DADDY": "Papa @bugsounet sagte... Nein, nein und nochmals nein!!!",
+
+  "DAY" : "Tag",
+  "DAYS" : "Tage",
+  "HOUR" : "Stunde",
+  "HOURS" : "Stunden",
+  "MINUTE" : "Minute",
+  "MINUTES" : "Minuten",
+  "SECOND": "Sekunde",
+  "SECONDS": "Sekunden"
 }

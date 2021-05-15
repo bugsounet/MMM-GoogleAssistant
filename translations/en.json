@@ -35,5 +35,14 @@
 
   "VOLUME_HELP": "Set the volume of your device",
 
-  "DADDY": "daddy @bugsounet says... NO,NO AND NO !!!"
+  "DADDY": "daddy @bugsounet says... NO,NO AND NO !!!",
+
+  "DAY" : "day",
+  "DAYS" : "days",
+  "HOUR" : "hour",
+  "HOURS" : "hours",
+  "MINUTE" : "minute",
+  "MINUTES" : "minutes",
+  "SECOND": "second",
+  "SECONDS": "seconds"
 }

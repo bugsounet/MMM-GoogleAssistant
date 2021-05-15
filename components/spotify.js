@@ -2,7 +2,6 @@
 
 class Spotify {
   constructor (Config, callbacks, debug) {
-    console.log(Config)
     this.config = Config
     this.debug = debug
     this.spotifyStatus = callbacks.spotifyStatus

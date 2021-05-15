@@ -13,7 +13,7 @@ const npmCheck = require("@bugsounet/npmcheck")
 const Screen = require("@bugsounet/screen")
 const Pir = require("@bugsounet/pir")
 const Governor = require("@bugsounet/governor")
-const Internet = require("@bugsounet/internet")
+const Internet = require("@bugsounet/internet").v2
 const CastServer = require("@bugsounet/cast")
 const Spotify = require("@bugsounet/spotify")
 const pm2 = require('pm2')
@@ -385,9 +385,11 @@ module.exports = NodeHelper.create({
       "governor": (param) => {
         if (this.governor && param == "GOVERNOR_SLEEPING") this.governor.sleeping()
         if (this.governor && param == "GOVERNOR_WORKING") this.governor.working()
+        if (this.governor && param.error) this.sendSocketNotification("ERROR", "[GOVERNOR] " + param.error)
       },
-      "pir": (param) => {
-        if (this.screen && this.pir && param == "PIR_DETECTED") this.screen.wakeup()
+      "pir": (noti,param) => {
+        if (this.screen && this.pir && noti == "PIR_DETECTED") this.screen.wakeup()
+        if (this.screen && this.pir && noti == "PIR_ERROR") this.sendSocketNotification("ERROR", "[PIR] " + param.toString())
       }
     }
 
@@ -403,7 +405,7 @@ module.exports = NodeHelper.create({
     }
     if (this.config.A2DServer.governor.useGovernor) {
       logA2D("Starting Governor module...")
-      this.governor = new Governor(this.config.A2DServer.governor, null, this.config.debug)
+      this.governor = new Governor(this.config.A2DServer.governor, callbacks.governor, this.config.debug)
       this.governor.start()
     }
     if (this.config.A2DServer.internet.useInternet) {
@@ -535,11 +537,12 @@ module.exports = NodeHelper.create({
     exec (script, (err, stdout, stderr)=> {
       if (err) {
         console.log("[GA:A2D] Set Volume Error:", err.toString())
-        this.sendSocketNotification("WARNING" , err.toString())
+        this.sendSocketNotification("WARNING" , "Volume: Preset Error!")
       }
       else {
         logA2D("[VOLUME] Set Volume To:", level)
         this.sendSocketNotification("VOLUME_DONE", level)
+        this.sendSocketNotification("INFORMATION" , "Volume: " + level + "%")
       }
     })
   },

@@ -35,5 +35,14 @@
 
   "VOLUME_HELP": "Défini le volume sonore",
 
-  "DADDY": "Papa @bugsounet a dit... NON,NON ET NON !!!"
+  "DADDY": "Papa @bugsounet a dit... NON,NON ET NON !!!",
+
+  "DAY" : "jour",
+  "DAYS" : "jours",
+  "HOUR" : "heure",
+  "HOURS" : "heures",
+  "MINUTE" : "minute",
+  "MINUTES" : "minutes",
+  "SECOND": "seconde",
+  "SECONDS": "secondes"
 }
