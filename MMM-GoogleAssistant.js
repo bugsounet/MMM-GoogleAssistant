@@ -1018,12 +1018,229 @@ Module.register("MMM-GoogleAssistant", {
       description: this.translate("QUERY_HELP"),
       callback: "tbQuery"
     })
+    if (this.config.A2DServer.useA2D) {
+      commander.add({
+        command: "restart",
+        description: this.translate("RESTART_HELP"),
+        callback: "tbRestart"
+      })
+      if (this.config.A2DServer.screen.useScreen) {
+        commander.add({
+          command: "wakeup",
+          description: this.translate("WAKEUP_HELP"),
+          callback: "tbWakeup"
+        })
+      }
+      commander.add({
+        command: "hide",
+        description: this.translate("HIDE_HELP"),
+        callback: "tbHide"
+      })
+      commander.add({
+        command: "show",
+        description: this.translate("SHOW_HELP"),
+        callback: "tbShow"
+      })
+      commander.add({
+        command: "stop",
+        description: this.translate("STOP_HELP"),
+        callback: "tbStopA2D"
+      })
+      commander.add({
+        command: "A2D",
+        description: this.translate("A2D_HELP"),
+        callback: "tbA2D"
+      })
+      if (this.config.A2DServer.volume.useVolume) {
+        commander.add({
+          command: "volume",
+          description: this.translate("VOLUME_HELP"),
+          callback: "tbVolume"
+        })
+      }
+      if (this.config.A2DServer.spotify.useSpotify) {
+        commander.add({
+          command: "spotify",
+          description: "Spotify commands",
+          callback: "tbSpotify"
+        })
+      }
+    }
   },
 
   tbQuery: function(command, handler) {
     var query = handler.args
     if (!query) handler.reply("TEXT", this.translate("QUERY_HELP"))
-    else this.socketNotificationReceived("ASSISTANT_ACTIVATE", { type: "TEXT", key: query })
+    //else this.socketNotificationReceived("ASSISTANT_ACTIVATE", { type: "TEXT", key: query })
+    else this.assistantActivate({ type:"TEXT", key: query })
+  },
+
+  tbRestart: function(command, handler) {
+    if (handler.args) {
+      this.sendSocketNotification("RESTART", handler.args)
+      handler.reply("TEXT", this.translate("RESTART_DONE"))
+    } else handler.reply("TEXT", this.translate("RESTART_ERROR"))
+  },
+
+  tbWakeup: function(command, handler) {
+    this.sendSocketNotification("SCREEN_WAKEUP")
+    handler.reply("TEXT", this.translate("WAKEUP_REPLY"))
+  },
+
+  tbHide: function(command, handler) {
+    var found = false
+    var unlock = false
+    if (handler.args) {
+      if (handler.args == "MMM-GoogleAssistant") {
+        return handler.reply("TEXT", this.translate("DADDY"))
+      }
+      MM.getModules().enumerate((m)=> {
+        if (m.name == handler.args) {
+          found = true
+          if (m.hidden) return handler.reply("TEXT", handler.args + this.translate("HIDE_ALREADY"))
+          if (m.lockStrings.length > 0) {
+            m.lockStrings.forEach( lock => {
+              if (lock == "TB_A2D") {
+                m.hide(500, {lockString: "TB_A2D"})
+                if (m.lockStrings.length == 0) {
+                  unlock = true
+                  handler.reply("TEXT", handler.args + this.translate("HIDE_DONE"))
+                }
+              }
+            })
+            if (!unlock) return handler.reply("TEXT", handler.args + this.translate("HIDE_LOCKED"))
+          }
+          else {
+            m.hide(500, {lockString: "TB_A2D"})
+            handler.reply("TEXT", handler.args + this.translate("HIDE_DONE"))
+          }
+        }
+      })
+      if (!found) handler.reply("TEXT", this.translate("MODULE_NOTFOUND") + handler.args)
+    } else return handler.reply("TEXT", this.translate("MODULE_NAME"))
+  },
+
+  tbShow: function(command, handler) {
+    var found = false
+    var unlock = false
+    if (handler.args) {
+      MM.getModules().enumerate((m)=> {
+        if (m.name == handler.args) {
+          found = true
+          if (!m.hidden) return handler.reply("TEXT", handler.args + this.translate("SHOW_ALREADY"))
+          if (m.lockStrings.length > 0) {
+            m.lockStrings.forEach( lock => {
+              if (lock == "TB_A2D") {
+                m.show(500, {lockString: "TB_A2D"})
+                if (m.lockStrings.length == 0) {
+                  unlock = true
+                  handler.reply("TEXT", handler.args + this.translate("SHOW_DONE"))
+                }
+              }
+            })
+            if (!unlock) return handler.reply("TEXT", handler.args + this.translate("SHOW_LOCKED"))
+          }
+          else {
+            m.show(500, {lockString: "TB_A2D"})
+            handler.reply("TEXT", handler.args + this.translate("SHOW_DONE"))
+          }
+        }
+      })
+      if (!found) handler.reply("TEXT", this.translate("MODULE_NOTFOUND") + handler.args)
+    } else return handler.reply("TEXT", this.translate("MODULE_NAME"))
+  },
+
+  tbStopA2D: function(command, handler) {
+    this.stopCommand()
+    handler.reply("TEXT", this.translate("STOP_A2D"))
+  },
+
+  tbA2D: function (command, handler) {
+    if (handler.args) {
+      var responseEmulate = {
+        "photos": [],
+        "urls": [],
+        "transcription": {},
+        "trysay": null,
+        "help": null
+      }
+      var regexp = /^((http(s)?):\/\/)(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+      var isLink = regexp.test(handler.args)
+      var retryWithHttp = regexp.test("http://" + handler.args)
+      if (isLink || retryWithHttp) {
+        handler.reply("TEXT", this.translate("A2D_OPEN") + handler.args)
+        responseEmulate.transcription.transcription = " Telegram @" + handler.message.from.username + ": " + handler.args
+        responseEmulate.transcription.done = true
+        responseEmulate.urls[0] = isLink ? handler.args : ("http://" + handler.args)
+        if (this.config.A2DServer.screen.useScreen) this.sendSocketNotification("SCREEN_WAKEUP")
+        this.displayA2DResponse.start(responseEmulate)
+      }
+      else handler.reply("TEXT", this.translate("A2D_INVALID"))
+    }
+    else handler.reply("TEXT", "/A2D <link>")
+  },
+
+  tbVolume: function(command, handler) {
+    if (handler.args) {
+      var value = Number(handler.args)
+      if ((!value && value != 0) || ((value < 0) || (value > 100))) return handler.reply("TEXT", "/volume [0-100]")
+      this.sendSocketNotification("VOLUME_SET", value)
+      handler.reply("TEXT", "Volume " + value+"%")
+    }
+    else handler.reply("TEXT", "/volume [0-100]")
+  },
+
+  tbSpotify: function(command, handler) {
+    if (handler.args) {
+      var args = handler.args.toLowerCase().split(" ")
+      var params = handler.args.split(" ")
+      if (args[0] == "play") {
+        handler.reply("TEXT", "Spotify PLAY")
+        this.SpotifyCommand("PLAY")
+      }
+      if (args[0] == "pause") {
+        handler.reply("TEXT", "Spotify PAUSE")
+        this.SpotifyCommand("PAUSE")
+      }
+      if (args[0] == "stop") {
+        handler.reply("TEXT", "Spotify STOP")
+        this.SpotifyCommand("STOP")
+      }
+      if (args[0] == "next") {
+        handler.reply("TEXT", "Spotify NEXT")
+        this.SpotifyCommand("NEXT")
+      }
+      if (args[0] == "previous") {
+        handler.reply("TEXT", "Spotify PREVIOUS")
+        this.SpotifyCommand("PREVIOUS")
+      }
+      if (args[0] == "volume") {
+        if (args[1]) {
+          if (isNaN(args[1])) return handler.reply("TEXT", "Must be a number ! [0-100]")
+          if (args[1] > 100) args[1] = 100
+          if (args[1] < 0) args[1] = 0
+          handler.reply("TEXT", "Spotify VOLUME: " + args[1])
+          this.SpotifyCommand("VOLUME", args[1])
+        } else handler.reply("TEXT", "Define volume [0-100]")
+      }
+      if (args[0] == "to") {
+        if (args[1]) {
+          handler.reply("TEXT", "Spotify TRANSFER to: " + params[1] + " (if exist !)")
+          this.SpotifyCommand("TRANSFER", params[1])
+        }
+        else handler.reply("TEXT", "Define the device name (case sensitive)")
+      }
+    } else {
+      handler.reply("TEXT", 'Need Help for /spotify commands ?\n\n\
+  *play*: Launch music (last title)\n\
+  *pause*: Pause music\n\
+  *stop*: Stop music\n\
+  *next*: Next track\n\
+  *previous*: Previous track\n\
+  *volume*: Volume control, it need a value 0-100\n\
+  *to*: Transfert music to another device (case sensitive)\
+  ',{parse_mode:'Markdown'})
+    }
   },
 
   /********************************/

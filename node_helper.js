@@ -108,13 +108,13 @@ module.exports = NodeHelper.create({
         retry = setTimeout(() => {
           this.spotify.play(payload, (code, error, result) => {
             if ((code == 404) && (result.error.reason == "NO_ACTIVE_DEVICE")) {
-              log("[SPOTIFY] RETRY playing...")
+              logA2D("[SPOTIFY] RETRY playing...")
               this.socketNotificationReceived("SPOTIFY_PLAY", payload)
             }
             if ((code !== 204) && (code !== 202)) {
               return console.log("[SPOTIFY:PLAY] RETRY Error", code, error, result)
             }
-            else log("[SPOTIFY] RETRY: DONE_PLAY")
+            else logA2D("[SPOTIFY] RETRY: DONE_PLAY")
           })
         }, 3000)
         break
@@ -206,6 +206,10 @@ module.exports = NodeHelper.create({
         break
       case "YT_VOLUME":
         this.VolumeVLC(payload)
+        break
+      /** Restart with pm2 **/
+      case "RESTART":
+        this.pm2Restart(payload)
         break
     }
   },
@@ -588,5 +592,14 @@ module.exports = NodeHelper.create({
       logA2D("[YouTube] Set VLC Volume to:", volume)
       this.YouTube.cmd("volume " + volume)
     }
-  }
+  },
+
+  pm2Restart: function(id) {
+    var pm2 = "pm2 restart " + id
+    exec (pm2, (err, stdout, stderr)=> {
+      if (err) console.log("[A2D:PM2] " + err)
+      else log("[PM2] Restart", id)
+    })
+  },
+
 })
