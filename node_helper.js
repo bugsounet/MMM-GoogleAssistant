@@ -274,23 +274,32 @@ module.exports = NodeHelper.create({
       error = "[FATAL] Assistant: tokenGA.json file not found !"
       return this.DisplayError(error)
     }
-    if (this.config.A2DServer.useA2D && this.config.A2DServer.youtube.useYoutube) {
-      try {
-        const CREDENTIALS = readJson(this.config.assistantConfig["modulePath"] + "/credentials.json")
-        const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenYT.json")
-        let oauth = Youtube.authenticate({
-          type: "oauth",
-          client_id: CREDENTIALS.installed.client_id,
-          client_secret: CREDENTIALS.installed.client_secret,
-          redirect_url: CREDENTIALS.installed.redirect_uris,
-          access_token: TOKEN.access_token,
-          refresh_token: TOKEN.refresh_token,
-        })
-        console.log("[GA] YouTube Search Function initilized.")
-      } catch (e) {
-        console.log("[GA] " + e)
-        error = "[FATAL] Youtube: tokenYT.json file not found !"
-        return this.DisplayError(error)
+    if (this.config.A2DServer.useA2D) {
+      if (this.config.A2DServer.youtube.useYoutube) {
+        try {
+          const CREDENTIALS = readJson(this.config.assistantConfig["modulePath"] + "/credentials.json")
+          const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenYT.json")
+          let oauth = Youtube.authenticate({
+            type: "oauth",
+            client_id: CREDENTIALS.installed.client_id,
+            client_secret: CREDENTIALS.installed.client_secret,
+            redirect_url: CREDENTIALS.installed.redirect_uris,
+            access_token: TOKEN.access_token,
+            refresh_token: TOKEN.refresh_token,
+          })
+          console.log("[GA] YouTube Search Function initilized.")
+        } catch (e) {
+          console.log("[GA] " + e)
+          error = "[FATAL] Youtube: tokenYT.json file not found !"
+          return this.DisplayError(error)
+        }
+      }
+      if (this.config.A2DServer.volume.useVolume) {
+        let exists = (data) => {
+          return data !== null && data !== undefined
+        }
+        if (!exists(this.volumeScript[this.config.A2DServer.volume.volumePreset]))
+          return this.DisplayError("VolumePreset error")
       }
     }
 

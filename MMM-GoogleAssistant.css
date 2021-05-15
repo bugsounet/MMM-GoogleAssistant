@@ -213,6 +213,7 @@
 #A2D_BAR.hidden,
 #A2D_RADIO.hidden,
 #A2D_SCREEN.hidden,
+#A2D_SCREEN_CONTENER.hidden,
 #A2D_PRESENCE.hidden,
 #A2D_INTERNET.hidden {
   display: none;

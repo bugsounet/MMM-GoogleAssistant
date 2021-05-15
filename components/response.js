@@ -22,7 +22,9 @@ class AssistantResponse {
       "think": this.resourcesDir + this.config.imgStatus.think,
       "continue": this.resourcesDir + this.config.imgStatus.continue,
       "listen": this.resourcesDir + this.config.imgStatus.listen,
-      "confirmation": this.resourcesDir + this.config.imgStatus.confirmation
+      "confirmation": this.resourcesDir + this.config.imgStatus.confirmation,
+      "information": this.resourcesDir + this.config.imgStatus.information,
+      "warning": this.resourcesDir + this.config.imgStatus.warning
     }
 
     this.audioResponse = new Audio()
@@ -71,6 +73,11 @@ class AssistantResponse {
     Status.src = (this.myStatus.old == "hook") ? this.imgStatus["hook"] : this.imgStatus[this.myStatus.actual]
     this.callbacks.myStatus(this.myStatus) // send status external
     this.myStatus.old = this.myStatus.actual
+  }
+
+  forceStatusImg(status) {
+    var Status = document.getElementById("GA-Status")
+    Status.src = this.imgStatus[status]
   }
 
   prepare () {
@@ -151,7 +158,7 @@ class AssistantResponse {
     tr.textContent = text
   }
 
-  end () {
+  end (cb = true) {
     this.showing = false
     if (this.response) {
       var response = this.response
@@ -184,7 +191,7 @@ class AssistantResponse {
     } else {
       this.status("standby")
       this.fullscreen(false, this.myStatus)
-      this.callbacks.endResponse()
+      if (cb) this.callbacks.endResponse()
     }
   }
 
@@ -304,7 +311,7 @@ class AssistantResponse {
   fullscreen (active, status) {
     var GA = document.getElementById("GA")
 
-    if (active) {
+    if (active) { // @todo review for v3
       GA.className= "in"
       if (this.fullscreenAbove) {
         MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {

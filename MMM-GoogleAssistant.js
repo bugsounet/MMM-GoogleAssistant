@@ -42,7 +42,9 @@ Module.register("MMM-GoogleAssistant", {
         think: "think.gif",
         continue: "continue.gif",
         listen: "listen.gif",
-        confirmation: "confirmation.gif"
+        confirmation: "confirmation.gif",
+        information: "information.gif",
+        warning: "warning.gif"
       },
       zoom: {
         transcription: "80%",
@@ -82,8 +84,8 @@ Module.register("MMM-GoogleAssistant", {
         myScript: null,
         volumeText: "Volume:"
       },
-      briefToday: {
-        useBriefToday: false,
+      welcome: {
+        useWelcome: false,
         welcome: "brief Today"
       },
       screen: {
@@ -239,7 +241,7 @@ Module.register("MMM-GoogleAssistant", {
         this.doPlugin("onStatus", {status: status})
         this.myStatus = status
         this.sendNotification("ASSISTANT_" + this.myStatus.actual.toUpperCase())
-        this.A2DActionsOnStatus(this.myStatus.actual)
+        if (this.config.A2DServer.useA2D) this.A2DActionsOnStatus(this.myStatus.actual)
       },
       A2D: (response)=> {
         if (this.config.A2DServer.useA2D)
@@ -258,8 +260,10 @@ Module.register("MMM-GoogleAssistant", {
         if (status) this.A2D.spotify.connected = true
         else {
           this.A2D.spotify.connected = false
-          if (this.A2D.spotify.librespot && this.config.A2DServer.screen.useScreen && !this.displayResponse.working()) {
-              this.sendSocketNotification("SCREEN_LOCK", false)
+          if (this.A2D.spotify.librespot && this.config.A2DServer.screen.useScreen && !this.displayA2DResponse.working()) {
+            var screenContener = document.getElementById("A2D_SCREEN_CONTENER")
+            this.sendSocketNotification("SCREEN_LOCK", false)
+            screenContener.classList.remove("hidden")
           }
           this.A2D.spotify.librespot = false
         }
@@ -396,7 +400,11 @@ Module.register("MMM-GoogleAssistant", {
       dom.appendChild(spotify)
     }
 
-    /** Screen TimeOut Text **/
+    /** Screen Contener (text, bar, last presence) **/
+    var screenContener = document.createElement("div")
+    screenContener.id = "A2D_SCREEN_CONTENER"
+
+    /***** Screen TimeOut Text *****/
     var screen = document.createElement("div")
     screen.id = "A2D_SCREEN"
     if (!this.config.A2DServer.screen.useScreen || (this.config.A2DServer.screen.displayStyle != "Text")) screen.className = "hidden"
@@ -409,8 +417,9 @@ Module.register("MMM-GoogleAssistant", {
     screenCounter.classList.add("counter")
     screenCounter.textContent = "--:--"
     screen.appendChild(screenCounter)
+    screenContener.appendChild(screen)
 
-    /** Screen TimeOut Bar **/
+    /***** Screen TimeOut Bar *****/
     var bar = document.createElement("div")
     bar.id = "A2D_BAR"
     if (!this.config.A2DServer.screen.useScreen || (this.config.A2DServer.screen.displayStyle == "Text") || !this.config.A2DServer.screen.displayBar) bar.className = "hidden"
@@ -422,8 +431,9 @@ Module.register("MMM-GoogleAssistant", {
       screenBar.max= this.config.A2DServer.screen.delay
     }
     bar.appendChild(screenBar)
+    screenContener.appendChild(bar)
 
-    /** Last user Presence **/
+    /***** Last user Presence *****/
     var presence = document.createElement("div")
     presence.id = "A2D_PRESENCE"
     presence.className = "hidden"
@@ -436,6 +446,7 @@ Module.register("MMM-GoogleAssistant", {
     presenceDate.classList.add("presence")
     presenceDate.textContent = "Loading ..."
     presence.appendChild(presenceDate)
+    screenContener.appendChild(presence)
 
     /** internet Ping **/
     var internet = document.createElement("div")
@@ -460,9 +471,7 @@ Module.register("MMM-GoogleAssistant", {
     radio.appendChild(radioImg)
 
     dom.appendChild(radio)
-    dom.appendChild(screen)
-    dom.appendChild(bar)
-    dom.appendChild(presence)
+    dom.appendChild(screenContener)
     dom.appendChild(internet)
 
     return dom
@@ -486,16 +495,21 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantActivate({ type:"MIC" })
         break
       case "WAKEUP": /** for external wakeup **/
-        if (this.config.A2DServer.useA2D && this.config.A2DServer.screen.useScreen) this.sendSocketNotification("SCREEN_WAKEUP")
+        if (this.config.A2DServer.useA2D && this.config.A2DServer.screen.useScreen) {
+          this.sendSocketNotification("SCREEN_WAKEUP")
+          this.Informations("Screen Wakeup!")
+        }
         break
       case "A2D_LOCK": /** screen lock **/
         if (this.config.A2DServer.useA2D && this.config.A2DServer.screen.useScreen) {
           this.sendSocketNotification("SCREEN_LOCK", true)
+          this.Informations("Screen Locked!")
         }
         break
       case "A2D_UNLOCK": /** screen unlock **/
         if (this.config.A2DServer.useA2D && this.config.A2DServer.screen.useScreen) {
           this.sendSocketNotification("SCREEN_LOCK", false)
+          this.Informations("Screen UnLocked!")
         }
         break
     }
@@ -636,18 +650,21 @@ Module.register("MMM-GoogleAssistant", {
         if (payload && payload.device && payload.device.name) { //prevent crash
           this.A2D.spotify.repeat = payload.repeat_state
           this.A2D.spotify.shuffle = payload.shuffle_state
+          var screenContener = document.getElementById("A2D_SCREEN_CONTENER")
           if (payload.device.name == this.config.A2DServer.spotify.connectTo) {
             if (this.A2D.radio) this.radio.pause()
             this.A2D.spotify.currentVolume = payload.device.volume_percent
             if (!this.A2D.spotify.librespot) this.A2D.spotify.librespot = true
-            if (this.A2D.spotify.connected && this.config.A2DServer.screen.useScreen && !this.displayResponse.working()) {
+            if (this.A2D.spotify.connected && this.config.A2DServer.screen.useScreen && !this.displayA2DResponse.working()) {
               this.sendSocketNotification("SCREEN_WAKEUP")
               this.sendSocketNotification("SCREEN_LOCK", true)
+              screenContener.classList.add("hidden")
             }
           }
           else {
-            if (this.A2D.spotify.connected && this.A2D.spotify.librespot && this.config.A2DServer.screen.useScreen && !this.displayResponse.working()) {
+            if (this.A2D.spotify.connected && this.A2D.spotify.librespot && this.config.A2DServer.screen.useScreen && !this.displayA2DResponse.working()) {
               this.sendSocketNotification("SCREEN_LOCK", false)
+              screenContener.classList.remove("hidden")
             }
             if (this.A2D.spotify.librespot) this.A2D.spotify.librespot = false
           }
@@ -655,7 +672,7 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "SPOTIFY_IDLE":
         this.spotify.updatePlayback(false)
-        if (this.A2D.spotify.librespot && this.config.A2DServer.screen.useScreen && !this.displayResponse.working()) {
+        if (this.A2D.spotify.librespot && this.config.A2DServer.screen.useScreen && !this.displayA2DResponse.working()) {
           this.sendSocketNotification("SCREEN_LOCK", false)
         }
         this.A2D.spotify.librespot = false
@@ -731,6 +748,8 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   endResponse: function() {
+    console.log("end")
+    //this.assistantResponse.forceStatusImg("standby")
     this.sendNotification("DETECTOR_START")
   },
 
@@ -934,32 +953,36 @@ Module.register("MMM-GoogleAssistant", {
     this.assistantResponse.showTranscription("~MMM-GoogleAssistant v" + version.version + " - rev:"+ version.rev + "~")
     this.assistantResponse.fullscreen(true)
     this.warningTimeout = setTimeout(() => {
-      this.assistantResponse.end()
+      this.assistantResponse.end(false)
       this.assistantResponse.showTranscription("")
     }, 3000)
   },
 
   Warning: function(warning) {
+    //this.assistantResponse.forceStatusImg("warning")
     console.log("[GA] Warning:", warning)
     clearTimeout(this.assistantResponse.aliveTimer)
     this.assistantResponse.aliveTimer = null
-    this.assistantResponse.showTranscription("~Warning~ " + warning)
+    this.assistantResponse.forceStatusImg("warning")
+    this.assistantResponse.showTranscription(warning)
     this.assistantResponse.fullscreen(true)
     this.warningTimeout = setTimeout(() => {
-      this.assistantResponse.end()
+      this.assistantResponse.end(false)
       this.assistantResponse.showTranscription("")
+      this.assistantResponse.forceStatusImg("standby")
     }, 5000)
   },
 
   Informations: function(info) {
-    console.log(info)
+    this.assistantResponse.forceStatusImg("information")
     clearTimeout(this.assistantResponse.aliveTimer)
     this.assistantResponse.aliveTimer = null
-    this.assistantResponse.showTranscription("~Info~ " + info)
+    this.assistantResponse.showTranscription(info)
     this.assistantResponse.fullscreen(true)
     this.warningTimeout = setTimeout(() => {
-      this.assistantResponse.end()
+      this.assistantResponse.end(false)
       this.assistantResponse.showTranscription("")
+      this.assistantResponse.forceStatusImg("standby")
     }, 5000)
   },
 
@@ -993,7 +1016,7 @@ Module.register("MMM-GoogleAssistant", {
         if (this.config.A2DServer.screen.useScreen && !this.A2D.locked) this.sendSocketNotification("SCREEN_STOP")
         if (this.A2D.locked) this.displayA2DResponse.hideDisplay()
         if (this.config.A2DServer.youtube.useYoutube && this.displayA2DResponse.player) {
-          if (!this.config.A2DServer.youtube.useVLC) this.displayA2DResponse.player.command("setVolume", 5)
+          if (!this.config.A2DServer.youtube.useVLC) this.displayA2DResponse.player.command("setVolume", this.config.A2DServer.youtube.minVolume)
           else this.sendSocketNotification("YT_VOLUME", this.config.A2DServer.youtube.minVolume)
         }
         if (this.config.A2DServer.spotify.useSpotify && this.A2D.spotify.librespot) {
@@ -1006,7 +1029,7 @@ Module.register("MMM-GoogleAssistant", {
         this.A2D.speak = false
         if (this.config.A2DServer.screen.useScreen && !this.A2D.locked) this.sendSocketNotification("SCREEN_RESET")
         if (this.config.A2DServer.youtube.useYouTube && this.displayA2DResponse.player) {
-          if (!this.config.A2DServer.youtube.useVLC) this.displayA2DResponse.player.command("setVolume", 100)
+          if (!this.config.A2DServer.youtube.useVLC) this.displayA2DResponse.player.command("setVolume", this.config.A2DServer.youtube.maxVolume)
           else this.sendSocketNotification("YT_VOLUME", this.config.A2DServer.youtube.maxVolume)
         }
         if (this.config.A2DServer.spotify.useSpotify && this.A2D.spotify.librespot && !this.A2D.spotify.forceVolume) {
@@ -1029,7 +1052,6 @@ Module.register("MMM-GoogleAssistant", {
   /** Prepare TimeOut Bar **/
   prepareBar: function () {
     if (this.config.A2DServer.screen.displayStyle == "Bar") return
-    console.log(this.config.A2DServer.screen.displayStyle)
     this.bar = new ProgressBar[this.config.A2DServer.screen.displayStyle](document.getElementById('A2D_SCREEN_BAR'), {
       strokeWidth: this.config.A2DServer.screen.displayStyle == "Line" ? 2 : 5,
       trailColor: '#1B1B1B',
@@ -1100,7 +1122,7 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   showRadio: function() {
-    this.A2D = this.displayResponse.A2D
+    this.A2D = this.displayA2DResponse.A2D
     this.A2D.radio = this.radioPlayer.play
     if (this.radioPlayer.img) {
       var radio = document.getElementById("A2D_RADIO")
@@ -1195,7 +1217,6 @@ Module.register("MMM-GoogleAssistant", {
 
   /** initialise volume control for VLC **/
   initializeVolumeVLC: function() {
-    if (!this.config.A2DServer.youtube.useVLC) return
     /** convert volume **/
     try {
       let valueMin = null
@@ -1352,6 +1373,7 @@ Module.register("MMM-GoogleAssistant", {
     }
     if (this.A2D.radio) this.radio.pause()
     this.sendNotification("TV-STOP") // Stop MMM-FreeboxTV
+    this.Informations("All Assistant Process stopped")
   },
 
   /** Radio command (for recipe) **/
@@ -1383,8 +1405,8 @@ Module.register("MMM-GoogleAssistant", {
 
   /** Send Welcome **/
   sendWelcome: function() {
-    if (this.config.A2DServer.useA2D && this.config.A2DServer.briefToday.useBriefToday && this.config.A2DServer.briefToday.welcome) {
-      this.assistantActivate({type: "TEXT", key: this.config.A2DServer.briefToday.welcome, chime: false}, Date.now())
+    if (this.config.A2DServer.welcome.useWelcome && this.config.A2DServer.welcome.welcome) {
+      this.assistantActivate({type: "TEXT", key: this.config.A2DServer.welcome.welcome, chime: false}, Date.now())
     }
   }
 })
