@@ -33,6 +33,15 @@
   position: fixed;
 }
 
+/** Fake module for fullscreen rules hide/show **/
+#module_Fake_GA_DOM {
+  display: block;
+}
+
+#module_Fake_GA_DOM.hidden {
+  display: none;
+}
+
 /** popup display windows **/
 #GA {
   z-index:99998;

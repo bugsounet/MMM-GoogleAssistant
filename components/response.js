@@ -38,7 +38,7 @@ class AssistantResponse {
 
     this.audioChime = new Audio()
     this.audioChime.autoplay = true
-    this.fullscreenAbove = false
+    this.fullscreenAbove = this.config.useFullscreen
   }
 
   tunnel (payload) {
@@ -143,10 +143,26 @@ class AssistantResponse {
     document.body.appendChild(GA)
   }
 
-  modulePosition () {
-    let position = MM.getModules().withClass("MMM-GoogleAssistant")[0].data.position
-    logGA("Found position:", position)
-    if (position === "fullscreen_above") this.fullscreenAbove = true
+  // make a fake module for display fullscreen background
+  prepareBackground () {
+    var nodes = document.getElementsByClassName("region fullscreen above")
+    var pos = nodes[0].querySelector(".container")
+    var children = pos.children
+    var module = document.createElement("div")
+    module.id = "module_Fake_GA_DOM"
+    module.classList.add("module", "GA_DOM", "hidden")
+    var header = document.createElement("header")
+    header.classList.add("module-header")
+    header.style.display = "none"
+    module.appendChild(header)
+    var content = document.createElement("div")
+    content.classList.add("module-content")
+    var viewDom = document.createElement("div")
+    viewDom.id = "GA_DOM"
+
+    content.appendChild(viewDom)
+    module.appendChild(content)
+    pos.insertBefore(module, children[children.length])
   }
 
   showError (text) {
@@ -318,26 +334,23 @@ class AssistantResponse {
 
   fullscreen (active, status) {
     var GA = document.getElementById("GA")
+    var FakeGA = document.getElementById("module_Fake_GA_DOM")
 
-    if (active) { // @todo review for v3
+    if (active) {
       GA.className= "in"
       if (this.fullscreenAbove) {
+        FakeGA.classList.remove("hidden")
         MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
           module.hide(500, {lockString: "GA_LOCKED"})
-        })
-        MM.getModules().withClass("MMM-GoogleAssistant").enumerate((module)=> {
-          module.show(500, {lockString: "GA_LOCKED"})
         })
       }
     } else {
       if (status && status.actual == "standby") { // only on standby mode
         GA.className= "out"
-        if (this.fullscreenAbove) { 
+        if (this.fullscreenAbove) {
+          FakeGA.classList.add("hidden")
           MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
             module.show(500, {lockString: "GA_LOCKED"})
-          })
-          MM.getModules().withClass("MMM-GoogleAssistant").enumerate((module)=> {
-            module.hide(500, {lockString: "GA_LOCKED"})
           })
         }
       }

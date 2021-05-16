@@ -400,93 +400,90 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   getDom: function() {
-    this.assistantResponse.modulePosition()
-    //var dom = document.createElement("div")
-    //dom.id = "GA_DOM"
-    /** Hidden the module on start (reserved for fullscreenAbove mode) **/
-    //this.hide(0, {lockString: "GA_LOCKED"})
     var dom = document.createElement("div")
-    dom.id = "A2D_DISPLAY"
+    if (this.config.A2DServer.useA2D) {
+      dom.id = "A2D_DISPLAY"
 
-    if (this.config.A2DServer.spotify.useSpotify && !this.config.A2DServer.spotify.useBottomBar) {
-      spotify= this.spotify.prepareMini()
-      dom.appendChild(spotify)
+      if (this.config.A2DServer.spotify.useSpotify && !this.config.A2DServer.spotify.useBottomBar) {
+        spotify= this.spotify.prepareMini()
+        dom.appendChild(spotify)
+      }
+
+      /** Screen Contener (text, bar, last presence) **/
+      var screenContener = document.createElement("div")
+      screenContener.id = "A2D_SCREEN_CONTENER"
+
+      /***** Screen TimeOut Text *****/
+      var screen = document.createElement("div")
+      screen.id = "A2D_SCREEN"
+      if (!this.config.A2DServer.screen.useScreen || (this.config.A2DServer.screen.displayStyle != "Text")) screen.className = "hidden"
+      var screenText = document.createElement("div")
+      screenText.id = "A2D_SCREEN_TEXT"
+      screenText.textContent = this.config.A2DServer.screen.text
+      screen.appendChild(screenText)
+      var screenCounter = document.createElement("div")
+      screenCounter.id = "A2D_SCREEN_COUNTER"
+      screenCounter.classList.add("counter")
+      screenCounter.textContent = "--:--"
+      screen.appendChild(screenCounter)
+      screenContener.appendChild(screen)
+
+      /***** Screen TimeOut Bar *****/
+      var bar = document.createElement("div")
+      bar.id = "A2D_BAR"
+      if (!this.config.A2DServer.screen.useScreen || (this.config.A2DServer.screen.displayStyle == "Text") || !this.config.A2DServer.screen.displayBar) bar.className = "hidden"
+      var screenBar = document.createElement(this.config.A2DServer.screen.displayStyle == "Bar" ? "meter" : "div")
+      screenBar.id = "A2D_SCREEN_BAR"
+      screenBar.classList.add(this.config.A2DServer.screen.displayStyle)
+      if (this.config.A2DServer.screen.displayStyle == "Bar") {
+        screenBar.value = 0
+        screenBar.max= this.config.A2DServer.screen.delay
+      }
+      bar.appendChild(screenBar)
+      screenContener.appendChild(bar)
+
+      /***** Last user Presence *****/
+      var presence = document.createElement("div")
+      presence.id = "A2D_PRESENCE"
+      presence.className = "hidden"
+      var presenceText = document.createElement("div")
+      presenceText.id = "A2D_PRESENCE_TEXT"
+      presenceText.textContent = this.config.A2DServer.screen.LastPresenceText
+      presence.appendChild(presenceText)
+      var presenceDate = document.createElement("div")
+      presenceDate.id = "A2D_PRESENCE_DATE"
+      presenceDate.classList.add("presence")
+      presenceDate.textContent = "Loading ..."
+      presence.appendChild(presenceDate)
+      screenContener.appendChild(presence)
+
+      /** internet Ping **/
+      var internet = document.createElement("div")
+      internet.id = "A2D_INTERNET"
+      if (!this.config.A2DServer.internet.useInternet || !this.config.A2DServer.internet.displayPing) internet.className = "hidden"
+      var internetText = document.createElement("div")
+      internetText.id = "A2D_INTERNET_TEXT"
+      internetText.textContent = "Ping: "
+      internet.appendChild(internetText)
+      var internetPing = document.createElement("div")
+      internetPing.id = "A2D_INTERNET_PING"
+      internetPing.classList.add("ping")
+      internetPing.textContent = "Loading ..."
+      internet.appendChild(internetPing)
+
+      /** Radio **/
+      var radio = document.createElement("div")
+      radio.id = "A2D_RADIO"
+      radio.className = "hidden"
+      var radioImg = document.createElement("img")
+      radioImg.id = "A2D_RADIO_IMG"
+      radio.appendChild(radioImg)
+
+      dom.appendChild(radio)
+      dom.appendChild(screenContener)
+      dom.appendChild(internet)
     }
-
-    /** Screen Contener (text, bar, last presence) **/
-    var screenContener = document.createElement("div")
-    screenContener.id = "A2D_SCREEN_CONTENER"
-
-    /***** Screen TimeOut Text *****/
-    var screen = document.createElement("div")
-    screen.id = "A2D_SCREEN"
-    if (!this.config.A2DServer.screen.useScreen || (this.config.A2DServer.screen.displayStyle != "Text")) screen.className = "hidden"
-    var screenText = document.createElement("div")
-    screenText.id = "A2D_SCREEN_TEXT"
-    screenText.textContent = this.config.A2DServer.screen.text
-    screen.appendChild(screenText)
-    var screenCounter = document.createElement("div")
-    screenCounter.id = "A2D_SCREEN_COUNTER"
-    screenCounter.classList.add("counter")
-    screenCounter.textContent = "--:--"
-    screen.appendChild(screenCounter)
-    screenContener.appendChild(screen)
-
-    /***** Screen TimeOut Bar *****/
-    var bar = document.createElement("div")
-    bar.id = "A2D_BAR"
-    if (!this.config.A2DServer.screen.useScreen || (this.config.A2DServer.screen.displayStyle == "Text") || !this.config.A2DServer.screen.displayBar) bar.className = "hidden"
-    var screenBar = document.createElement(this.config.A2DServer.screen.displayStyle == "Bar" ? "meter" : "div")
-    screenBar.id = "A2D_SCREEN_BAR"
-    screenBar.classList.add(this.config.A2DServer.screen.displayStyle)
-    if (this.config.A2DServer.screen.displayStyle == "Bar") {
-      screenBar.value = 0
-      screenBar.max= this.config.A2DServer.screen.delay
-    }
-    bar.appendChild(screenBar)
-    screenContener.appendChild(bar)
-
-    /***** Last user Presence *****/
-    var presence = document.createElement("div")
-    presence.id = "A2D_PRESENCE"
-    presence.className = "hidden"
-    var presenceText = document.createElement("div")
-    presenceText.id = "A2D_PRESENCE_TEXT"
-    presenceText.textContent = this.config.A2DServer.screen.LastPresenceText
-    presence.appendChild(presenceText)
-    var presenceDate = document.createElement("div")
-    presenceDate.id = "A2D_PRESENCE_DATE"
-    presenceDate.classList.add("presence")
-    presenceDate.textContent = "Loading ..."
-    presence.appendChild(presenceDate)
-    screenContener.appendChild(presence)
-
-    /** internet Ping **/
-    var internet = document.createElement("div")
-    internet.id = "A2D_INTERNET"
-    if (!this.config.A2DServer.internet.useInternet || !this.config.A2DServer.internet.displayPing) internet.className = "hidden"
-    var internetText = document.createElement("div")
-    internetText.id = "A2D_INTERNET_TEXT"
-    internetText.textContent = "Ping: "
-    internet.appendChild(internetText)
-    var internetPing = document.createElement("div")
-    internetPing.id = "A2D_INTERNET_PING"
-    internetPing.classList.add("ping")
-    internetPing.textContent = "Loading ..."
-    internet.appendChild(internetPing)
-
-    /** Radio **/
-    var radio = document.createElement("div")
-    radio.id = "A2D_RADIO"
-    radio.className = "hidden"
-    var radioImg = document.createElement("img")
-    radioImg.id = "A2D_RADIO_IMG"
-    radio.appendChild(radioImg)
-
-    dom.appendChild(radio)
-    dom.appendChild(screenContener)
-    dom.appendChild(internet)
-
+    this.assistantResponse.prepareBackground ()
     return dom
   },
 

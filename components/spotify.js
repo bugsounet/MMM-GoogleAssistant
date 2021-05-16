@@ -48,7 +48,6 @@ class Spotify {
 
     const cover_img = this.getHTMLElementWithID('img', "A2D_SPOTIFY_COVER_IMAGE")
     cover_img.className = 'fade-in'
-    //cover_img.src = "./modules/MMM-Assistant2Display/resources/spotify-xxl.png"
 
     const cover = this.getHTMLElementWithID('div', "A2D_SPOTIFY_COVER")
     cover.appendChild(cover_img)
