@@ -1068,7 +1068,6 @@ Module.register("MMM-GoogleAssistant", {
   tbQuery: function(command, handler) {
     var query = handler.args
     if (!query) handler.reply("TEXT", this.translate("QUERY_HELP"))
-    //else this.socketNotificationReceived("ASSISTANT_ACTIVATE", { type: "TEXT", key: query })
     else this.assistantActivate({ type:"TEXT", key: query })
   },
 

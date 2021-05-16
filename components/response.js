@@ -171,7 +171,7 @@ class AssistantResponse {
     return true
   }
 
-  showTranscription (text, className = "transcription") { // classname ??
+  showTranscription (text) {
     var tr = document.getElementById("GA-Transcription")
     tr.textContent = text
   }
@@ -185,6 +185,7 @@ class AssistantResponse {
         this.loopCount = 0
         this.status("continue")
         logGA("Continuous Conversation")
+        this.showTranscription("")
         this.callbacks.assistantActivate({
           type: "MIC",
           profile: response.lastQuery.profile,
@@ -241,7 +242,6 @@ class AssistantResponse {
       }
       if (response.error.error == "NO_RESPONSE" && response.lastQuery.status == "continue" && this.loopCount < 3) {
         this.status("continue")
-        // @todo: verify if transcription part is cleaned
         this.callbacks.assistantActivate({
           type: "MIC",
           profile: response.lastQuery.profile,
@@ -254,7 +254,6 @@ class AssistantResponse {
         logGA("Loop Continuous Count: "+ this.loopCount + "/3")
         return
       }
-      // error management showing
       this.showError(response.error.message ? response.error.message : this.callbacks.translate(response.error.error))
       this.end()
       return
@@ -320,7 +319,7 @@ class AssistantResponse {
       return true
     }
     else {
-      if (!this.config.useResponseOutput && !this.config.useAudioOutput && response.text) {
+      if (response.text && !this.config.useResponseOutput) {
         this.showTranscription(response.text)
         return true
       }

@@ -242,12 +242,12 @@ module.exports = NodeHelper.create({
       response.lastQuery = payload
 
       if (!(response.screen || response.audio)) {
-        if (this.config.responseConfig.useAudioOutput && !response.error.message) response.error = "NO_RESPONSE"
+        if (!response.audio && !response.screen && !response.text) response.error.error = "NO_RESPONSE"
         if (response.transcription && response.transcription.transcription && !response.transcription.done) {
           response.error.error = "TRANSCRIPTION_FAILS"
         }
       }
-      if (response && response.error.audio && !response.error.message) response.error.error = null
+      if (response && response.error.audio && !response.error.message) response.error.error = "TOO_SHORT"
       if (response.screen) {
         parser.parse(response, (result)=>{
           delete result.screen.originalContent
