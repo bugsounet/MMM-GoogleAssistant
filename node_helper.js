@@ -113,9 +113,13 @@ module.exports = NodeHelper.create({
               this.socketNotificationReceived("SPOTIFY_PLAY", payload)
             }
             if ((code !== 204) && (code !== 202)) {
+              this.sendSocketNotification("WARNING", "No response from librespot!")
               return console.log("[SPOTIFY:PLAY] RETRY Error", code, error, result)
             }
-            else logEXT("[SPOTIFY] RETRY: DONE_PLAY")
+            else {
+              logEXT("[SPOTIFY] RETRY: DONE_PLAY")
+              this.sendSocketNotification("INFORMATION", "Connected to librespot!")
+            }
           })
         }, 3000)
         break
@@ -126,10 +130,8 @@ module.exports = NodeHelper.create({
           if ((code == 404) && (result.error.reason == "NO_ACTIVE_DEVICE")) {
             if (this.config.Extented.spotify.useLibrespot) {
               console.log("[SPOTIFY] No response from librespot !")
-              pm2.restart("librespot", (err, proc) => {
-                if (err) console.log("[PM2] librespot error: " + err)
-                else console.log("[PM2] Restart librespot")
-              })
+              this.sendSocketNotification("INFORMATION", "Please wait, connecting to librespot...")
+              this.librespot()
               timeout= setTimeout(() => {
                 this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.spotify.connectTo)
                 this.socketNotificationReceived("SPOTIFY_RETRY_PLAY", payload)
@@ -240,12 +242,12 @@ module.exports = NodeHelper.create({
       response.lastQuery = payload
 
       if (!(response.screen || response.audio)) {
-        if (this.config.responseConfig.useAudioOutput) response.error = "NO_RESPONSE"
+        if (this.config.responseConfig.useAudioOutput && !response.error.message) response.error = "NO_RESPONSE"
         if (response.transcription && response.transcription.transcription && !response.transcription.done) {
-          response.error = "TRANSCRIPTION_FAILS"
+          response.error.error = "TRANSCRIPTION_FAILS"
         }
       }
-      if (response.error == "TOO_SHORT" && response) response.error = null
+      if (response && response.error.audio && !response.error.message) response.error.error = null
       if (response.screen) {
         parser.parse(response, (result)=>{
           delete result.screen.originalContent
@@ -470,7 +472,11 @@ module.exports = NodeHelper.create({
             "-c", cacheDir
           ]
         }, (err, proc) => {
-          if (err) return console.log("[LIBRESPOT] " + err)
+          if (err) {
+            this.sendSocketNotification("WARNING" , "librespot says :" + err.toString())
+            console.log("[LIBRESPOT] " + err)
+            return
+          }
           console.log("[PM2] Librespot started !")
         })
       })

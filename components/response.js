@@ -223,12 +223,10 @@ class AssistantResponse {
     this.response = response
     clearTimeout(this.aliveTimer)
     this.aliveTimer = null
-    if (this.showing) {
-      this.end()
-    }
+    if (this.showing) this.end()
 
-    if (response.error) {
-      if (response.error == "TRANSCRIPTION_FAILS") {
+    if (response.error.error) {
+      if (response.error.error == "TRANSCRIPTION_FAILS") {
         logGA("Transcription Failed. Re-try with text")
         this.callbacks.assistantActivate({
           type: "TEXT",
@@ -241,8 +239,9 @@ class AssistantResponse {
         }, null)
         return
       }
-      if (response.error == "NO_RESPONSE" && response.lastQuery.status == "continue" && this.loopCount < 3) {
+      if (response.error.error == "NO_RESPONSE" && response.lastQuery.status == "continue" && this.loopCount < 3) {
         this.status("continue")
+        // @todo: verify if transcription part is cleaned
         this.callbacks.assistantActivate({
           type: "MIC",
           profile: response.lastQuery.profile,
@@ -255,7 +254,8 @@ class AssistantResponse {
         logGA("Loop Continuous Count: "+ this.loopCount + "/3")
         return
       }
-      this.showError(this.callbacks.translate(response.error))
+      // error management showing
+      this.showError(response.error.message ? response.error.message : this.callbacks.translate(response.error.error))
       this.end()
       return
     }

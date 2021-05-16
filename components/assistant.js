@@ -81,7 +81,11 @@ class ASSISTANT {
 
   initConversation (originalPayload, conversation, endCallback=(response)=>{}) {
     this.response = {
-      error: null,
+      error: {
+        error: null,
+        message: null,
+        audio: false
+      },
       action: null,
       text: null, // text response
       screen: null, // html response
@@ -153,7 +157,7 @@ class ASSISTANT {
       log("CONVERSATION_ALL_RESPONSES_RECEIVED")
       if (error) {
         log('CONVERSATION_END:ERROR', error)
-        this.response.error = error
+        this.response.error.error = error
       } else if (continueConversation) {
         log("CONVERSATION_END:CONTINUED")
         this.response.continue = true
@@ -174,7 +178,7 @@ class ASSISTANT {
           }
         } else {
           log("CONVERSATION_PP:RESPONSE_AUDIO_TOO_SHORT_OR_EMPTY - ", b2m.getAudioLength())
-          this.response.error = "TOO_SHORT"
+          this.response.error.audio = true
         }
         b2m.close()
       }
@@ -183,13 +187,13 @@ class ASSISTANT {
     .on('error', (error) => {
       if (this.useAudioOutput) b2m.close()
       console.log("[GA:AS] CONVERSATION_ERROR: " + error)
-      this.response.error = "CONVERSATION_ERROR"
+      this.response.error.error = "CONVERSATION_ERROR"
+      this.response.error.message = error.toString()
       if (error.code == "14") {
         console.log("[GA:AS] >> This error might happen when improper configuration or invalid Mic setup.")
       }
       this.stopListening()
       conversation.end()
-      endCallback(this.response)
     })
     if (originalPayload.key && originalPayload.type == "WAVEFILE") {
       var s = fs.createReadStream(originalPayload.key, {highWaterMark:4096}).pipe(conversation)
