@@ -127,6 +127,7 @@ Module.register("MMM-GoogleAssistant", {
         scan: "google.fr",
         command: "pm2 restart 0",
         showAlert: true,
+        needRestart: false,
         language: config.language
       },
       cast: {

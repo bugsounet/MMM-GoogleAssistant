@@ -16,8 +16,9 @@ const Governor = require("@bugsounet/governor")
 const Internet = require("@bugsounet/internet").v2
 const CastServer = require("@bugsounet/cast")
 const Spotify = require("@bugsounet/spotify")
-const pm2 = require('pm2')
 const Cvlc = require('@bugsounet/cvlc')
+const pm2 = require('pm2')
+var he = require('he')
 
 logGA = (...args) => { /* do nothing */ }
 logA2D = (...args) => { /* do nothing */ }
@@ -361,8 +362,10 @@ module.exports = NodeHelper.create({
     try {
       var results = await Youtube.search.list({q: query, part: 'snippet', maxResults: 1, type: "video"})
       var item = results.data.items[0]
-      console.log('[GA] Found YouTube Title: %s - videoId: %s', item.snippet.title, item.id.videoId)
+      var title = he.decode(item.snippet.title)
+      console.log('[GA] Found YouTube Title: %s - videoId: %s', title, item.id.videoId)
       this.sendSocketNotification("YouTube_RESULT", item.id.videoId)
+      this.sendSocketNotification("INFORMATION", "YouTube will playing: " + title)
     } catch (e) {
       console.log("[GA] Youtube Search error: ", e.toString())
       this.sendSocketNotification("WARNING", e.toString())
