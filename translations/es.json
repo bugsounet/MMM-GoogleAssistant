@@ -26,12 +26,12 @@
   "MODULE_NOTFOUND": "No encuentro el Módulo: ",
   "MODULE_NAME": "Te falta el nombre del módulo",
 
-  "STOP_HELP": "Parar A2D si está activo",
-  "STOP_A2D": "He parado A2D",
+  "STOP_HELP": "Parar Extented Display si está activo",
+  "STOP_EXT": "He parado Extented Display",
 
-  "A2D_OPEN": "Abriendo link: ",
-  "A2D_INVALID": "El link utilizado no es válido!",
-  "A2D_HELP": "Activar Assistant2Display con un link",
+  "EXT_OPEN": "Abriendo link: ",
+  "EXT_INVALID": "El link utilizado no es válido!",
+  "EXT_HELP": "Activar Extented Display con un link",
 
   "VOLUME_HELP": "Ajusta el volumen de tu aparato",
 

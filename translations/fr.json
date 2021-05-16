@@ -26,12 +26,12 @@
   "MODULE_NOTFOUND": "Module non trouvé: ",
   "MODULE_NAME": "Nom du module manquant",
 
-  "STOP_HELP": "Stop A2D si besoin",
-  "STOP_A2D": "j'arrête A2D",
+  "STOP_HELP": "Stop Extented Display si besoin",
+  "STOP_EXT": "j'arrête Extented Display",
 
-  "A2D_OPEN": "Ouverture du lien: ",
-  "A2D_INVALID": "Ce lien n'est pas valide !",
-  "A2D_HELP": "Active Assisant2Display avec un lien",
+  "EXT_OPEN": "Ouverture du lien: ",
+  "EXT_INVALID": "Ce lien n'est pas valide !",
+  "EXT_HELP": "Active Extented Display avec un lien",
 
   "VOLUME_HELP": "Défini le volume sonore",
 

@@ -26,12 +26,12 @@
   "MODULE_NOTFOUND": "Modul nicht gefunden: ",
   "MODULE_NAME": "Name des Moduls fehlt.",
 
-  "STOP_HELP": "Beendet eventuelle Aktivität von A2D.",
-  "STOP_A2D": "Stoppe A2D-Aktivität.",
+  "STOP_HELP": "Beendet eventuelle Aktivität von Extented Display.",
+  "STOP_EXT": "Stoppe Extented Display-Aktivität.",
 
-  "A2D_OPEN": "URL öffnen: ",
-  "A2D_INVALID": "Diese URL ist ungültig!",
-  "A2D_HELP": "URL mit A2D öffnen.",
+  "EXT_OPEN": "URL öffnen: ",
+  "EXT_INVALID": "Diese URL ist ungültig!",
+  "EXT_HELP": "URL mit Extented Display öffnen.",
 
   "VOLUME_HELP": "Stellt die Lautstärke der Audioausgabe ein.",
 

@@ -21,7 +21,7 @@ const pm2 = require('pm2')
 var he = require('he')
 
 logGA = (...args) => { /* do nothing */ }
-logA2D = (...args) => { /* do nothing */ }
+logEXT = (...args) => { /* do nothing */ }
 
 var NodeHelper = require("node_helper")
 
@@ -73,7 +73,7 @@ module.exports = NodeHelper.create({
         if (payload) this.YoutubeSearch(payload)
         break
 
-      /** A2DServer **/
+      /** Extented **/
 
       /** Volume module **/
       case "VOLUME_SET":
@@ -109,13 +109,13 @@ module.exports = NodeHelper.create({
         retry = setTimeout(() => {
           this.spotify.play(payload, (code, error, result) => {
             if ((code == 404) && (result.error.reason == "NO_ACTIVE_DEVICE")) {
-              logA2D("[SPOTIFY] RETRY playing...")
+              logEXT("[SPOTIFY] RETRY playing...")
               this.socketNotificationReceived("SPOTIFY_PLAY", payload)
             }
             if ((code !== 204) && (code !== 202)) {
               return console.log("[SPOTIFY:PLAY] RETRY Error", code, error, result)
             }
-            else logA2D("[SPOTIFY] RETRY: DONE_PLAY")
+            else logEXT("[SPOTIFY] RETRY: DONE_PLAY")
           })
         }, 3000)
         break
@@ -124,14 +124,14 @@ module.exports = NodeHelper.create({
           clearTimeout(timeout)
           timeout= null
           if ((code == 404) && (result.error.reason == "NO_ACTIVE_DEVICE")) {
-            if (this.config.A2DServer.spotify.useLibrespot) {
+            if (this.config.Extented.spotify.useLibrespot) {
               console.log("[SPOTIFY] No response from librespot !")
               pm2.restart("librespot", (err, proc) => {
                 if (err) console.log("[PM2] librespot error: " + err)
                 else console.log("[PM2] Restart librespot")
               })
               timeout= setTimeout(() => {
-                this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.A2DServer.spotify.connectTo)
+                this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.spotify.connectTo)
                 this.socketNotificationReceived("SPOTIFY_RETRY_PLAY", payload)
               }, 3000)
             }
@@ -139,7 +139,7 @@ module.exports = NodeHelper.create({
           if ((code !== 204) && (code !== 202)) {
             return console.log("[SPOTIFY:PLAY] Error", code, error, result)
           }
-          else logA2D("[SPOTIFY] DONE_PLAY")
+          else logEXT("[SPOTIFY] DONE_PLAY")
         })
         break
       case "SPOTIFY_VOLUME":
@@ -147,54 +147,54 @@ module.exports = NodeHelper.create({
           if (code !== 204) console.log("[SPOTIFY:VOLUME] Error", code, error, result)
           else {
             this.sendSocketNotification("DONE_SPOTIFY_VOLUME", payload)
-            logA2D("[SPOTIFY] DONE_VOLUME:", payload)
+            logEXT("[SPOTIFY] DONE_VOLUME:", payload)
           }
         })
         break
       case "SPOTIFY_PAUSE":
         this.spotify.pause((code, error, result) => {
           if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:PAUSE] Error", code, error, result)
-          else logA2D("[SPOTIFY] DONE_PAUSE")
+          else logEXT("[SPOTIFY] DONE_PAUSE")
         })
         break
       case "SPOTIFY_TRANSFER":
         this.spotify.transferByName(payload, (code, error, result) => {
           if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:TRANSFER] Error", code, error, result)
-          else logA2D("[SPOTIFY] DONE_TRANSFER")
+          else logEXT("[SPOTIFY] DONE_TRANSFER")
         })
         break
       case "SPOTIFY_STOP":
         pm2.restart("librespot", (err, proc) => {
           if (err) console.log("[PM2] librespot error: " + err)
-          else logA2D("[PM2] Restart librespot")
+          else logEXT("[PM2] Restart librespot")
         })
         break
       case "SPOTIFY_NEXT":
         this.spotify.next((code, error, result) => {
           if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:NEXT] Error", code, error, result)
-          else logA2D("[SPOTIFY] DONE_NEXT")
+          else logEXT("[SPOTIFY] DONE_NEXT")
         })
         break
       case "SPOTIFY_PREVIOUS":
         this.spotify.previous((code, error, result) => {
           if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:PREVIOUS] Error", code, error, result)
-          else logA2D("[SPOTIFY] DONE_PREVIOUS")
+          else logEXT("[SPOTIFY] DONE_PREVIOUS")
         })
         break
       case "SPOTIFY_SHUFFLE":
         this.spotify.shuffle(payload,(code, error, result) => {
           if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:SHUFFLE] Error", code, error, result)
-          else logA2D("[SPOTIFY] DONE_SHUFFLE")
+          else logEXT("[SPOTIFY] DONE_SHUFFLE")
         })
         break
       case "SPOTIFY_REPEAT":
         this.spotify.repeat(payload, (code, error, result) => {
           if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:REPEAT] Error", code, error, result)
-          else logA2D("[SPOTIFY] DONE_REPEAT")
+          else logEXT("[SPOTIFY] DONE_REPEAT")
         })
         break
       case "SEARCH_AND_PLAY":
-        logA2D("[SPOTIFY] Search and Play", payload)
+        logEXT("[SPOTIFY] Search and Play", payload)
         this.searchAndPlay(payload.query, payload.condition)
         break
 
@@ -265,7 +265,7 @@ module.exports = NodeHelper.create({
     var error = null
     if (this.config.debug) {
       logGA = (...args) => { console.log("[GA]", ...args) }
-      logA2D = (...args) => { console.log("[GA:A2D]", ...args) }
+      logEXT = (...args) => { console.log("[GA:EXT]", ...args) }
     }
     let Version = {
       version: require('./package.json').version,
@@ -279,8 +279,8 @@ module.exports = NodeHelper.create({
       error = "[FATAL] Assistant: tokenGA.json file not found !"
       return this.DisplayError(error)
     }
-    if (this.config.A2DServer.useA2D) {
-      if (this.config.A2DServer.youtube.useYoutube) {
+    if (this.config.Extented.useEXT) {
+      if (this.config.Extented.youtube.useYoutube) {
         try {
           const CREDENTIALS = readJson(this.config.assistantConfig["modulePath"] + "/credentials.json")
           const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenYT.json")
@@ -299,11 +299,11 @@ module.exports = NodeHelper.create({
           return this.DisplayError(error)
         }
       }
-      if (this.config.A2DServer.volume.useVolume) {
+      if (this.config.Extented.volume.useVolume) {
         let exists = (data) => {
           return data !== null && data !== undefined
         }
-        if (!exists(this.volumeScript[this.config.A2DServer.volume.volumePreset]))
+        if (!exists(this.volumeScript[this.config.Extented.volume.volumePreset]))
           return this.DisplayError("VolumePreset error")
       }
     }
@@ -321,10 +321,10 @@ module.exports = NodeHelper.create({
       }
       this.Checker= new npmCheck(cfg, update => { this.sendSocketNotification("NPM_UPDATE", update)})
     }
-    if (this.config.A2DServer.useA2D) {
-      console.log("[GA:A2D] Assistant2Display Server Started")
-      await this.addons()
-      console.log("[GA:A2D] Assistant2Display is initialized.")
+    if (this.config.Extented.useEXT) {
+      console.log("[GA:EXT] Extented Display Server Started")
+      await this.Extented()
+      console.log("[GA:EXT] Extented Display is initialized.")
     }
     console.log("[GA] Google Assistant is initialized.")
   },
@@ -378,10 +378,10 @@ module.exports = NodeHelper.create({
   },
 
   /***************/
-  /** A2DServer **/
+  /** Extented **/
   /***************/
 
-  addons: function() {
+  Extented: async function() {
     var callbacks= {
       "sendSocketNotification": (noti, params) => {
         this.sendSocketNotification(noti, params)
@@ -400,36 +400,36 @@ module.exports = NodeHelper.create({
       }
     }
 
-    if (this.config.A2DServer.screen.useScreen) {
-      logA2D("Starting Screen module...")
-      this.screen = new Screen(this.config.A2DServer.screen, callbacks.sendSocketNotification, this.config.debug, callbacks.sendSocketNotification, callbacks.governor)
+    if (this.config.Extented.screen.useScreen) {
+      logEXT("Starting Screen module...")
+      this.screen = new Screen(this.config.Extented.screen, callbacks.sendSocketNotification, this.config.debug, callbacks.sendSocketNotification, callbacks.governor)
       this.screen.activate()
     }
-    if (this.config.A2DServer.pir.usePir) {
-      logA2D("Starting Pir module...")
-      this.pir = new Pir(this.config.A2DServer.pir, callbacks.pir, this.config.debug)
+    if (this.config.Extented.pir.usePir) {
+      logEXT("Starting Pir module...")
+      this.pir = new Pir(this.config.Extented.pir, callbacks.pir, this.config.debug)
       this.pir.start()
     }
-    if (this.config.A2DServer.governor.useGovernor) {
-      logA2D("Starting Governor module...")
-      this.governor = new Governor(this.config.A2DServer.governor, callbacks.governor, this.config.debug)
+    if (this.config.Extented.governor.useGovernor) {
+      logEXT("Starting Governor module...")
+      this.governor = new Governor(this.config.Extented.governor, callbacks.governor, this.config.debug)
       this.governor.start()
     }
-    if (this.config.A2DServer.internet.useInternet) {
-      logA2D("Starting Internet module...")
-      this.internet = new Internet(this.config.A2DServer.internet, callbacks.sendSocketNotification, this.config.debug)
+    if (this.config.Extented.internet.useInternet) {
+      logEXT("Starting Internet module...")
+      this.internet = new Internet(this.config.Extented.internet, callbacks.sendSocketNotification, this.config.debug)
       this.internet.start()
     }
-    if (this.config.A2DServer.cast.useCast) {
-      logA2D("Starting Cast module...")
-      this.cast = new CastServer(this.config.A2DServer.cast, callbacks.sendSocketNotification, this.config.debug)
-      this.cast.start()
+    if (this.config.Extented.cast.useCast) {
+      logEXT("Starting Cast module...")
+      this.cast = new CastServer(this.config.Extented.cast, callbacks.sendSocketNotification, this.config.debug)
+      await this.cast.start()
     }
-    if (this.config.A2DServer.spotify.useSpotify) {
-      logA2D("Starting Spotify module...")
-      this.spotify = new Spotify(this.config.A2DServer.spotify, callbacks.sendSocketNotification, this.config.debug)
+    if (this.config.Extented.spotify.useSpotify) {
+      logEXT("Starting Spotify module...")
+      this.spotify = new Spotify(this.config.Extented.spotify, callbacks.sendSocketNotification, this.config.debug)
       this.spotify.start()
-      if (this.config.A2DServer.spotify.useLibrespot) {
+      if (this.config.Extented.spotify.useLibrespot) {
         console.log("[SPOTIFY] Launch Librespot...")
         this.librespot()
       }
@@ -463,10 +463,10 @@ module.exports = NodeHelper.create({
           name: "librespot",
           out_file: "/dev/null",
           args: [
-            "-n", this.config.A2DServer.spotify.connectTo,
-            "-u", this.config.A2DServer.spotify.username,
-            "-p", this.config.A2DServer.spotify.password,
-            "--initial-volume" , this.config.A2DServer.spotify.maxVolume,
+            "-n", this.config.Extented.spotify.connectTo,
+            "-u", this.config.Extented.spotify.username,
+            "-p", this.config.Extented.spotify.password,
+            "--initial-volume" , this.config.Extented.spotify.maxVolume,
             "-c", cacheDir
           ]
         }, (err, proc) => {
@@ -524,14 +524,14 @@ module.exports = NodeHelper.create({
           }
         }
         if (foundForPlay && condition.autoplay) {
-          logA2D("[SPOTIFY] Search and Play Result:", foundForPlay)
+          logEXT("[SPOTIFY] Search and Play Result:", foundForPlay)
           this.socketNotificationReceived("SPOTIFY_PLAY", foundForPlay)
         } else {
-          logA2D("[SPOTIFY] Search and Play No Result")
+          logEXT("[SPOTIFY] Search and Play No Result")
           this.sendSocketNotification("WARNING" , "[SPOTIFY] Search and Play No Result")
         }
       } else { //when fail
-        console.log("[GA:A2D] [SPOTIFY] Search and Play failed !")
+        console.log("[GA:EXT] [SPOTIFY] Search and Play failed !")
         this.sendSocketNotification("WARNING" , "[SPOTIFY] Search and Play failed !")
       }
     })
@@ -539,15 +539,15 @@ module.exports = NodeHelper.create({
 
   /** Volume control **/
   setVolume: function(level) {
-    var volumeScript= this.config.A2DServer.volume.myScript ? this.config.A2DServer.volume.myScript : this.volumeScript[this.config.A2DServer.volume.volumePreset]
+    var volumeScript= this.config.Extented.volume.myScript ? this.config.Extented.volume.myScript : this.volumeScript[this.config.Extented.volume.volumePreset]
     var script = volumeScript.replace("#VOLUME#", level)
     exec (script, (err, stdout, stderr)=> {
       if (err) {
-        console.log("[GA:A2D] Set Volume Error:", err.toString())
+        console.log("[GA:EXT] Set Volume Error:", err.toString())
         this.sendSocketNotification("WARNING" , "Volume: Preset Error!")
       }
       else {
-        logA2D("[VOLUME] Set Volume To:", level)
+        logEXT("[VOLUME] Set Volume To:", level)
         this.sendSocketNotification("VOLUME_DONE", level)
         this.sendSocketNotification("INFORMATION" , "Volume: " + level + "%")
       }
@@ -562,15 +562,15 @@ module.exports = NodeHelper.create({
     this.YouTube.play(
       link,
       ()=> {
-        logA2D("[YouTube] Found link:", link)
-         if (this.YouTube) this.YouTube.cmd("volume "+ this.config.A2DServer.youtube.maxVolume)
+        logEXT("[YouTube] Found link:", link)
+         if (this.YouTube) this.YouTube.cmd("volume "+ this.config.Extented.youtube.maxVolume)
       },
       ()=> {
         this.YT--
         if (this.YT < 0) this.YT = 0
-        logA2D("[YouTube] Video ended #" + this.YT)
+        logEXT("[YouTube] Video ended #" + this.YT)
         if (this.YT == 0) {
-          logA2D("[YouTube] Finish !")
+          logEXT("[YouTube] Finish !")
           this.sendSocketNotification("FINISH_YOUTUBE")
           this.YouTube = null
         }
@@ -580,19 +580,19 @@ module.exports = NodeHelper.create({
 
   CloseVlc: function () {
     if (this.YouTube) {
-      logA2D("[YouTube] Force Closing VLC...")
+      logEXT("[YouTube] Force Closing VLC...")
       this.YouTube.destroy()
       this.YouTube = null
-      logA2D("[YouTube] Done Closing VLC...")
+      logEXT("[YouTube] Done Closing VLC...")
     }
     else {
-      logA2D("[YouTube] Not running!")
+      logEXT("[YouTube] Not running!")
     }
   },
 
   VolumeVLC: function(volume) {
     if (this.YouTube) {
-      logA2D("[YouTube] Set VLC Volume to:", volume)
+      logEXT("[YouTube] Set VLC Volume to:", volume)
       this.YouTube.cmd("volume " + volume)
     }
   },
@@ -600,8 +600,8 @@ module.exports = NodeHelper.create({
   pm2Restart: function(id) {
     var pm2 = "pm2 restart " + id
     exec (pm2, (err, stdout, stderr)=> {
-      if (err) console.log("[A2D:PM2] " + err)
-      else log("[PM2] Restart", id)
+      if (err) console.log("[GA:EXT:PM2] " + err)
+      else logEXT("[PM2] Restart", id)
     })
   },
 

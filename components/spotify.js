@@ -9,7 +9,7 @@ class Spotify {
     this.connected = false
     this.timer = null
     this.ads = false
-    console.log("[GA:A2D] Spotify Loaded")
+    console.log("[GA:EXT] Spotify Loaded")
   }
 
   /** Create a fake module in bottom_bar **/
@@ -18,9 +18,9 @@ class Spotify {
     var pos = nodes[0].querySelector(".container")
     var children = pos.children
     var module = document.createElement("div")
-    module.id = "module_A2D_Spotify"
+    module.id = "module_EXT_Spotify"
     module.style.display= "none"
-    module.classList.add("module", "A2D_Spotify")
+    module.classList.add("module", "EXT_Spotify")
     var header = document.createElement("header")
     header.classList.add("module-header")
     header.style.display = "none"
@@ -28,7 +28,7 @@ class Spotify {
     var content = document.createElement("div")
     content.classList.add("module-content")
     var viewDom = document.createElement("div")
-    viewDom.id = "A2D_SPOTIFY"
+    viewDom.id = "EXT_SPOTIFY"
     viewDom.classList.add("inactive")
 
     content.appendChild(viewDom)
@@ -40,25 +40,25 @@ class Spotify {
   /** Create a default display **/
   prepareMini() {
     var viewDom = document.createElement("div")
-    viewDom.id = "A2D_SPOTIFY"
+    viewDom.id = "EXT_SPOTIFY"
     viewDom.classList.add("inactive")
     viewDom.classList.add("mini")
 
-    viewDom.appendChild(this.getHTMLElementWithID('div', "A2D_SPOTIFY_BACKGROUND"))
+    viewDom.appendChild(this.getHTMLElementWithID('div', "EXT_SPOTIFY_BACKGROUND"))
 
-    const cover_img = this.getHTMLElementWithID('img', "A2D_SPOTIFY_COVER_IMAGE")
+    const cover_img = this.getHTMLElementWithID('img', "EXT_SPOTIFY_COVER_IMAGE")
     cover_img.className = 'fade-in'
 
-    const cover = this.getHTMLElementWithID('div', "A2D_SPOTIFY_COVER")
+    const cover = this.getHTMLElementWithID('div', "EXT_SPOTIFY_COVER")
     cover.appendChild(cover_img)
 
-    const misc = this.getHTMLElementWithID('div', "A2D_SPOTIFY_MISC")
+    const misc = this.getHTMLElementWithID('div', "EXT_SPOTIFY_MISC")
     misc.appendChild(this.getInfoContainer())
     misc.appendChild(this.getVolumeContainer())
     misc.appendChild(this.getProgressContainer())
     misc.appendChild(this.getSpotifyLogoContainer())
 
-    const fore = this.getHTMLElementWithID('div', "A2D_SPOTIFY_FOREGROUND")
+    const fore = this.getHTMLElementWithID('div', "EXT_SPOTIFY_FOREGROUND")
     fore.appendChild(cover)
     fore.appendChild(misc)
 
@@ -67,8 +67,8 @@ class Spotify {
   }
 
   updatePlayback(status) {
-    var dom = document.getElementById("A2D_SPOTIFY")
-    var module = document.getElementById("module_A2D_Spotify")
+    var dom = document.getElementById("EXT_SPOTIFY")
+    var module = document.getElementById("module_EXT_Spotify")
     this.timer = null
     clearTimeout(this.timer)
     if (status) {
@@ -169,28 +169,28 @@ class Spotify {
   }
 
   updateProgress(progressMS, durationMS) {
-    const bar = document.getElementById("A2D_SPOTIFY_PROGRESS_BAR")
+    const bar = document.getElementById("EXT_SPOTIFY_PROGRESS_BAR")
     bar.value = progressMS
 
     if (bar.max != durationMS) bar.max = durationMS
 
     if (this.config.useBottomBar) {
-      const current = document.getElementById("A2D_SPOTIFY_PROGRESS_COMBINED")
+      const current = document.getElementById("EXT_SPOTIFY_PROGRESS_COMBINED")
       current.innerText = this.msToTime(progressMS) + ' / ' + this.msToTime(durationMS)
     }
   }
 
   updateDevice(device) {
-    const deviceContainer = document.querySelector("#A2D_SPOTIFY_DEVICE .text")
-    const deviceIcon = document.getElementById("A2D_SPOTIFY_DEVICE_ICON")
+    const deviceContainer = document.querySelector("#EXT_SPOTIFY_DEVICE .text")
+    const deviceIcon = document.getElementById("EXT_SPOTIFY_DEVICE_ICON")
 
     deviceContainer.textContent = this.config.deviceDisplay + ' ' + device.name
     deviceIcon.className = this.getFAIconClass(device.type)
   }
 
   updateVolume(volume_percent) {
-    const volumeContainer = document.querySelector("#A2D_SPOTIFY_VOLUME .text")
-    const volumeIcon = document.getElementById("A2D_SPOTIFY_VOLUME_ICON")
+    const volumeContainer = document.querySelector("#EXT_SPOTIFY_VOLUME .text")
+    const volumeIcon = document.getElementById("EXT_SPOTIFY_VOLUME_ICON")
 
     volumeContainer.textContent = volume_percent + "%"
     volumeIcon.className = this.getVolumeIconClass(volume_percent)
@@ -209,7 +209,7 @@ class Spotify {
 
 
   updatePlaying(isPlaying) {
-    const s = document.getElementById("A2D_SPOTIFY")
+    const s = document.getElementById("EXT_SPOTIFY")
 
     if (isPlaying) {
       s.classList.add("playing")
@@ -220,11 +220,11 @@ class Spotify {
     }
 
     if (this.config.control !== "hidden" && this.config.useBottomBar) {
-      const p = document.getElementById("A2D_SPOTIFY_CONTROL_PLAY")
+      const p = document.getElementById("EXT_SPOTIFY_CONTROL_PLAY")
       p.className = isPlaying ? "playing" : "pausing"
       const icon = isPlaying ? "mdi:play-circle-outline" : "mdi:pause-circle-outline"
       p.innerHTML = ""
-      p.appendChild(this.getIconContainer('iconify', "A2D_SPOTIFY_CONTROL_PLAY_ICON", icon)
+      p.appendChild(this.getIconContainer('iconify', "EXT_SPOTIFY_CONTROL_PLAY_ICON", icon)
       )
     }
   }
@@ -232,9 +232,9 @@ class Spotify {
   updateSongInfo(playbackItem) {
     if (!playbackItem) return
 
-    const sDom = document.getElementById("A2D_SPOTIFY")
+    const sDom = document.getElementById("EXT_SPOTIFY")
 
-    const cover_img = document.getElementById("A2D_SPOTIFY_COVER_IMAGE")
+    const cover_img = document.getElementById("EXT_SPOTIFY_COVER_IMAGE")
     let img_index = this.config.useBottomBar ? 2 : 1  
 
     var img_url
@@ -250,7 +250,7 @@ class Spotify {
 
     if (img_url !== cover_img.src) {
       if (!this.config.useBottomBar) {
-        const back = document.getElementById("A2D_SPOTIFY_BACKGROUND")
+        const back = document.getElementById("EXT_SPOTIFY_BACKGROUND")
         back.classList.remove('fade-in')
         let backOffSet = cover_img.offsetWidth
         back.classList.add('fade-in')
@@ -262,15 +262,15 @@ class Spotify {
       cover_img.src = img_url
     }
 
-    const title = document.querySelector("#A2D_SPOTIFY_TITLE .text")
+    const title = document.querySelector("#EXT_SPOTIFY_TITLE .text")
     title.textContent = playbackItem.name
 
     if (!this.config.useBottomBar) {
-      const album = document.querySelector("#A2D_SPOTIFY_ALBUM .text")
+      const album = document.querySelector("#EXT_SPOTIFY_ALBUM .text")
       album.textContent = display_name
     }
 
-    const artist = document.querySelector("#A2D_SPOTIFY_ARTIST .text")
+    const artist = document.querySelector("#EXT_SPOTIFY_ARTIST .text")
     const artists = playbackItem.artists
     let artistName = ""
     if (playbackItem.album){
@@ -363,9 +363,9 @@ class Spotify {
   }
 
   getDeviceContainer() {
-    const device = this.getHTMLElementWithID('div', "A2D_SPOTIFY_DEVICE")
+    const device = this.getHTMLElementWithID('div', "EXT_SPOTIFY_DEVICE")
     device.appendChild(
-      this.getIconContainer(this.getFAIconClass('default'), "A2D_SPOTIFY_DEVICE_ICON"),
+      this.getIconContainer(this.getFAIconClass('default'), "EXT_SPOTIFY_DEVICE_ICON"),
     )
     device.appendChild(this.getEmptyTextHTMLElement())
 
@@ -373,9 +373,9 @@ class Spotify {
   }
 
   getVolumeContainer() {
-    const volume = this.getHTMLElementWithID('div', "A2D_SPOTIFY_VOLUME")
+    const volume = this.getHTMLElementWithID('div', "EXT_SPOTIFY_VOLUME")
     volume.appendChild(
-      this.getIconContainer(this.getFAIconClass('VOL_OFF'), "A2D_SPOTIFY_VOLUME_ICON"),
+      this.getIconContainer(this.getFAIconClass('VOL_OFF'), "EXT_SPOTIFY_VOLUME_ICON"),
     )
     volume.appendChild(this.getEmptyTextHTMLElement())
 
@@ -383,9 +383,9 @@ class Spotify {
   }
 
   getSpotifyLogoContainer() {
-    const logo = this.getHTMLElementWithID('div', "A2D_SPOTIFY_LOGO")
+    const logo = this.getHTMLElementWithID('div', "EXT_SPOTIFY_LOGO")
     logo.appendChild(
-      this.getIconContainer(this.getFAIconClass('Spotify'), "A2D_SPOTIFY_LOGO_ICON"),
+      this.getIconContainer(this.getFAIconClass('Spotify'), "EXT_SPOTIFY_LOGO_ICON"),
     )
     const text = document.createElement("span")
     text.className = "text"
@@ -404,11 +404,11 @@ class Spotify {
   }
 
   getInfoContainer() {
-    const info = this.getHTMLElementWithID('div', "A2D_SPOTIFY_INFO")
+    const info = this.getHTMLElementWithID('div', "EXT_SPOTIFY_INFO")
     const infoElementsWithIcon = {
-      "A2D_SPOTIFY_TITLE": 'Title',
-      "A2D_SPOTIFY_ALBUM": 'Album',
-      "A2D_SPOTIFY_ARTIST": 'Artist'
+      "EXT_SPOTIFY_TITLE": 'Title',
+      "EXT_SPOTIFY_ALBUM": 'Album',
+      "EXT_SPOTIFY_ARTIST": 'Artist'
     }
 
     for (const [key, iconType] of Object.entries(infoElementsWithIcon)) {
@@ -423,9 +423,9 @@ class Spotify {
   }
 
   getProgressContainer() {
-    const progress = this.getHTMLElementWithID('div', "A2D_SPOTIFY_PROGRESS")
+    const progress = this.getHTMLElementWithID('div', "EXT_SPOTIFY_PROGRESS")
 
-    const bar = this.getHTMLElementWithID('progress', "A2D_SPOTIFY_PROGRESS_BAR")
+    const bar = this.getHTMLElementWithID('progress', "EXT_SPOTIFY_PROGRESS_BAR")
     bar.value = 0
     bar.max = 100
 
@@ -434,10 +434,10 @@ class Spotify {
   }
 
   getCoverContainer() {
-    const cover_img = this.getHTMLElementWithID('img', "A2D_SPOTIFY_COVER_IMAGE")
+    const cover_img = this.getHTMLElementWithID('img', "EXT_SPOTIFY_COVER_IMAGE")
     cover_img.className = 'fade-in'
 
-    const cover = this.getHTMLElementWithID('div', "A2D_SPOTIFY_COVER")
+    const cover = this.getHTMLElementWithID('div', "EXT_SPOTIFY_COVER")
     cover.appendChild(cover_img)
     return cover
   }
@@ -445,14 +445,14 @@ class Spotify {
   getMinimalistBarDom(container) {
     container.appendChild(this.getProgressContainer())
 
-    const misc = this.getHTMLElementWithID('div', "A2D_SPOTIFY_MISC")
+    const misc = this.getHTMLElementWithID('div', "EXT_SPOTIFY_MISC")
     misc.appendChild(this.getDeviceContainer())
 
-    const info = this.getHTMLElementWithID('div', "A2D_SPOTIFY_INFO")
+    const info = this.getHTMLElementWithID('div', "EXT_SPOTIFY_INFO")
 
     const infoElements = [
-      "A2D_SPOTIFY_TITLE",
-      "A2D_SPOTIFY_ARTIST"
+      "EXT_SPOTIFY_TITLE",
+      "EXT_SPOTIFY_ARTIST"
     ]
 
     infoElements.forEach((key, index) => {
@@ -468,12 +468,12 @@ class Spotify {
 
     misc.appendChild(info)
 
-    const infoFooter = this.getHTMLElementWithID('div', "A2D_SPOTIFY_INFO_FOOTER")
+    const infoFooter = this.getHTMLElementWithID('div', "EXT_SPOTIFY_INFO_FOOTER")
     infoFooter.appendChild(this.getVolumeContainer())
 
     infoFooter.appendChild(this.getSpotifyLogoContainer())
 
-    const totalTime = this.getHTMLElementWithID('div', "A2D_SPOTIFY_PROGRESS_COMBINED")
+    const totalTime = this.getHTMLElementWithID('div', "EXT_SPOTIFY_PROGRESS_COMBINED")
     totalTime.className = 'text'
     totalTime.innerText = "--:-- / --:--"
 
@@ -481,13 +481,13 @@ class Spotify {
 
     misc.appendChild(infoFooter)
 
-    const foreground = this.getHTMLElementWithID('div', "A2D_SPOTIFY_FOREGROUND")
+    const foreground = this.getHTMLElementWithID('div', "EXT_SPOTIFY_FOREGROUND")
     foreground.appendChild(this.getCoverContainer())
     foreground.appendChild(misc)
 
     foreground.appendChild(
       this.getControlButton(
-        "A2D_SPOTIFY_CONTROL_PLAY",
+        "EXT_SPOTIFY_CONTROL_PLAY",
         'mdi:play-circle-outline'
       ),
     )

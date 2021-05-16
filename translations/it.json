@@ -26,12 +26,12 @@
   "MODULE_NOTFOUND": "modulo non trovato: ",
   "MODULE_NAME": "nome del modulo mancante",
 
-  "STOP_HELP": "Stop A2D se in funzione",
-  "STOP_A2D": "A2D chiuso",
+  "STOP_HELP": "Stop Extented Display se in funzione",
+  "STOP_EXT": "Extented Display chiuso",
 
-  "A2D_OPEN": "Apro il collegamento: ",
-  "A2D_INVALID": "Il collegamento non è valido!",
-  "A2D_HELP": "Attiva Assisant2Display con collegamento",
+  "EXT_OPEN": "Apro il collegamento: ",
+  "EXT_INVALID": "Il collegamento non è valido!",
+  "EXT_HELP": "Attiva Extented Display con collegamento",
 
   "VOLUME_HELP": "Imposta il volume del tuo dispositivo",
 

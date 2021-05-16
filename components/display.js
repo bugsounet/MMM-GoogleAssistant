@@ -1,4 +1,4 @@
-/* Common A2D Class */
+/* EXT Class for displaying */
 
 class Display {
   constructor (Config, callbacks) {
@@ -8,7 +8,7 @@ class Display {
     this.YTError = callbacks.YTError
     this.timer = null
     this.player = null
-    this.A2D = {
+    this.EXT = {
       radio: false,
       speak: false,
       locked: false,
@@ -44,33 +44,33 @@ class Display {
         forceVolume: false
       }
     }
-    console.log("[GA:A2D] DisplayClass Loaded")
+    console.log("[GA:EXT] DisplayClass Loaded")
   }
 
   start(response) {
     /** Close all active windows and reset it **/
-    if (this.A2D.youtube.displayed) {
+    if (this.EXT.youtube.displayed) {
       if (this.config.youtube.useVLC) {
         this.sendSocketNotification("YT_STOP")
-        this.A2D.youtube.displayed = false
+        this.EXT.youtube.displayed = false
         this.showYT()
-        this.A2DUnlock()
+        this.EXTUnlock()
         this.resetYT()
       }
       else this.player.command("stopVideo")
     }
-    if (this.A2D.photos.displayed) {
+    if (this.EXT.photos.displayed) {
       this.resetPhotos()
       this.hideDisplay()
     }
-    if (this.A2D.links.displayed) {
+    if (this.EXT.links.displayed) {
       this.resetLinks()
       this.hideDisplay()
     }
 
     /** prepare **/
     let tmp = {}
-    logA2D("Response Scan")
+    logEXT("Response Scan")
 
     tmp = {
       GA: {
@@ -89,34 +89,34 @@ class Display {
     }
 
     /** the show must go on ! **/
-    this.A2D = this.objAssign({}, this.A2D, tmp)
-    if(this.config.photos.usePhotos && this.A2D.photos.length > 0) {
-      this.A2DLock()
-      this.A2D.photos.displayed = true
+    this.EXT = this.objAssign({}, this.EXT, tmp)
+    if(this.config.photos.usePhotos && this.EXT.photos.length > 0) {
+      this.EXTLock()
+      this.EXT.photos.displayed = true
       this.photoDisplay()
       this.showDisplay()
     }
-    else if (this.A2D.links.length > 0) {
+    else if (this.EXT.links.length > 0) {
       this.urlsScan()
     }
-    logA2D("Response Structure:", this.A2D)
+    logEXT("Response Structure:", this.EXT)
   }
 
 /** photos code **/
   photoDisplay() {
-    var photo = document.getElementById("A2D_PHOTO")
-    logA2D("Loading photo #" + (this.A2D.photos.position+1) + "/" + (this.A2D.photos.length))
-    photo.src = this.A2D.photos.urls[this.A2D.photos.position]
+    var photo = document.getElementById("EXT_PHOTO")
+    logEXT("Loading photo #" + (this.EXT.photos.position+1) + "/" + (this.EXT.photos.length))
+    photo.src = this.EXT.photos.urls[this.EXT.photos.position]
 
     photo.addEventListener("load", () => {
-      logA2D("Photo Loaded")
+      logEXT("Photo Loaded")
       this.timerPhoto = setTimeout( () => {
         this.photoNext()
       }, this.config.photos.displayDelay)
     }, {once: true})
     photo.addEventListener("error", (event) => {
-      if (this.A2D.photos.displayed) {
-        logA2D("Photo Loading Error... retry with next")
+      if (this.EXT.photos.displayed) {
+        logEXT("Photo Loading Error... retry with next")
         clearTimeout(this.timerPhoto)
         this.timerPhoto = null
         this.photoNext()
@@ -125,11 +125,11 @@ class Display {
   }
 
   photoNext() {
-    if (this.A2D.photos.position >= (this.A2D.photos.length-1) ) {
+    if (this.EXT.photos.position >= (this.EXT.photos.length-1) ) {
       this.resetPhotos()
       this.hideDisplay()
     } else {
-      this.A2D.photos.position++
+      this.EXT.photos.position++
       this.photoDisplay()
     }
   }
@@ -145,10 +145,10 @@ class Display {
         length: 0
       }
     }
-    this.A2D = this.objAssign({}, this.A2D, tmp)
-    var photo = document.getElementById("A2D_PHOTO")
+    this.EXT = this.objAssign({}, this.EXT, tmp)
+    var photo = document.getElementById("EXT_PHOTO")
     photo.removeAttribute('src')
-    logA2D("Reset Photos", this.A2D)
+    logEXT("Reset Photos", this.EXT)
 
   }
 
@@ -156,7 +156,7 @@ class Display {
   urlsScan() {
     let tmp = {}
     if (this.config.youtube.useYoutube) {
-      var YouTubeRealLink= this.A2D.links.urls[0]
+      var YouTubeRealLink= this.EXT.links.urls[0]
       /** YouTube RegExp **/
       var YouTubeLink = new RegExp("youtube\.com\/([a-z]+)\\?([a-z]+)\=([0-9a-zA-Z\-\_]+)", "ig")
       /** Scan Youtube Link **/
@@ -165,22 +165,22 @@ class Display {
       if (YouTube) {
         let Type
         let YouTubeResponse = {}
-        if (this.A2D.radio) this.radioStop()
-        if (this.A2D.spotify.librespot && this.config.spotify.useSpotify) {
+        if (this.EXT.radio) this.radioStop()
+        if (this.EXT.spotify.librespot && this.config.spotify.useSpotify) {
           this.sendSocketNotification("SPOTIFY_PAUSE")
         }
         if (YouTube[1] == "watch") Type = "id"
         if (YouTube[1] == "playlist") Type = "playlist"
-        if (!Type) return console.log("[GA:A2D:YouTube] Unknow Type !" , YouTube)
+        if (!Type) return console.log("[GA:EXT:YouTube] Unknow Type !" , YouTube)
         YouTubeResponse = {
           "id": YouTube[3],
           "type": Type
         }
-        this.A2D.youtube = this.objAssign({}, this.A2D.youtube, YouTubeResponse)
-        this.A2DLock()
-        if (!this.config.youtube.useVLC) this.player.load({id: this.A2D.youtube.id, type : this.A2D.youtube.type})
+        this.EXT.youtube = this.objAssign({}, this.EXT.youtube, YouTubeResponse)
+        this.EXTLock()
+        if (!this.config.youtube.useVLC) this.player.load({id: this.EXT.youtube.id, type : this.EXT.youtube.type})
         else {
-          this.A2D.youtube.displayed = true
+          this.EXT.youtube.displayed = true
           this.showYT()
           this.sendSocketNotification("VLC_YOUTUBE", YouTubeRealLink)
         }
@@ -191,11 +191,11 @@ class Display {
       /** Spotify RegExp **/
       var SpotifyLink = new RegExp("open\.spotify\.com\/([a-z]+)\/([0-9a-zA-Z\-\_]+)", "ig")
       /** Scan Spotify Link **/
-      var Spotify = SpotifyLink.exec(this.A2D.links.urls[0])
+      var Spotify = SpotifyLink.exec(this.EXT.links.urls[0])
 
       if (Spotify) {
-        if (this.A2D.radio) this.radioStop()
-        if (!this.A2D.spotify.connected && this.config.spotify.connectTo) {
+        if (this.EXT.radio) this.radioStop()
+        if (!this.EXT.spotify.connected && this.config.spotify.connectTo) {
           this.sendSocketNotification("SPOTIFY_TRANSFER", this.config.spotify.connectTo)
         }
 
@@ -214,34 +214,34 @@ class Display {
       }
     }
     if (this.config.links.useLinks) {
-      this.A2DLock()
-      this.A2D.links.displayed = true
+      this.EXTLock()
+      this.EXT.links.displayed = true
       this.linksDisplay()
     }
   }
 
 /** link display **/
   linksDisplay() {
-    this.A2D.links.running = false
-    var webView = document.getElementById("A2D_OUTPUT")
-    logA2D("Loading", this.A2D.links.urls[0])
+    this.EXT.links.running = false
+    var webView = document.getElementById("EXT_OUTPUT")
+    logEXT("Loading", this.EXT.links.urls[0])
     this.showDisplay()
-    webView.src= this.A2D.links.urls[0]
+    webView.src= this.EXT.links.urls[0]
 
     webView.addEventListener("did-fail-load", () => {
-      console.log("[GA:A2D:LINKS] Loading error")
+      console.log("[GA:EXT:LINKS] Loading error")
     })
     webView.addEventListener("crashed", (event) => {
-      console.log("[GA:A2D:LINKS] J'ai tout pété mon général !!!")
-      console.log("[GA:A2D:LINKS]", event)
+      console.log("[GA:EXT:LINKS] J'ai tout pété mon général !!!")
+      console.log("[GA:EXT:LINKS]", event)
     })
     webView.addEventListener("console-message", (event) => {
-      if (event.level == 1 && this.config.debug) console.log("[GA:A2D:LINKS]", event.message)
+      if (event.level == 1 && this.config.debug) console.log("[GA:EXT:LINKS]", event.message)
     })
     webView.addEventListener("did-stop-loading", () => {
-      if (this.A2D.links.running || (webView.getURL() == "about:blank")) return
-      this.A2D.links.running = true
-      logA2D("URL Loaded", webView.getURL())
+      if (this.EXT.links.running || (webView.getURL() == "about:blank")) return
+      this.EXT.links.running = true
+      logEXT("URL Loaded", webView.getURL())
       webView.executeJavaScript(`
       var timer = null
       function scrollDown(posY){
@@ -280,22 +280,22 @@ class Display {
         running: false
       }
     }
-    this.A2D = this.objAssign({}, this.A2D, tmp)
-    var iframe = document.getElementById("A2D_OUTPUT")
+    this.EXT = this.objAssign({}, this.EXT, tmp)
+    var iframe = document.getElementById("EXT_OUTPUT")
     iframe.src= "about:blank"
-    logA2D("Reset Links", this.A2D)
+    logEXT("Reset Links", this.EXT)
   }
 
 /** youtube rules **/
   showYT() {
-    var YT = document.getElementById("A2D_YOUTUBE")
-    var winh = document.getElementById("A2D")
-    if (this.A2D.youtube.displayed) {
-      this.A2DLock() // for YT playlist
+    var YT = document.getElementById("EXT_YOUTUBE")
+    var winh = document.getElementById("EXT")
+    if (this.EXT.youtube.displayed) {
+      this.EXTLock() // for YT playlist
       winh.classList.remove("hidden")
       YT.classList.remove("hidden")
     } else {
-      if (this.A2D.photos.displayed || this.A2D.links.displayed) {
+      if (this.EXT.photos.displayed || this.EXT.links.displayed) {
         winh.classList.remove("hidden")
         YT.classList.add("hidden")
       } else {
@@ -313,49 +313,49 @@ class Display {
         title: null
       }
     }
-    this.A2D = this.objAssign({}, this.A2D, tmp)
-    logA2D("Reset YouTube", this.A2D)
+    this.EXT = this.objAssign({}, this.EXT, tmp)
+    logEXT("Reset YouTube", this.EXT)
   }
 
 /** Cast **/
   castStart(url) {
     /** stop all process before starting cast **/
-    if (this.A2D.youtube.displayed) {
+    if (this.EXT.youtube.displayed) {
       if (this.config.youtube.useVLC) {
         this.sendSocketNotification("YT_STOP")
-        this.A2D.youtube.displayed = false
+        this.EXT.youtube.displayed = false
         this.showYT()
         this.resetYT()
       }
       else this.player.command("stopVideo")
     }
-    if (this.A2D.spotify.connected && this.A2D.spotify.librespot) {
+    if (this.EXT.spotify.connected && this.EXT.spotify.librespot) {
       this.sendSocketNotification("SPOTIFY_PAUSE")
     }
-    if (this.A2D.photos.displayed) {
+    if (this.EXT.photos.displayed) {
       this.resetPhotos()
       this.hideDisplay()
     }
-    if (this.A2D.links.displayed) {
+    if (this.EXT.links.displayed) {
       this.resetLinks()
       this.hideDisplay()
     }
-    if (this.A2D.radio) this.radioStop()
+    if (this.EXT.radio) this.radioStop()
 
     /** emulation of displaying links **/
-    this.A2D.GA.transcription = "YouTube Cast"
-    this.A2D.links.running = false
-    var webView = document.getElementById("A2D_OUTPUT")
-    logA2D("Cast Loading", url)
-    this.A2D.links.displayed = true
-    this.A2D.links.running = true
+    this.EXT.GA.transcription = "YouTube Cast"
+    this.EXT.links.running = false
+    var webView = document.getElementById("EXT_OUTPUT")
+    logEXT("Cast Loading", url)
+    this.EXT.links.displayed = true
+    this.EXT.links.running = true
     this.showDisplay()
-    this.A2DLock()
+    this.EXTLock()
     webView.src= url
   }
 
   castStop() {
-    var webView = document.getElementById("A2D_OUTPUT")
+    var webView = document.getElementById("EXT_OUTPUT")
     this.resetLinks()
     this.hideDisplay()
   }
@@ -364,22 +364,22 @@ class Display {
   prepare() {
     this.prepareVolume()
     var dom = document.createElement("div")
-    dom.id = "A2D"
+    dom.id = "EXT"
     dom.classList.add("hidden")
 
     var scoutpan = document.createElement("div")
-    scoutpan.id = "A2D_WINDOW"
+    scoutpan.id = "EXT_WINDOW"
     var scoutphoto = document.createElement("img")
-    scoutphoto.id = "A2D_PHOTO"
+    scoutphoto.id = "EXT_PHOTO"
     scoutphoto.classList.add("hidden")
     var scout = document.createElement("webview")
     scout.useragent= "Mozilla/5.0 (SMART-TV; Linux; Tizen 2.4.0) AppleWebkit/538.1 (KHTML, like Gecko) SamsungBrowser/1.1 TV Safari/538.1"
-    scout.id = "A2D_OUTPUT"
+    scout.id = "EXT_OUTPUT"
     scout.scrolling="no"
     scout.classList.add("hidden")
 
     var scoutyt = document.createElement("div")
-    scoutyt.id = "A2D_YOUTUBE"
+    scoutyt.id = "EXT_YOUTUBE"
     scoutyt.classList.add("hidden")
     if (this.config.youtube.useYoutube && !this.config.youtube.useVLC)  {
       var api = document.createElement("script")
@@ -388,16 +388,16 @@ class Display {
       writeScript.parentNode.insertBefore(api, writeScript)
       window.onYouTubeIframeAPIReady = () => {
         this.player = new YOUTUBE(
-          "A2D_YOUTUBE",
+          "EXT_YOUTUBE",
           (status) => {
-            this.A2D.youtube.displayed = status
+            this.EXT.youtube.displayed = status
             this.showYT()
           },
           (title) => {
-            this.A2D.youtube.title = title
+            this.EXT.youtube.title = title
           },
           (ended) => {
-            this.A2DUnlock()
+            this.EXTUnlock()
             this.resetYT()
           },
           (error) => {
@@ -417,38 +417,38 @@ class Display {
   }
 
   showDisplay() {
-    logA2D("Show Iframe")
-    var YT = document.getElementById("A2D_YOUTUBE")
-    var iframe = document.getElementById("A2D_OUTPUT")
-    var photo = document.getElementById("A2D_PHOTO")
-    var winA2D = document.getElementById("A2D")
-    if (this.A2D.speak) winA2D.classList.add("hidden")
-    else winA2D.classList.remove("hidden")
+    logEXT("Show Iframe")
+    var YT = document.getElementById("EXT_YOUTUBE")
+    var iframe = document.getElementById("EXT_OUTPUT")
+    var photo = document.getElementById("EXT_PHOTO")
+    var winEXT = document.getElementById("EXT")
+    if (this.EXT.speak) winEXT.classList.add("hidden")
+    else winEXT.classList.remove("hidden")
 
-    if (this.A2D.links.displayed) iframe.classList.remove("hidden")
-    if (this.A2D.photos.displayed) photo.classList.remove("hidden")
-    if (this.A2D.photos.forceClose) photo.classList.add("hidden")
-    if (this.A2D.youtube.displayed) YT.classList.remove("hidden")
+    if (this.EXT.links.displayed) iframe.classList.remove("hidden")
+    if (this.EXT.photos.displayed) photo.classList.remove("hidden")
+    if (this.EXT.photos.forceClose) photo.classList.add("hidden")
+    if (this.EXT.youtube.displayed) YT.classList.remove("hidden")
   }
 
   hideDisplay() {
-    logA2D("Hide Iframe")
-    var winA2D = document.getElementById("A2D")
-    var iframe = document.getElementById("A2D_OUTPUT")
-    var photo = document.getElementById("A2D_PHOTO")
-    var YT = document.getElementById("A2D_YOUTUBE")
+    logEXT("Hide Iframe")
+    var winEXT = document.getElementById("EXT")
+    var iframe = document.getElementById("EXT_OUTPUT")
+    var photo = document.getElementById("EXT_PHOTO")
+    var YT = document.getElementById("EXT_YOUTUBE")
 
-    if (!this.A2D.youtube.displayed) YT.classList.add("hidden")
-    if (!this.A2D.links.displayed) iframe.classList.add("hidden")
-    if (!this.A2D.photos.displayed) photo.classList.add("hidden")
-    if (this.A2D.speak || !this.working()) winA2D.classList.add("hidden")
+    if (!this.EXT.youtube.displayed) YT.classList.add("hidden")
+    if (!this.EXT.links.displayed) iframe.classList.add("hidden")
+    if (!this.EXT.photos.displayed) photo.classList.add("hidden")
+    if (this.EXT.speak || !this.working()) winEXT.classList.add("hidden")
 
-    if (!this.A2D.speak && !this.working()) this.A2DUnlock()
+    if (!this.EXT.speak && !this.working()) this.EXTUnlock()
   }
 
   hideSpotify() {
-    var spotifyModule = document.getElementById("module_A2D_Spotify")
-    var dom = document.getElementById("A2D_SPOTIFY")
+    var spotifyModule = document.getElementById("module_EXT_Spotify")
+    var dom = document.getElementById("EXT_SPOTIFY")
     this.timer = null
     clearTimeout(this.timer)
     dom.classList.remove("bottomIn")
@@ -460,34 +460,34 @@ class Display {
   }
 
   showSpotify() {
-    var spotifyModule = document.getElementById("module_A2D_Spotify")
-    var dom = document.getElementById("A2D_SPOTIFY")
+    var spotifyModule = document.getElementById("module_EXT_Spotify")
+    var dom = document.getElementById("EXT_SPOTIFY")
     spotifyModule.style.display = "block"
     dom.classList.remove("bottomOut")
     dom.classList.add("bottomIn")
     dom.classList.remove("inactive")
   }
 
-  A2DLock() {
-    if (this.A2D.locked) return
-    logA2D("Lock Screen")
+  EXTLock() {
+    if (this.EXT.locked) return
+    logEXT("Lock Screen")
     MM.getModules().enumerate((module)=> {
-      module.hide(15, {lockString: "A2D_LOCKED"})
+      module.hide(15, {lockString: "EXT_LOCKED"})
     })
-    if (this.A2D.spotify.connected && this.config.spotify.useBottomBar) this.hideSpotify()
+    if (this.EXT.spotify.connected && this.config.spotify.useBottomBar) this.hideSpotify()
     if (this.config.screen.useScreen) this.sendSocketNotification("SCREEN_LOCK", true)
-    this.A2D.locked = true
+    this.EXT.locked = true
   }
 
-  A2DUnlock () {
-    if (!this.A2D.locked || this.working()) return
-    logA2D("Unlock Screen")
+  EXTUnlock () {
+    if (!this.EXT.locked || this.working()) return
+    logEXT("Unlock Screen")
     MM.getModules().enumerate((module)=> {
-      module.show(15, {lockString: "A2D_LOCKED"})
+      module.show(15, {lockString: "EXT_LOCKED"})
     })
-    if (this.A2D.spotify.connected && this.config.spotify.useBottomBar) this.showSpotify()
-    if (this.config.screen.useScreen && !this.A2D.spotify.connected) this.sendSocketNotification("SCREEN_LOCK", false)
-    this.A2D.locked = false
+    if (this.EXT.spotify.connected && this.config.spotify.useBottomBar) this.showSpotify()
+    if (this.config.screen.useScreen && !this.EXT.spotify.connected) this.sendSocketNotification("SCREEN_LOCK", false)
+    this.EXT.locked = false
   }
 
   objAssign (result) {
@@ -514,30 +514,30 @@ class Display {
   }
 
   working () {
-    return (this.A2D.youtube.displayed || this.A2D.photos.displayed || this.A2D.links.displayed)
+    return (this.EXT.youtube.displayed || this.EXT.photos.displayed || this.EXT.links.displayed)
   }
 
   /** Volume display **/
   prepareVolume () {
     var volume = document.createElement("div")
-    volume.id = "A2D_VOLUME"
+    volume.id = "EXT_VOLUME"
     volume.classList.add("hidden")
     var volumeText = document.createElement("div")
-    volumeText.id = "A2D_VOLUME_TEXT"
+    volumeText.id = "EXT_VOLUME_TEXT"
     volume.appendChild(volumeText)
     var volumeBar = document.createElement("div")
-    volumeBar.id = "A2D_VOLUME_BAR"
+    volumeBar.id = "EXT_VOLUME_BAR"
     volume.appendChild(volumeBar)
     document.body.appendChild(volume)
     return volume
   }
 
   drawVolume (current) {
-    var volume = document.getElementById("A2D_VOLUME")
+    var volume = document.getElementById("EXT_VOLUME")
     volume.classList.remove("hidden")
-    var volumeText = document.getElementById("A2D_VOLUME_TEXT")
+    var volumeText = document.getElementById("EXT_VOLUME_TEXT")
     volumeText.innerHTML = this.config.volume.volumeText + " " + current + "%"
-    var volumeBar = document.getElementById("A2D_VOLUME_BAR")
+    var volumeBar = document.getElementById("EXT_VOLUME_BAR")
     volumeBar.style.width = current + "%"
     setTimeout(()=>{
       volume.classList.add("hidden")

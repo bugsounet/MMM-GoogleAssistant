@@ -262,7 +262,7 @@ class AssistantResponse {
 
     var normalResponse = (response) => {
       this.showing = true
-      this.callbacks.A2D(response)
+      this.callbacks.EXT(response)
       this.status("reply")
       var so = this.showScreenOutput(response)
       var ao = this.playAudioOutput(response)
@@ -332,13 +332,13 @@ class AssistantResponse {
     return "/modules/MMM-GoogleAssistant/" + uri + "?seed=" + Date.now()
   }
 
-  fullscreen (active, status) {
+  fullscreen (active, status, fs = true) {
     var GA = document.getElementById("GA")
     var FakeGA = document.getElementById("module_Fake_GA_DOM")
 
     if (active) {
       GA.className= "in"
-      if (this.fullscreenAbove) {
+      if (this.fullscreenAbove && fs) {
         FakeGA.classList.remove("hidden")
         MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
           module.hide(500, {lockString: "GA_LOCKED"})

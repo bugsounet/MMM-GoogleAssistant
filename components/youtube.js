@@ -58,31 +58,31 @@ class YOUTUBE {
     }
 
     this.errorYT = false
-    console.log("[GA:A2D] YOUTUBE Class Loaded")
+    console.log("[GA:EXT] YOUTUBE Class Loaded")
   }
 
   init() {
     this.YTPlayer = new YT.Player(this.idDom, this.makeOptions())
-    logA2D("YOUTUBE API is ready.")
+    logEXT("YOUTUBE API is ready.")
   }
 
   makeOptions(options={}) {
     options.playerVars = Object.assign({}, this.playerVars)
     options.events = {}
     options.events.onReady = (ev) => {
-      logA2D("YT Player is ready.")
+      logEXT("YT Player is ready.")
     }
     options.events.onError = (ev) => {
       this.errorYT = true
       if (ev.data == "2") ev.target.stopVideo()
-      console.log(`[GA:A2D] YT Error ${ev.data}:`, this.err[ev.data] ? this.err[ev.data] : "Unknown Error")
+      console.log(`[GA:EXT] YT Error ${ev.data}:`, this.err[ev.data] ? this.err[ev.data] : "Unknown Error")
       if (this.error) this.error(`YouTube Error ${ev.data}: ` + (this.err[ev.data] ? this.err[ev.data] : "Unknown Error"))
       this.ended(true)
     }
 
     options.events.onPlaybackQualityChange = (ev) => {
       var playbackQuality = ev.data
-      logA2D("YT Quality: " + playbackQuality)
+      logEXT("YT Quality: " + playbackQuality)
     }
 
     options.events.onStateChange = (ev) => {
@@ -94,13 +94,13 @@ class YOUTUBE {
           this.status(false)
           break
         case 1:
-          //A2D("!!! TEMP YT DEBUG !!!", this.YTPlayer)
+          //logEXT("!!! TEMP YT DEBUG !!!", this.YTPlayer)
           try {
             var title = this.YTPlayer.playerInfo.videoData ? this.YTPlayer.playerInfo.videoData.title : "unknow"
-            logA2D("YT Playing Title:" , title)
+            logEXT("YT Playing Title:" , title)
             this.title(title)
           } catch (e) {
-            logA2D("YT Playing Title: API Error", e)
+            logEXT("YT Playing Title: API Error", e)
           }
         case 3:
           this.status(true)
@@ -109,7 +109,7 @@ class YOUTUBE {
           if (this.list) {
             var list = this.command("getPlaylist")
             if (!Array.isArray(list)) return false
-            logA2D("YT Playlist count:", list.length)
+            logEXT("YT Playlist count:", list.length)
           }
           if (!this.errorYT && this.YTStarted) this.command("playVideo")
           if (!this.YTStarted) {
@@ -118,7 +118,7 @@ class YOUTUBE {
           }
           break
       }
-      logA2D("YT Status:", this.state[ev.data])
+      logEXT("YT Status:", this.state[ev.data])
     }
     return options
   }
@@ -151,7 +151,7 @@ class YOUTUBE {
   }
 
   command(cmd, param=null) {
-    logA2D("YT Command:", cmd, param ? param : "")
+    logEXT("YT Command:", cmd, param ? param : "")
     if (!this.YTPlayer || !cmd) return false
     if (typeof this.YTPlayer[cmd] == "function") {
       var ret = this.YTPlayer[cmd](param)

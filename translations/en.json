@@ -26,12 +26,12 @@
   "MODULE_NOTFOUND": "Module not found: ",
   "MODULE_NAME": "Name of the module missing",
 
-  "STOP_HELP": "Stop A2D if running",
-  "STOP_A2D": "I stop A2D",
+  "STOP_HELP": "Stop Extented Display if running",
+  "STOP_EXT": "I stop Extented Display",
 
-  "A2D_OPEN": "Opening link: ",
-  "A2D_INVALID": "This link is not invalid!",
-  "A2D_HELP": "Activate Assisant2Display with link",
+  "EXT_OPEN": "Opening link: ",
+  "EXT_INVALID": "This link is not invalid!",
+  "EXT_HELP": "Activate Extented Display with link",
 
   "VOLUME_HELP": "Set the volume of your device",
 
