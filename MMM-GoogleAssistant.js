@@ -1251,9 +1251,9 @@ Module.register("MMM-GoogleAssistant", {
         this.EXT.speak = true
         if (this.config.Extented.screen.useScreen && !this.EXT.locked) this.sendSocketNotification("SCREEN_STOP")
         if (this.EXT.locked) this.displayEXTResponse.hideDisplay()
-        if (this.config.Extented.youtube.useYoutube && this.displayEXTResponse.player) {
-          if (!this.config.Extented.youtube.useVLC) this.displayEXTResponse.player.command("setVolume", this.config.Extented.youtube.minVolume)
-          else this.sendSocketNotification("YT_VOLUME", this.config.Extented.youtube.minVolume)
+        if (this.config.Extented.youtube.useYoutube) {
+          if (this.config.Extented.youtube.useVLC) this.sendSocketNotification("YT_VOLUME", this.config.Extented.youtube.minVolume)
+          else if (this.displayEXTResponse.player) this.displayEXTResponse.player.command("setVolume", this.config.Extented.youtube.minVolume)
         }
         if (this.config.Extented.spotify.useSpotify && this.EXT.spotify.librespot) {
           this.EXT.spotify.targetVolume = this.EXT.spotify.currentVolume
@@ -1264,9 +1264,9 @@ Module.register("MMM-GoogleAssistant", {
       case "standby":
         this.EXT.speak = false
         if (this.config.Extented.screen.useScreen && !this.EXT.locked) this.sendSocketNotification("SCREEN_RESET")
-        if (this.config.Extented.youtube.useYouTube && this.displayEXTResponse.player) {
-          if (!this.config.Extented.youtube.useVLC) this.displayEXTResponse.player.command("setVolume", this.config.Extented.youtube.maxVolume)
-          else this.sendSocketNotification("YT_VOLUME", this.config.Extented.youtube.maxVolume)
+        if (this.config.Extented.youtube.useYoutube) {
+          if (this.config.Extented.youtube.useVLC) this.sendSocketNotification("YT_VOLUME", this.config.Extented.youtube.maxVolume)
+          else if (this.displayEXTResponse.player) this.displayEXTResponse.player.command("setVolume", this.config.Extented.youtube.maxVolume)
         }
         if (this.config.Extented.spotify.useSpotify && this.EXT.spotify.librespot && !this.EXT.spotify.forceVolume) {
           this.sendSocketNotification("SPOTIFY_VOLUME", this.EXT.spotify.targetVolume)
