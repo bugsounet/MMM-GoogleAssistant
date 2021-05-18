@@ -975,8 +975,9 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   Warning: function(warning, noEnd = true) {
+    clearTimeout(this.warningTimeout)
     this.assistantResponse.warningEvent= true
-    console.log("[GA] Warning:", warning)
+    logGA("Warning:", warning)
     this.assistantResponse.forceStatusImg("warning")
     this.assistantResponse.showTranscription(warning)
     clearTimeout(this.assistantResponse.aliveTimer)
@@ -991,8 +992,9 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   Informations: function(info) {
+    clearTimeout(this.warningTimeout)
     this.assistantResponse.warningEvent= true
-    console.log("[GA] Warning:", info)
+    logGA("Information:", info)
     this.assistantResponse.forceStatusImg("information")
     this.assistantResponse.showTranscription(info)
     clearTimeout(this.assistantResponse.aliveTimer)

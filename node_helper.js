@@ -9,14 +9,6 @@ const Assistant = require("./components/assistant.js")
 const ScreenParser = require("./components/screenParser.js")
 const readJson = require("r-json")
 const Youtube = require("youtube-api")
-const npmCheck = require("@bugsounet/npmcheck")
-const Screen = require("@bugsounet/screen")
-const Pir = require("@bugsounet/pir")
-const Governor = require("@bugsounet/governor")
-const Internet = require("@bugsounet/internet").v2
-const CastServer = require("@bugsounet/cast")
-const Spotify = require("@bugsounet/spotify")
-const Cvlc = require('@bugsounet/cvlc')
 const pm2 = require('pm2')
 var he = require('he')
 
@@ -27,6 +19,7 @@ var NodeHelper = require("node_helper")
 
 module.exports = NodeHelper.create({
   start: function () {
+    this.EXT = {}
     this.config = {}
     this.volumeScript= {
       "OSX": "osascript -e 'set volume output volume #VOLUME#'",
@@ -273,6 +266,7 @@ module.exports = NodeHelper.create({
       version: require('./package.json').version,
       rev: require('./package.json').rev
     }
+
     if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/credentials.json")) {
       error = "[FATAL] credentials.json file not found !"
       return this.DisplayError(error)
@@ -312,8 +306,20 @@ module.exports = NodeHelper.create({
 
     logGA("Activate delay is set to " + this.config.responseConfig.activateDelay + " ms")
 
-    this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
+    this.loadRecipes(()=> { this.sendSocketNotification("INITIALIZED", Version) })
 
+    let bugsounet = await this.loadBugsounetLibrary()
+    if (bugsounet) {
+      console.error("[GA] Warning:", bugsounet, "@bugsounet library not loaded !")
+      console.error("[GA] Try to solve it with `npm run rebuild` in GA directory")
+    }
+    else console.log("[GA] All needed @bugsounet library loaded !")
+
+    if (this.config.Extented.useEXT) {
+      console.log("[GA:EXT] Extented Display Server Started")
+      await this.Extented()
+      console.log("[GA:EXT] Extented Display is initialized.")
+    }
     if (this.config.NPMCheck.useChecker) {
       var cfg = {
         dirName: __dirname,
@@ -321,12 +327,7 @@ module.exports = NodeHelper.create({
         timer: this.config.NPMCheck.delay,
         debug: this.config.debug
       }
-      this.Checker= new npmCheck(cfg, update => { this.sendSocketNotification("NPM_UPDATE", update)})
-    }
-    if (this.config.Extented.useEXT) {
-      console.log("[GA:EXT] Extented Display Server Started")
-      await this.Extented()
-      console.log("[GA:EXT] Extented Display is initialized.")
+      this.Checker= new this.EXT["npmCheck"](cfg, update => { this.sendSocketNotification("NPM_UPDATE", update)})
     }
     console.log("[GA] Google Assistant is initialized.")
   },
@@ -379,11 +380,11 @@ module.exports = NodeHelper.create({
     return this.sendSocketNotification("NOT_INITIALIZED", error)
   },
 
-  /***************/
-  /** Extented **/
-  /***************/
+  /*****************/
+  /** Extented *****/
+  /*****************/
 
-  Extented: async function() {
+  Extented: function() {
     var callbacks= {
       "sendSocketNotification": (noti, params) => {
         this.sendSocketNotification(noti, params)
@@ -402,34 +403,34 @@ module.exports = NodeHelper.create({
       }
     }
 
-    if (this.config.Extented.screen.useScreen) {
+    if (this.config.Extented.screen.useScreen && this.EXT.Screen) {
       logEXT("Starting Screen module...")
-      this.screen = new Screen(this.config.Extented.screen, callbacks.sendSocketNotification, this.config.debug, callbacks.sendSocketNotification, callbacks.governor)
+      this.screen = new this.EXT.Screen(this.config.Extented.screen, callbacks.sendSocketNotification, this.config.debug, callbacks.sendSocketNotification, callbacks.governor)
       this.screen.activate()
     }
-    if (this.config.Extented.pir.usePir) {
+    if (this.config.Extented.pir.usePir && this.EXT.Pir) {
       logEXT("Starting Pir module...")
-      this.pir = new Pir(this.config.Extented.pir, callbacks.pir, this.config.debug)
+      this.pir = new this.EXT.Pir(this.config.Extented.pir, callbacks.pir, this.config.debug)
       this.pir.start()
     }
-    if (this.config.Extented.governor.useGovernor) {
+    if (this.config.Extented.governor.useGovernor && this.EXT.Governor) {
       logEXT("Starting Governor module...")
-      this.governor = new Governor(this.config.Extented.governor, callbacks.governor, this.config.debug)
+      this.governor = new this.EXT.Governor(this.config.Extented.governor, callbacks.governor, this.config.debug)
       this.governor.start()
     }
-    if (this.config.Extented.internet.useInternet) {
+    if (this.config.Extented.internet.useInternet && this.EXT.Internet) {
       logEXT("Starting Internet module...")
-      this.internet = new Internet(this.config.Extented.internet, callbacks.sendSocketNotification, this.config.debug)
+      this.internet = new this.EXT.Internet(this.config.Extented.internet, callbacks.sendSocketNotification, this.config.debug)
       this.internet.start()
     }
-    if (this.config.Extented.cast.useCast) {
+    if (this.config.Extented.cast.useCast && this.EXT.CastServer) {
       logEXT("Starting Cast module...")
-      this.cast = new CastServer(this.config.Extented.cast, callbacks.sendSocketNotification, this.config.debug)
-      await this.cast.start()
+      this.cast = new this.EXT.CastServer(this.config.Extented.cast, callbacks.sendSocketNotification, this.config.debug)
+      this.cast.start()
     }
-    if (this.config.Extented.spotify.useSpotify) {
+    if (this.config.Extented.spotify.useSpotify && this.EXT.Spotify) {
       logEXT("Starting Spotify module...")
-      this.spotify = new Spotify(this.config.Extented.spotify, callbacks.sendSocketNotification, this.config.debug)
+      this.spotify = new this.EXT.Spotify(this.config.Extented.spotify, callbacks.sendSocketNotification, this.config.debug)
       this.spotify.start()
       if (this.config.Extented.spotify.useLibrespot) {
         console.log("[SPOTIFY] Launch Librespot...")
@@ -610,5 +611,47 @@ module.exports = NodeHelper.create({
       else logEXT("[PM2] Restart", id)
     })
   },
+
+  /** Load require @busgounet library **/
+  /** It will not crash MM (black screen) **/
+  loadBugsounetLibrary: function() {
+    let libraries= [
+      { "@bugsounet/npmcheck": [ "npmCheck", "NPMCheck,useChecker" ] },
+      { "@bugsounet/screen": [ "Screen", "Extented,screen,useScreen" ] },
+      { "@bugsounet/pir": [ "Pir", "Extented,pir,usePir" ] },
+      { "@bugsounet/governor": [ "Governor", "Extented,governor,useGovernor" ] },
+      { "@bugsounet/internet": [ "Internet", "Extented,internet,useInternet" ] },
+      { "@bugsounet/cast": [ "CastServer", "Extented,cast,useCast" ] },
+      { "@bugsounet/spotify": [ "Spotify", "Extented,spotify,useSpotify" ] },
+      { "@bugsounet/cvlc": [ "cvlc", "Extented,youtube,useVLC" ] }
+    ]
+    let errors = 0
+    return new Promise(resolve => {
+      libraries.forEach(library => {
+        for (const [name, configValues] of Object.entries(library)) {
+          let libraryName = name, libraryModule = configValues[0], libraryConfig = configValues[1].split(",")
+          let resultPathConfig = libraryConfig.map(i => [i]), resultLength = resultPathConfig.length, resultValue = null
+
+          // -> @todo better
+          if (resultLength == 1) resultValue = this.config[resultPathConfig[0]]
+          if (resultLength == 2) resultValue = this.config[resultPathConfig[0]][resultPathConfig[1]]
+          if (resultLength == 3) resultValue = this.config[resultPathConfig[0]][resultPathConfig[1]][resultPathConfig[2]]
+          //
+
+          if (resultValue) {
+            try {
+              this.EXT[libraryModule] = require(libraryName)
+              logGA("Loaded " + libraryName)
+            } catch (e) {
+              console.error("[GA] ERROR " + libraryName)
+              this.sendSocketNotification("WARNING" , "Error when loading: " + libraryName)
+              errors++
+            }
+          }
+        }
+      })
+      resolve(errors)
+    })
+  }
 
 })
