@@ -18,7 +18,7 @@ Module.register("MMM-GoogleAssistant", {
       longitude: -0.076132
     },
     responseConfig: {
-      useFullscreen: false, // @todo Code it !
+      useFullscreen: false,
       useResponseOutput: true,
       responseOutputCSS: "response_output.css",
       screenOutputTimer: 5000,
@@ -75,7 +75,7 @@ Module.register("MMM-GoogleAssistant", {
         scrollInterval: 1000,
         scrollStart: 5000
       },
-      photos: {
+      photos: { // @todo use api
         usePhotos: false,
         displayDelay: 10 * 1000
       },
@@ -135,7 +135,7 @@ Module.register("MMM-GoogleAssistant", {
         castName: "MagicMirror_Extented",
         port: 8569
       },
-      spotify: {
+      spotify: { //@todo make new recipe and for radio too
         useSpotify: false,
         useBottomBar: false,
         useLibrespot: false,
@@ -193,7 +193,8 @@ Module.register("MMM-GoogleAssistant", {
   getStyles: function () {
     return [
       "/modules/MMM-GoogleAssistant/MMM-GoogleAssistant.css",
-      "font-awesome.css"
+      "font-awesome.css",
+      "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     ]
   },
 
@@ -208,7 +209,6 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   start: function () {
-    this.warningTimeout = null
     this.userPresence = null
     this.lastPresence = null
     const helperConfig = [
@@ -257,6 +257,7 @@ Module.register("MMM-GoogleAssistant", {
       },
       "sendNotification": (noti, params)=> {
         this.sendNotification(noti, params)
+        this.assistantResponse.Informations("warning", "sendNotification: " + noti + " " + params)
         console.log("!!!! sendNotification Warning:", noti, params) // @to verify is really need ? maybe for detector sleeping ??
       },
       "radioStop": ()=> this.radio.pause(),
@@ -272,7 +273,7 @@ Module.register("MMM-GoogleAssistant", {
           this.EXT.spotify.librespot = false
         }
       },
-      "YTError": (error) => this.Warning(error)
+      "YTError": (error) => this.assistantResponse.Informations("warning",error)
     }
     this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
 
@@ -554,14 +555,14 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantResponse.forceStatusImg("userError")
         break
       case "WARNING":
-        this.Warning(payload)
+        this.assistantResponse.Informations("warning", payload)
         break
       case "INFORMATION":
-        this.Informations(payload)
+        this.assistantResponse.Informations("information", payload)
         break
       case "INITIALIZED":
         logGA("Initialized.")
-        this.Version(payload)
+        this.assistantResponse.Version(payload)
         this.assistantResponse.status("standby")
         this.doPlugin("onReady")
         if (this.config.Extented.useEXT) this.sendWelcome()
@@ -630,11 +631,11 @@ Module.register("MMM-GoogleAssistant", {
       case "INTERNET_DOWN":
         if (payload.ticks == 1) this.sendSocketNotification("SCREEN_WAKEUP")
         let FormatedSince = moment(payload.date).fromNow()
-        this.Warning(FormatedSince + ", Internet is DOWN!" , false)
+        this.assistantResponse.Informations("warning", FormatedSince + ", Internet is DOWN!")
         break
       case "INTERNET_RESTART":
         this.sendSocketNotification("SCREEN_WAKEUP")
-        this.Informations("Internet is now available! Restarting Magic Mirror...")
+        this.assistantResponse.Informations("information", "Internet is now available! Restarting Magic Mirror...")
         break
       case "INTERNET_AVAILABLE":
         let DateDiff = payload
@@ -644,7 +645,7 @@ Module.register("MMM-GoogleAssistant", {
           + (DateDiff.hour ? (DateDiff.hour + (DateDiff.hour > 1 ? this.DateTranslate.hours : this.DateTranslate.hour)): "")
           + (DateDiff.min ? (DateDiff.min + (DateDiff.min > 1 ? this.DateTranslate.minutes : this.DateTranslate.minute)): "")
           + DateDiff.sec + (DateDiff.sec > 1 ? this.DateTranslate.seconds : this.DateTranslate.second)
-        this.Informations("Internet is now AVAILABLE, after " + FormatedMessage)
+        this.assistantResponse.Informations("Internet is now AVAILABLE, after " + FormatedMessage)
         break
       case "INTERNET_PING":
         var ping = document.getElementById("EXT_INTERNET_PING")
@@ -743,8 +744,10 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   assistantActivate: function(payload) {
-    clearTimeout(this.warningTimeout)
     if (this.myStatus.actual != "standby" && !payload.force) return logGA("Assistant is busy.")
+    clearTimeout(this.assistantResponse.aliveTimer)
+    this.assistantResponse.showTranscription("Hi, how can i help?")
+    this.sendNotification("DETECTOR_STOP")
     this.doPlugin("onActivate")
     this.assistantResponse.fullscreen(true)
     this.lastQuery = null
@@ -962,50 +965,6 @@ Module.register("MMM-GoogleAssistant", {
     this.assistantResponse.prepare()
     this.assistantResponse.fullscreen(true)
     this.assistantResponse.showError("[FATAL] Module configuration: ConfigDeepMerge not actived !")
-  },
-
-  /** Display event **/
-  Version: function(version) {
-    this.assistantResponse.showTranscription("~MMM-GoogleAssistant v" + version.version + " - rev:"+ version.rev + "~")
-    this.assistantResponse.fullscreen(true,null,false)
-    this.warningTimeout = setTimeout(() => {
-      this.assistantResponse.end(false)
-      this.assistantResponse.showTranscription("")
-    }, this.config.responseConfig.screenOutputTimer)
-  },
-
-  Warning: function(warning, noEnd = true) {
-    clearTimeout(this.warningTimeout)
-    this.assistantResponse.warningEvent= true
-    logGA("Warning:", warning)
-    this.assistantResponse.forceStatusImg("warning")
-    this.assistantResponse.showTranscription(warning)
-    clearTimeout(this.assistantResponse.aliveTimer)
-    this.assistantResponse.aliveTimer = null
-    this.assistantResponse.fullscreen(true,null,false)
-    this.warningTimeout = setTimeout(() => {
-      this.assistantResponse.warningEvent= false
-      this.assistantResponse.end(noEnd)
-      this.assistantResponse.showTranscription("")
-      this.assistantResponse.forceStatusImg("standby")
-    }, this.config.responseConfig.screenOutputTimer)
-  },
-
-  Informations: function(info) {
-    clearTimeout(this.warningTimeout)
-    this.assistantResponse.warningEvent= true
-    logGA("Information:", info)
-    this.assistantResponse.forceStatusImg("information")
-    this.assistantResponse.showTranscription(info)
-    clearTimeout(this.assistantResponse.aliveTimer)
-    this.assistantResponse.aliveTimer = null
-    this.assistantResponse.fullscreen(true,null,false)
-    this.warningTimeout = setTimeout(() => {
-      this.assistantResponse.warningEvent= false
-      this.assistantResponse.end()
-      this.assistantResponse.showTranscription("")
-      this.assistantResponse.forceStatusImg("standby")
-    }, this.config.responseConfig.screenOutputTimer)
   },
 
   /****************************/
@@ -1617,7 +1576,7 @@ Module.register("MMM-GoogleAssistant", {
     }
     if (this.EXT.radio) this.radio.pause()
     this.sendNotification("TV-STOP") // Stop MMM-FreeboxTV
-    this.Informations("All Assistant Process stopped")
+    this.assistantResponse.Informations("All Assistant Process stopped")
   },
 
   /** Radio command (for recipe) **/

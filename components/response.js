@@ -39,6 +39,8 @@ class AssistantResponse {
     this.audioChime = new Audio()
     this.audioChime.autoplay = true
     this.fullscreenAbove = this.config.useFullscreen
+    this.warningTimeout = null
+    this.informationsType = [ "warning", "information" ]
   }
 
   tunnel (payload) {
@@ -77,12 +79,44 @@ class AssistantResponse {
     this.myStatus.old = this.myStatus.actual
   }
 
-  forceStatusImg(status) {
-    var Status = document.getElementById("GA-Status")
-    Status.src = this.imgStatus[status]
-  }
-
   prepare () {
+    /** Prepare GA Information **/
+    var Infos = document.createElement("div")
+    Infos.id = "Infos"
+    Infos.style.zoom = this.config.zoom.transcription
+    Infos.className= "hidden animate__animated"
+    Infos.style.setProperty('--animate-duration', '1s')
+    var InfosDisplay = document.createElement("div")
+    InfosDisplay.id = "InfoDisplay"
+    Infos.appendChild(InfosDisplay)
+
+    var InfosPopout = document.createElement("div")
+    InfosPopout.id = "Infos-popout"
+    InfosDisplay.appendChild(InfosPopout)
+
+    var InfosBar = document.createElement("div")
+    InfosBar.id = "Infos-bar"
+    InfosBar.className= "Infos-popout-asbar"
+    InfosBar.tabindex = -1
+    InfosPopout.appendChild(InfosBar)
+
+    //informations image
+    var InfosIcon = document.createElement("img")
+    InfosIcon.id= "Infos-Icon"
+    InfosIcon.className="Infos-assistant_icon"
+    InfosIcon.src = this.resourcesDir + "information.gif"
+    InfosBar.appendChild(InfosIcon)
+
+    //transcription informations text
+    var InfosResponse = document.createElement("span")
+    InfosResponse.id= "Infos-Transcription"
+    InfosResponse.className="Infos-assistant_response"
+    InfosResponse.textContent= "~MMM-GoogleAssistant v3 Informations displayer~"
+    InfosBar.appendChild(InfosResponse)
+
+    document.body.appendChild(Infos)
+
+    /** Main GA popups **/
     var GA = document.createElement("div")
     GA.id = "GA"
     GA.style.zoom = this.config.zoom.transcription
@@ -197,27 +231,21 @@ class AssistantResponse {
 
       } else {
         logGA("Conversation ends.")
-        this.endOrEvent()
+        this.status("standby")
+        this.callbacks.endResponse()
+        clearTimeout(this.aliveTimer)
+        this.aliveTimer = null
+        this.aliveTimer = setTimeout(()=>{
+          this.stopResponse(()=>{
+            this.fullscreen(false, this.myStatus)
+          })
+        }, this.config.screenOutputTimer)
       }
     } else {
       this.status("standby")
       this.fullscreen(false, this.myStatus)
       if (cb) this.callbacks.endResponse()
     }
-  }
-
-  endOrEvent() {
-    if (this.warningEvent) return
-    this.warningEvent = false
-    this.status("standby")
-    this.callbacks.endResponse()
-    clearTimeout(this.aliveTimer)
-    this.aliveTimer = null
-    this.aliveTimer = setTimeout(()=>{
-      this.stopResponse(()=>{
-        this.fullscreen(false, this.myStatus)
-      })
-    }, this.config.screenOutputTimer)
   }
 
   start (response) {
@@ -355,4 +383,55 @@ class AssistantResponse {
       }
     }
   }
+
+  /** Display information  **/
+  Version (version) {
+    this.showTranscription("~MMM-GoogleAssistant v" + version.version + " - rev:"+ version.rev + "~")
+    this.fullscreen(true,null,false)
+    this.aliveTimer = setTimeout(() => {
+      this.end(false)
+      this.showTranscription("")
+    }, this.config.screenOutputTimer)
+  }
+
+  Informations (type, info) {
+    if (this.informationsType.indexOf(type) == -1) return this.Informations("warning", "Information Display Error!" )
+    clearTimeout(this.warningTimeout)
+    logGA(type + ":", info)
+    console.log(type + ":", info)
+    this.InformationShow()
+    this.forceStatusImg(type)
+    this.showInformations(info)
+    this.warningTimeout = setTimeout(() => {
+      this.InformationHidden()
+    }, this.config.screenOutputTimer)
+  }
+
+  showInformations (text) {
+    var tr = document.getElementById("Infos-Transcription")
+    tr.textContent = text
+  }
+
+  forceStatusImg(logo) {
+    var InfoLogo = document.getElementById("Infos-Icon")
+    InfoLogo.src = this.imgStatus[logo]
+  }
+
+  InformationHidden() {
+    var Infos = document.getElementById("Infos")
+    Infos.classList.remove('animate__bounceInDown')
+    Infos.classList.add("animate__bounceOutUp")
+    Infos.addEventListener('animationend', () => {
+      Infos.classList.add("hidden")
+      this.showInformations("")
+      this.forceStatusImg("standby")
+    }, {once: true})
+  }
+
+  InformationShow() {
+    var Infos = document.getElementById("Infos")
+    Infos.classList.remove("hidden", "animate__bounceOutUp")
+    Infos.classList.add('animate__bounceInDown')
+  }
+
 }

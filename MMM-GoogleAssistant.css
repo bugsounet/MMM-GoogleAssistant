@@ -43,6 +43,55 @@
 }
 
 /** popup display windows **/
+
+/** informations **/
+#Infos {
+  z-index:99998;
+}
+
+#Infos.hidden {
+  display: none;
+}
+
+#Infos-popout {
+  bottom:auto;
+  box-sizing:border-box;
+  font-family:"Roboto",sans-serif;
+  font-size:40px;
+  -webkit-font-smoothing:antialiased;
+  position:absolute;
+  overflow:hidden;
+  width:100%;
+}
+#Infos-popout div {
+  font-family:'Roboto',arial,sans-serif
+}
+#Infos-bar {
+  display:flex;
+  background-color:rgba(33,33,33,.99);
+  height:144px;
+  padding: 0px 30px 0 30px;
+  width:100%;
+  box-sizing:border-box;
+  white-space:nowrap;
+}
+.Infos-assistant_response {
+  color:#ffffff;
+  font-size:30px;
+  margin:auto 0px;
+  text-overflow: ellipsis;
+  overflow: auto;
+}
+.Infos-assistant-word-icon {
+  height:55px;
+  margin: auto auto auto 0px;
+}
+.Infos-assistant_icon {
+  margin-left: -70px;
+  Zoom: 35%;
+}
+
+/** Google popups **/
 #GA {
   z-index:99998;
 }
@@ -57,6 +106,7 @@
   overflow:hidden;
   width:100%;
 }
+
 #GA-popout div {
   font-family:'Roboto',arial,sans-serif
 }
@@ -105,6 +155,7 @@
   opacity: 0;
   transition: visibility 0s 0.5s, opacity 0.5s linear;
 }
+
 
 #GA.hidden {
   display: none
@@ -625,7 +676,5 @@ progress[value]#EXT_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
 }
 
 #EXT_VOLUME.hidden {
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s 1s, opacity 1s linear;
+  display:none;
 }

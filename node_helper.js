@@ -653,5 +653,4 @@ module.exports = NodeHelper.create({
       resolve(errors)
     })
   }
-
 })

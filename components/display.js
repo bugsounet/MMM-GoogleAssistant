@@ -522,6 +522,8 @@ class Display {
     var volume = document.createElement("div")
     volume.id = "EXT_VOLUME"
     volume.classList.add("hidden")
+    volume.className= "hidden animate__animated"
+    volume.style.setProperty('--animate-duration', '1s')
     var volumeText = document.createElement("div")
     volumeText.id = "EXT_VOLUME_TEXT"
     volume.appendChild(volumeText)
@@ -534,13 +536,18 @@ class Display {
 
   drawVolume (current) {
     var volume = document.getElementById("EXT_VOLUME")
-    volume.classList.remove("hidden")
+    volume.classList.remove("hidden", "animate__zoomOut")
+    volume.classList.add("animate__zoomIn")
     var volumeText = document.getElementById("EXT_VOLUME_TEXT")
     volumeText.innerHTML = this.config.volume.volumeText + " " + current + "%"
     var volumeBar = document.getElementById("EXT_VOLUME_BAR")
     volumeBar.style.width = current + "%"
     setTimeout(()=>{
-      volume.classList.add("hidden")
+      volume.classList.remove("animate__zoomIn")
+      volume.classList.add("animate__zoomOut")
+      volume.addEventListener('animationend', () => {
+        volume.classList.add("hidden")
+      }, {once: true})
     }, 3000)
   }
 }
