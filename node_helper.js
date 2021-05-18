@@ -306,7 +306,7 @@ module.exports = NodeHelper.create({
 
     logGA("Activate delay is set to " + this.config.responseConfig.activateDelay + " ms")
 
-    this.loadRecipes(()=> { this.sendSocketNotification("INITIALIZED", Version) })
+    this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
 
     let bugsounet = await this.loadBugsounetLibrary()
     if (bugsounet) {
@@ -320,14 +320,14 @@ module.exports = NodeHelper.create({
       await this.Extented()
       console.log("[GA:EXT] Extented Display is initialized.")
     }
-    if (this.config.NPMCheck.useChecker) {
+    if (this.config.NPMCheck.useChecker && this.EXT.npmCheck) {
       var cfg = {
         dirName: __dirname,
         moduleName: this.name,
         timer: this.config.NPMCheck.delay,
         debug: this.config.debug
       }
-      this.Checker= new this.EXT["npmCheck"](cfg, update => { this.sendSocketNotification("NPM_UPDATE", update)})
+      this.Checker= new this.EXT.npmCheck(cfg, update => this.sendSocketNotification("NPM_UPDATE", update))
     }
     console.log("[GA] Google Assistant is initialized.")
   },
@@ -643,8 +643,8 @@ module.exports = NodeHelper.create({
               this.EXT[libraryModule] = require(libraryName)
               logGA("Loaded " + libraryName)
             } catch (e) {
-              console.error("[GA] ERROR " + libraryName)
-              this.sendSocketNotification("WARNING" , "Error when loading: " + libraryName)
+              console.error("[GA]", libraryName, "Loading error!")
+              this.sendSocketNotification("WARNING" , "Error when loading: " + libraryName + " library")
               errors++
             }
           }
