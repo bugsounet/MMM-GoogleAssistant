@@ -504,19 +504,19 @@ Module.register("MMM-GoogleAssistant", {
       case "WAKEUP": /** for external wakeup **/
         if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_WAKEUP")
-          this.Informations("information", "Screen Wakeup!")
+          this.assistantResponse.Informations("information", "Screen Wakeup!")
         }
         break
       case "EXT_LOCK": /** screen lock **/
         if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_LOCK", true)
-          this.Informations("information", "Screen Locked!")
+          this.assistantResponse.Informations("information", "Screen Locked!")
         }
         break
       case "EXT_UNLOCK": /** screen unlock **/
         if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_LOCK", false)
-          this.Informations("information", "Screen UnLocked!")
+          this.assistantResponse.Informations("information", "Screen UnLocked!")
         }
         break
     }
