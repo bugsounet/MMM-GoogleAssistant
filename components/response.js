@@ -434,4 +434,9 @@ class AssistantResponse {
     Infos.classList.add('animate__bounceInDown')
   }
 
+  forceStatusImg(status) {
+    var Status = document.getElementById("GA-Status")
+    Status.src = this.imgStatus[status]
+  }
+
 }

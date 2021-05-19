@@ -51,7 +51,7 @@ module.exports = NodeHelper.create({
         command += (payload.options) ? (" " + payload.options) : ""
         exec (command, (e,so,se)=> {
           logGA("ShellExec command:", command)
-          if (e) console.log("[GA] ShellExec Error:" + e)
+          if (e) console.log("[GA] ShellExec Error:" + e) // @todo make info
           this.sendSocketNotification("SHELLEXEC_RESULT", {
             executed: payload,
             result: {
