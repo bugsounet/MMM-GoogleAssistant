@@ -32,7 +32,7 @@ if $prompt; then
   Installer_module="MMM-GoogleAssistant"
   
   Installer_info "Install Last RadioLogoFR Package"
-  tar -xzvf ../components/LogosRadiosFR.tar.gz -C ../resources && Installer_success "Done"
+  tar -xzvf ../installer/LogosRadiosFR.tar.gz -C ../resources && Installer_success "Done"
 
   echo
 
