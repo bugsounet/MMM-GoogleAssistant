@@ -31,31 +31,10 @@ if $prompt; then
   # module name
   Installer_module="MMM-GoogleAssistant"
   
-  # use beep request questions ?
-  Installer_beep=true
-  
-  echo
-  
-  # Audio out/in checking
-  #Installer_info "Checking Speaker and Microphone..."
-  #Installer_yesno "Do you want check your audio output configuration" && (
-  #  Installer_checkmicv2
-  #  echo
-  
-  #  if [ ! -z "$plug_rec" ]; then
-  #    Installer_warning "This is your GoogleAssistant micConfig working configuration :"
-  #    if [ "$os_name" == "raspbian" ]; then
-  #      Installer_warning "Remember: if you are using RPI, it's better to use arecord program"
-  #    fi
-  #    echo
-  #    Installer_warning "micConfig: {"
-  #    Installer_warning "  recorder: \"arecord\","
-  #    Installer_warning "  device: \"$plug_rec\""
-  #    Installer_warning "},"
-  #  fi
-  #)
+  Installer_info "Install Last RadioLogoFR Package"
+  tar -xzvf ../components/LogosRadiosFR.tar.gz -C ../resources && Installer_success "Done"
 
-  #echo
+  echo
 
   # the end...
   Installer_warning "Support is now moved in a dedicated Server: http://forum.bugsounet.fr"
