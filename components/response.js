@@ -367,7 +367,7 @@ class AssistantResponse {
       GA.className= "in"
       if (this.fullscreenAbove && fs) {
         FakeGA.classList.remove("hidden")
-        MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
+        MM.getModules().enumerate((module)=> {
           module.hide(500, {lockString: "GA_LOCKED"})
         })
       }
@@ -376,7 +376,7 @@ class AssistantResponse {
         GA.className= "out"
         if (this.fullscreenAbove) {
           FakeGA.classList.add("hidden")
-          MM.getModules().exceptWithClass("MMM-GoogleAssistant").enumerate((module)=> {
+          MM.getModules().enumerate((module)=> {
             module.show(500, {lockString: "GA_LOCKED"})
           })
         }

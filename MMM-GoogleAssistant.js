@@ -255,11 +255,6 @@ Module.register("MMM-GoogleAssistant", {
       "sendSocketNotification": (noti, params) => {
         this.sendSocketNotification(noti, params)
       },
-      "sendNotification": (noti, params)=> {
-        this.sendNotification(noti, params)
-        this.assistantResponse.Informations("warning", "sendNotification: " + noti + " " + params)
-        console.log("!!!! sendNotification Warning:", noti, params) // @to verify is really need ? maybe for detector sleeping ??
-      },
       "radioStop": ()=> this.radio.pause(),
       "spotifyStatus": (status) => { // try to use spotify callback to unlock screen ...
         if (status) this.EXT.spotify.connected = true
@@ -714,6 +709,16 @@ Module.register("MMM-GoogleAssistant", {
       /** Volume module callback **/
       case "VOLUME_DONE":
         this.displayEXTResponse.drawVolume(payload)
+        break
+
+      /** detector ON/OFF **/
+      case "DETECTOR_START":
+      case "SNOWBOY_START": // deprecied soon
+        this.sendNotification("DETECTOR_START")
+        break
+      case "DETECTOR_STOP":
+      case "SNOWBOY_STOP": // deprecied soon
+        this.sendNotification("DETECTOR_STOP")
         break
     }
   },
