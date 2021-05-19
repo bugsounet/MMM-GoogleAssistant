@@ -616,35 +616,34 @@ module.exports = NodeHelper.create({
   /** It will not crash MM (black screen) **/
   loadBugsounetLibrary: function() {
     let libraries= [
-      { "@bugsounet/npmcheck": [ "npmCheck", "NPMCheck,useChecker" ] },
-      { "@bugsounet/screen": [ "Screen", "Extented,screen,useScreen" ] },
-      { "@bugsounet/pir": [ "Pir", "Extented,pir,usePir" ] },
-      { "@bugsounet/governor": [ "Governor", "Extented,governor,useGovernor" ] },
-      { "@bugsounet/internet": [ "Internet", "Extented,internet,useInternet" ] },
-      { "@bugsounet/cast": [ "CastServer", "Extented,cast,useCast" ] },
-      { "@bugsounet/spotify": [ "Spotify", "Extented,spotify,useSpotify" ] },
-      { "@bugsounet/cvlc": [ "cvlc", "Extented,youtube,useVLC" ] }
+      // { "library to load" : [ "store library name", "path to check"] }
+      { "@bugsounet/npmcheck": [ "npmCheck", "NPMCheck.useChecker" ] },
+      { "@bugsounet/screen": [ "Screen", "Extented.screen.useScreen" ] },
+      { "@bugsounet/pir": [ "Pir", "Extented.pir.usePir" ] },
+      { "@bugsounet/governor": [ "Governor", "Extented.governor.useGovernor" ] },
+      { "@bugsounet/internet": [ "Internet", "Extented.internet.useInternet" ] },
+      { "@bugsounet/cast": [ "CastServer", "Extented.cast.useCast" ] },
+      { "@bugsounet/spotify": [ "Spotify", "Extented.spotify.useSpotify" ] },
+      { "@bugsounet/cvlc": [ "cvlc", "Extented.youtube.useVLC" ] }
     ]
     let errors = 0
     return new Promise(resolve => {
       libraries.forEach(library => {
         for (const [name, configValues] of Object.entries(library)) {
-          let libraryName = name, libraryModule = configValues[0], libraryConfig = configValues[1].split(",")
-          let resultPathConfig = libraryConfig.map(i => [i]), resultLength = resultPathConfig.length, resultValue = null
+          let libraryToLoad = name,
+              libraryName = configValues[0],
+              libraryPath = configValues[1],
+              index = (obj,i) => { return obj[i] },
+              libraryActivate = libraryPath.split(".").reduce(index,this.config)
 
-          // -> @todo better
-          if (resultLength == 1) resultValue = this.config[resultPathConfig[0]]
-          if (resultLength == 2) resultValue = this.config[resultPathConfig[0]][resultPathConfig[1]]
-          if (resultLength == 3) resultValue = this.config[resultPathConfig[0]][resultPathConfig[1]][resultPathConfig[2]]
-          //
-
-          if (resultValue) {
+          // libraryActivate: verify if the needed path of config is activated (result of reading config value: true/false) **/
+          if (libraryActivate) {
             try {
-              this.EXT[libraryModule] = require(libraryName)
-              logGA("Loaded " + libraryName)
+              this.EXT[libraryName] = require(libraryToLoad)
+              logGA("Loaded " + libraryToLoad)
             } catch (e) {
-              console.error("[GA]", libraryName, "Loading error!")
-              this.sendSocketNotification("WARNING" , "Error when loading: " + libraryName + " library")
+              console.error("[GA]", libraryToLoad, "Loading error!")
+              this.sendSocketNotification("WARNING" , "Error when loading: " + libraryToLoad + " library")
               errors++
             }
           }
