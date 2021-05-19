@@ -565,7 +565,7 @@ module.exports = NodeHelper.create({
   playWithVlc: function (link) {
     this.YT++
     if (this.YouTube) this.CloseVlc()
-    this.YouTube = new Cvlc()
+    this.YouTube = new this.EXT.cvlc()
     this.YouTube.play(
       link,
       ()=> {
