@@ -504,19 +504,19 @@ Module.register("MMM-GoogleAssistant", {
       case "WAKEUP": /** for external wakeup **/
         if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_WAKEUP")
-          this.Informations("Screen Wakeup!")
+          this.Informations("information", "Screen Wakeup!")
         }
         break
       case "EXT_LOCK": /** screen lock **/
         if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_LOCK", true)
-          this.Informations("Screen Locked!")
+          this.Informations("information", "Screen Locked!")
         }
         break
       case "EXT_UNLOCK": /** screen unlock **/
         if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_LOCK", false)
-          this.Informations("Screen UnLocked!")
+          this.Informations("information", "Screen UnLocked!")
         }
         break
     }
@@ -640,7 +640,7 @@ Module.register("MMM-GoogleAssistant", {
           + (DateDiff.hour ? (DateDiff.hour + (DateDiff.hour > 1 ? this.DateTranslate.hours : this.DateTranslate.hour)): "")
           + (DateDiff.min ? (DateDiff.min + (DateDiff.min > 1 ? this.DateTranslate.minutes : this.DateTranslate.minute)): "")
           + DateDiff.sec + (DateDiff.sec > 1 ? this.DateTranslate.seconds : this.DateTranslate.second)
-        this.assistantResponse.Informations("Internet is now AVAILABLE, after " + FormatedMessage)
+        this.assistantResponse.Informations("information", "Internet is now AVAILABLE, after " + FormatedMessage)
         break
       case "INTERNET_PING":
         var ping = document.getElementById("EXT_INTERNET_PING")
@@ -1581,7 +1581,7 @@ Module.register("MMM-GoogleAssistant", {
     }
     if (this.EXT.radio) this.radio.pause()
     this.sendNotification("TV-STOP") // Stop MMM-FreeboxTV
-    this.assistantResponse.Informations("All Assistant Process stopped")
+    this.assistantResponse.Informations("information", "All Assistant Process stopped")
   },
 
   /** Radio command (for recipe) **/
