@@ -100,10 +100,9 @@ var recipe = {
 
   commands: {
     "SEARCH_SPOTIFY": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module, params) => {
-          module.SpotifyCommand('SEARCH', {
+      functionExec: {
+        exec: (params) => {
+          this.SpotifyCommand('SEARCH', {
             type: "artist,track,album,playlist",
             query: params[1],
             random:false
@@ -116,10 +115,9 @@ var recipe = {
       displayResponse: true
     },
     "START_SPOTIFY": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.SpotifyCommand('PLAY')
+      functionExec: {
+        exec: () => {
+          this.SpotifyCommand('PLAY')
         }
       },
       soundExec: {
@@ -127,10 +125,9 @@ var recipe = {
       }
     },
     "PAUSE_SPOTIFY": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.SpotifyCommand('PAUSE')
+      functionExec: {
+        exec: () => {
+          this.SpotifyCommand('PAUSE')
         }
       },
       soundExec: {
@@ -138,9 +135,8 @@ var recipe = {
       }
     },
     "STOP_SPOTIFY": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module, params) => {
+      functionExec: {
+        exec: () => {
           this.SpotifyCommand('STOP')
         }
       },
@@ -149,25 +145,22 @@ var recipe = {
       }
     },
     "NEXT_SPOTIFY": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module, params) => {
+      functionExec: {
+        exec: () => {
           this.SpotifyCommand('NEXT')
         }
       },
     },
     "PREVIOUS_SPOTIFY": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module, params) => {
+      functionExec: {
+        exec: () => {
           this.SpotifyCommand('PREVIOUS')
         }
       },
     },
     "SHUFFLE_SPOTIFY": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module, params) => {
+      functionExec: {
+        exec: () => {
           this.SpotifyCommand('SHUFFLE')
         }
       },
@@ -176,18 +169,16 @@ var recipe = {
       }
     },
     "REPEAT_SPOTIFY": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module, params) => {
+      functionExec: {
+        exec: () => {
           this.SpotifyCommand('REPEAT')
         }
       },
     },
     "TRANSTO_SPOTIFY": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module, params) => {
-          module.SpotifyCommand('TRANSFER', params[1])
+      functionExec: {
+        exec: (params) => {
+          this.SpotifyCommand('TRANSFER', params[1])
         }
       },
       soundExec: {
@@ -195,10 +186,9 @@ var recipe = {
       }
     },
     "VOLUME_SPOTIFY": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module, params) => {
-          module.SpotifyCommand('VOLUME', params[1])
+      functionExec: {
+        exec: (params) => {
+          this.SpotifyCommand('VOLUME', params[1])
         }
       }
     }

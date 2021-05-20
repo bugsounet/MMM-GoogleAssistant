@@ -68,216 +68,201 @@ var recipe = {
 
   commands: {
     "cheriefm": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/ChérieFM.png'],
             link: "https://scdn.nrjaudio.fm/fr/30201/mp3_128.mp3?origine=A2D&cdn_path=audio_lbs9"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
    "rtl": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/RTL.png'],
             link: "http://streaming.radio.rtl.fr/rtl-1-44-128"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
    "rireetchansons": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/Rire&Chansons.png'],
             link: "http://185.52.127.160/fr/30401/aac_64.mp3?origine=MagicMirror_GA_EXT"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
     "rtl2": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/RTL2.png'],
             link: "http://streaming.radio.rtl2.fr/rtl2-1-44-128"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
     "funradio": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/FunRadio.png'],
             link: "http://streaming.radio.funradio.fr:80/fun-1-44-128"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
     "europe1": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/Europe1.png'],
             link: "http://ais-live.cloud-services.paris:8000/europe1.mp3"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
     "rfm": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/RFM.png'],
             link: "https://ais-live.cloud-services.paris:8443/rfm.mp3"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
     "rmc": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/RMC.svg'],
             link: "http://chai5she.cdn.dvmr.fr/rmcinfo"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
     "nrj": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/NRJ.png'],
             link: "http://185.52.127.173/fr/40008/aac_64.mp3?origine=MagicMirror_GA_EXT"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
     "nostalgie": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/Nostalgie.png'],
             link: "http://185.52.127.155/fr/40045/aac_64.mp3?origine=MagicMirror_GA_EXT"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
     "contact": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/contact.png'],
             link: "http://radio-contact.ice.infomaniak.ch/radio-contact-high.mp3"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
     "voltage": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/voltage.png'],
             link: "http://start-voltage.ice.infomaniak.ch/start-voltage-high.mp3"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
     "skyrock": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/Skyrock.png'],
             link: "http://icecast.skyrock.net/s/natio_mp3_128k"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
     "fg": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.radioCommand({
+      functionExec: {
+        exec: () => {
+          this.radioCommand({
             img: ['modules/MMM-GoogleAssistant/resources/LogosRadios/fg.png'],
             link: "http://radiofg.impek.com/fg"
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     },
 
     /** rien a voir avec la radio ... c'est la chaine TV de france info ;) **/
     "info": {
-      moduleExec: {
-        module: ["MMM-GoogleAssistant"],
-        exec: (module) => {
-          module.displayEXTResponse.start({
+      functionExec: {
+        exec: () => {
+          this.displayEXTResponse.start({
             "photos": [],
             "urls": [ "https://m.youtube.com/watch?v=wwNZKfBLAsc" ],
             "transcription": { transcription: 'France Info TV', done: true },
           })
-        },
-        soundExec: {
-          chime: "open"
         }
+      },
+      soundExec: {
+        chime: "open"
       }
     }
   }

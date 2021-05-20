@@ -395,11 +395,13 @@ module.exports = NodeHelper.create({
       "governor": (param) => {
         if (this.governor && param == "GOVERNOR_SLEEPING") this.governor.sleeping()
         if (this.governor && param == "GOVERNOR_WORKING") this.governor.working()
-        if (this.governor && param.error) this.sendSocketNotification("ERROR", "[GOVERNOR] " + param.error)
+        if (this.governor && param.error) this.sendSocketNotification("WARNING", "[GOVERNOR] " + param.error)
       },
       "pir": (noti,param) => {
         if (this.screen && this.pir && noti == "PIR_DETECTED") this.screen.wakeup()
-        if (this.screen && this.pir && noti == "PIR_ERROR") this.sendSocketNotification("ERROR", "[PIR] " + param.toString())
+        if (this.screen && this.pir && noti == "PIR_ERROR") {
+          this.sendSocketNotification("WARNING", "[PIR] Pir sensor error code: " + param.code)
+        }
       }
     }
 

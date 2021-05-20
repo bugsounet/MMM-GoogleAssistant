@@ -33,6 +33,7 @@ Module.register("MMM-GoogleAssistant", {
         confirmation: "confirmation.mp3",
         open: "Google_beep_open.mp3",
         close: "Google_beep_close.mp3",
+        warning: "warning.ogg"
       },
       imgStatus: {
         hook: "hook.gif",
@@ -543,12 +544,12 @@ Module.register("MMM-GoogleAssistant", {
       case "LOAD_RECIPE":
         this.parseLoadedRecipe(payload)
         break
-      case "ERROR":
       case "NOT_INITIALIZED":
         this.assistantResponse.fullscreen(true)
         this.assistantResponse.showError(payload)
         this.assistantResponse.forceStatusImg("userError")
         break
+      case "ERROR":
       case "WARNING":
         this.assistantResponse.Informations("warning", payload)
         break
@@ -785,7 +786,10 @@ Module.register("MMM-GoogleAssistant", {
         var hook = foundHook[i]
         this.doCommand(hook.command, hook.params, hook.from)
       }
-      callback_done()
+      if (this.forceResponse) {
+        this.forceResponse = false
+        callback_none()
+      } else callback_done()
     } else {
       callback_none()
     }

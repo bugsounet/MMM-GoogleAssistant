@@ -4,7 +4,6 @@ class AssistantResponse {
   constructor (responseConfig, callbacks) {
     this.config = responseConfig
     this.callbacks = callbacks
-    this.newChime = responseConfig.newChime
     this.showing = false
     this.response = null
     this.aliveTimer = null
@@ -41,6 +40,9 @@ class AssistantResponse {
     this.fullscreenAbove = this.config.useFullscreen
     this.warningTimeout = null
     this.informationsType = [ "warning", "information" ]
+    this.infosDiv= null
+    this.infoWarning = new Audio()
+    this.infoWarning.autoplay = true
   }
 
   tunnel (payload) {
@@ -175,6 +177,8 @@ class AssistantResponse {
     GAAssistantWordIcon.appendChild(GABarIcon)
 
     document.body.appendChild(GA)
+
+    this.infosDiv = document.getElementById("Infos")
   }
 
   // make a fake module for display fullscreen background
@@ -398,10 +402,11 @@ class AssistantResponse {
     if (this.informationsType.indexOf(type) == -1) return this.Informations("warning", "Information Display Error!" )
     clearTimeout(this.warningTimeout)
     logGA(type + ":", info)
-    console.log(type + ":", info)
-    this.InformationShow()
-    this.forceStatusImg(type)
+    if (type == "warning" && this.config.useChime) this.infoWarning.src = this.resourcesDir + this.chime["warning"]
+    this.logoInformations(type)
     this.showInformations(info)
+    this.InformationShow()
+
     this.warningTimeout = setTimeout(() => {
       this.InformationHidden()
     }, this.config.screenOutputTimer)
@@ -412,31 +417,28 @@ class AssistantResponse {
     tr.textContent = text
   }
 
-  forceStatusImg(logo) {
+  logoInformations (logo) {
     var InfoLogo = document.getElementById("Infos-Icon")
     InfoLogo.src = this.imgStatus[logo]
   }
 
-  InformationHidden() {
-    var Infos = document.getElementById("Infos")
-    Infos.classList.remove('animate__bounceInDown')
-    Infos.classList.add("animate__bounceOutUp")
-    Infos.addEventListener('animationend', () => {
-      Infos.classList.add("hidden")
-      this.showInformations("")
-      this.forceStatusImg("standby")
+  InformationHidden () {
+    this.infosDiv.classList.remove('animate__bounceInDown')
+    this.infosDiv.classList.add("animate__bounceOutUp")
+    this.infosDiv.addEventListener('animationend', () => {
+        Infos.classList.add("hidden")
+        this.showInformations("")
+        this.forceStatusImg("standby")
     }, {once: true})
   }
 
-  InformationShow() {
-    var Infos = document.getElementById("Infos")
-    Infos.classList.remove("hidden", "animate__bounceOutUp")
-    Infos.classList.add('animate__bounceInDown')
+  InformationShow () {
+    this.infosDiv.classList.remove("hidden", "animate__bounceOutUp")
+    this.infosDiv.classList.add('animate__bounceInDown')
   }
 
-  forceStatusImg(status) {
+  forceStatusImg (status) {
     var Status = document.getElementById("GA-Status")
     Status.src = this.imgStatus[status]
   }
-
 }
