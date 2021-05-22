@@ -379,7 +379,7 @@ module.exports = NodeHelper.create({
       this.sendSocketNotification("YouTube_RESULT", item.id.videoId)
       this.sendSocketNotification("INFORMATION", { message: "YouTubePlaying", values: title })
     } catch (e) {
-      console.log("[GA] Youtube Search error: ", e.toString())
+      console.log("[GA] YouTube Search error: ", e.toString())
       this.sendSocketNotification("WARNING", { message: "YouTubeError", values: e.toString() })
     }
   },
@@ -567,7 +567,7 @@ module.exports = NodeHelper.create({
       else {
         logEXT("[VOLUME] Set Volume To:", level)
         this.sendSocketNotification("VOLUME_DONE", level)
-        this.sendSocketNotification("INFORMATION" , { message: "Volume", values:  level + "%" })
+        this.sendSocketNotification("INFORMATION" , { message: "Volume", values: level + "%" })
       }
     })
   },

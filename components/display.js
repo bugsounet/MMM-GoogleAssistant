@@ -4,6 +4,7 @@ class Display {
   constructor (Config, callbacks) {
     this.config = Config
     this.sendSocketNotification = callbacks.sendSocketNotification
+    this.Informations = callbacks.Informations
     this.radioStop = callbacks.radioStop
     this.YTError = callbacks.YTError
     this.timer = null
@@ -12,10 +13,6 @@ class Display {
       radio: false,
       speak: false,
       locked: false,
-      GA: {
-        transcription: null,
-        done: null,
-      },
       youtube: {
         displayed: false,
         id: null,
@@ -73,10 +70,6 @@ class Display {
     logEXT("Response Scan")
 
     tmp = {
-      GA: {
-        transcription: response.transcription.transcription,
-        done: response.transcription.done,
-      },
       photos: {
         position: 0,
         urls: response.photos,
@@ -224,6 +217,7 @@ class Display {
   linksDisplay() {
     this.EXT.links.running = false
     var webView = document.getElementById("EXT_OUTPUT")
+    this.Informations({message: "LinksOpen" })
     logEXT("Loading", this.EXT.links.urls[0])
     this.showDisplay()
     webView.src= this.EXT.links.urls[0]
@@ -264,6 +258,7 @@ class Display {
       };`)
     })
     this.timerLinks = setTimeout(() => {
+      this.Informations({message: "LinksClose" })
       this.resetLinks()
       this.hideDisplay()
     }, this.config.links.displayDelay)
@@ -343,7 +338,6 @@ class Display {
     if (this.EXT.radio) this.radioStop()
 
     /** emulation of displaying links **/
-    this.EXT.GA.transcription = "YouTube Cast"
     this.EXT.links.running = false
     var webView = document.getElementById("EXT_OUTPUT")
     logEXT("Cast Loading", url)
@@ -362,7 +356,7 @@ class Display {
 
 /** Other Cmds **/
   prepare() {
-    this.prepareVolume()
+    var newGA = document.getElementById("GAv3")
     var dom = document.createElement("div")
     dom.id = "EXT"
     dom.classList.add("hidden")
@@ -412,7 +406,9 @@ class Display {
     scoutpan.appendChild(scout)
     dom.appendChild(scoutpan)
 
-    document.body.appendChild(dom)
+    //document.body.appendChild(dom)
+    newGA.appendChild(dom)
+    this.prepareVolume(newGA)
     return dom
   }
 
@@ -422,8 +418,8 @@ class Display {
     var iframe = document.getElementById("EXT_OUTPUT")
     var photo = document.getElementById("EXT_PHOTO")
     var winEXT = document.getElementById("EXT")
-    if (this.EXT.speak) winEXT.classList.add("hidden")
-    else winEXT.classList.remove("hidden")
+    //if (this.EXT.speak) winEXT.classList.add("hidden")
+    winEXT.classList.remove("hidden")
 
     if (this.EXT.links.displayed) iframe.classList.remove("hidden")
     if (this.EXT.photos.displayed) photo.classList.remove("hidden")
@@ -441,8 +437,8 @@ class Display {
     if (!this.EXT.youtube.displayed) YT.classList.add("hidden")
     if (!this.EXT.links.displayed) iframe.classList.add("hidden")
     if (!this.EXT.photos.displayed) photo.classList.add("hidden")
-    if (this.EXT.speak || !this.working()) winEXT.classList.add("hidden")
-
+    //if (this.EXT.speak || !this.working()) winEXT.classList.add("hidden")
+    if (!this.working()) winEXT.classList.add("hidden")
     if (!this.EXT.speak && !this.working()) this.EXTUnlock()
   }
 
@@ -518,7 +514,7 @@ class Display {
   }
 
   /** Volume display **/
-  prepareVolume () {
+  prepareVolume (newGA) {
     var volume = document.createElement("div")
     volume.id = "EXT_VOLUME"
     volume.classList.add("hidden")
@@ -530,7 +526,7 @@ class Display {
     var volumeBar = document.createElement("div")
     volumeBar.id = "EXT_VOLUME_BAR"
     volume.appendChild(volumeBar)
-    document.body.appendChild(volume)
+    newGA.appendChild(volume)
     return volume
   }
 

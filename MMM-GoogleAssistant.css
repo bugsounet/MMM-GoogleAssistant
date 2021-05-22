@@ -44,9 +44,15 @@
 
 /** popup display windows **/
 
+#GAv3 {
+  opacity: 0.99;
+  z-index: 99999;
+  /*height: 100%;*/
+}
+
 /** informations **/
 #Infos {
-  z-index:99998;
+  z-index:2;
 }
 
 #Infos.hidden {
@@ -93,7 +99,7 @@
 
 /** Google popups **/
 #GA {
-  z-index:99998;
+  z-index:3;
 }
 
 #GA-popout {
@@ -197,7 +203,7 @@
   border:none;
   top:0;
   left:0;
-  z-index:99999;
+  z-index:0;
 }
 
 #EXT.hidden {
@@ -650,6 +656,7 @@ progress[value]#EXT_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
   position:fixed;
   visibility:visible;
   opacity: 1;
+  z-index: 1;
 }
 
 #EXT_VOLUME_TEXT {

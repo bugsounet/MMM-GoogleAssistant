@@ -58,19 +58,19 @@
   "LibrespotConnected": "Connecté à librespot!",
   "LibrespotConnecting": "Patientez, connection à librespot...",
   "LibrespotNoInstalled": "librespot n'est pas installé !",
-  "LibrespotError": "Librespot:",
+  "LibrespotError": "Librespot: {VALUES}",
 
-  "YouTubePlaying": "YouTube va jouer:",
-  "YouTubeError": "YouTube:",
+  "YouTubePlaying": "YouTube va jouer: {VALUES}",
+  "YouTubeError": "YouTube: {VALUES}",
 
-  "Volume": "Volume: ",
+  "Volume": "Volume: {VALUES}",
   "VolumePresetError": "Volume: Erreur de Preset !",
   "VolumeText": "Volume:",
   "VolumeDisabled": "Le control du volume est désactivé",
 
-  "GovernorError": "Governor:",
+  "GovernorError": "Governor: {VALUES}",
 
-  "PirError": "Pir sensor erreur code: ",
+  "PirError": "Pir sensor erreur code: {VALUES}",
 
   "SpotifyNoResult": "Spotify: pas de résultat trouvé",
   "SpotifySearchFailed": "Spotify: erreur Search and Play",
@@ -84,15 +84,18 @@
   "ScreenPowerOn": "Alumage de l'écran",
   "ScreenPowerOff": "Extinction de l'écran",
 
-  "InternetDown" : "{VALUES} , Internet est INDISPONIBLE!",
-  "InternetRestart": "Internet est maintenant disponible! Redémarrage de Magic Mirror...",
+  "InternetDown" : "{VALUES}, Internet est INDISPONIBLE!",
+  "InternetRestart": "Internet est maintenant disponible! Redémarrage de MagicMirror...",
   "InternetAvailable": "Internet est maintenant DISPONILBE, après {VALUES}",
 
-  "EXTStop": "Tous les processus Extented sont maintenant arrêté",
+  "EXTStop": "Tous les processus Extented sont maintenant arrêtés",
 
-  "CastStart": "Démarrage de YouTube Cast",
-  "CastStop" : "Fin de YouTube YouTube Cast",
+  "CastStart": "Démarrage de YouTube-Cast",
+  "CastStop" : "Fin de YouTube-Cast",
 
   "ShellExecError": "ShellExec retourne des erreurs",
-  "ShellExecDone": "ShellExec a été executé correctement"
+  "ShellExecDone": "ShellExec a été executé correctement",
+
+  "LinksOpen": "Ouverture du navigateur Extended Display",
+  "LinksClose": "Fermeture du navigateur Extented Display"
 }

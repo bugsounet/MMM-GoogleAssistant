@@ -58,19 +58,19 @@
   "LibrespotConnected": "Connected to librespot!",
   "LibrespotConnecting": "Please wait, connecting to librespot...",
   "LibrespotNoInstalled": "librespot is not installed !",
-  "LibrespotError": "Librespot:",
+  "LibrespotError": "Librespot: {VALUES}",
 
-  "YouTubePlaying": "YouTube will playing:",
-  "YouTubeError": "YouTube:",
+  "YouTubePlaying": "YouTube will playing: {VALUES}",
+  "YouTubeError": "YouTube: {VALUES}",
 
-  "Volume": "Volume: ",
+  "Volume": "Volume: {VALUES}",
   "VolumePresetError": "Volume: Preset Error!",
   "VolumeText": "Volume:",
   "VolumeDisabled": "Volume Control is disabled",
 
-  "GovernorError": "Governor:",
+  "GovernorError": "Governor: {VALUES}",
 
-  "PirError": "Pir sensor error code: ",
+  "PirError": "Pir sensor error code: {VALUES}",
 
   "SpotifyNoResult": "Spotify: No Result found",
   "SpotifySearchFailed": "Spotify: Search and Play failed",
@@ -84,8 +84,8 @@
   "ScreenPowerOn": "Turn on screen",
   "ScreenPowerOff": "Turn off screen",
 
-  "InternetDown" : "{VALUES} , Internet is DOWN!",
-  "InternetRestart": "Internet is now available! Restarting Magic Mirror...",
+  "InternetDown" : "{VALUES}, Internet is DOWN!",
+  "InternetRestart": "Internet is now available! Restarting MagicMirror...",
   "InternetAvailable": "Internet is now AVAILABLE, after {VALUES}",
   
   "EXTStop": "All Extented Process are now stopped",
@@ -94,5 +94,8 @@
   "CastStop" : "Stop Casting YouTube",
 
   "ShellExecError": "ShellExec return some Errors",
-  "ShellExecDone": "ShellExec executed sucessfully"
+  "ShellExecDone": "ShellExec executed sucessfully",
+
+  "LinksOpen": "Opening Extended Display Browser",
+  "LinksClose": "Closing Extented Display Browser"
 }

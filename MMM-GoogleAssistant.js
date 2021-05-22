@@ -26,6 +26,7 @@ Module.register("MMM-GoogleAssistant", {
       useAudioOutput: true,
       useChime: true,
       confirmationChime: true,
+      useInformations: true,
       chimes: {
         beep: "beep.mp3",
         error: "error.mp3",
@@ -265,7 +266,8 @@ Module.register("MMM-GoogleAssistant", {
           this.EXT.spotify.librespot = false
         }
       },
-      "YTError": (error) => this.Informations("warning", { message: error })
+      "YTError": (error) => this.Informations("warning", { message: error }),
+      "Informations": (info) => this.Informations("information", info)
     }
     this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
 
@@ -479,6 +481,7 @@ Module.register("MMM-GoogleAssistant", {
       dom.appendChild(screenContener)
       dom.appendChild(internet)
     }
+    this.assistantResponse.preparePopup()
     this.assistantResponse.prepareBackground ()
     return dom
   },
@@ -489,14 +492,14 @@ Module.register("MMM-GoogleAssistant", {
       case "DOM_OBJECTS_CREATED":
         if (this.data.configDeepMerge) this.sendSocketNotification("INIT", this.helperConfig)
         else return this.showConfigMergeAlert()
-        this.assistantResponse.prepare()
-        this.Loading()
         if (this.config.Extented.useEXT) {
           this.displayEXTResponse.prepare()
           if (this.config.Extented.screen.useScreen && (this.config.Extented.screen.displayStyle != "Text")) this.prepareBar()
           if (this.config.Extented.spotify.useSpotify && this.config.Extented.spotify.useBottomBar) this.spotify.prepare()
           if (this.config.Extented.touch.useTouch) this.touchScreen(this.config.Extented.touch.mode)
         }
+        this.assistantResponse.prepareGA()
+        this.Loading()
         break
       case "GA_ACTIVATE":
         this.assistantActivate({ type:"MIC" })
@@ -951,16 +954,13 @@ Module.register("MMM-GoogleAssistant", {
 /** Send needed part of response screen to ExtentedDisplay Server **/
   ExtentedDisplay: function(response) {
     var opt = {
-      "from": "GA",
       "photos": null,
       "urls": null,
-      "transcription": null
     }
 
     if (response.screen && (response.screen.links.length > 0 || response.screen.photos.length > 0)) {
       opt.photos = response.screen.photos
       opt.urls= response.screen.links
-      opt.transcription= response.transcription
       logGA("Send Extented Display Response.")
       this.displayEXTResponse.start(opt)
     }
@@ -968,10 +968,8 @@ Module.register("MMM-GoogleAssistant", {
 
   sendYouTubeResult: function (result) {
     var opt = {
-      "from": "GA",
       "photos": [],
       "urls": ["https://www.youtube.com/watch?v=" + result],
-      "transcription": { transcription: "YouTube Video Player", done: "false" }
     }
     logGA("Send YouTube Response to Extented Display.")
     this.displayEXTResponse.start(opt)
@@ -1132,16 +1130,13 @@ Module.register("MMM-GoogleAssistant", {
     if (handler.args) {
       var responseEmulate = {
         "photos": [],
-        "urls": [],
-        "transcription": {}
+        "urls": []
       }
       var regexp = /^((http(s)?):\/\/)(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
       var isLink = regexp.test(handler.args)
       var retryWithHttp = regexp.test("http://" + handler.args)
       if (isLink || retryWithHttp) {
         handler.reply("TEXT", this.translate("EXT_OPEN") + handler.args)
-        responseEmulate.transcription.transcription = " Telegram @" + handler.message.from.username + ": " + handler.args
-        responseEmulate.transcription.done = true
         responseEmulate.urls[0] = isLink ? handler.args : ("http://" + handler.args)
         if (this.config.Extented.screen.useScreen) this.sendSocketNotification("SCREEN_WAKEUP")
         this.displayEXTResponse.start(responseEmulate)
@@ -1248,10 +1243,11 @@ Module.register("MMM-GoogleAssistant", {
         }
         this.EXT.spotify.forceVolume= false
         if (this.EXT.radio) this.radio.volume = 0.6
+        break
+      case "reply":
         if (this.displayEXTResponse.working()) this.displayEXTResponse.showDisplay()
         else this.displayEXTResponse.hideDisplay()
         break
-      case "reply":
       case "continue":
       case "confirmation":
       case "hook":
@@ -1656,6 +1652,7 @@ Module.register("MMM-GoogleAssistant", {
     clearTimeout(this.warningTimeout)
     logGA(type + ":", info)
     if (type == "warning" && this.config.responseConfig.useChime) this.assistantResponse.infoWarning.src = this.assistantResponse.resourcesDir + this.assistantResponse.chime["warning"]
+    if (type == "information" && !this.config.responseConfig.useInformations) return
     this.logoInformations(type)
     this.showInformations(info)
     this.InformationShow()
@@ -1691,12 +1688,13 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   Loading: function () {
+    this.assistantResponse.forceStatusImg("standby")
     this.assistantResponse.showTranscription(this.translate("GALoading") + " MMM-GoogleAssistant")
     this.assistantResponse.fullscreen(true,null,false)
   },
 
   Version (version) {
-    this.assistantResponse.showTranscription("MMM-GoogleAssistant v" + version.version + " (" + version.rev + ") " + this.translate("GAReady"))
+    this.assistantResponse.showTranscription("MMM-GoogleAssistant v" + version.version + " (" + version.rev + ") ©bugsounet " + this.translate("GAReady"))
     this.assistantResponse.fullscreen(true,null,false)
     this.aliveTimer = setTimeout(() => {
       this.assistantResponse.end(false)

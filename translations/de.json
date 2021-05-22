@@ -58,19 +58,19 @@
   "LibrespotConnected": "Verbunden mit librespot!",
   "LibrespotConnecting": "Bitte warten, verbinde mit librespot...",
   "LibrespotNoInstalled": "librespot ist nicht installiert!",
-  "LibrespotError": "Librespot:",
+  "LibrespotError": "Librespot: {VALUES}",
 
-  "YouTubePlaying": "YouTube wird abgespielt:",
-  "YouTubeError": "YouTube:",
+  "YouTubePlaying": "YouTube wird abgespielt: {VALUES}",
+  "YouTubeError": "YouTube: {VALUES}",
 
-  "Volume": "Lautstärke: ",
+  "Volume": "Lautstärke: {VALUES}",
   "VolumePresetError": "Lautstärke: Einstellungsfehler!",
   "VolumeText": "Lautstärke:",
   "VolumeDisabled": "Lautstärkeregelung ist deaktiviert",
 
-  "GovernorError": "Governor:",
+  "GovernorError": "Governor: {VALUES}",
 
-  "PirError": "Pir-Sensor Fehlercode: ",
+  "PirError": "Pir-Sensor Fehlercode: {VALUES}",
 
   "SpotifyNoResult": "Spotify: Kein Ergebnis gefunden",
   "SpotifySearchFailed": "Spotify: Suche und Wiedergabe fehlgeschlagen",
@@ -84,7 +84,7 @@
   "ScreenPowerOn": "Display einschalten",
   "ScreenPowerOff": "Display ausschalten",
 
-  "InternetDown" : "{VALUES} , Internet ist nicht erreichbar!",
+  "InternetDown" : "{VALUES}, Internet ist nicht erreichbar!",
   "InternetRestart": "Internet ist jetzt verfügbar! Starte MagicMirror neu…",
   "InternetAvailable": "Internet ist jetzt verfügbar, nach {VALUES}",
 
@@ -94,5 +94,8 @@
   "CastStop" : "Beende YouTube-Casting. ",
 
   "ShellExecError": "ShellExec gibt Fehler zurück.",
-  "ShellExecDone": "ShellExec erfolgreich ausgeführt."
+  "ShellExecDone": "ShellExec erfolgreich ausgeführt.",
+
+  "LinksOpen": "Opening Extended Display Browser",
+  "LinksClose": "Closing Extented Display Browser"
 }

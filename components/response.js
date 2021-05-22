@@ -79,8 +79,15 @@ class AssistantResponse {
     this.callbacks.myStatus(this.myStatus) // send status external
     this.myStatus.old = this.myStatus.actual
   }
+  
+  preparePopup () {
+    var newGA = document.createElement("div")
+    newGA.id = "GAv3"
+    document.body.appendChild(newGA)
+  }
 
-  prepare () {
+  prepareGA () {
+    var newGA = document.getElementById("GAv3")
     /** Prepare GA Information **/
     var Infos = document.createElement("div")
     Infos.id = "Infos"
@@ -115,7 +122,8 @@ class AssistantResponse {
     InfosResponse.textContent= "~MMM-GoogleAssistant v3 Informations displayer~"
     InfosBar.appendChild(InfosResponse)
 
-    document.body.appendChild(Infos)
+    //document.body.appendChild(Infos)
+    newGA.appendChild(Infos)
 
     /** Main GA popups **/
     var GA = document.createElement("div")
@@ -175,7 +183,9 @@ class AssistantResponse {
     GABarIcon.src = this.resourcesDir + "assistant_tv_logo.svg"
     GAAssistantWordIcon.appendChild(GABarIcon)
 
-    document.body.appendChild(GA)
+    //document.body.appendChild(GA)
+    newGA.appendChild(GA)
+    //document.body.appendChild(newGA)
 
     this.infosDiv = document.getElementById("Infos")
   }
