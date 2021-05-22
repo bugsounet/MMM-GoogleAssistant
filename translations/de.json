@@ -1,8 +1,8 @@
 {
-  "NO_RESPONSE" : "Entschuldigung, ich verstehe das nicht.",
+  "NO_RESPONSE" : "Entschuldigung, das habe ich nicht verstanden.",
   "NO_AUDIO_RESPONSE" : " ",
-  "TOO_SHORT" : "Entschuldigung, ich verstehe das nicht.",
-  "CONVERSATION_ERROR" : "Fehler bei der Konversation. (Falsche Mikrofonkonfiguration)",
+  "TOO_SHORT" : "Entschuldigung, das habe ich nicht verstanden.",
+  "CONVERSATION_ERROR" : "Kommunikationsfehler: Falsche Mikrofonkonfiguration",
   "QUERY_REPLY" : "Google Assistant wird aktiviert.",
   "QUERY_HELP" : "Mit `/query` können Texteingaben an Google Assistant übermittelt werden.",
 
@@ -26,16 +26,16 @@
   "MODULE_NOTFOUND": "Modul nicht gefunden: ",
   "MODULE_NAME": "Name des Moduls fehlt.",
 
-  "STOP_HELP": "Beendet eventuelle Aktivität von Extented Display.",
-  "STOP_EXT": "Stoppe Extented Display-Aktivität.",
+  "STOP_HELP": "Beendet eventuelle Aktivität der erweiterten Anzeige.",
+  "STOP_EXT": "Beende erweiterte Anzeige.",
 
   "EXT_OPEN": "URL öffnen: ",
   "EXT_INVALID": "Diese URL ist ungültig!",
-  "EXT_HELP": "URL mit Extented Display öffnen.",
+  "EXT_HELP": "URL mit erweiterter Anzeige öffnen.",
 
   "VOLUME_HELP": "Stellt die Lautstärke der Audioausgabe ein.",
 
-  "DADDY": "Papa @bugsounet sagte... Nein, nein und nochmals nein!!!",
+  "DADDY": "Papa @bugsounet sagt… Nein, nein und nochmals nein!!!",
 
   "DAY" : "Tag",
   "DAYS" : "Tage",
@@ -45,4 +45,54 @@
   "MINUTES" : "Minuten",
   "SECOND": "Sekunde",
   "SECONDS": "Sekunden"
+
+  "GALoading": "Lade…",
+  "GAReady": "Bereit!",
+  "GABegin": "Hallo, wie kann ich helfen?",
+
+  "LibraryLoading": "Lade erweiterte Bibliotheken...",
+  "LibraryLoaded": "Erweiterte GoogleAssistant Bibliotheken geladen!",
+  "LibraryError": "Fehler beim Laden von {VALUES} Bibliothek.",
+
+  "LibrespotNoResponse": "Keine Antwort von librespot!",
+  "LibrespotConnected": "Verbunden mit librespot!",
+  "LibrespotConnecting": "Bitte warten, verbinde mit librespot...",
+  "LibrespotNoInstalled": "librespot ist nicht installiert!",
+  "LibrespotError": "Librespot:",
+
+  "YouTubePlaying": "YouTube wird abgespielt:",
+  "YouTubeError": "YouTube:",
+
+  "Volume": "Lautstärke: ",
+  "VolumePresetError": "Lautstärke: Einstellungsfehler!",
+  "VolumeText": "Lautstärke:",
+  "VolumeDisabled": "Lautstärkeregelung ist deaktiviert",
+
+  "GovernorError": "Governor:",
+
+  "PirError": "Pir-Sensor Fehlercode: ",
+
+  "SpotifyNoResult": "Spotify: Kein Ergebnis gefunden",
+  "SpotifySearchFailed": "Spotify: Suche und Wiedergabe fehlgeschlagen",
+  "SpotifyListenText": "Zuhören aktiv",
+
+  "ScreenWakeUp": "Display aktivieren durch {VALUES}",
+  "ScreenLock": "Display sperren durch {VALUES}",
+  "ScreenUnLock": "Display entsperren durch {VALUES}",
+  "ScreenTurnOff": "Automatische Displayabschaltung:",
+  "ScreenLastPresence": "Letzte Aktivität:",
+  "ScreenPowerOn": "Display einschalten",
+  "ScreenPowerOff": "Display ausschalten",
+
+  "InternetDown" : "{VALUES} , Internet ist nicht erreichbar!",
+  "InternetRestart": "Internet ist jetzt verfügbar! Starte MagicMirror neu…",
+  "InternetAvailable": "Internet ist jetzt verfügbar, nach {VALUES}",
+
+  "EXTStop": "Alle erweiterten Prozesse werden jetzt beendet.",
+
+  "CastStart": "Starte YouTube-Casting.",
+  "CastStop" : "Beende YouTube-Casting. ",
+
+  "ShellExecError": "ShellExec gibt Fehler zurück.",
+  "ShellExecDone": "ShellExec erfolgreich ausgeführt."
 }
