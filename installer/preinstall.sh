@@ -3,12 +3,6 @@
 # | npm preinstall |
 # +----------------+
 
-# with or without prompt ?
-prompt=true
-if [ -e no-prompt ]; then
-  prompt=false
-fi
-
 # get the installer directory
 Installer_get_current_dir () {
   SOURCE="${BASH_SOURCE[0]}"
@@ -34,10 +28,8 @@ Installer_module="MMM-GoogleAssistant"
 Installer_version="$(cat ../package.json | grep version | cut -c14-30 2>/dev/null)"
 
 # Let's start !
-if $prompt; then
-  Installer_info "Welcome to $Installer_module $Installer_version"
-  echo
-fi
+Installer_info "Welcome to $Installer_module $Installer_version"
+echo
 
 # delete package-lock.json (force)
 rm -f ../package-lock.json
@@ -48,7 +40,5 @@ if [ "$EUID" -eq 0 ]; then
   exit 1
 fi
 
-if $prompt; then
-  echo
-  Installer_info "Installing all npm libraries..."
-fi
+echo
+Installer_info "Installing all npm libraries..."
