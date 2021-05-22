@@ -44,5 +44,55 @@
   "MINUTE" : "minute",
   "MINUTES" : "minutes",
   "SECOND": "seconde",
-  "SECONDS": "secondes"
+  "SECONDS": "secondes",
+
+  "GALoading": "Chargement...",
+  "GAReady": "Prêt!",
+  "GABegin": "Bonjour, comment puis-je vous aider?",
+
+  "LibraryLoading": "Chargement des librairies Extented...",
+  "LibraryLoaded": "GoogleAssistant librairies Extented Activées!",
+  "LibraryError": "Erreur lors du chargement de la librairie: {VALUES}",
+
+  "LibrespotNoResponse": "Pas de réponse de librespot!",
+  "LibrespotConnected": "Connecté à librespot!",
+  "LibrespotConnecting": "Patientez, connection à librespot...",
+  "LibrespotNoInstalled": "librespot n'est pas installé !",
+  "LibrespotError": "Librespot:",
+
+  "YouTubePlaying": "YouTube va jouer:",
+  "YouTubeError": "YouTube:",
+
+  "Volume": "Volume: ",
+  "VolumePresetError": "Volume: Erreur de Preset !",
+  "VolumeText": "Volume:",
+  "VolumeDisabled": "Le control du volume est désactivé",
+
+  "GovernorError": "Governor:",
+
+  "PirError": "Pir sensor erreur code: ",
+
+  "SpotifyNoResult": "Spotify: pas de résultat trouvé",
+  "SpotifySearchFailed": "Spotify: erreur Search and Play",
+  "SpotifyListenText": "En écoute sur",
+
+  "ScreenWakeUp": "Réveil de l'écran demandé par {VALUES}",
+  "ScreenLock": "Verrouillage de l'écran demandé par {VALUES}",
+  "ScreenUnLock": "Déverrouillage de l'écran demandé par {VALUES}",
+  "ScreenTurnOff": "Mise en veille dans",
+  "ScreenLastPresence": "Dernière Présence:",
+  "ScreenPowerOn": "Alumage de l'écran",
+  "ScreenPowerOff": "Extinction de l'écran",
+
+  "InternetDown" : "{VALUES} , Internet est INDISPONIBLE!",
+  "InternetRestart": "Internet est maintenant disponible! Redémarrage de Magic Mirror...",
+  "InternetAvailable": "Internet est maintenant DISPONILBE, après {VALUES}",
+
+  "EXTStop": "Tous les processus Extented sont maintenant arrêté",
+
+  "CastStart": "Démarrage de YouTube Cast",
+  "CastStop" : "Fin de YouTube YouTube Cast",
+
+  "ShellExecError": "ShellExec retourne des erreurs",
+  "ShellExecDone": "ShellExec a été executé correctement"
 }

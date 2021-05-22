@@ -195,8 +195,8 @@ class Display {
 
       if (Spotify) {
         if (this.EXT.radio) this.radioStop()
-        if (!this.EXT.spotify.connected && this.config.spotify.connectTo) {
-          this.sendSocketNotification("SPOTIFY_TRANSFER", this.config.spotify.connectTo)
+        if (!this.EXT.spotify.connected && this.config.spotify.deviceName) {
+          this.sendSocketNotification("SPOTIFY_TRANSFER", this.config.spotify.deviceName)
         }
 
         setTimeout(() => {

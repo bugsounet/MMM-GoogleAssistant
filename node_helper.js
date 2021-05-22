@@ -51,8 +51,12 @@ module.exports = NodeHelper.create({
         command += (payload.options) ? (" " + payload.options) : ""
         exec (command, (e,so,se)=> {
           logGA("ShellExec command:", command)
-          if (e) console.log("[GA] ShellExec Error:" + e) // @todo make info
-          this.sendSocketNotification("SHELLEXEC_RESULT", {
+          if (e) {
+            console.log("[GA] ShellExec Error:" + e)
+            this.sendSocketNotification("WARNING", { message: "ShellExecError"} )
+          }
+          this.sendSocketNotification("INFORMATION", { message: "ShellExecDone" } )
+          logGA("SHELLEXEC_RESULT", {
             executed: payload,
             result: {
               error: e,
@@ -70,7 +74,8 @@ module.exports = NodeHelper.create({
 
       /** Volume module **/
       case "VOLUME_SET":
-        this.setVolume(payload)
+        if (this.config.Extented.volume.useVolume) this.setVolume(payload)
+        else this.sendSocketNotification("WARNING", { message: "VolumeDisabled" })
         break
 
       /** Screen module **/
@@ -106,12 +111,12 @@ module.exports = NodeHelper.create({
               this.socketNotificationReceived("SPOTIFY_PLAY", payload)
             }
             if ((code !== 204) && (code !== 202)) {
-              this.sendSocketNotification("WARNING", "No response from librespot!")
+              this.sendSocketNotification("WARNING", { message: "LibrespotNoResponse" })
               return console.log("[SPOTIFY:PLAY] RETRY Error", code, error, result)
             }
             else {
               logEXT("[SPOTIFY] RETRY: DONE_PLAY")
-              this.sendSocketNotification("INFORMATION", "Connected to librespot!")
+              this.sendSocketNotification("INFORMATION", { message: "LibrespotConnected" })
             }
           })
         }, 3000)
@@ -123,10 +128,10 @@ module.exports = NodeHelper.create({
           if ((code == 404) && (result.error.reason == "NO_ACTIVE_DEVICE")) {
             if (this.config.Extented.spotify.useLibrespot) {
               console.log("[SPOTIFY] No response from librespot !")
-              this.sendSocketNotification("INFORMATION", "Please wait, connecting to librespot...")
+              this.sendSocketNotification("INFORMATION", { message: "LibrespotConnecting" })
               this.librespot()
               timeout= setTimeout(() => {
-                this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.spotify.connectTo)
+                this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.spotify.deviceName)
                 this.socketNotificationReceived("SPOTIFY_RETRY_PLAY", payload)
               }, 3000)
             }
@@ -308,12 +313,16 @@ module.exports = NodeHelper.create({
 
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
 
+    this.sendSocketNotification("INFORMATION" , {message: "LibraryLoading" })
     let bugsounet = await this.loadBugsounetLibrary()
     if (bugsounet) {
       console.error("[GA] Warning:", bugsounet, "@bugsounet library not loaded !")
       console.error("[GA] Try to solve it with `npm run rebuild` in GA directory")
     }
-    else console.log("[GA] All needed @bugsounet library loaded !")
+    else {
+      console.log("[GA] All needed @bugsounet library loaded !")
+      this.sendSocketNotification("INFORMATION" , {message: "LibraryLoaded" })
+    }
 
     if (this.config.Extented.useEXT) {
       console.log("[GA:EXT] Extented Display Server Started")
@@ -368,10 +377,10 @@ module.exports = NodeHelper.create({
       var title = he.decode(item.snippet.title)
       console.log('[GA] Found YouTube Title: %s - videoId: %s', title, item.id.videoId)
       this.sendSocketNotification("YouTube_RESULT", item.id.videoId)
-      this.sendSocketNotification("INFORMATION", "YouTube will playing: " + title)
+      this.sendSocketNotification("INFORMATION", { message: "YouTubePlaying", values: title })
     } catch (e) {
       console.log("[GA] Youtube Search error: ", e.toString())
-      this.sendSocketNotification("WARNING", e.toString())
+      this.sendSocketNotification("WARNING", { message: "YouTubeError", values: e.toString() })
     }
   },
 
@@ -395,12 +404,12 @@ module.exports = NodeHelper.create({
       "governor": (param) => {
         if (this.governor && param == "GOVERNOR_SLEEPING") this.governor.sleeping()
         if (this.governor && param == "GOVERNOR_WORKING") this.governor.working()
-        if (this.governor && param.error) this.sendSocketNotification("WARNING", "[GOVERNOR] " + param.error)
+        if (this.governor && param.error) this.sendSocketNotification("WARNING", { message: "GovernorError", values: param.error})
       },
       "pir": (noti,param) => {
         if (this.screen && this.pir && noti == "PIR_DETECTED") this.screen.wakeup()
         if (this.screen && this.pir && noti == "PIR_ERROR") {
-          this.sendSocketNotification("WARNING", "[PIR] Pir sensor error code: " + param.code)
+          this.sendSocketNotification("WARNING", { message: "PirError", values: param.code })
         }
       }
     }
@@ -448,7 +457,7 @@ module.exports = NodeHelper.create({
     var cacheDir = __dirname + "/components/librespot/cache"
     if (!fs.existsSync(filePath)) {
       console.log("[LIBRESPOT] librespot is not installed !")
-      this.sendSocketNotification("WARNING" , "librespot is not installed !")
+      this.sendSocketNotification("WARNING" , { message: "LibrespotNoInstalled" })
       return
     }
     pm2.connect((err) => {
@@ -468,7 +477,7 @@ module.exports = NodeHelper.create({
           name: "librespot",
           out_file: "/dev/null",
           args: [
-            "-n", this.config.Extented.spotify.connectTo,
+            "-n", this.config.Extented.spotify.deviceName,
             "-u", this.config.Extented.spotify.username,
             "-p", this.config.Extented.spotify.password,
             "--initial-volume" , this.config.Extented.spotify.maxVolume,
@@ -476,7 +485,7 @@ module.exports = NodeHelper.create({
           ]
         }, (err, proc) => {
           if (err) {
-            this.sendSocketNotification("WARNING" , "librespot says :" + err.toString())
+            this.sendSocketNotification("WARNING" , { message: "LibrespotError", values: err.toString() })
             console.log("[LIBRESPOT] " + err)
             return
           }
@@ -537,11 +546,11 @@ module.exports = NodeHelper.create({
           this.socketNotificationReceived("SPOTIFY_PLAY", foundForPlay)
         } else {
           logEXT("[SPOTIFY] Search and Play No Result")
-          this.sendSocketNotification("WARNING" , "[SPOTIFY] Search and Play No Result")
+          this.sendSocketNotification("WARNING" , { message: "SpotifyNoResult" })
         }
       } else { //when fail
         console.log("[GA:EXT] [SPOTIFY] Search and Play failed !")
-        this.sendSocketNotification("WARNING" , "[SPOTIFY] Search and Play failed !")
+        this.sendSocketNotification("WARNING" , { message: "SpotifySearchFailed" })
       }
     })
   },
@@ -553,12 +562,12 @@ module.exports = NodeHelper.create({
     exec (script, (err, stdout, stderr)=> {
       if (err) {
         console.log("[GA:EXT] Set Volume Error:", err.toString())
-        this.sendSocketNotification("WARNING" , "Volume: Preset Error!")
+        this.sendSocketNotification("WARNING" , { message: "VolumePresetError" })
       }
       else {
         logEXT("[VOLUME] Set Volume To:", level)
         this.sendSocketNotification("VOLUME_DONE", level)
-        this.sendSocketNotification("INFORMATION" , "Volume: " + level + "%")
+        this.sendSocketNotification("INFORMATION" , { message: "Volume", values:  level + "%" })
       }
     })
   },
@@ -645,7 +654,7 @@ module.exports = NodeHelper.create({
               logGA("Loaded " + libraryToLoad)
             } catch (e) {
               console.error("[GA]", libraryToLoad, "Loading error!")
-              this.sendSocketNotification("WARNING" , "Error when loading: " + libraryToLoad + " library")
+              this.sendSocketNotification("WARNING" , {message: "LibraryError", values: libraryToLoad })
               errors++
             }
           }

@@ -44,5 +44,55 @@
   "MINUTE" : "minute",
   "MINUTES" : "minutes",
   "SECOND": "second",
-  "SECONDS": "seconds"
+  "SECONDS": "seconds",
+
+  "GALoading": "Loading...",
+  "GAReady": "Ready!",
+  "GABegin": "Hi, how can i help?",
+
+  "LibraryLoading": "Loading Extented libraries...",
+  "LibraryLoaded": "GoogleAssistant Extented Library Loaded!",
+  "LibraryError": "Error when loading: {VALUES} library",
+
+  "LibrespotNoResponse": "No response from librespot!",
+  "LibrespotConnected": "Connected to librespot!",
+  "LibrespotConnecting": "Please wait, connecting to librespot...",
+  "LibrespotNoInstalled": "librespot is not installed !",
+  "LibrespotError": "Librespot:",
+
+  "YouTubePlaying": "YouTube will playing:",
+  "YouTubeError": "YouTube:",
+
+  "Volume": "Volume: ",
+  "VolumePresetError": "Volume: Preset Error!",
+  "VolumeText": "Volume:",
+  "VolumeDisabled": "Volume Control is disabled",
+
+  "GovernorError": "Governor:",
+
+  "PirError": "Pir sensor error code: ",
+
+  "SpotifyNoResult": "Spotify: No Result found",
+  "SpotifySearchFailed": "Spotify: Search and Play failed",
+  "SpotifyListenText": "Listening on",
+
+  "ScreenWakeUp": "Screen Wakeup by {VALUES}",
+  "ScreenLock": "Screen Lock by {VALUES}",
+  "ScreenUnLock": "Screen UnLock by {VALUES}",
+  "ScreenTurnOff": "Auto Turn Off Screen:",
+  "ScreenLastPresence": "Last Presence:",
+  "ScreenPowerOn": "Turn on screen",
+  "ScreenPowerOff": "Turn off screen",
+
+  "InternetDown" : "{VALUES} , Internet is DOWN!",
+  "InternetRestart": "Internet is now available! Restarting Magic Mirror...",
+  "InternetAvailable": "Internet is now AVAILABLE, after {VALUES}",
+  
+  "EXTStop": "All Extented Process are now stopped",
+
+  "CastStart": "Start Casting YouTube",
+  "CastStop" : "Stop Casting YouTube",
+
+  "ShellExecError": "ShellExec return some Errors",
+  "ShellExecDone": "ShellExec executed sucessfully"
 }

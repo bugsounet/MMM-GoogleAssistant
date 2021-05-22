@@ -82,9 +82,8 @@ Module.register("MMM-GoogleAssistant", {
       },
       volume: {
         useVolume: false,
-        volumePreset: "ALSA",
-        myScript: null,
-        volumeText: "Volume:"
+        volumePreset: "PULSE",
+        myScript: null
       },
       welcome: {
         useWelcome: false,
@@ -98,13 +97,11 @@ Module.register("MMM-GoogleAssistant", {
         ecoMode: true,
         delayed: 0,
         displayCounter: true,
-        text: "Auto Turn Off Screen:",
         displayBar: true,
         displayStyle: "Text",
         detectorSleeping: false,
         governorSleeping: false,
-        displayLastPresence: true,
-        LastPresenceText: "Last Presence:"
+        displayLastPresence: true
       },
       touch: {
         useTouch: true,
@@ -133,14 +130,14 @@ Module.register("MMM-GoogleAssistant", {
       },
       cast: {
         useCast: false,
-        castName: "MagicMirror_Extented",
+        castName: "MagicMirror",
         port: 8569
       },
-      spotify: { //@todo make new recipe and for radio too
+      spotify: {
         useSpotify: false,
         useBottomBar: false,
         useLibrespot: false,
-        connectTo: null,
+        deviceName: "MagicMirror",
         playDelay: 3000,
         minVolume: 10,
         maxVolume: 90,
@@ -152,7 +149,6 @@ Module.register("MMM-GoogleAssistant", {
         TOKEN: "tokenSpotify.json",
         CLIENT_ID: "",
         CLIENT_SECRET: "",
-        deviceDisplay: "Listening on",
         usePause: true,
         typeArtist: "artist",
         typePlaylist: "playlist",
@@ -269,7 +265,7 @@ Module.register("MMM-GoogleAssistant", {
           this.EXT.spotify.librespot = false
         }
       },
-      "YTError": (error) => this.assistantResponse.Informations("warning",error)
+      "YTError": (error) => this.Informations("warning", { message: error })
     }
     this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
 
@@ -341,6 +337,8 @@ Module.register("MMM-GoogleAssistant", {
         link: null,
       }
       this.createRadio()
+      this.config.Extented.volume.volumeText = this.translate("VolumeText") // translate VolumeText in all language
+      this.config.Extented.spotify.deviceDisplay = this.translate("SpotifyListenText")
       this.displayEXTResponse = new Display(this.config.Extented, callbacks)
       if (this.config.Extented.spotify.useSpotify) this.spotify = new Spotify(this.config.Extented.spotify, callbacks, this.config.debug)
       this.EXT = this.displayEXTResponse.EXT
@@ -417,7 +415,7 @@ Module.register("MMM-GoogleAssistant", {
       if (!this.config.Extented.screen.useScreen || (this.config.Extented.screen.displayStyle != "Text")) screen.className = "hidden"
       var screenText = document.createElement("div")
       screenText.id = "EXT_SCREEN_TEXT"
-      screenText.textContent = this.config.Extented.screen.text
+      screenText.textContent = this.translate("ScreenTurnOff")
       screen.appendChild(screenText)
       var screenCounter = document.createElement("div")
       screenCounter.id = "EXT_SCREEN_COUNTER"
@@ -446,7 +444,7 @@ Module.register("MMM-GoogleAssistant", {
       presence.className = "hidden"
       var presenceText = document.createElement("div")
       presenceText.id = "EXT_PRESENCE_TEXT"
-      presenceText.textContent = this.config.Extented.screen.LastPresenceText
+      presenceText.textContent = this.translate("ScreenLastPresence")
       presence.appendChild(presenceText)
       var presenceDate = document.createElement("div")
       presenceDate.id = "EXT_PRESENCE_DATE"
@@ -492,6 +490,7 @@ Module.register("MMM-GoogleAssistant", {
         if (this.data.configDeepMerge) this.sendSocketNotification("INIT", this.helperConfig)
         else return this.showConfigMergeAlert()
         this.assistantResponse.prepare()
+        this.Loading()
         if (this.config.Extented.useEXT) {
           this.displayEXTResponse.prepare()
           if (this.config.Extented.screen.useScreen && (this.config.Extented.screen.displayStyle != "Text")) this.prepareBar()
@@ -505,19 +504,19 @@ Module.register("MMM-GoogleAssistant", {
       case "WAKEUP": /** for external wakeup **/
         if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_WAKEUP")
-          this.assistantResponse.Informations("information", "Screen Wakeup!")
+          this.Informations("information", { message: "ScreenWakeUp", values: sender.name })
         }
         break
       case "EXT_LOCK": /** screen lock **/
         if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_LOCK", true)
-          this.assistantResponse.Informations("information", "Screen Locked!")
+          this.Informations("information", { message: "ScreenLock", values: sender.name })
         }
         break
       case "EXT_UNLOCK": /** screen unlock **/
         if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_LOCK", false)
-          this.assistantResponse.Informations("information", "Screen UnLocked!")
+          this.Informations("information", { message: "ScreenUnLock", values: sender.name })
         }
         break
     }
@@ -550,15 +549,17 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantResponse.forceStatusImg("userError")
         break
       case "ERROR":
+        this.Informations("warning", { message: payload })
+        break
       case "WARNING":
-        this.assistantResponse.Informations("warning", payload)
+        this.Informations("warning", payload)
         break
       case "INFORMATION":
-        this.assistantResponse.Informations("information", payload)
+        this.Informations("information", payload)
         break
       case "INITIALIZED":
         logGA("Initialized.")
-        this.assistantResponse.Version(payload)
+        this.Version(payload)
         this.assistantResponse.status("standby")
         this.doPlugin("onReady")
         if (this.config.Extented.useEXT) this.sendWelcome()
@@ -622,16 +623,20 @@ Module.register("MMM-GoogleAssistant", {
       case "SCREEN_HIDING":
         this.screenHiding()
         break
-
+      case "SCREEN_POWER":
+        this.sendNotification("SCREEN_POWER", payload)
+        if (payload) this.Informations("information", { message: "ScreenPowerOn" })
+        else this.Informations("information", { message: "ScreenPowerOff" })
+        break
       /** new internet module (v2) **/
       case "INTERNET_DOWN":
         if (payload.ticks == 1) this.sendSocketNotification("SCREEN_WAKEUP")
         let FormatedSince = moment(payload.date).fromNow()
-        this.assistantResponse.Informations("warning", FormatedSince + ", Internet is DOWN!")
+        this.Informations("warning", { message: "InternetDown", values: FormatedSince})
         break
       case "INTERNET_RESTART":
         this.sendSocketNotification("SCREEN_WAKEUP")
-        this.assistantResponse.Informations("information", "Internet is now available! Restarting Magic Mirror...")
+        this.Informations("information", { message: "InternetRestart" })
         break
       case "INTERNET_AVAILABLE":
         let DateDiff = payload
@@ -641,7 +646,7 @@ Module.register("MMM-GoogleAssistant", {
           + (DateDiff.hour ? (DateDiff.hour + (DateDiff.hour > 1 ? this.DateTranslate.hours : this.DateTranslate.hour)): "")
           + (DateDiff.min ? (DateDiff.min + (DateDiff.min > 1 ? this.DateTranslate.minutes : this.DateTranslate.minute)): "")
           + DateDiff.sec + (DateDiff.sec > 1 ? this.DateTranslate.seconds : this.DateTranslate.second)
-        this.assistantResponse.Informations("information", "Internet is now AVAILABLE, after " + FormatedMessage)
+        this.Informations("information", { message: "InternetAvailable", values: FormatedMessage })
         break
       case "INTERNET_PING":
         var ping = document.getElementById("EXT_INTERNET_PING")
@@ -651,9 +656,11 @@ Module.register("MMM-GoogleAssistant", {
       /** cast module **/
       case "CAST_START":
         this.sendSocketNotification("SCREEN_WAKEUP")
+        this.Informations("information", { message: "CastStart" })
         this.displayEXTResponse.castStart(payload)
         break
       case "CAST_STOP":
+        this.Informations("information", { message: "CastStop" })
         this.displayEXTResponse.castStop()
         break
 
@@ -665,7 +672,7 @@ Module.register("MMM-GoogleAssistant", {
           this.EXT.spotify.repeat = payload.repeat_state
           this.EXT.spotify.shuffle = payload.shuffle_state
           var screenContener = document.getElementById("EXT_SCREEN_CONTENER")
-          if (payload.device.name == this.config.Extented.spotify.connectTo) {
+          if (payload.device.name == this.config.Extented.spotify.deviceName) {
             if (this.EXT.radio) this.radio.pause()
             this.EXT.spotify.currentVolume = payload.device.volume_percent
             if (!this.EXT.spotify.librespot) this.EXT.spotify.librespot = true
@@ -752,7 +759,7 @@ Module.register("MMM-GoogleAssistant", {
   assistantActivate: function(payload) {
     if (this.myStatus.actual != "standby" && !payload.force) return logGA("Assistant is busy.")
     clearTimeout(this.assistantResponse.aliveTimer)
-    this.assistantResponse.showTranscription("Hi, how can i help?")
+    this.assistantResponse.showTranscription(this.translate("GABegin"))
     this.sendNotification("DETECTOR_STOP")
     this.doPlugin("onActivate")
     this.assistantResponse.fullscreen(true)
@@ -1126,9 +1133,7 @@ Module.register("MMM-GoogleAssistant", {
       var responseEmulate = {
         "photos": [],
         "urls": [],
-        "transcription": {},
-        "trysay": null,
-        "help": null
+        "transcription": {}
       }
       var regexp = /^((http(s)?):\/\/)(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
       var isLink = regexp.test(handler.args)
@@ -1585,7 +1590,7 @@ Module.register("MMM-GoogleAssistant", {
     }
     if (this.EXT.radio) this.radio.pause()
     this.sendNotification("TV-STOP") // Stop MMM-FreeboxTV
-    this.assistantResponse.Informations("information", "All Assistant Process stopped")
+    this.Informations("information", { message: "EXTStop" })
   },
 
   /** Radio command (for recipe) **/
@@ -1635,5 +1640,67 @@ Module.register("MMM-GoogleAssistant", {
     tmp = Math.floor((tmp-diff.hour)/24)
     diff.day = tmp
     return diff
+  },
+
+  /** Informations Display with translate **/
+  Informations: function(type, info) {
+    let informationsType = [ "warning", "information" ]
+    if (informationsType.indexOf(type) == -1) {
+      logGA("debug information:", type, info)
+      return this.Informations("warning", { message: "Core Information: Display Type Error!" })
+    }
+    if (!info.message) { // should not happen
+      logGA("debug information:", info)
+      return this.Informations("warning", { message: "Core Information: no message!" })
+    }
+    clearTimeout(this.warningTimeout)
+    logGA(type + ":", info)
+    if (type == "warning" && this.config.responseConfig.useChime) this.assistantResponse.infoWarning.src = this.assistantResponse.resourcesDir + this.assistantResponse.chime["warning"]
+    this.logoInformations(type)
+    this.showInformations(info)
+    this.InformationShow()
+
+    this.warningTimeout = setTimeout(() => {
+      this.InformationHidden()
+    }, this.config.responseConfig.screenOutputTimer)
+  },
+
+  showInformations: function (info) {
+    var tr = document.getElementById("Infos-Transcription")
+    tr.textContent = this.translate(info.message, { VALUES: info.values })
+  },
+
+  logoInformations: function (logo) {
+    var InfoLogo = document.getElementById("Infos-Icon")
+    InfoLogo.src = this.assistantResponse.imgStatus[logo]
+  },
+
+  InformationHidden: function () {
+    this.assistantResponse.infosDiv.classList.remove('animate__bounceInDown')
+    this.assistantResponse.infosDiv.classList.add("animate__bounceOutUp")
+    this.assistantResponse.infosDiv.addEventListener('animationend', () => {
+        Infos.classList.add("hidden")
+        this.showInformations("")
+        this.assistantResponse.forceStatusImg("standby")
+    }, {once: true})
+  },
+
+  InformationShow: function () {
+    this.assistantResponse.infosDiv.classList.remove("hidden", "animate__bounceOutUp")
+    this.assistantResponse.infosDiv.classList.add('animate__bounceInDown')
+  },
+
+  Loading: function () {
+    this.assistantResponse.showTranscription(this.translate("GALoading") + " MMM-GoogleAssistant")
+    this.assistantResponse.fullscreen(true,null,false)
+  },
+
+  Version (version) {
+    this.assistantResponse.showTranscription("MMM-GoogleAssistant v" + version.version + " (" + version.rev + ") " + this.translate("GAReady"))
+    this.assistantResponse.fullscreen(true,null,false)
+    this.aliveTimer = setTimeout(() => {
+      this.assistantResponse.end(false)
+      this.assistantResponse.showTranscription("")
+    }, this.config.responseConfig.screenOutputTimer)
   }
 })

@@ -39,7 +39,6 @@ class AssistantResponse {
     this.audioChime.autoplay = true
     this.fullscreenAbove = this.config.useFullscreen
     this.warningTimeout = null
-    this.informationsType = [ "warning", "information" ]
     this.infosDiv= null
     this.infoWarning = new Audio()
     this.infoWarning.autoplay = true
@@ -386,55 +385,6 @@ class AssistantResponse {
         }
       }
     }
-  }
-
-  /** Display information  **/
-  Version (version) {
-    this.showTranscription("~MMM-GoogleAssistant v" + version.version + " - rev:"+ version.rev + "~")
-    this.fullscreen(true,null,false)
-    this.aliveTimer = setTimeout(() => {
-      this.end(false)
-      this.showTranscription("")
-    }, this.config.screenOutputTimer)
-  }
-
-  Informations (type, info) {
-    if (this.informationsType.indexOf(type) == -1) return this.Informations("warning", "Information Display Error!" )
-    clearTimeout(this.warningTimeout)
-    logGA(type + ":", info)
-    if (type == "warning" && this.config.useChime) this.infoWarning.src = this.resourcesDir + this.chime["warning"]
-    this.logoInformations(type)
-    this.showInformations(info)
-    this.InformationShow()
-
-    this.warningTimeout = setTimeout(() => {
-      this.InformationHidden()
-    }, this.config.screenOutputTimer)
-  }
-
-  showInformations (text) {
-    var tr = document.getElementById("Infos-Transcription")
-    tr.textContent = text
-  }
-
-  logoInformations (logo) {
-    var InfoLogo = document.getElementById("Infos-Icon")
-    InfoLogo.src = this.imgStatus[logo]
-  }
-
-  InformationHidden () {
-    this.infosDiv.classList.remove('animate__bounceInDown')
-    this.infosDiv.classList.add("animate__bounceOutUp")
-    this.infosDiv.addEventListener('animationend', () => {
-        Infos.classList.add("hidden")
-        this.showInformations("")
-        this.forceStatusImg("standby")
-    }, {once: true})
-  }
-
-  InformationShow () {
-    this.infosDiv.classList.remove("hidden", "animate__bounceOutUp")
-    this.infosDiv.classList.add('animate__bounceInDown')
   }
 
   forceStatusImg (status) {
