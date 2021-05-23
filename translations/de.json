@@ -75,6 +75,7 @@
   "SpotifyNoResult": "Spotify: Kein Ergebnis gefunden",
   "SpotifySearchFailed": "Spotify: Suche und Wiedergabe fehlgeschlagen",
   "SpotifyListenText": "Zuhören aktiv",
+  "SpotifyForGA": "Spotify for Google Assistant",
 
   "ScreenWakeUp": "Display aktivieren durch {VALUES}",
   "ScreenLock": "Display sperren durch {VALUES}",
@@ -89,6 +90,7 @@
   "InternetAvailable": "Internet ist jetzt verfügbar, nach {VALUES}",
 
   "EXTStop": "Alle erweiterten Prozesse werden jetzt beendet.",
+  "EXTNotActivated": "Extented Display is not activated",
 
   "CastStart": "Starte YouTube-Casting.",
   "CastStop" : "Beende YouTube-Casting. ",
@@ -97,5 +99,13 @@
   "ShellExecDone": "ShellExec erfolgreich ausgeführt.",
 
   "LinksOpen": "Opening Extended Display Browser",
-  "LinksClose": "Closing Extented Display Browser"
+  "LinksClose": "Closing Extented Display Browser",
+
+  "PhotosNotActivated": "Photo module is not activated",
+
+  "GPhotosNotActivated": "GooglePhotos API is not activated",
+  "GPhotosBckGrndActivated": "GooglePhotos useBackground is activated",
+  "GPFailedOpenURL": "Image load failed",
+  "GPOpen": "Open Google Photos",
+  "GPClose": "Close Google Photos"
 }

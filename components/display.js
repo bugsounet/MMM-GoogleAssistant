@@ -9,6 +9,12 @@ class Display {
     this.YTError = callbacks.YTError
     this.timer = null
     this.player = null
+    this.GPupdateTimer = null
+    this.GPalbums = null
+    this.GPscanned = []
+    this.GPindex = 0
+    this.GPneedMorePicsFlag = true
+    this.GPfirstScan = true
     this.EXT = {
       radio: false,
       speak: false,
@@ -141,6 +147,10 @@ class Display {
     this.EXT = this.objAssign({}, this.EXT, tmp)
     var photo = document.getElementById("EXT_PHOTO")
     photo.removeAttribute('src')
+    if (this.config.photos.useGooglePhotosAPI) {
+      //console.log("reset GPhotos")
+      this.stopGooglePhotoAPI()
+    }
     logEXT("Reset Photos", this.EXT)
 
   }
@@ -366,6 +376,32 @@ class Display {
     var scoutphoto = document.createElement("img")
     scoutphoto.id = "EXT_PHOTO"
     scoutphoto.classList.add("hidden")
+
+    var scoutGPhotosAPI = document.createElement("div")
+    scoutGPhotosAPI.id = "EXT_GPHOTO"
+    scoutGPhotosAPI.classList.add("hidden")
+
+    var scoutGPhotosAPIBack = document.createElement("div")
+    scoutGPhotosAPIBack.id = "EXT_GPHOTO_BACK"
+    var scoutGPhotosAPICurrent = document.createElement("div")
+    scoutGPhotosAPICurrent.id = "EXT_GPHOTO_CURRENT"
+    /*
+    if (this.data.position.search("fullscreen") == -1) {
+      if (this.config.showWidth) wrapper.style.width = this.config.showWidth + "px"
+      if (this.config.showHeight) wrapper.style.height = this.config.showHeight + "px"
+    }
+    */
+    scoutGPhotosAPICurrent.addEventListener('animationend', ()=>{
+      scoutGPhotosAPICurrent.classList.remove("animated")
+    })
+    var scoutGPhotosAPIInfo = document.createElement("div")
+    scoutGPhotosAPIInfo.id = "EXT_GPHOTO_INFO"
+    scoutGPhotosAPIInfo.innerHTML = "Extented GPhotos Loading..."
+
+    scoutGPhotosAPI.appendChild(scoutGPhotosAPIBack)
+    scoutGPhotosAPI.appendChild(scoutGPhotosAPICurrent)
+    scoutGPhotosAPI.appendChild(scoutGPhotosAPIInfo)
+
     var scout = document.createElement("webview")
     scout.useragent= "Mozilla/5.0 (SMART-TV; Linux; Tizen 2.4.0) AppleWebkit/538.1 (KHTML, like Gecko) SamsungBrowser/1.1 TV Safari/538.1"
     scout.id = "EXT_OUTPUT"
@@ -403,6 +439,7 @@ class Display {
     }
     scoutpan.appendChild(scoutyt)
     scoutpan.appendChild(scoutphoto)
+    scoutpan.appendChild(scoutGPhotosAPI)
     scoutpan.appendChild(scout)
     dom.appendChild(scoutpan)
 
@@ -417,12 +454,16 @@ class Display {
     var YT = document.getElementById("EXT_YOUTUBE")
     var iframe = document.getElementById("EXT_OUTPUT")
     var photo = document.getElementById("EXT_PHOTO")
+    var photoAPI = document.getElementById("EXT_GPHOTO")
     var winEXT = document.getElementById("EXT")
     //if (this.EXT.speak) winEXT.classList.add("hidden")
     winEXT.classList.remove("hidden")
 
     if (this.EXT.links.displayed) iframe.classList.remove("hidden")
-    if (this.EXT.photos.displayed) photo.classList.remove("hidden")
+    if (this.EXT.photos.displayed) {
+      if (this.EXT.photos.length > 0) photo.classList.remove("hidden")
+      else photoAPI.classList.remove("hidden")
+    }
     if (this.EXT.photos.forceClose) photo.classList.add("hidden")
     if (this.EXT.youtube.displayed) YT.classList.remove("hidden")
   }
@@ -432,14 +473,22 @@ class Display {
     var winEXT = document.getElementById("EXT")
     var iframe = document.getElementById("EXT_OUTPUT")
     var photo = document.getElementById("EXT_PHOTO")
+    var photoAPI = document.getElementById("EXT_GPHOTO")
     var YT = document.getElementById("EXT_YOUTUBE")
 
     if (!this.EXT.youtube.displayed) YT.classList.add("hidden")
     if (!this.EXT.links.displayed) iframe.classList.add("hidden")
-    if (!this.EXT.photos.displayed) photo.classList.add("hidden")
+    if (!this.EXT.photos.displayed) {
+      photo.classList.add("hidden")
+      photoAPI.classList.add("hidden")
+    }
     //if (this.EXT.speak || !this.working()) winEXT.classList.add("hidden")
-    if (!this.working()) winEXT.classList.add("hidden")
-    if (!this.EXT.speak && !this.working()) this.EXTUnlock()
+    //console.log("working",this.working())
+    if (!this.working()) {
+      winEXT.classList.add("hidden")
+      this.EXTUnlock()
+    }
+    //if (!this.EXT.speak && !this.working()) this.EXTUnlock()
   }
 
   hideSpotify() {
@@ -545,5 +594,91 @@ class Display {
         volume.classList.add("hidden")
       }, {once: true})
     }, 3000)
+  }
+
+  /** GPhotos API **/
+  updatePhotos (dir=0) {
+    this.GPfirstScan == false
+
+    if (this.GPscanned.length == 0) {
+      this.sendSocketNotification("GP_MORE_PICTS")
+      return
+    }
+    this.GPindex = this.GPindex + dir //only used for reversing
+    if (this.GPindex < 0) this.index = 0
+    if (this.GPindex >= this.GPscanned.length) this.GPindex = 0
+    var target = this.GPscanned[this.GPindex]
+    var url = target.baseUrl //+ `=w${this.config.showWidth}-h${this.config.showHeight}`
+    this.ready(url, target)
+    this.GPindex++
+    if (this.GPindex >= this.GPscanned.length) {
+      this.GPindex = 0
+      this.GPneedMorePicsFlag = true
+    }
+    if (this.GPneedMorePicsFlag) {
+      this.sendSocketNotification("GP_MORE_PICTS")
+    }
+  }
+
+  ready (url, target) {
+    var hidden = document.createElement("img")
+    hidden.onerror = () => {
+      console.log("[GA:EXT:GPHOTOS] Image load fails.")
+      this.Informations({message: "GPFailedOpenURL" })
+      this.sendSocketNotification("GP_LOAD_FAIL", url)
+    }
+    hidden.onload = () => {
+      var back = document.getElementById("EXT_GPHOTO_BACK")
+      var current = document.getElementById("EXT_GPHOTO_CURRENT")
+      var dom = document.getElementById("EXT_GPHOTO")
+      back.style.backgroundImage = `url(${url})`
+      current.style.backgroundImage = `url(${url})`
+      current.classList.add("animated")
+      var info = document.getElementById("EXT_GPHOTO_INFO")
+      var album = this.albums.find((a)=>{
+        if (a.id == target._albumId) return true
+        return false
+      })
+      info.innerHTML = ""
+      var albumCover = document.createElement("div")
+      albumCover.classList.add("albumCover")
+      albumCover.style.backgroundImage = `url(modules/MMM-GoogleAssistant/tmp/cache/${album.id})`
+      var albumTitle = document.createElement("div")
+      albumTitle.classList.add("albumTitle")
+      albumTitle.innerHTML = "Album: " + album.title
+      var photoTime = document.createElement("div")
+      photoTime.classList.add("photoTime")
+      photoTime.innerHTML = (this.config.photos.timeFormat == "relative")
+        ? moment(target.mediaMetadata.creationTime).fromNow()
+        : moment(target.mediaMetadata.creationTime).format(this.config.photos.timeFormat)
+      var infoText = document.createElement("div")
+      infoText.classList.add("infoText")
+
+      info.appendChild(albumCover)
+      infoText.appendChild(albumTitle)
+      infoText.appendChild(photoTime)
+      info.appendChild(infoText)
+      logEXT("GPHOTOS: Image loaded:", url)
+      this.sendSocketNotification("GP_LOADED", url)
+    }
+    hidden.src = url
+  }
+
+  showGooglePhotoAPI () {
+    this.Informations({message: "GPOpen" })
+    this.EXTLock()
+    this.EXT.photos.displayed = true
+    this.showDisplay()
+    this.updatePhotos()
+
+    this.GPupdateTimer = setInterval(()=>{
+      this.updatePhotos()
+    }, this.config.photos.displayDelay)
+  }
+
+  stopGooglePhotoAPI () {
+    this.Informations({message: "GPClose" })
+    clearInterval(this.GPupdateTimer)
+    this.updateTimer = null
   }
 }

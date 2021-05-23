@@ -2,15 +2,11 @@
 const GP = require("@bugsounet/google-photos")
 const path = require('path')
 const authOption = {
-  keyFilePath: path.resolve(__dirname, '../credentials.json'),
-  savedTokensPath: path.resolve(__dirname, '../tokens/tokenGP.json'),
-  scope: "https://www.googleapis.com/auth/photoslibrary https://www.googleapis.com/auth/photoslibrary.sharing"
+  CREDENTIALS: path.resolve(__dirname, '../credentials.json'),
+  TOKEN: path.resolve(__dirname, '../tokens/tokenGP.json')
 }
 
-var GPhotos = new GP({
-  authOption: authOption,
-  debug: true
-})
+var GPhotos = new GP(authOption, true)
 
 GPhotos.generateToken(
   function success () {

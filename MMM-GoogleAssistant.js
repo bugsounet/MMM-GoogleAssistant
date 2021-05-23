@@ -79,7 +79,14 @@ Module.register("MMM-GoogleAssistant", {
       },
       photos: { // @todo use api
         usePhotos: false,
-        displayDelay: 10 * 1000
+        useGooglePhotosAPI: false,
+        useBackground: false
+        displayDelay: 10 * 1000,
+        albums: [],
+        sort: "new", // "old", "random"
+        showWidth: 1080, // These values will be used for quality of downloaded photos to show. real size to show in your MagicMirror region is recommended.
+        showHeight: 1920,
+        timeFormat: "DD/MM/YYYY HH:mm"
       },
       volume: {
         useVolume: false,
@@ -339,8 +346,12 @@ Module.register("MMM-GoogleAssistant", {
         link: null,
       }
       this.createRadio()
-      this.config.Extented.volume.volumeText = this.translate("VolumeText") // translate VolumeText in all language
+
+      // translate needed translate part in all languages
+      this.config.Extented.volume.volumeText = this.translate("VolumeText")
       this.config.Extented.spotify.deviceDisplay = this.translate("SpotifyListenText")
+      this.config.Extented.spotify.SpotifyForGA = this.translate("SpotifyForGA")
+
       this.displayEXTResponse = new Display(this.config.Extented, callbacks)
       if (this.config.Extented.spotify.useSpotify) this.spotify = new Spotify(this.config.Extented.spotify, callbacks, this.config.debug)
       this.EXT = this.displayEXTResponse.EXT
@@ -730,6 +741,30 @@ Module.register("MMM-GoogleAssistant", {
       case "DETECTOR_STOP":
       case "SNOWBOY_STOP": // deprecied soon
         this.sendNotification("DETECTOR_STOP")
+        break
+      /** GPhotos **/
+      case "GPhotos_PICT":
+        if (payload && Array.isArray(payload) && payload.length > 0) {
+          this.displayEXTResponse.GPneedMorePicsFlag = false
+          this.displayEXTResponse.GPscanned = payload
+          this.displayEXTResponse.GPindex = 0
+          /**
+          if (this.displayEXTResponse.GPfirstScan) {
+            this.displayEXTResponse.updatePhotos() //little faster starting
+          }
+          */
+          this.displayEXTResponse.GPscanned = payload
+          //console.log("GPhotos_PICT", payload)
+        }
+        break
+      case "GPhotos_INIT":
+        this.displayEXTResponse.albums = payload
+        //console.log("GPhotos_INIT", payload)
+        /*
+        this.updateTimer = setInterval(()=>{
+          this.displayEXTResponse.updatePhotos()
+        }, this.config.Extented.photos.updateInterval)
+        */
         break
     }
   },
@@ -1218,7 +1253,7 @@ Module.register("MMM-GoogleAssistant", {
     switch(status) {
       case "listen":
       case "think":
-        this.EXT.speak = true
+        //this.EXT.speak = true
         if (this.config.Extented.screen.useScreen && !this.EXT.locked) this.sendSocketNotification("SCREEN_STOP")
         if (this.EXT.locked) this.displayEXTResponse.hideDisplay()
         if (this.config.Extented.youtube.useYoutube) {
@@ -1232,7 +1267,7 @@ Module.register("MMM-GoogleAssistant", {
         if (this.EXT.radio) this.radio.volume = 0.1
         break
       case "standby":
-        this.EXT.speak = false
+        //this.EXT.speak = false
         if (this.config.Extented.screen.useScreen && !this.EXT.locked) this.sendSocketNotification("SCREEN_RESET")
         if (this.config.Extented.youtube.useYoutube) {
           if (this.config.Extented.youtube.useVLC) this.sendSocketNotification("YT_VOLUME", this.config.Extented.youtube.maxVolume)
@@ -1614,6 +1649,15 @@ Module.register("MMM-GoogleAssistant", {
       this.radio.src = this.radioPlayer.link
       this.radio.autoplay = true
     }
+  },
+
+  /** GooglePhotos API recipe **/
+  showGooglePhotos() {
+    if (!this.config.Extented.useEXT) return this.Informations("warning", { message: "EXTNotActivated" })
+    if (!this.config.Extented.photos.usePhotos) return this.Informations("warning", { message: "PhotosNotActivated" })
+    if (!this.config.Extented.photos.useGooglePhotosAPI) return this.Informations("warning", { message: "GPhotosNotActivated" })
+    if (this.config.Extented.photos.useBackground) return this.Informations("warning", { message: "GPhotosBckGrndActivated" })
+    this.displayEXTResponse.showGooglePhotoAPI()
   },
 
   /** Send Welcome **/

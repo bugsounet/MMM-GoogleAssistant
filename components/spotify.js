@@ -389,7 +389,7 @@ class Spotify {
     )
     const text = document.createElement("span")
     text.className = "text"
-    text.textContent = "Spotify for Google Assistant"
+    text.textContent = this.config.SpotifyForGA
     logo.appendChild(text)
 
     return logo

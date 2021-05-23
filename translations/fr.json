@@ -90,6 +90,7 @@
   "InternetAvailable": "Internet est maintenant DISPONIBLE, après {VALUES}",
 
   "EXTStop": "Tous les processus Extented sont maintenant arrêtés",
+  "EXTNotActivated": "Extented Display n'est pas activé",
 
   "CastStart": "Démarrage de YouTube-Cast",
   "CastStop" : "Fin de YouTube-Cast",
@@ -98,5 +99,13 @@
   "ShellExecDone": "ShellExec a été executé correctement",
 
   "LinksOpen": "Ouverture du navigateur Extended Display",
-  "LinksClose": "Fermeture du navigateur Extented Display"
+  "LinksClose": "Fermeture du navigateur Extented Display",
+
+  "PhotosNotActivated": "Le module photos n'est pas activé",
+
+  "GPhotosNotActivated": "GooglePhotos API n'est pas activée",
+  "GPhotosBckGrndActivated": "GooglePhotos useBackground est activé",
+  "GPFailedOpenURL": "Erreur lors du chargement de l'image",
+  "GPOpen": "Ouverture de Google Photos",
+  "GPClose": "Fermeture de Google Photos"
 }

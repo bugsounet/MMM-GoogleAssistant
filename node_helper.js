@@ -212,6 +212,11 @@ module.exports = NodeHelper.create({
       case "RESTART":
         this.pm2Restart(payload)
         break
+      /** GPhotos callbacks **/
+      case "GP_MORE_PICTS":
+      case "GP_LOAD_FAIL":
+        this.photos.prepAndSendChunk(Math.ceil(20*60*1000/this.config.Extented.photos.displayDelay))
+        break
     }
   },
 
@@ -448,6 +453,14 @@ module.exports = NodeHelper.create({
         this.librespot()
       }
     }
+    if (this.config.Extented.photos.usePhotos && this.config.Extented.photos.useGooglePhotosAPI && this.EXT.GPhotos) {
+      logEXT("Starting GooglePhotosAPI module...")
+      this.config.Extented.photos.CREDENTIALS = this.config.assistantConfig["modulePath"] + "/credentials.json"
+      this.config.Extented.photos.TOKEN = this.config.assistantConfig["modulePath"] + "/tokens/tokenGP.json"
+      this.config.Extented.photos.CACHE = this.config.assistantConfig["modulePath"] + "/tmp"
+      this.photos = new this.EXT.GPhotos(this.config.Extented.photos, this.config.debug, callbacks.sendSocketNotification)
+      this.photos.start()
+    }
   },
 
   /** launch librespot with pm2 **/
@@ -635,7 +648,8 @@ module.exports = NodeHelper.create({
       { "@bugsounet/internet": [ "Internet", "Extented.internet.useInternet" ] },
       { "@bugsounet/cast": [ "CastServer", "Extented.cast.useCast" ] },
       { "@bugsounet/spotify": [ "Spotify", "Extented.spotify.useSpotify" ] },
-      { "@bugsounet/cvlc": [ "cvlc", "Extented.youtube.useVLC" ] }
+      { "@bugsounet/cvlc": [ "cvlc", "Extented.youtube.useVLC" ] },
+      { "@bugsounet/google-photos" : [ "GPhotos", "Extented.photos.useGooglePhotosAPI" ] }
     ]
     let errors = 0
     return new Promise(resolve => {
