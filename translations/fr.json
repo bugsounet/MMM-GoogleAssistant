@@ -20,7 +20,7 @@
 
   "SHOW_HELP": "Montre le module désiré",
   "SHOW_ALREADY": " est déjà actif",
-  "SHOW_DONE": " is maintenant actif",
+  "SHOW_DONE": " est maintenant actif",
   "SHOW_LOCKED": " est bloqué par un autre programme, activation impossible",
 
   "MODULE_NOTFOUND": "Module non trouvé: ",
@@ -56,7 +56,7 @@
 
   "LibrespotNoResponse": "Pas de réponse de librespot!",
   "LibrespotConnected": "Connecté à librespot!",
-  "LibrespotConnecting": "Patientez, connection à librespot...",
+  "LibrespotConnecting": "Patientez, connexion à librespot...",
   "LibrespotNoInstalled": "librespot n'est pas installé !",
   "LibrespotError": "Librespot: {VALUES}",
 
@@ -66,7 +66,7 @@
   "Volume": "Volume: {VALUES}",
   "VolumePresetError": "Volume: Erreur de Preset !",
   "VolumeText": "Volume:",
-  "VolumeDisabled": "Le control du volume est désactivé",
+  "VolumeDisabled": "Le contrôle du volume est désactivé",
 
   "GovernorError": "Governor: {VALUES}",
 
@@ -75,18 +75,19 @@
   "SpotifyNoResult": "Spotify: pas de résultat trouvé",
   "SpotifySearchFailed": "Spotify: erreur Search and Play",
   "SpotifyListenText": "En écoute sur",
+  "SpotifyForGA": "Spotify pour Google Assistant",
 
   "ScreenWakeUp": "Réveil de l'écran demandé par {VALUES}",
   "ScreenLock": "Verrouillage de l'écran demandé par {VALUES}",
   "ScreenUnLock": "Déverrouillage de l'écran demandé par {VALUES}",
   "ScreenTurnOff": "Mise en veille dans",
   "ScreenLastPresence": "Dernière Présence:",
-  "ScreenPowerOn": "Alumage de l'écran",
+  "ScreenPowerOn": "Allumage de l'écran",
   "ScreenPowerOff": "Extinction de l'écran",
 
   "InternetDown" : "{VALUES}, Internet est INDISPONIBLE!",
   "InternetRestart": "Internet est maintenant disponible! Redémarrage de MagicMirror...",
-  "InternetAvailable": "Internet est maintenant DISPONILBE, après {VALUES}",
+  "InternetAvailable": "Internet est maintenant DISPONIBLE, après {VALUES}",
 
   "EXTStop": "Tous les processus Extented sont maintenant arrêtés",
 
