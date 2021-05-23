@@ -80,7 +80,7 @@ Module.register("MMM-GoogleAssistant", {
       photos: { // @todo use api
         usePhotos: false,
         useGooglePhotosAPI: false,
-        useBackground: false
+        useBackground: false,
         displayDelay: 10 * 1000,
         albums: [],
         sort: "new", // "old", "random"
