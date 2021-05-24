@@ -98,6 +98,7 @@ Module.register("MMM-GoogleAssistant", {
       },
       screen: {
         useScreen: false,
+        animateBody: true,
         delay: 5 * 60 * 1000,
         turnOffDisplay: true,
         mode: 1,
