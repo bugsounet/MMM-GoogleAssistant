@@ -44,5 +44,69 @@
   "MINUTE" : "minuto",
   "MINUTES" : "minutos",
   "SECOND": "segundo",
-  "SECONDS": "segundos"
+  "SECONDS": "segundos",
+
+  "GALoading": "Loading...",
+  "GAReady": "Ready!",
+  "GABegin": "Hi, how can i help?",
+
+  "LibraryLoading": "Loading Extented libraries...",
+  "LibraryLoaded": "GoogleAssistant Extented Library Loaded!",
+  "LibraryError": "Error when loading: {VALUES} library",
+
+  "LibrespotNoResponse": "No response from librespot!",
+  "LibrespotConnected": "Connected to librespot!",
+  "LibrespotConnecting": "Please wait, connecting to librespot...",
+  "LibrespotNoInstalled": "librespot is not installed !",
+  "LibrespotError": "Librespot: {VALUES}",
+
+  "YouTubePlaying": "YouTube will playing: {VALUES}",
+  "YouTubeError": "YouTube: {VALUES}",
+
+  "Volume": "Volume: {VALUES}",
+  "VolumePresetError": "Volume: Preset Error!",
+  "VolumeText": "Volume:",
+  "VolumeDisabled": "Volume Control is disabled",
+
+  "GovernorError": "Governor: {VALUES}",
+
+  "PirError": "Pir sensor error code: {VALUES}",
+
+  "SpotifyNoResult": "Spotify: No Result found",
+  "SpotifySearchFailed": "Spotify: Search and Play failed",
+  "SpotifyListenText": "Listening on",
+  "SpotifyForGA": "Spotify for Google Assistant",
+
+  "ScreenWakeUp": "Screen Wakeup by {VALUES}",
+  "ScreenLock": "Screen Lock by {VALUES}",
+  "ScreenUnLock": "Screen UnLock by {VALUES}",
+  "ScreenTurnOff": "Auto Turn Off Screen:",
+  "ScreenLastPresence": "Last Presence:",
+  "ScreenPowerOn": "Turn on screen",
+  "ScreenPowerOff": "Turn off screen",
+
+  "InternetDown" : "{VALUES}, Internet is DOWN!",
+  "InternetRestart": "Internet is now available! Restarting MagicMirror...",
+  "InternetAvailable": "Internet is now AVAILABLE, after {VALUES}",
+  
+  "EXTStop": "All Extented Process are now stopped",
+  "EXTNotActivated": "Extented Display is not activated",
+
+  "CastStart": "Start Casting YouTube",
+  "CastStop" : "Stop Casting YouTube",
+
+  "ShellExecError": "ShellExec return some Errors",
+  "ShellExecDone": "ShellExec executed sucessfully",
+
+  "LinksOpen": "Opening Extended Display Browser",
+  "LinksClose": "Closing Extented Display Browser",
+
+  "PhotosNotActivated": "Photo module is not activated",
+
+  "GPhotosNotActivated": "GooglePhotos API is not activated",
+  "GPhotosBckGrndActivated": "GooglePhotos useBackground is activated",
+  "GPFailedOpenURL": "Google Photos: Image load failed",
+  "GPOpen": "Open Google Photos",
+  "GPClose": "Close Google Photos"
 }
+
