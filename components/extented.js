@@ -1,6 +1,6 @@
 /* EXT Class for displaying */
 
-class Display {
+class Extented {
   constructor (Config, callbacks) {
     this.config = Config
     this.sendSocketNotification = callbacks.sendSocketNotification
@@ -47,7 +47,7 @@ class Display {
         forceVolume: false
       }
     }
-    console.log("[GA:EXT] DisplayClass Loaded")
+    console.log("[GA:EXT] ExtentedClass Loaded")
   }
 
   start(response) {

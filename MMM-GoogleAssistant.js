@@ -184,7 +184,7 @@ Module.register("MMM-GoogleAssistant", {
   getScripts: function() {
     return [
        "/modules/MMM-GoogleAssistant/components/response.js",
-       "/modules/MMM-GoogleAssistant/components/display.js",
+       "/modules/MMM-GoogleAssistant/components/extented.js",
        "/modules/MMM-GoogleAssistant/components/youtube.js",
        "/modules/MMM-GoogleAssistant/components/progressbar.js",
        "/modules/MMM-GoogleAssistant/components/spotify.js",
@@ -352,7 +352,7 @@ Module.register("MMM-GoogleAssistant", {
       this.config.Extented.spotify.SpotifyForGA = this.translate("SpotifyForGA")
       this.config.Extented.photos.LoadingText= this.translate("LOADING")
 
-      this.displayEXTResponse = new Display(this.config.Extented, callbacks)
+      this.displayEXTResponse = new Extented(this.config.Extented, callbacks)
       if (this.config.Extented.spotify.useSpotify) this.spotify = new Spotify(this.config.Extented.spotify, callbacks, this.config.debug)
       this.EXT = this.displayEXTResponse.EXT
       if (this.config.Extented.youtube.useYoutube && this.config.Extented.youtube.useVLC) this.initializeVolumeVLC()
