@@ -15,7 +15,15 @@ class Extented {
     this.GPindex = 0
     this.GPneedMorePicsFlag = true
     this.GPfirstScan = true
+    this.bar = null
+    this.radio = null
+    this.createRadio()
     this.EXT = {
+      radioPlayer: {
+        play: false,
+        img: null,
+        link: null,
+      },
       radio: false,
       speak: false,
       locked: false,
@@ -168,7 +176,7 @@ class Extented {
       if (YouTube) {
         let Type
         let YouTubeResponse = {}
-        if (this.EXT.radio) this.radioStop()
+        if (this.EXT.radioPlayer.play) this.radioStop()
         if (this.EXT.spotify.librespot && this.config.spotify.useSpotify) {
           this.sendSocketNotification("SPOTIFY_PAUSE")
         }
@@ -197,7 +205,7 @@ class Extented {
       var Spotify = SpotifyLink.exec(this.EXT.links.urls[0])
 
       if (Spotify) {
-        if (this.EXT.radio) this.radioStop()
+        if (this.EXT.radioPlayer.play) this.radioStop()
         if (!this.EXT.spotify.connected && this.config.spotify.deviceName) {
           this.sendSocketNotification("SPOTIFY_TRANSFER", this.config.spotify.deviceName)
         }
@@ -345,7 +353,7 @@ class Extented {
       this.resetLinks()
       this.hideDisplay()
     }
-    if (this.EXT.radio) this.radioStop()
+    if (this.EXT.radioPlayer.play) this.radioStop()
 
     /** emulation of displaying links **/
     this.EXT.links.running = false
@@ -589,6 +597,14 @@ class Extented {
     return (this.EXT.youtube.displayed || this.EXT.photos.displayed || this.EXT.links.displayed)
   }
 
+  /** hacking body for animated **/
+  prepareBody() {
+    document.body.id = "EXT_SCREEN_ANIMATE"
+    document.body.className= "animate__animated"
+    document.body.style.setProperty('--animate-duration', '0.5s')
+    //setTimeout(() => { document.body.classList.add("animate__zoomOut") } , 5000)
+  }
+
   /** Volume display **/
   prepareVolume (newGA) {
     var volume = document.createElement("div")
@@ -726,5 +742,124 @@ class Extented {
     this.Informations({message: "GPClose" })
     clearInterval(this.GPupdateTimer)
     this.updateTimer = null
+  }
+
+  /** Prepare TimeOut Bar **/
+  prepareBar () {
+    if (this.config.screen.displayStyle == "Bar") return
+    this.bar = new ProgressBar[this.config.screen.displayStyle](document.getElementById('EXT_SCREEN_BAR'), {
+      strokeWidth: this.config.screen.displayStyle == "Line" ? 2 : 5,
+      trailColor: '#1B1B1B',
+      trailWidth: 1,
+      easing: 'easeInOut',
+      duration: 500,
+      svgStyle: null,
+      from: {color: '#FF0000'},
+      to: {color: '#00FF00'},
+      text: {
+        style: {
+          position: 'absolute',
+          left: '50%',
+          top: this.config.screen.displayStyle == "Line" ? "0" : "50%",
+          padding: 0,
+          margin: 0,
+          transform: {
+              prefix: true,
+              value: 'translate(-50%, -50%)'
+          }
+        }
+      }
+    })
+  }
+
+
+
+  /** MagicMirror Show / hide rules (with body anmiation) **/
+  screenShowing () {
+    MM.getModules().enumerate((module)=> {
+      module.show(1000, {lockString: "EXT_SCREEN"})
+    })
+    if (!this.init) return this.init = true
+    if (this.config.screen.animateBody) {
+      document.body.classList.remove("animate__zoomOut")
+      document.body.classList.add("animate__zoomIn")
+    }
+  }
+
+  screenHiding () {
+    if (this.config.screen.animateBody) {
+      document.body.classList.remove("animate__zoomIn")
+      document.body.classList.add("animate__zoomOut")
+      document.body.addEventListener('animationend', (e) => {
+        if (e.animationName == "zoomOut") {
+          MM.getModules().enumerate((module)=> {
+            module.hide(1000, {lockString: "EXT_SCREEN"})
+          })
+        }
+      }, {once: false})
+    } else {
+      MM.getModules().enumerate((module)=> {
+        module.hide(1000, {lockString: "EXT_SCREEN"})
+      })
+    }
+  }
+
+  /** Create Radio function and cb **/
+  createRadio () {
+    this.radio = new Audio()
+
+    this.radio.addEventListener("ended", ()=> {
+      logEXT("Radio ended")
+      this.EXT.radioPlayer.play = false
+      this.showRadio()
+    })
+    this.radio.addEventListener("pause", ()=> {
+      logEXT("Radio paused")
+      this.EXT.radioPlayer.play = false
+      this.showRadio()
+    })
+    this.radio.addEventListener("abort", ()=> {
+      logEXT("Radio aborted")
+      this.EXT.radioPlayer.play = false
+      this.showRadio()
+    })
+    this.radio.addEventListener("error", (err)=> {
+      logEXT("Radio error: " + err)
+      this.EXT.radioPlayer.play = false
+      this.showRadio()
+    })
+    this.radio.addEventListener("loadstart", ()=> {
+      logEXT("Radio started")
+      this.EXT.radioPlayer.play = true
+      this.radio.volume = 0.6
+      this.showRadio()
+    })
+  }
+
+  showRadio() {
+    var screenContener = document.getElementById("EXT_SCREEN_CONTENER")
+    if (this.EXT.radioPlayer.img) {
+      var radio = document.getElementById("EXT_RADIO")
+      if (this.EXT.radioPlayer.play) {
+        radio.classList.remove("hidden")
+        radio.classList.remove("animate__flipOutX")
+        radio.classList.add("animate__flipInX")
+      }
+      else {
+        radio.classList.remove("animate__flipInX")
+        radio.classList.add("animate__flipOutX")
+      }
+    }
+    if (this.EXT.radioPlayer.play) {
+      this.sendSocketNotification("SCREEN_WAKEUP")
+      screenContener.classList.remove("animate__flipInX")
+      screenContener.classList.add("animate__flipOutX")
+      this.sendSocketNotification("SCREEN_LOCK", true)
+    } else {
+      this.sendSocketNotification("SCREEN_LOCK", false)
+      screenContener.classList.remove("hidden")
+      screenContener.classList.remove("animate__flipOutX")
+      screenContener.classList.add("animate__flipInX")
+    }
   }
 }

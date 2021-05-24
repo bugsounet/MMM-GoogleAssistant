@@ -213,6 +213,7 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   start: function () {
+    this.init= false
     this.userPresence = null
     this.lastPresence = null
     const helperConfig = [
@@ -259,7 +260,7 @@ Module.register("MMM-GoogleAssistant", {
       "sendSocketNotification": (noti, params) => {
         this.sendSocketNotification(noti, params)
       },
-      "radioStop": ()=> this.radio.pause(),
+      "radioStop": ()=> this.displayEXTResponse.radio.pause(),
       "spotifyStatus": (status) => { // try to use spotify callback to unlock screen ...
         if (status) this.EXT.spotify.connected = true
         else {
@@ -280,7 +281,6 @@ Module.register("MMM-GoogleAssistant", {
 
     /** Extented part **/
     if (this.config.Extented.useEXT) {
-      this.bar= null
       this.checkStyle()
       this.spotifyNewVolume = false
       this.userPresence = null
@@ -340,12 +340,6 @@ Module.register("MMM-GoogleAssistant", {
         }
         this.parseLoadedRecipe(JSON.stringify(EXTYTHooks))
       }
-      this.radioPlayer = {
-        play: false,
-        img: null,
-        link: null,
-      }
-      this.createRadio()
 
       // translate needed translate part in all languages
       this.config.Extented.volume.volumeText = this.translate("VolumeText")
@@ -517,7 +511,10 @@ Module.register("MMM-GoogleAssistant", {
         else return this.showConfigMergeAlert()
         if (this.config.Extented.useEXT) {
           this.displayEXTResponse.prepare()
-          if (this.config.Extented.screen.useScreen && (this.config.Extented.screen.displayStyle != "Text")) this.prepareBar()
+          if (this.config.Extented.screen.useScreen) {
+            if (this.config.Extented.screen.displayStyle != "Text") this.displayEXTResponse.prepareBar()
+            if (this.config.Extented.screen.animateBody) this.displayEXTResponse.prepareBody()
+          }
           if (this.config.Extented.spotify.useSpotify && this.config.Extented.spotify.useBottomBar) this.spotify.prepare()
           if (this.config.Extented.touch.useTouch) this.touchScreen(this.config.Extented.touch.mode)
         }
@@ -633,7 +630,7 @@ Module.register("MMM-GoogleAssistant", {
         else if (this.config.Extented.screen.displayStyle != "Text") {
           let value = (100 - ((payload * 100) / this.config.Extented.screen.delay))/100
           let timeOut = moment(new Date(this.config.Extented.screen.delay-payload)).format("mm:ss")
-          this.bar.animate(value, {
+          this.displayEXTResponse.bar.animate(value, {
             step: (state, bar) => {
               bar.path.setAttribute('stroke', state.color)
               bar.setText(this.config.Extented.screen.displayCounter ? timeOut : "")
@@ -653,10 +650,10 @@ Module.register("MMM-GoogleAssistant", {
         }
         break
       case "SCREEN_SHOWING":
-        this.screenShowing()
+        this.displayEXTResponse.screenShowing()
         break
       case "SCREEN_HIDING":
-        this.screenHiding()
+        this.displayEXTResponse.screenHiding()
         break
       case "SCREEN_POWER":
         this.sendNotification("SCREEN_POWER", payload)
@@ -709,7 +706,7 @@ Module.register("MMM-GoogleAssistant", {
           var screenContener = document.getElementById("EXT_SCREEN_CONTENER")
 
           if (payload.device.name == this.config.Extented.spotify.deviceName) {
-            if (this.EXT.radio) this.radio.pause()
+            if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
             this.EXT.spotify.currentVolume = payload.device.volume_percent
             if (!this.EXT.spotify.librespot) this.EXT.spotify.librespot = true
             if (this.EXT.spotify.connected && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
@@ -1277,7 +1274,7 @@ Module.register("MMM-GoogleAssistant", {
           this.EXT.spotify.targetVolume = this.EXT.spotify.currentVolume
           this.sendSocketNotification("SPOTIFY_VOLUME", this.config.Extented.spotify.minVolume)
         }
-        if (this.EXT.radio) this.radio.volume = 0.1
+        if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.volume = 0.1
         break
       case "standby":
         //this.EXT.speak = false
@@ -1290,7 +1287,7 @@ Module.register("MMM-GoogleAssistant", {
           this.sendSocketNotification("SPOTIFY_VOLUME", this.EXT.spotify.targetVolume)
         }
         this.EXT.spotify.forceVolume= false
-        if (this.EXT.radio) this.radio.volume = 0.6
+        if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.volume = 0.6
         break
       case "reply":
         if (this.displayEXTResponse.working()) this.displayEXTResponse.showDisplay()
@@ -1301,107 +1298,6 @@ Module.register("MMM-GoogleAssistant", {
       case "hook":
       case "error":
         break
-    }
-  },
-
-  /** Prepare TimeOut Bar **/
-  prepareBar: function () {
-    if (this.config.Extented.screen.displayStyle == "Bar") return
-    this.bar = new ProgressBar[this.config.Extented.screen.displayStyle](document.getElementById('EXT_SCREEN_BAR'), {
-      strokeWidth: this.config.Extented.screen.displayStyle == "Line" ? 2 : 5,
-      trailColor: '#1B1B1B',
-      trailWidth: 1,
-      easing: 'easeInOut',
-      duration: 500,
-      svgStyle: null,
-      from: {color: '#FF0000'},
-      to: {color: '#00FF00'},
-      text: {
-        style: {
-          position: 'absolute',
-          left: '50%',
-          top: this.config.Extented.screen.displayStyle == "Line" ? "0" : "50%",
-          padding: 0,
-          margin: 0,
-          transform: {
-              prefix: true,
-              value: 'translate(-50%, -50%)'
-          }
-        }
-      }
-    })
-  },
-
-  screenShowing: function() {
-    MM.getModules().enumerate((module)=> {
-      module.show(1000, {lockString: "EXT_SCREEN"})
-    })
-  },
-
-  screenHiding: function() {
-    MM.getModules().enumerate((module)=> {
-      module.hide(1000, {lockString: "EXT_SCREEN"})
-    })
-  },
-
-  /** Create Radio function and cb **/
-  createRadio: function() {
-    this.radio = new Audio()
-
-    this.radio.addEventListener("ended", ()=> {
-      logEXT("Radio ended")
-      this.radioPlayer.play = false
-      this.showRadio()
-    })
-    this.radio.addEventListener("pause", ()=> {
-      logEXT("Radio paused")
-      this.radioPlayer.play = false
-      this.showRadio()
-    })
-    this.radio.addEventListener("abort", ()=> {
-      logEXT("Radio aborted")
-      this.radioPlayer.play = false
-      this.showRadio()
-    })
-    this.radio.addEventListener("error", (err)=> {
-      logEXT("Radio error: " + err)
-      this.radioPlayer.play = false
-      this.showRadio()
-    })
-    this.radio.addEventListener("loadstart", ()=> {
-      logEXT("Radio started")
-      this.radioPlayer.play = true
-      this.radio.volume = 0.6
-      this.showRadio()
-    })
-  },
-
-  showRadio: function() {
-    this.EXT = this.displayEXTResponse.EXT
-    this.EXT.radio = this.radioPlayer.play
-    var screenContener = document.getElementById("EXT_SCREEN_CONTENER")
-    if (this.radioPlayer.img) {
-      var radio = document.getElementById("EXT_RADIO")
-      if (this.radioPlayer.play) {
-        radio.classList.remove("hidden")
-        radio.classList.remove("animate__flipOutX")
-        radio.classList.add("animate__flipInX")
-      }
-      else {
-        radio.classList.remove("animate__flipInX")
-        radio.classList.add("animate__flipOutX")
-      }
-    }
-    if (this.EXT.radio) {
-      this.sendSocketNotification("SCREEN_WAKEUP")
-      screenContener.classList.remove("animate__flipInX")
-      screenContener.classList.add("animate__flipOutX")
-      this.sendSocketNotification("SCREEN_LOCK", true)
-    } else {
-      this.sendSocketNotification("SCREEN_LOCK", false)
-      screenContener.classList.remove("hidden")
-      screenContener.classList.remove("animate__flipOutX")
-      screenContener.classList.add("animate__flipInX")
     }
   },
 
@@ -1470,6 +1366,13 @@ Module.register("MMM-GoogleAssistant", {
     else logEXT("Touch Screen Function added. [mode " + mode +"]")
   },
 
+  /** Send Welcome **/
+  sendWelcome () {
+    if (this.config.Extented.welcome.useWelcome && this.config.Extented.welcome.welcome) {
+      this.assistantActivate({type: "TEXT", key: this.config.Extented.welcome.welcome, chime: false}, Date.now())
+    }
+  },
+
   checkStyle: function () {
     /** Crash prevent on Time Out Style Displaying **/
     /** --> Set to "Text" if not found */
@@ -1513,6 +1416,10 @@ Module.register("MMM-GoogleAssistant", {
     console.log("[GA:EXT] VLC Volume Control initialized!")
   },
 
+/**************************
+ **** Recipes commands ****
+ *************************/
+
   /** Spotify commands (for recipe) **/
   SpotifyCommand: function(command, payload) {
     if (!this.config.Extented.useEXT) return
@@ -1521,7 +1428,7 @@ Module.register("MMM-GoogleAssistant", {
       switch (command) {
         case "PLAY":
           if (this.EXT.youtube.displayed && this.EXT.spotify.librespot) {
-            if (this.EXT.radio) this.radio.pause()
+            if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
             if (this.config.Extented.youtube.useVLC) {
               this.sendSocketNotification("YT_STOP")
               this.EXT.youtube.displayed = false
@@ -1597,46 +1504,6 @@ Module.register("MMM-GoogleAssistant", {
     }
   },
 
-  resume: function() {
-    if (this.config.Extented.useEXT) {
-      if (this.config.Extented.spotify.useSpotify) {
-        this.EXT = this.displayEXTResponse.EXT
-        if (this.EXT.spotify.connected && this.config.Extented.spotify.useBottomBar) {
-          this.displayEXTResponse.showSpotify()
-          logEXT("Spotify is resumed.")
-        }
-      }
-      if (this.config.Extented.photos.usePhotos &&
-        this.config.Extented.photos.useBackground &&
-        this.config.Extented.photos.useGooglePhotosAPI
-      ) {
-        var GPhotos = document.getElementById("EXT_GPHOTO")
-        GPhotos.classList.remove("hidden")
-        logEXT("GPhotos is resumed.")
-      }
-    }
-  },
-
-  suspend: function() {
-    if (this.config.Extented.useEXT) {
-      if (this.config.Extented.spotify.useSpotify) {
-        this.EXT = this.displayEXTResponse.EXT
-        if (this.EXT.spotify.connected && this.config.Extented.spotify.useBottomBar) {
-          this.displayEXTResponse.hideSpotify()
-          logEXT("Spotify is suspended.")
-        }
-      }
-      if (this.config.Extented.photos.usePhotos &&
-        this.config.Extented.photos.useBackground &&
-        this.config.Extented.photos.useGooglePhotosAPI
-      ) {
-        var GPhotos = document.getElementById("EXT_GPHOTO")
-        GPhotos.classList.add("hidden")
-        logEXT("GPhotos is suspended.")
-      }
-    }
-  },
-
   /** stopCommand (for recipe) **/
   stopCommand: function() {
     if (!this.config.Extented.useEXT) return
@@ -1665,7 +1532,7 @@ Module.register("MMM-GoogleAssistant", {
       if (this.config.Extented.spotify.usePause) this.sendSocketNotification("SPOTIFY_PAUSE")
       else this.sendSocketNotification("SPOTIFY_STOP")
     }
-    if (this.EXT.radio) this.radio.pause()
+    if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
     this.sendNotification("TV-STOP") // Stop MMM-FreeboxTV
     this.Informations("information", { message: "EXTStop" })
   },
@@ -1688,12 +1555,11 @@ Module.register("MMM-GoogleAssistant", {
     if (payload.link) {
       if (payload.img) {
         var radioImg = document.getElementById("EXT_RADIO_IMG")
-        this.radioPlayer.img = payload.img
-        radioImg.src = this.radioPlayer.img
+        this.EXT.radioPlayer.img = payload.img
+        radioImg.src = this.EXT.radioPlayer.img
       }
-      this.radioPlayer.link = payload.link
-      this.radio.src = this.radioPlayer.link
-      this.radio.autoplay = true
+      this.displayEXTResponse.radio.src = payload.link
+      this.displayEXTResponse.radio.autoplay = true
     }
   },
 
@@ -1705,13 +1571,7 @@ Module.register("MMM-GoogleAssistant", {
     if (this.config.Extented.photos.useBackground) return this.Informations("warning", { message: "GPhotosBckGrndActivated" })
     this.displayEXTResponse.showGooglePhotoAPI()
   },
-
-  /** Send Welcome **/
-  sendWelcome: function() {
-    if (this.config.Extented.welcome.useWelcome && this.config.Extented.welcome.welcome) {
-      this.assistantActivate({type: "TEXT", key: this.config.Extented.welcome.welcome, chime: false}, Date.now())
-    }
-  },
+/***********************
 
   /** internet utils **/
   dateDiff: function (date1, date2) {
@@ -1790,5 +1650,45 @@ Module.register("MMM-GoogleAssistant", {
       this.assistantResponse.end(false)
       this.assistantResponse.showTranscription("")
     }, this.config.responseConfig.screenOutputTimer)
+  },
+
+  resume: function() {
+    if (this.config.Extented.useEXT) {
+      if (this.config.Extented.spotify.useSpotify) {
+        this.EXT = this.displayEXTResponse.EXT
+        if (this.EXT.spotify.connected && this.config.Extented.spotify.useBottomBar) {
+          this.displayEXTResponse.showSpotify()
+          logEXT("Spotify is resumed.")
+        }
+      }
+      if (this.config.Extented.photos.usePhotos &&
+        this.config.Extented.photos.useBackground &&
+        this.config.Extented.photos.useGooglePhotosAPI
+      ) {
+        var GPhotos = document.getElementById("EXT_GPHOTO")
+        GPhotos.classList.remove("hidden")
+        logEXT("GPhotos is resumed.")
+      }
+    }
+  },
+
+  suspend: function() {
+    if (this.config.Extented.useEXT) {
+      if (this.config.Extented.spotify.useSpotify) {
+        this.EXT = this.displayEXTResponse.EXT
+        if (this.EXT.spotify.connected && this.config.Extented.spotify.useBottomBar) {
+          this.displayEXTResponse.hideSpotify()
+          logEXT("Spotify is suspended.")
+        }
+      }
+      if (this.config.Extented.photos.usePhotos &&
+        this.config.Extented.photos.useBackground &&
+        this.config.Extented.photos.useGooglePhotosAPI
+      ) {
+        var GPhotos = document.getElementById("EXT_GPHOTO")
+        GPhotos.classList.add("hidden")
+        logEXT("GPhotos is suspended.")
+      }
+    }
   }
 })
