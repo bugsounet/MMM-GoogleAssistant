@@ -267,7 +267,8 @@ Module.register("MMM-GoogleAssistant", {
           if (this.EXT.spotify.librespot && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
             var screenContener = document.getElementById("EXT_SCREEN_CONTENER")
             this.sendSocketNotification("SCREEN_LOCK", false)
-            screenContener.classList.remove("hidden")
+            screenContener.classList.remove("hidden", "animate__flipOutX")
+            screenContener.classList.add("animate__flipInX")
           }
           this.EXT.spotify.librespot = false
         }
@@ -421,6 +422,12 @@ Module.register("MMM-GoogleAssistant", {
       /** Screen Contener (text, bar, last presence) **/
       var screenContener = document.createElement("div")
       screenContener.id = "EXT_SCREEN_CONTENER"
+      screenContener.className= "animate__animated animate__flipInX"
+      screenContener.style.setProperty('--animate-duration', '1s')
+      screenContener.addEventListener('animationend', (e) => {
+        if (e.animationName == "flipOutX") screenContener.classList.add("hidden")
+        if (e.animationName == "flipInX") screenContener.classList.remove("hidden")
+      }, {once: false})
 
       /***** Screen TimeOut Text *****/
       var screen = document.createElement("div")
@@ -483,7 +490,12 @@ Module.register("MMM-GoogleAssistant", {
       /** Radio **/
       var radio = document.createElement("div")
       radio.id = "EXT_RADIO"
-      radio.className = "hidden"
+      radio.className = "hidden animate__animated animate__flipInX"
+      radio.style.setProperty('--animate-duration', '1s')
+      radio.addEventListener('animationend', (e) => {
+        if (e.animationName == "flipOutX") radio.classList.add("hidden")
+        if (e.animationName == "flipInX") radio.classList.remove("hidden")
+      }, {once: false})
       var radioImg = document.createElement("img")
       radioImg.id = "EXT_RADIO_IMG"
       radio.appendChild(radioImg)
@@ -695,6 +707,7 @@ Module.register("MMM-GoogleAssistant", {
           this.EXT.spotify.repeat = payload.repeat_state
           this.EXT.spotify.shuffle = payload.shuffle_state
           var screenContener = document.getElementById("EXT_SCREEN_CONTENER")
+
           if (payload.device.name == this.config.Extented.spotify.deviceName) {
             if (this.EXT.radio) this.radio.pause()
             this.EXT.spotify.currentVolume = payload.device.volume_percent
@@ -702,13 +715,16 @@ Module.register("MMM-GoogleAssistant", {
             if (this.EXT.spotify.connected && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
               this.sendSocketNotification("SCREEN_WAKEUP")
               this.sendSocketNotification("SCREEN_LOCK", true)
-              screenContener.classList.add("hidden")
+              screenContener.classList.remove("animate__flipInX")
+              screenContener.classList.add("animate__flipOutX")
             }
           }
           else {
             if (this.EXT.spotify.connected && this.EXT.spotify.librespot && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
               this.sendSocketNotification("SCREEN_LOCK", false)
               screenContener.classList.remove("hidden")
+              screenContener.classList.remove("animate__flipOutX")
+              screenContener.classList.add("animate__flipInX")
             }
             if (this.EXT.spotify.librespot) this.EXT.spotify.librespot = false
           }
@@ -757,23 +773,11 @@ Module.register("MMM-GoogleAssistant", {
           this.displayEXTResponse.GPneedMorePicsFlag = false
           this.displayEXTResponse.GPscanned = payload
           this.displayEXTResponse.GPindex = 0
-          /**
-          if (this.displayEXTResponse.GPfirstScan) {
-            this.displayEXTResponse.updatePhotos() //little faster starting
-          }
-          */
           this.displayEXTResponse.GPscanned = payload
-          //console.log("GPhotos_PICT", payload)
         }
         break
       case "GPhotos_INIT":
         this.displayEXTResponse.albums = payload
-        //console.log("GPhotos_INIT", payload)
-        /*
-        this.updateTimer = setInterval(()=>{
-          this.displayEXTResponse.updatePhotos()
-        }, this.config.Extented.photos.updateInterval)
-        */
         break
     }
   },
@@ -1375,16 +1379,29 @@ Module.register("MMM-GoogleAssistant", {
   showRadio: function() {
     this.EXT = this.displayEXTResponse.EXT
     this.EXT.radio = this.radioPlayer.play
+    var screenContener = document.getElementById("EXT_SCREEN_CONTENER")
     if (this.radioPlayer.img) {
       var radio = document.getElementById("EXT_RADIO")
-      if (this.radioPlayer.play) radio.classList.remove("hidden")
-      else radio.classList.add("hidden")
+      if (this.radioPlayer.play) {
+        radio.classList.remove("hidden")
+        radio.classList.remove("animate__flipOutX")
+        radio.classList.add("animate__flipInX")
+      }
+      else {
+        radio.classList.remove("animate__flipInX")
+        radio.classList.add("animate__flipOutX")
+      }
     }
     if (this.EXT.radio) {
       this.sendSocketNotification("SCREEN_WAKEUP")
+      screenContener.classList.remove("animate__flipInX")
+      screenContener.classList.add("animate__flipOutX")
       this.sendSocketNotification("SCREEN_LOCK", true)
     } else {
       this.sendSocketNotification("SCREEN_LOCK", false)
+      screenContener.classList.remove("hidden")
+      screenContener.classList.remove("animate__flipOutX")
+      screenContener.classList.add("animate__flipInX")
     }
   },
 

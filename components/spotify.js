@@ -41,8 +41,9 @@ class Spotify {
   prepareMini() {
     var viewDom = document.createElement("div")
     viewDom.id = "EXT_SPOTIFY"
-    viewDom.classList.add("inactive")
-    viewDom.classList.add("mini")
+    viewDom.className= "inactive mini animate__animated"
+    viewDom.style.setProperty('--animate-duration', '1s')
+
 
     viewDom.appendChild(this.getHTMLElementWithID('div', "EXT_SPOTIFY_BACKGROUND"))
 
@@ -69,29 +70,12 @@ class Spotify {
   updatePlayback(status) {
     var dom = document.getElementById("EXT_SPOTIFY")
     var module = document.getElementById("module_EXT_Spotify")
-    this.timer = null
     clearTimeout(this.timer)
-    if (status) {
-      if (this.config.useBottomBar) {
-        module.style.display = "block"
-        dom.classList.remove("bottomOut")
-        dom.classList.add("bottomIn")
-      }
-      dom.classList.remove("inactive")
-    }
-    else {
-      if (this.config.useBottomBar) {
-        dom.classList.remove("bottomIn")
-        dom.classList.add("bottomOut")
-        this.timer = setTimeout(() => {
-          dom.classList.add("inactive")
-          module.style.display = "none"
-        }, 500)
-      } else {
-        dom.classList.add("inactive")
-      }
-    }
-
+    this.timer = null
+    if (!this.config.useBottomBar) dom.addEventListener('animationend', (e) => {
+      if (e.animationName == "flipOutX") dom.classList.add("inactive")
+      if (e.animationName == "flipInX") dom.classList.remove("inactive")
+    }, {once: true})
     if (this.connected && !status) {
       this.connected = false
       this.spotifyStatus(false)
@@ -101,6 +85,30 @@ class Spotify {
       this.connected = true
       this.spotifyStatus(true)
       if (this.debug) console.log("[SPOTIFY] Connected")
+      dom.classList.remove("inactive")
+    }
+    if (status) {
+      if (this.config.useBottomBar) {
+        module.style.display = "block"
+        dom.classList.remove("bottomOut")
+        dom.classList.add("bottomIn")
+      } else {
+        dom.classList.remove("inactive")
+        dom.classList.remove("animate__flipOutX")
+        dom.classList.add("animate__flipInX")
+      }
+    } else {
+      if (this.config.useBottomBar) {
+        dom.classList.remove("bottomIn")
+        dom.classList.add("bottomOut")
+        this.timer = setTimeout(() => {
+          dom.classList.add("inactive")
+          module.style.display = "none"
+        }, 500)
+      } else {
+        dom.classList.remove("animate__flipInX")
+        dom.classList.add("animate__flipOutX")
+      }
     }
   }
 
