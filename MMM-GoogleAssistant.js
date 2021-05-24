@@ -84,8 +84,7 @@ Module.register("MMM-GoogleAssistant", {
         displayDelay: 10 * 1000,
         albums: [],
         sort: "new", // "old", "random"
-        showWidth: 1080, // These values will be used for quality of downloaded photos to show. real size to show in your MagicMirror region is recommended.
-        showHeight: 1920,
+        hiResolution: true,
         timeFormat: "DD/MM/YYYY HH:mm"
       },
       volume: {
@@ -351,6 +350,7 @@ Module.register("MMM-GoogleAssistant", {
       this.config.Extented.volume.volumeText = this.translate("VolumeText")
       this.config.Extented.spotify.deviceDisplay = this.translate("SpotifyListenText")
       this.config.Extented.spotify.SpotifyForGA = this.translate("SpotifyForGA")
+      this.config.Extented.photos.LoadingText= this.translate("LOADING")
 
       this.displayEXTResponse = new Display(this.config.Extented, callbacks)
       if (this.config.Extented.spotify.useSpotify) this.spotify = new Spotify(this.config.Extented.spotify, callbacks, this.config.debug)
@@ -511,6 +511,15 @@ Module.register("MMM-GoogleAssistant", {
         }
         this.assistantResponse.prepareGA()
         this.Loading()
+        if (this.config.Extented.useEXT &&
+          this.config.Extented.photos.usePhotos &&
+          this.config.Extented.photos.useBackground
+        ) {
+          setTimeout(() => {
+            if (this.config.Extented.photos.useGooglePhotosAPI) this.displayEXTResponse.showBackgroundGooglePhotoAPI()
+            else this.Informations("warning", {message: "GPhotosNotActivated"})
+          }, 10000)
+        }
         break
       case "GA_ACTIVATE":
         this.assistantActivate({ type:"MIC" })
@@ -1572,21 +1581,41 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   resume: function() {
-    if (this.config.Extented.useEXT && this.config.Extented.spotify.useSpotify) {
-      this.EXT = this.displayEXTResponse.EXT
-      if (this.EXT.spotify.connected && this.config.Extented.spotify.useBottomBar) {
-        this.displayEXTResponse.showSpotify()
-        logEXT("Spotify is resumed.")
+    if (this.config.Extented.useEXT) {
+      if (this.config.Extented.spotify.useSpotify) {
+        this.EXT = this.displayEXTResponse.EXT
+        if (this.EXT.spotify.connected && this.config.Extented.spotify.useBottomBar) {
+          this.displayEXTResponse.showSpotify()
+          logEXT("Spotify is resumed.")
+        }
+      }
+      if (this.config.Extented.photos.usePhotos &&
+        this.config.Extented.photos.useBackground &&
+        this.config.Extented.photos.useGooglePhotosAPI
+      ) {
+        var GPhotos = document.getElementById("EXT_GPHOTO")
+        GPhotos.classList.remove("hidden")
+        logEXT("GPhotos is resumed.")
       }
     }
   },
 
   suspend: function() {
-    if (this.config.Extented.useEXT && this.config.Extented.spotify.useSpotify) {
-      this.EXT = this.displayEXTResponse.EXT
-      if (this.EXT.spotify.connected && this.config.Extented.spotify.useBottomBar) {
-        this.displayEXTResponse.hideSpotify()
-        logEXT("Spotify is suspended.")
+    if (this.config.Extented.useEXT) {
+      if (this.config.Extented.spotify.useSpotify) {
+        this.EXT = this.displayEXTResponse.EXT
+        if (this.EXT.spotify.connected && this.config.Extented.spotify.useBottomBar) {
+          this.displayEXTResponse.hideSpotify()
+          logEXT("Spotify is suspended.")
+        }
+      }
+      if (this.config.Extented.photos.usePhotos &&
+        this.config.Extented.photos.useBackground &&
+        this.config.Extented.photos.useGooglePhotosAPI
+      ) {
+        var GPhotos = document.getElementById("EXT_GPHOTO")
+        GPhotos.classList.add("hidden")
+        logEXT("GPhotos is suspended.")
       }
     }
   },

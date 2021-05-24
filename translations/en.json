@@ -105,7 +105,7 @@
 
   "GPhotosNotActivated": "GooglePhotos API is not activated",
   "GPhotosBckGrndActivated": "GooglePhotos useBackground is activated",
-  "GPFailedOpenURL": "Image load failed",
+  "GPFailedOpenURL": "Google Photos: Image load failed",
   "GPOpen": "Open Google Photos",
   "GPClose": "Close Google Photos"
 }

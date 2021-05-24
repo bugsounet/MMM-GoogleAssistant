@@ -183,9 +183,7 @@ class AssistantResponse {
     GABarIcon.src = this.resourcesDir + "assistant_tv_logo.svg"
     GAAssistantWordIcon.appendChild(GABarIcon)
 
-    //document.body.appendChild(GA)
     newGA.appendChild(GA)
-    //document.body.appendChild(newGA)
 
     this.infosDiv = document.getElementById("Infos")
   }

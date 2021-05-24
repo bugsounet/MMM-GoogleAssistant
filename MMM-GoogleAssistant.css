@@ -716,6 +716,10 @@ progress[value]#EXT_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
     width: 100%;
 }
 
+#EXT_GPHOTO.hidden {
+  display:none;
+}
+
 #EXT_GPHOTO_CURRENT {
   background-size:contain;
   background-repeat:no-repeat;

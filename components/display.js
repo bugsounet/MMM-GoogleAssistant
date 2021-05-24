@@ -376,31 +376,29 @@ class Display {
     var scoutphoto = document.createElement("img")
     scoutphoto.id = "EXT_PHOTO"
     scoutphoto.classList.add("hidden")
+    scoutpan.appendChild(scoutphoto)
 
-    var scoutGPhotosAPI = document.createElement("div")
-    scoutGPhotosAPI.id = "EXT_GPHOTO"
-    scoutGPhotosAPI.classList.add("hidden")
+    if (this.config.photos.useBackground) this.prepareGPhotosBackground()
+    else {
+      var scoutGPhotosAPI = document.createElement("div")
+      scoutGPhotosAPI.id = "EXT_GPHOTO"
+      scoutGPhotosAPI.classList.add("hidden")
+      var scoutGPhotosAPIBack = document.createElement("div")
+      scoutGPhotosAPIBack.id = "EXT_GPHOTO_BACK"
+      var scoutGPhotosAPICurrent = document.createElement("div")
+      scoutGPhotosAPICurrent.id = "EXT_GPHOTO_CURRENT"
+      scoutGPhotosAPICurrent.addEventListener('animationend', ()=>{
+        scoutGPhotosAPICurrent.classList.remove("animated")
+      })
+      var scoutGPhotosAPIInfo = document.createElement("div")
+      scoutGPhotosAPIInfo.id = "EXT_GPHOTO_INFO"
+      scoutGPhotosAPIInfo.innerHTML = "Extented GPhotos Loading..."
 
-    var scoutGPhotosAPIBack = document.createElement("div")
-    scoutGPhotosAPIBack.id = "EXT_GPHOTO_BACK"
-    var scoutGPhotosAPICurrent = document.createElement("div")
-    scoutGPhotosAPICurrent.id = "EXT_GPHOTO_CURRENT"
-    /*
-    if (this.data.position.search("fullscreen") == -1) {
-      if (this.config.showWidth) wrapper.style.width = this.config.showWidth + "px"
-      if (this.config.showHeight) wrapper.style.height = this.config.showHeight + "px"
+      scoutGPhotosAPI.appendChild(scoutGPhotosAPIBack)
+      scoutGPhotosAPI.appendChild(scoutGPhotosAPICurrent)
+      scoutGPhotosAPI.appendChild(scoutGPhotosAPIInfo)
+      scoutpan.appendChild(scoutGPhotosAPI)
     }
-    */
-    scoutGPhotosAPICurrent.addEventListener('animationend', ()=>{
-      scoutGPhotosAPICurrent.classList.remove("animated")
-    })
-    var scoutGPhotosAPIInfo = document.createElement("div")
-    scoutGPhotosAPIInfo.id = "EXT_GPHOTO_INFO"
-    scoutGPhotosAPIInfo.innerHTML = "Extented GPhotos Loading..."
-
-    scoutGPhotosAPI.appendChild(scoutGPhotosAPIBack)
-    scoutGPhotosAPI.appendChild(scoutGPhotosAPICurrent)
-    scoutGPhotosAPI.appendChild(scoutGPhotosAPIInfo)
 
     var scout = document.createElement("webview")
     scout.useragent= "Mozilla/5.0 (SMART-TV; Linux; Tizen 2.4.0) AppleWebkit/538.1 (KHTML, like Gecko) SamsungBrowser/1.1 TV Safari/538.1"
@@ -438,15 +436,48 @@ class Display {
       }
     }
     scoutpan.appendChild(scoutyt)
-    scoutpan.appendChild(scoutphoto)
-    scoutpan.appendChild(scoutGPhotosAPI)
     scoutpan.appendChild(scout)
     dom.appendChild(scoutpan)
 
-    //document.body.appendChild(dom)
     newGA.appendChild(dom)
     this.prepareVolume(newGA)
     return dom
+  }
+
+  // make a fake module for GPhotos fullscreen below background
+  prepareGPhotosBackground () {
+    if (!this.config.photos.useGooglePhotosAPI) return
+    var nodes = document.getElementsByClassName("region fullscreen below")
+    var pos = nodes[0].querySelector(".container")
+    var children = pos.children
+    var module = document.createElement("div")
+    module.id = "module_Fake_EXT_GPHOTO"
+    module.classList.add("module", "EXT_GPHOTO", "hidden")
+    var header = document.createElement("header")
+    header.classList.add("module-header")
+    header.style.display = "none"
+    module.appendChild(header)
+    var content = document.createElement("div")
+    content.classList.add("module-content")
+    var viewDom = document.createElement("div")
+    viewDom.id = "EXT_GPHOTO"
+    var back = document.createElement("div")
+    back.id = "EXT_GPHOTO_BACK"
+    var current = document.createElement("div")
+    current.id = "EXT_GPHOTO_CURRENT"
+    current.addEventListener('animationend', ()=>{
+      current.classList.remove("animated")
+    })
+    var info = document.createElement("div")
+    info.id = "EXT_GPHOTO_INFO"
+    info.innerHTML = this.config.photos.LoadingText
+    viewDom.appendChild(back)
+    viewDom.appendChild(current)
+    viewDom.appendChild(info)
+
+    content.appendChild(viewDom)
+    module.appendChild(content)
+    pos.insertBefore(module, children[children.length])
   }
 
   showDisplay() {
@@ -456,7 +487,6 @@ class Display {
     var photo = document.getElementById("EXT_PHOTO")
     var photoAPI = document.getElementById("EXT_GPHOTO")
     var winEXT = document.getElementById("EXT")
-    //if (this.EXT.speak) winEXT.classList.add("hidden")
     winEXT.classList.remove("hidden")
 
     if (this.EXT.links.displayed) iframe.classList.remove("hidden")
@@ -482,13 +512,10 @@ class Display {
       photo.classList.add("hidden")
       photoAPI.classList.add("hidden")
     }
-    //if (this.EXT.speak || !this.working()) winEXT.classList.add("hidden")
-    //console.log("working",this.working())
     if (!this.working()) {
       winEXT.classList.add("hidden")
       this.EXTUnlock()
     }
-    //if (!this.EXT.speak && !this.working()) this.EXTUnlock()
   }
 
   hideSpotify() {
@@ -597,23 +624,26 @@ class Display {
   }
 
   /** GPhotos API **/
-  updatePhotos (dir=0) {
+  updatePhotos () {
     this.GPfirstScan == false
 
     if (this.GPscanned.length == 0) {
       this.sendSocketNotification("GP_MORE_PICTS")
       return
     }
-    this.GPindex = this.GPindex + dir //only used for reversing
     if (this.GPindex < 0) this.index = 0
     if (this.GPindex >= this.GPscanned.length) this.GPindex = 0
     var target = this.GPscanned[this.GPindex]
-    var url = target.baseUrl //+ `=w${this.config.showWidth}-h${this.config.showHeight}`
+    if (this.config.photos.hiResolution) {
+      var url = target.baseUrl + "=w1080-h1920"
+    }
+    else var url = target.baseUrl
     this.ready(url, target)
     this.GPindex++
     if (this.GPindex >= this.GPscanned.length) {
       this.GPindex = 0
       this.GPneedMorePicsFlag = true
+      if (!this.config.photos.useBackground) this.hideGooglePhotoAPI()
     }
     if (this.GPneedMorePicsFlag) {
       this.sendSocketNotification("GP_MORE_PICTS")
@@ -669,6 +699,22 @@ class Display {
     this.EXTLock()
     this.EXT.photos.displayed = true
     this.showDisplay()
+    this.updatePhotos()
+
+    this.GPupdateTimer = setInterval(()=>{
+      this.updatePhotos()
+    }, this.config.photos.displayDelay)
+  }
+
+  hideGooglePhotoAPI () {
+    this.stopGooglePhotoAPI()
+    this.EXTUnlock()
+    this.EXT.photos.displayed = false
+    this.hideDisplay()
+  }
+
+  showBackgroundGooglePhotoAPI () {
+    this.Informations({message: "GPOpen" })
     this.updatePhotos()
 
     this.GPupdateTimer = setInterval(()=>{
