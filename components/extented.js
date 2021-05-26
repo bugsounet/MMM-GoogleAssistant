@@ -11,16 +11,17 @@ class Extented {
     this.YTError = callbacks.YTError
     this.timer = null
     this.player = null
-    this.GPupdateTimer = null
-    this.GPalbums = null
-    this.GPscanned = []
-    this.GPindex = 0
-    this.GPneedMorePicsFlag = true
-    this.GPfirstScan = true
     this.bar = null
     this.radio = null
     this.createRadio()
     this.EXT = {
+      GPhotos: {
+        updateTimer: null,
+        albums: null,
+        scanned: [],
+        index: 0,
+        needMorePicsFlag: true
+      },
       radioPlayer: {
         play: false,
         img: null,
@@ -158,7 +159,6 @@ class Extented {
     var photo = document.getElementById("EXT_PHOTO")
     photo.removeAttribute('src')
     if (this.config.photos.useGooglePhotosAPI) {
-      //console.log("reset GPhotos")
       this.stopGooglePhotoAPI()
     }
     logEXT("Reset Photos", this.EXT)
@@ -645,27 +645,25 @@ class Extented {
 
   /** GPhotos API **/
   updatePhotos () {
-    this.GPfirstScan == false
-
-    if (this.GPscanned.length == 0) {
+    if (this.EXT.GPhotos.scanned.length == 0) {
       this.sendSocketNotification("GP_MORE_PICTS")
       return
     }
-    if (this.GPindex < 0) this.index = 0
-    if (this.GPindex >= this.GPscanned.length) this.GPindex = 0
-    var target = this.GPscanned[this.GPindex]
+    if (this.EXT.GPhotos.index < 0) this.EXT.GPhotos.index = 0
+    if (this.EXT.GPhotos.index >= this.EXT.GPhotos.scanned.length) this.EXT.GPhotos.index = 0
+    var target = this.EXT.GPhotos.scanned[this.EXT.GPhotos.index]
     if (this.config.photos.hiResolution) {
       var url = target.baseUrl + "=w1080-h1920"
     }
     else var url = target.baseUrl
     this.ready(url, target)
-    this.GPindex++
-    if (this.GPindex >= this.GPscanned.length) {
-      this.GPindex = 0
-      this.GPneedMorePicsFlag = true
+    this.EXT.GPhotos.index++
+    if (this.EXT.GPhotos.index >= this.EXT.GPhotos.scanned.length) {
+      this.EXT.GPhotos.index = 0
+      this.EXT.GPhotos.needMorePicsFlag = true
       if (!this.config.photos.useBackground) this.hideGooglePhotoAPI()
     }
-    if (this.GPneedMorePicsFlag) {
+    if (this.EXT.GPhotos.needMorePicsFlag) {
       this.sendSocketNotification("GP_MORE_PICTS")
     }
   }
@@ -685,7 +683,7 @@ class Extented {
       current.style.backgroundImage = `url(${url})`
       current.classList.add("animated")
       var info = document.getElementById("EXT_GPHOTO_INFO")
-      var album = this.albums.find((a)=>{
+      var album = this.EXT.GPhotos.albums.find((a)=>{
         if (a.id == target._albumId) return true
         return false
       })
@@ -721,7 +719,7 @@ class Extented {
     this.showDisplay()
     this.updatePhotos()
 
-    this.GPupdateTimer = setInterval(()=>{
+    this.EXT.GPhotos.updateTimer = setInterval(()=>{
       this.updatePhotos()
     }, this.config.photos.displayDelay)
   }
@@ -734,18 +732,18 @@ class Extented {
   }
 
   showBackgroundGooglePhotoAPI () {
-    this.Informations({message: "GPOpen" })
+    if (this.EXT.GPhotos.albums) this.Informations({message: "GPOpen" })
     this.updatePhotos()
 
-    this.GPupdateTimer = setInterval(()=>{
+    this.EXT.GPhotos.updateTimer = setInterval(()=>{
       this.updatePhotos()
     }, this.config.photos.displayDelay)
   }
 
   stopGooglePhotoAPI () {
     this.Informations({message: "GPClose" })
-    clearInterval(this.GPupdateTimer)
-    this.updateTimer = null
+    clearInterval(this.EXT.GPhotos.updateTimer)
+    this.EXT.GPhotos.updateTimer = null
   }
 
   /** Prepare TimeOut Bar **/

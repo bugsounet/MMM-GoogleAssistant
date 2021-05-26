@@ -215,7 +215,7 @@ module.exports = NodeHelper.create({
       /** GPhotos callbacks **/
       case "GP_MORE_PICTS":
       case "GP_LOAD_FAIL":
-        this.photos.prepAndSendChunk(Math.ceil(20*60*1000/this.config.Extented.photos.displayDelay))
+        if (this.photos) this.photos.prepAndSendChunk(Math.ceil(20*60*1000/this.config.Extented.photos.displayDelay))
         break
     }
   },
@@ -446,8 +446,15 @@ module.exports = NodeHelper.create({
     }
     if (this.config.Extented.spotify.useSpotify && this.EXT.Spotify) {
       logEXT("Starting Spotify module...")
-      this.spotify = new this.EXT.Spotify(this.config.Extented.spotify, callbacks.sendSocketNotification, this.config.debug)
-      this.spotify.start()
+      try {
+        const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenSpotify.json")
+        this.spotify = new this.EXT.Spotify(this.config.Extented.spotify, callbacks.sendSocketNotification, this.config.debug)
+        this.spotify.start()
+      } catch (e) {
+        console.log("[EXT] Spotify " + e)
+        error = "Spotify: tokenSpotify.json file not found !"
+        this.sendSocketNotification("WARNING" , {  message: error } )
+      }
       if (this.config.Extented.spotify.useLibrespot) {
         console.log("[SPOTIFY] Launch Librespot...")
         this.librespot()
@@ -455,11 +462,18 @@ module.exports = NodeHelper.create({
     }
     if (this.config.Extented.photos.usePhotos && this.config.Extented.photos.useGooglePhotosAPI && this.EXT.GPhotos) {
       logEXT("Starting GooglePhotosAPI module...")
-      this.config.Extented.photos.CREDENTIALS = this.config.assistantConfig["modulePath"] + "/credentials.json"
-      this.config.Extented.photos.TOKEN = this.config.assistantConfig["modulePath"] + "/tokens/tokenGP.json"
-      this.config.Extented.photos.CACHE = this.config.assistantConfig["modulePath"] + "/tmp"
-      this.photos = new this.EXT.GPhotos(this.config.Extented.photos, this.config.debug, callbacks.sendSocketNotification)
-      this.photos.start()
+      try {
+        const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenGP.json")
+        this.config.Extented.photos.CREDENTIALS = this.config.assistantConfig["modulePath"] + "/credentials.json"
+        this.config.Extented.photos.TOKEN = this.config.assistantConfig["modulePath"] + "/tokens/tokenGP.json"
+        this.config.Extented.photos.CACHE = this.config.assistantConfig["modulePath"] + "/tmp"
+        this.photos = new this.EXT.GPhotos(this.config.Extented.photos, this.config.debug, callbacks.sendSocketNotification)
+        this.photos.start()
+      } catch (e) {
+        console.log("[EXT] Google Photos " + e)
+        error = "Google Photos: tokenGP.json file not found !"
+        this.sendSocketNotification("WARNING" , {  message: error } )
+      }
     }
   },
 

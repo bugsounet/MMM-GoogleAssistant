@@ -765,14 +765,14 @@ Module.register("MMM-GoogleAssistant", {
       /** GPhotos **/
       case "GPhotos_PICT":
         if (payload && Array.isArray(payload) && payload.length > 0) {
-          this.displayEXTResponse.GPneedMorePicsFlag = false
-          this.displayEXTResponse.GPscanned = payload
-          this.displayEXTResponse.GPindex = 0
-          this.displayEXTResponse.GPscanned = payload
+          this.EXT.GPhotos.needMorePicsFlag = false
+          this.EXT.GPhotos.scanned = payload
+          this.EXT.GPhotos.index = 0
+          this.EXT.GPhotos.scanned = payload
         }
         break
       case "GPhotos_INIT":
-        this.displayEXTResponse.albums = payload
+        this.EXT.GPhotos.albums = payload
         break
     }
   },
