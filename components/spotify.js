@@ -1,4 +1,4 @@
-/* Spotify library */
+/* Spotify library rev: 210526 */
 
 class Spotify {
   constructor (Config, callbacks, debug) {
@@ -67,37 +67,15 @@ class Spotify {
     return viewDom
   }
 
-  updatePlayback(status) {
+  updatePlayback(status) { // hide show rules with animation !
     var dom = document.getElementById("EXT_SPOTIFY")
-    var module = document.getElementById("module_EXT_Spotify")
     clearTimeout(this.timer)
     this.timer = null
-    if (!this.config.useBottomBar) dom.addEventListener('animationend', (e) => {
-      if (e.animationName == "flipOutX") dom.classList.add("inactive")
-      if (e.animationName == "flipInX") dom.classList.remove("inactive")
-    }, {once: true})
     if (this.connected && !status) {
+      if (this.debug) console.log("[SPOTIFY] Disconnected")
       this.connected = false
       this.spotifyStatus(false)
-      if (this.debug) console.log("[SPOTIFY] Disconnected")
-    }
-    if (!this.connected && status) {
-      this.connected = true
-      this.spotifyStatus(true)
-      if (this.debug) console.log("[SPOTIFY] Connected")
-      dom.classList.remove("inactive")
-    }
-    if (status) {
-      if (this.config.useBottomBar) {
-        module.style.display = "block"
-        dom.classList.remove("bottomOut")
-        dom.classList.add("bottomIn")
-      } else {
-        dom.classList.remove("inactive")
-        dom.classList.remove("animate__flipOutX")
-        dom.classList.add("animate__flipInX")
-      }
-    } else {
+
       if (this.config.useBottomBar) {
         dom.classList.remove("bottomIn")
         dom.classList.add("bottomOut")
@@ -108,6 +86,27 @@ class Spotify {
       } else {
         dom.classList.remove("animate__flipInX")
         dom.classList.add("animate__flipOutX")
+        dom.addEventListener('animationend', (e) => {
+          if (e.animationName == "flipOutX" && e.path[0].id == "EXT_SPOTIFY") {
+            dom.classList.add("inactive")
+          }
+          e.stopPropagation()
+        }, {once: true})
+      }
+    }
+    if (!this.connected && status) {
+      if (this.debug) console.log("[SPOTIFY] Connected")
+      this.connected = true
+      this.spotifyStatus(true)
+
+      dom.classList.remove("inactive")
+      if (this.config.useBottomBar) {
+        module.style.display = "block"
+        dom.classList.remove("bottomOut")
+        dom.classList.add("bottomIn")
+      } else {
+        dom.classList.remove("animate__flipOutX")
+        dom.classList.add("animate__flipInX")
       }
     }
   }

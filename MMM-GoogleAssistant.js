@@ -263,14 +263,16 @@ Module.register("MMM-GoogleAssistant", {
       },
       "radioStop": ()=> this.displayEXTResponse.radio.pause(),
       "spotifyStatus": (status) => { // try to use spotify callback to unlock screen ...
-        if (status) this.EXT.spotify.connected = true
-        else {
+        if (status) {
+          /** Spotify active **/
+          this.EXT.spotify.connected = true
+        } else {
+          /** Spotify inactive **/
           this.EXT.spotify.connected = false
           if (this.EXT.spotify.librespot && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
-            var screenContener = document.getElementById("EXT_SCREEN_CONTENER")
+            if (this.EXT.radioPlayer.play) return
             this.sendSocketNotification("SCREEN_LOCK", false)
-            screenContener.classList.remove("hidden", "animate__flipOutX")
-            screenContener.classList.add("animate__flipInX")
+            this.displayEXTResponse.showDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
           }
           this.EXT.spotify.librespot = false
         }
@@ -417,13 +419,8 @@ Module.register("MMM-GoogleAssistant", {
       /** Screen Contener (text, bar, last presence) **/
       var screenContener = document.createElement("div")
       screenContener.id = "EXT_SCREEN_CONTENER"
-      screenContener.className= "animate__animated animate__flipInX"
+      screenContener.className= "animate__animated"
       screenContener.style.setProperty('--animate-duration', '1s')
-      screenContener.addEventListener('animationend', (e) => {
-        if (e.animationName == "flipOutX") screenContener.classList.add("hidden")
-        if (e.animationName == "flipInX") screenContener.classList.remove("hidden")
-      }, {once: false})
-
       /***** Screen TimeOut Text *****/
       var screen = document.createElement("div")
       screen.id = "EXT_SCREEN"
@@ -485,12 +482,8 @@ Module.register("MMM-GoogleAssistant", {
       /** Radio **/
       var radio = document.createElement("div")
       radio.id = "EXT_RADIO"
-      radio.className = "hidden animate__animated animate__flipInX"
+      radio.className = "hidden animate__animated"
       radio.style.setProperty('--animate-duration', '1s')
-      radio.addEventListener('animationend', (e) => {
-        if (e.animationName == "flipOutX") radio.classList.add("hidden")
-        if (e.animationName == "flipInX") radio.classList.remove("hidden")
-      }, {once: false})
       var radioImg = document.createElement("img")
       radioImg.id = "EXT_RADIO_IMG"
       radio.appendChild(radioImg)
@@ -543,12 +536,14 @@ Module.register("MMM-GoogleAssistant", {
       case "EXT_LOCK": /** screen lock **/
         if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_LOCK", true)
+          this.displayEXTResponse.hideDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
           this.Informations("information", { message: "ScreenLock", values: sender.name })
         }
         break
       case "EXT_UNLOCK": /** screen unlock **/
         if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_LOCK", false)
+          this.displayEXTResponse.showDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
           this.Informations("information", { message: "ScreenUnLock", values: sender.name })
         }
         break
@@ -704,7 +699,6 @@ Module.register("MMM-GoogleAssistant", {
         if (payload && payload.device && payload.device.name) { //prevent crash
           this.EXT.spotify.repeat = payload.repeat_state
           this.EXT.spotify.shuffle = payload.shuffle_state
-          var screenContener = document.getElementById("EXT_SCREEN_CONTENER")
 
           if (payload.device.name == this.config.Extented.spotify.deviceName) {
             if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
@@ -713,16 +707,13 @@ Module.register("MMM-GoogleAssistant", {
             if (this.EXT.spotify.connected && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
               this.sendSocketNotification("SCREEN_WAKEUP")
               this.sendSocketNotification("SCREEN_LOCK", true)
-              screenContener.classList.remove("animate__flipInX")
-              screenContener.classList.add("animate__flipOutX")
+              this.displayEXTResponse.hideDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
             }
           }
           else {
             if (this.EXT.spotify.connected && this.EXT.spotify.librespot && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
               this.sendSocketNotification("SCREEN_LOCK", false)
-              screenContener.classList.remove("hidden")
-              screenContener.classList.remove("animate__flipOutX")
-              screenContener.classList.add("animate__flipInX")
+              this.displayEXTResponse.showDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
             }
             if (this.EXT.spotify.librespot) this.EXT.spotify.librespot = false
           }
@@ -1277,6 +1268,7 @@ Module.register("MMM-GoogleAssistant", {
         }
         if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.volume = 0.1
         break
+      case "hook": // to see with hook !?
       case "standby":
         //this.EXT.speak = false
         if (this.config.Extented.screen.useScreen && !this.EXT.locked) this.sendSocketNotification("SCREEN_RESET")
@@ -1296,7 +1288,6 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "continue":
       case "confirmation":
-      case "hook":
       case "error":
         break
     }
@@ -1626,10 +1617,10 @@ Module.register("MMM-GoogleAssistant", {
   InformationHidden: function () {
     this.assistantResponse.infosDiv.classList.remove('animate__bounceInDown')
     this.assistantResponse.infosDiv.classList.add("animate__bounceOutUp")
-    this.assistantResponse.infosDiv.addEventListener('animationend', () => {
-        Infos.classList.add("hidden")
-        this.showInformations("")
-        this.assistantResponse.forceStatusImg("standby")
+    this.assistantResponse.infosDiv.addEventListener('animationend', (e) => {
+    if (e.animationName == "bounceOutUp" && e.path[0].id == "Infos")
+      Infos.classList.add("hidden")
+      this.showInformations("")
     }, {once: true})
   },
 

@@ -1,5 +1,7 @@
 /* EXT Class for displaying */
 
+
+
 class Extented {
   constructor (Config, callbacks) {
     this.config = Config
@@ -602,7 +604,6 @@ class Extented {
     document.body.id = "EXT_SCREEN_ANIMATE"
     document.body.className= "animate__animated"
     document.body.style.setProperty('--animate-duration', '0.5s')
-    //setTimeout(() => { document.body.classList.add("animate__zoomOut") } , 5000)
   }
 
   /** Volume display **/
@@ -633,8 +634,11 @@ class Extented {
     setTimeout(()=>{
       volume.classList.remove("animate__zoomIn")
       volume.classList.add("animate__zoomOut")
-      volume.addEventListener('animationend', () => {
-        volume.classList.add("hidden")
+      volume.addEventListener('animationend', (e) => {
+        if (e.animationName == "flipOutX" && e.path[0].id == "EXT_VOLUME") {
+          volume.classList.add("hidden")
+        }
+        e.stopPropagation()
       }, {once: true})
     }, 3000)
   }
@@ -777,7 +781,7 @@ class Extented {
   /** MagicMirror Show / hide rules (with body anmiation) **/
   screenShowing () {
     MM.getModules().enumerate((module)=> {
-      module.show(1000, {lockString: "EXT_SCREEN"})
+      module.show(500, {lockString: "EXT_SCREEN"})
     })
     if (!this.init) return this.init = true
     if (this.config.screen.animateBody) {
@@ -791,7 +795,7 @@ class Extented {
       document.body.classList.remove("animate__zoomIn")
       document.body.classList.add("animate__zoomOut")
       document.body.addEventListener('animationend', (e) => {
-        if (e.animationName == "zoomOut") {
+        if (e.animationName == "zoomOut" && e.path[0].id == "EXT_SCREEN_ANIMATE") {
           MM.getModules().enumerate((module)=> {
             module.hide(1000, {lockString: "EXT_SCREEN"})
           })
@@ -837,29 +841,41 @@ class Extented {
   }
 
   showRadio() {
-    var screenContener = document.getElementById("EXT_SCREEN_CONTENER")
     if (this.EXT.radioPlayer.img) {
-      var radio = document.getElementById("EXT_RADIO")
       if (this.EXT.radioPlayer.play) {
-        radio.classList.remove("hidden")
-        radio.classList.remove("animate__flipOutX")
-        radio.classList.add("animate__flipInX")
-      }
-      else {
-        radio.classList.remove("animate__flipInX")
-        radio.classList.add("animate__flipOutX")
+        this.showDivWithAnimatedFlip("EXT_RADIO")
+      } else {
+        this.hideDivWithAnimatedFlip("EXT_RADIO")
       }
     }
     if (this.EXT.radioPlayer.play) {
       this.sendSocketNotification("SCREEN_WAKEUP")
-      screenContener.classList.remove("animate__flipInX")
-      screenContener.classList.add("animate__flipOutX")
+      this.hideDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
       this.sendSocketNotification("SCREEN_LOCK", true)
     } else {
       this.sendSocketNotification("SCREEN_LOCK", false)
-      screenContener.classList.remove("hidden")
-      screenContener.classList.remove("animate__flipOutX")
-      screenContener.classList.add("animate__flipInX")
+      this.showDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
     }
+  }
+
+
+  /** Hide EXT with Flip animation **/
+  hideDivWithAnimatedFlip (div) {
+    var module = document.getElementById(div)
+    module.classList.remove("animate__flipInX")
+    module.classList.add("animate__flipOutX")
+    module.addEventListener('animationend', (e) => {
+      if (e.animationName == "flipOutX" && e.path[0].id == div) {
+        module.classList.add("hidden")
+      }
+      e.stopPropagation()
+    }, {once: true})
+  }
+
+  showDivWithAnimatedFlip (div) {
+    var module = document.getElementById(div)
+    module.classList.remove("hidden")
+    module.classList.remove("animate__flipOutX")
+    module.classList.add("animate__flipInX")
   }
 }
