@@ -484,9 +484,15 @@ Module.register("MMM-GoogleAssistant", {
       radio.id = "EXT_RADIO"
       radio.className = "hidden animate__animated"
       radio.style.setProperty('--animate-duration', '1s')
+      var radioBackground = document.createElement("div")
+      radioBackground.id = "EXT_RADIO_BACKGROUND"
+      radio.appendChild(radioBackground)
+      var radioForeground = document.createElement("div")
+      radioForeground.id = "EXT_RADIO_FOREGROUND"
+      radio.appendChild(radioForeground)
       var radioImg = document.createElement("img")
       radioImg.id = "EXT_RADIO_IMG"
-      radio.appendChild(radioImg)
+      radioForeground.appendChild(radioImg)
 
       dom.appendChild(radio)
       dom.appendChild(screenContener)
@@ -1547,8 +1553,10 @@ Module.register("MMM-GoogleAssistant", {
     if (payload.link) {
       if (payload.img) {
         var radioImg = document.getElementById("EXT_RADIO_IMG")
+        var backGround = document.getElementById("EXT_RADIO_BACKGROUND")
         this.EXT.radioPlayer.img = payload.img
         radioImg.src = this.EXT.radioPlayer.img
+        backGround.style.backgroundImage = `url(${payload.img})`
       }
       this.displayEXTResponse.radio.src = payload.link
       this.displayEXTResponse.radio.autoplay = true

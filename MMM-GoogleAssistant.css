@@ -257,7 +257,15 @@
 
 /** Sub-Modules css **/
 
-#EXT_RADIO,
+#EXT_RADIO {
+  width: 240px;
+  font-size: 16px;
+  height: auto;
+  font-size: large;
+  display: flex;
+  line-height: 1.5em;
+}
+
 #EXT_SCREEN,
 #EXT_INTERNET {
   font-size: large;
@@ -348,6 +356,7 @@
   margin-bottom: 5px;
 }
 
+#EXT_RADIO_FOREGROUND,
 #EXT_SPOTIFY_FOREGROUND {
   position:relative;
   filter:none;
@@ -535,6 +544,7 @@ progress[value]#EXT_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
   height: auto;
 }
 
+#EXT_RADIO_BACKGROUND,
 #EXT_SPOTIFY.mini #EXT_SPOTIFY_BACKGROUND {
   background-size: cover;
   background-position: center center;
@@ -547,6 +557,7 @@ progress[value]#EXT_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
   z-index:0;
 }
 
+#EXT_RADIO_FOREGROUND,
 #EXT_SPOTIFY.mini #EXT_SPOTIFY_FOREGROUND {
   flex-direction:row;
   padding:0;
