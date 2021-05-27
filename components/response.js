@@ -279,7 +279,7 @@ class AssistantResponse {
         }, null)
         return
       }
-      if (response.error.error == "NO_RESPONSE" && response.lastQuery.status == "continue" && this.loopCount < 3) {
+      if (response.error.error == "TOO_SHORT" && response.lastQuery.status == "continue" && this.loopCount < 3) { // @todo to debug
         this.status("continue")
         this.callbacks.assistantActivate({
           type: "MIC",

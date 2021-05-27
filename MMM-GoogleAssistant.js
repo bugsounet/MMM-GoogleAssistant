@@ -805,7 +805,8 @@ Module.register("MMM-GoogleAssistant", {
   assistantActivate: function(payload) {
     if (this.myStatus.actual != "standby" && !payload.force) return logGA("Assistant is busy.")
     clearTimeout(this.assistantResponse.aliveTimer)
-    this.assistantResponse.showTranscription(this.translate("GABegin"))
+    if (this.myStatus.actual== "continue") this.assistantResponse.showTranscription(this.translate("GAContinue"))
+    else this.assistantResponse.showTranscription(this.translate("GABegin"))
     this.sendNotification("DETECTOR_STOP")
     this.doPlugin("onActivate")
     this.assistantResponse.fullscreen(true)
