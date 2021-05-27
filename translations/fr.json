@@ -49,6 +49,11 @@
   "GALoading": "Chargement...",
   "GAReady": "Prêt!",
   "GABegin": "Bonjour, comment puis-je vous aider?",
+  "GAContinue": "Je vous écoute...",
+  "GAErrorRecipe": "[FATAL] Erreur lors du chargement du recipe: {VALUES}",
+  "GAErrorCredentials": "[FATAL] Assistant: credentials.json manquant",
+  "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json manquant",
+  "GAErrorTokenYoutube": "[FATAL] Token Youtube: tokenYT.json manquant",
 
   "LibraryLoading": "Chargement des librairies Extented...",
   "LibraryLoaded": "GoogleAssistant librairies Extented Activées!",

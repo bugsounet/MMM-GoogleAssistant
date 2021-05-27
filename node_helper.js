@@ -35,6 +35,7 @@ module.exports = NodeHelper.create({
     retry = null
     this.YouTube = null
     this.YT = 0
+    this.checkConfigMerge()
   },
 
   socketNotificationReceived: function (noti, payload) {
@@ -264,6 +265,18 @@ module.exports = NodeHelper.create({
     })
   },
 
+  checkConfigMerge: function () {
+    console.log("[GA] Read config.js and check ConfigDeepMerge...")
+    let file = path.resolve(__dirname, "../../config/config.js")
+    if (fs.existsSync(file)) MMConfig = require(file)
+    let configModule = MMConfig.modules.find(m => m.module == "MMM-GoogleAssistant")
+    if (!configModule.configDeepMerge) {
+      console.error("[FATAL] MMM-GoogleAssistant Module Configuration Error: ConfigDeepMerge is not actived !")
+      process.exit(1)
+    }
+    console.log("[GA] Perfect ConfigDeepMerge activated!")
+  },
+
   initialize: async function (config) {
     this.config = config
     this.config.assistantConfig["modulePath"] = __dirname
@@ -278,12 +291,12 @@ module.exports = NodeHelper.create({
     }
 
     if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/credentials.json")) {
-      error = "[FATAL] credentials.json file not found !"
-      return this.DisplayError(error)
+      error = "[FATAL] Assistant: credentials.json file not found !"
+      return this.DisplayError(error, {message: "GAErrorCredentials"})
     }
     else if (!fs.existsSync(this.config.assistantConfig["modulePath"] + "/tokens/tokenGA.json")) {
       error = "[FATAL] Assistant: tokenGA.json file not found !"
-      return this.DisplayError(error)
+      return this.DisplayError(error, {message: "GAErrorTokenGA"})
     }
     if (this.config.Extented.useEXT) {
       if (this.config.Extented.youtube.useYoutube) {
@@ -302,7 +315,7 @@ module.exports = NodeHelper.create({
         } catch (e) {
           console.log("[GA] " + e)
           error = "[FATAL] Youtube: tokenYT.json file not found !"
-          return this.DisplayError(error)
+          return this.DisplayError(error, {message: "GAErrorTokenYoutube", values: "tokenYT.json"})
         }
       }
       if (this.config.Extented.volume.useVolume) {
@@ -310,7 +323,7 @@ module.exports = NodeHelper.create({
           return data !== null && data !== undefined
         }
         if (!exists(this.volumeScript[this.config.Extented.volume.volumePreset]))
-          return this.DisplayError("VolumePreset error")
+          return this.DisplayError("VolumePreset error", {message: "VolumePresetError"})
       }
     }
 
@@ -362,9 +375,8 @@ module.exports = NodeHelper.create({
           this.sendSocketNotification("LOAD_RECIPE", JSON.stringify(p, replacer, 2))
           console.log("[GA] RECIPE_LOADED:", recipes[i])
         } catch (e) {
-          console.log(`[GA] RECIPE_ERROR (${recipes[i]}):`, e.message, e)
           error = `[FATAL] RECIPE_ERROR (${recipes[i]})`
-          return this.sendSocketNotification("NOT_INITIALIZED", error)
+          return this.DisplayError(error, {message: "GAErrorRecipe", values: recipes[i]}, e)
         }
       }
       callback()
@@ -389,9 +401,10 @@ module.exports = NodeHelper.create({
     }
   },
 
-  DisplayError: function (error) {
-    console.log("[GA][ERROR]" + error)
-    return this.sendSocketNotification("NOT_INITIALIZED", error)
+  DisplayError: function (err, error, details = null) {
+    if (details) console.log("[GA][ERROR]" + err, details.message, details)
+    else console.log("[GA][ERROR]" + err)
+    return this.sendSocketNotification("NOT_INITIALIZED", { message: error.message, values: error.values })
   },
 
   /*****************/

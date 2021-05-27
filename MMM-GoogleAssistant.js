@@ -280,6 +280,7 @@ Module.register("MMM-GoogleAssistant", {
       "YTError": (error) => this.Informations("warning", { message: error }),
       "Informations": (info) => this.Informations("information", info)
     }
+
     this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
 
     /** Extented part **/
@@ -507,8 +508,7 @@ Module.register("MMM-GoogleAssistant", {
     this.doPlugin("onNotificationReceived", {notification:noti, payload:payload})
     switch (noti) {
       case "DOM_OBJECTS_CREATED":
-        if (this.data.configDeepMerge) this.sendSocketNotification("INIT", this.helperConfig)
-        else return this.showConfigMergeAlert()
+        this.sendSocketNotification("INIT", this.helperConfig)
         if (this.config.Extented.useEXT) {
           this.displayEXTResponse.prepare()
           if (this.config.Extented.screen.useScreen) {
@@ -579,7 +579,7 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "NOT_INITIALIZED":
         this.assistantResponse.fullscreen(true)
-        this.assistantResponse.showError(payload)
+        this.assistantResponse.showError(this.translate(payload.message,{ VALUES: payload.values } ))
         this.assistantResponse.forceStatusImg("userError")
         break
       case "ERROR":
@@ -1016,12 +1016,6 @@ Module.register("MMM-GoogleAssistant", {
     }
     logGA("Send YouTube Response to Extented Display.")
     this.displayEXTResponse.start(opt)
-  },
-
-  showConfigMergeAlert: function() {
-    this.assistantResponse.prepare()
-    this.assistantResponse.fullscreen(true)
-    this.assistantResponse.showError("[FATAL] Module configuration: ConfigDeepMerge not actived !")
   },
 
   /****************************/
