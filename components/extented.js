@@ -502,7 +502,7 @@ class Extented {
     if (this.EXT.links.displayed) iframe.classList.remove("hidden")
     if (this.EXT.photos.displayed) {
       if (this.EXT.photos.length > 0) photo.classList.remove("hidden")
-      else photoAPI.classList.remove("hidden")
+      photoAPI.classList.remove("hidden")
     }
     if (this.EXT.photos.forceClose) photo.classList.add("hidden")
     if (this.EXT.youtube.displayed) YT.classList.remove("hidden")
@@ -520,7 +520,7 @@ class Extented {
     if (!this.EXT.links.displayed) iframe.classList.add("hidden")
     if (!this.EXT.photos.displayed) {
       photo.classList.add("hidden")
-      photoAPI.classList.add("hidden")
+      if (!this.config.photos.useBackground) photoAPI.classList.add("hidden")
     }
     if (!this.working()) {
       winEXT.classList.add("hidden")

@@ -215,6 +215,7 @@ Module.register("MMM-GoogleAssistant", {
 
   start: function () {
     this.init= false
+    this.aliveTimer = null
     this.userPresence = null
     this.lastPresence = null
     const helperConfig = [
@@ -802,9 +803,16 @@ Module.register("MMM-GoogleAssistant", {
     }
   },
 
+  clearAliveTimers() {
+    clearTimeout(this.assistantResponse.aliveTimer)
+    this.assistantResponse.aliveTimer = null
+    clearTimeout(this.aliveTimer)
+    this.aliveTimer = null
+  },
+
   assistantActivate: function(payload) {
     if (this.myStatus.actual != "standby" && !payload.force) return logGA("Assistant is busy.")
-    clearTimeout(this.assistantResponse.aliveTimer)
+    this.clearAliveTimers()
     if (this.myStatus.actual== "continue") this.assistantResponse.showTranscription(this.translate("GAContinue"))
     else this.assistantResponse.showTranscription(this.translate("GABegin"))
     this.sendNotification("DETECTOR_STOP")
