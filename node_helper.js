@@ -127,7 +127,7 @@ module.exports = NodeHelper.create({
           clearTimeout(timeout)
           timeout= null
           if ((code == 404) && (result.error.reason == "NO_ACTIVE_DEVICE")) {
-            if (this.config.Extented.spotify.useLibrespot) {
+            if (this.config.Extented.spotify.player.type == "Librespot") {
               console.log("[SPOTIFY] No response from librespot !")
               this.sendSocketNotification("INFORMATION", { message: "LibrespotConnecting" })
               this.librespot()

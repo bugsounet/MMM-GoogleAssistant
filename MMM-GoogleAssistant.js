@@ -77,7 +77,7 @@ Module.register("MMM-GoogleAssistant", {
         scrollInterval: 1000,
         scrollStart: 5000
       },
-      photos: { // @todo use api
+      photos: {
         usePhotos: false,
         useGooglePhotosAPI: false,
         useBackground: false,
