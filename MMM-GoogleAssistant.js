@@ -151,8 +151,6 @@ Module.register("MMM-GoogleAssistant", {
         maxVolume: 90,
         updateInterval: 1000,
         idleInterval: 10000,
-        username: "",
-        password: "",
         PATH: "../../../tokens/", // Needed Don't modify it !
         TOKEN: "tokenSpotify.json",
         CLIENT_ID: "",
