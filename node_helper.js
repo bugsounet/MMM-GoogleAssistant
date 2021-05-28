@@ -461,14 +461,14 @@ module.exports = NodeHelper.create({
       logEXT("Starting Spotify module...")
       try {
         const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenSpotify.json")
-        this.spotify = new this.EXT.Spotify(this.config.Extented.spotify, callbacks.sendSocketNotification, this.config.debug)
+        this.spotify = new this.EXT.Spotify(this.config.Extented.spotify.visual, callbacks.sendSocketNotification, this.config.debug)
         this.spotify.start()
       } catch (e) {
         console.log("[EXT] Spotify " + e)
         error = "Spotify: tokenSpotify.json file not found !"
         this.sendSocketNotification("WARNING" , {  message: error } )
       }
-      if (this.config.Extented.spotify.useLibrespot) {
+      if (this.config.Extented.spotify.player.type == "Librespot") {
         console.log("[SPOTIFY] Launch Librespot...")
         this.librespot()
       }
@@ -517,8 +517,10 @@ module.exports = NodeHelper.create({
           name: "librespot",
           out_file: "/dev/null",
           args: [
-            "-n", this.config.Extented.spotify.deviceName,
-            "--initial-volume" , this.config.Extented.spotify.maxVolume,
+            "-n", this.config.Extented.spotify.player.deviceName,
+            "-u", this.config.Extented.spotify.player.username,
+            "-p", this.config.Extented.spotify.player.password,
+            "--initial-volume" , this.config.Extented.spotify.player.maxVolume,
             "-c", cacheDir
           ]
         }, (err, proc) => {

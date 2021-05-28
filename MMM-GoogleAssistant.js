@@ -143,24 +143,31 @@ Module.register("MMM-GoogleAssistant", {
       },
       spotify: {
         useSpotify: false,
-        useBottomBar: false,
-        useLibrespot: false,
-        deviceName: "MagicMirror",
-        playDelay: 3000,
-        minVolume: 10,
-        maxVolume: 90,
-        updateInterval: 1000,
-        idleInterval: 10000,
-        PATH: "../../../tokens/", // Needed Don't modify it !
-        TOKEN: "tokenSpotify.json",
-        CLIENT_ID: "",
-        CLIENT_SECRET: "",
-        usePause: true,
-        typeArtist: "artist",
-        typePlaylist: "playlist",
-        typeAlbum: "album",
-        typeTrack: "track"
-      },
+        visual: {
+          updateInterval: 1000,
+          idleInterval: 10000,
+          useBottomBar: false,
+          PATH: "../../../tokens/", // Needed Don't modify it !
+          TOKEN: "tokenSpotify.json",
+          CLIENT_ID: "",
+          CLIENT_SECRET: "",
+        },
+        player: {
+          type: "Librespot",
+          deviceName: "MagicMirror",
+          username: "",
+          password: "",
+          minVolume: 10,
+          maxVolume: 90,
+          usePause: true
+        },
+        search: {
+          typeArtist: "artist",
+          typePlaylist: "playlist",
+          typeAlbum: "album",
+          typeTrack: "track"
+        }
+      }
     },
     recipes: [],
     NPMCheck: {
@@ -346,12 +353,12 @@ Module.register("MMM-GoogleAssistant", {
 
       // translate needed translate part in all languages
       this.config.Extented.volume.volumeText = this.translate("VolumeText")
-      this.config.Extented.spotify.deviceDisplay = this.translate("SpotifyListenText")
-      this.config.Extented.spotify.SpotifyForGA = this.translate("SpotifyForGA")
+      this.config.Extented.spotify.visual.deviceDisplay = this.translate("SpotifyListenText")
+      this.config.Extented.spotify.visual.SpotifyForGA = this.translate("SpotifyForGA")
       this.config.Extented.photos.LoadingText= this.translate("LOADING")
 
       this.displayEXTResponse = new Extented(this.config.Extented, callbacks)
-      if (this.config.Extented.spotify.useSpotify) this.spotify = new Spotify(this.config.Extented.spotify, callbacks, this.config.debug)
+      if (this.config.Extented.spotify.useSpotify) this.spotify = new Spotify(this.config.Extented.spotify.visual, callbacks, this.config.debug)
       this.EXT = this.displayEXTResponse.EXT
       if (this.config.Extented.youtube.useYoutube && this.config.Extented.youtube.useVLC) this.initializeVolumeVLC()
     }
@@ -411,7 +418,7 @@ Module.register("MMM-GoogleAssistant", {
     if (this.config.Extented.useEXT) {
       dom.id = "EXT_DISPLAY"
 
-      if (this.config.Extented.spotify.useSpotify && !this.config.Extented.spotify.useBottomBar) {
+      if (this.config.Extented.spotify.useSpotify && !this.config.Extented.spotify.visual.useBottomBar) {
         spotify= this.spotify.prepareMini()
         dom.appendChild(spotify)
       }
@@ -514,7 +521,7 @@ Module.register("MMM-GoogleAssistant", {
             if (this.config.Extented.screen.displayStyle != "Text") this.displayEXTResponse.prepareBar()
             if (this.config.Extented.screen.animateBody) this.displayEXTResponse.prepareBody()
           }
-          if (this.config.Extented.spotify.useSpotify && this.config.Extented.spotify.useBottomBar) this.spotify.prepare()
+          if (this.config.Extented.spotify.useSpotify && this.config.Extented.spotify.visual.useBottomBar) this.spotify.prepare()
           if (this.config.Extented.touch.useTouch) this.touchScreen(this.config.Extented.touch.mode)
         }
         this.assistantResponse.prepareGA()
@@ -705,7 +712,7 @@ Module.register("MMM-GoogleAssistant", {
           this.EXT.spotify.repeat = payload.repeat_state
           this.EXT.spotify.shuffle = payload.shuffle_state
 
-          if (payload.device.name == this.config.Extented.spotify.deviceName) {
+          if (payload.device.name == this.config.Extented.spotify.player.deviceName) {
             if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
             this.EXT.spotify.currentVolume = payload.device.volume_percent
             if (!this.EXT.spotify.librespot) this.EXT.spotify.librespot = true
@@ -1271,7 +1278,7 @@ Module.register("MMM-GoogleAssistant", {
         }
         if (this.config.Extented.spotify.useSpotify && this.EXT.spotify.librespot) {
           this.EXT.spotify.targetVolume = this.EXT.spotify.currentVolume
-          this.sendSocketNotification("SPOTIFY_VOLUME", this.config.Extented.spotify.minVolume)
+          this.sendSocketNotification("SPOTIFY_VOLUME", this.config.Extented.spotify.player.minVolume)
         }
         if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.volume = 0.1
         break
@@ -1468,10 +1475,10 @@ Module.register("MMM-GoogleAssistant", {
         case "SEARCH":
           /** enforce type **/
           var type = payload.query.split(" ")
-          if (type[0] == this.config.Extented.spotify.typePlaylist) type = "playlist"
-          else if (type[0] == this.config.Extented.spotify.typeAlbum) type= "album"
-          else if (type[0] == this.config.Extented.spotify.typeTrack) type= "track"
-          else if (type[0] == this.config.Extented.spotify.typeArtist) type= "artist"
+          if (type[0] == this.config.Extented.spotify.search.typePlaylist) type = "playlist"
+          else if (type[0] == this.config.Extented.spotify.search.typeAlbum) type= "album"
+          else if (type[0] == this.config.Extented.spotify.search.typeTrack) type= "track"
+          else if (type[0] == this.config.Extented.spotify.search.typeArtist) type= "artist"
           else type = null
           if (type) {
             payload.query = payload.query.replace(type + " ","")
@@ -1528,7 +1535,7 @@ Module.register("MMM-GoogleAssistant", {
       }
     }
     if (this.EXT.spotify.librespot) {
-      if (this.config.Extented.spotify.usePause) this.sendSocketNotification("SPOTIFY_PAUSE")
+      if (this.config.Extented.spotify.player.usePause) this.sendSocketNotification("SPOTIFY_PAUSE")
       else this.sendSocketNotification("SPOTIFY_STOP")
     }
     if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
@@ -1657,7 +1664,7 @@ Module.register("MMM-GoogleAssistant", {
     if (this.config.Extented.useEXT) {
       if (this.config.Extented.spotify.useSpotify) {
         this.EXT = this.displayEXTResponse.EXT
-        if (this.EXT.spotify.connected && this.config.Extented.spotify.useBottomBar) {
+        if (this.EXT.spotify.connected && this.config.Extented.spotify.visual.useBottomBar) {
           this.displayEXTResponse.showSpotify()
           logEXT("Spotify is resumed.")
         }
@@ -1677,7 +1684,7 @@ Module.register("MMM-GoogleAssistant", {
     if (this.config.Extented.useEXT) {
       if (this.config.Extented.spotify.useSpotify) {
         this.EXT = this.displayEXTResponse.EXT
-        if (this.EXT.spotify.connected && this.config.Extented.spotify.useBottomBar) {
+        if (this.EXT.spotify.connected && this.config.Extented.spotify.visual.useBottomBar) {
           this.displayEXTResponse.hideSpotify()
           logEXT("Spotify is suspended.")
         }
