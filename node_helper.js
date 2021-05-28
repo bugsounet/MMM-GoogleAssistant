@@ -132,7 +132,7 @@ module.exports = NodeHelper.create({
               this.sendSocketNotification("INFORMATION", { message: "LibrespotConnecting" })
               this.librespot()
               timeout= setTimeout(() => {
-                this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.spotify.deviceName)
+                this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.spotify.player.deviceName)
                 this.socketNotificationReceived("SPOTIFY_RETRY_PLAY", payload)
               }, 3000)
             }
