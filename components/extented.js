@@ -50,7 +50,7 @@ class Extented {
       },
       spotify: {
         connected: false,
-        librespot: false,
+        player: false,
         currentVolume: 0,
         targetVolume: this.config.spotify.maxVolume,
         repeat: null,
@@ -179,7 +179,7 @@ class Extented {
         let Type
         let YouTubeResponse = {}
         if (this.EXT.radioPlayer.play) this.radioStop()
-        if (this.EXT.spotify.librespot && this.config.spotify.useSpotify) {
+        if (this.EXT.spotify.player && this.config.spotify.useSpotify) {
           this.sendSocketNotification("SPOTIFY_PAUSE")
         }
         if (YouTube[1] == "watch") Type = "id"
@@ -344,7 +344,7 @@ class Extented {
       }
       else this.player.command("stopVideo")
     }
-    if (this.EXT.spotify.connected && this.EXT.spotify.librespot) {
+    if (this.EXT.spotify.connected && this.EXT.spotify.player) {
       this.sendSocketNotification("SPOTIFY_PAUSE")
     }
     if (this.EXT.photos.displayed) {

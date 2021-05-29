@@ -275,12 +275,12 @@ Module.register("MMM-GoogleAssistant", {
         } else {
           /** Spotify inactive **/
           this.EXT.spotify.connected = false
-          if (this.EXT.spotify.librespot && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
+          if (this.EXT.spotify.player && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
             if (this.EXT.radioPlayer.play) return
             this.sendSocketNotification("SCREEN_LOCK", false)
             this.displayEXTResponse.showDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
           }
-          this.EXT.spotify.librespot = false
+          this.EXT.spotify.player = false
         }
       },
       "YTError": (error) => this.Informations("warning", { message: error }),
@@ -715,7 +715,7 @@ Module.register("MMM-GoogleAssistant", {
           if (payload.device.name == this.config.Extented.spotify.player.deviceName) {
             if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
             this.EXT.spotify.currentVolume = payload.device.volume_percent
-            if (!this.EXT.spotify.librespot) this.EXT.spotify.librespot = true
+            if (!this.EXT.spotify.player) this.EXT.spotify.player = true
             if (this.EXT.spotify.connected && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
               this.sendSocketNotification("SCREEN_WAKEUP")
               this.sendSocketNotification("SCREEN_LOCK", true)
@@ -723,24 +723,24 @@ Module.register("MMM-GoogleAssistant", {
             }
           }
           else {
-            if (this.EXT.spotify.connected && this.EXT.spotify.librespot && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
+            if (this.EXT.spotify.connected && this.EXT.spotify.player && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
               this.sendSocketNotification("SCREEN_LOCK", false)
               this.displayEXTResponse.showDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
             }
-            if (this.EXT.spotify.librespot) this.EXT.spotify.librespot = false
+            if (this.EXT.spotify.player) this.EXT.spotify.player = false
           }
         }
         break
       case "SPOTIFY_IDLE":
         this.spotify.updatePlayback(false)
-        if (this.EXT.spotify.librespot && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
+        if (this.EXT.spotify.player && this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
           this.sendSocketNotification("SCREEN_LOCK", false)
         }
-        this.EXT.spotify.librespot = false
+        this.EXT.spotify.player = false
         break
       case "DONE_SPOTIFY_VOLUME":
         if (this.EXT.spotify.forceVolume && this.config.Extented.spotify.useSpotify) {
-          if (this.EXT.spotify.librespot) {
+          if (this.EXT.spotify.player) {
             this.EXT.spotify.targetVolume = payload
           }
         }
@@ -1276,7 +1276,7 @@ Module.register("MMM-GoogleAssistant", {
           if (this.config.Extented.youtube.useVLC) this.sendSocketNotification("YT_VOLUME", this.config.Extented.youtube.minVolume)
           else if (this.displayEXTResponse.player) this.displayEXTResponse.player.command("setVolume", this.config.Extented.youtube.minVolume)
         }
-        if (this.config.Extented.spotify.useSpotify && this.EXT.spotify.librespot) {
+        if (this.config.Extented.spotify.useSpotify && this.EXT.spotify.player) {
           this.EXT.spotify.targetVolume = this.EXT.spotify.currentVolume
           this.sendSocketNotification("SPOTIFY_VOLUME", this.config.Extented.spotify.player.minVolume)
         }
@@ -1290,7 +1290,7 @@ Module.register("MMM-GoogleAssistant", {
           if (this.config.Extented.youtube.useVLC) this.sendSocketNotification("YT_VOLUME", this.config.Extented.youtube.maxVolume)
           else if (this.displayEXTResponse.player) this.displayEXTResponse.player.command("setVolume", this.config.Extented.youtube.maxVolume)
         }
-        if (this.config.Extented.spotify.useSpotify && this.EXT.spotify.librespot && !this.EXT.spotify.forceVolume) {
+        if (this.config.Extented.spotify.useSpotify && this.EXT.spotify.player && !this.EXT.spotify.forceVolume) {
           this.sendSocketNotification("SPOTIFY_VOLUME", this.EXT.spotify.targetVolume)
         }
         this.EXT.spotify.forceVolume= false
@@ -1433,7 +1433,7 @@ Module.register("MMM-GoogleAssistant", {
       this.EXT = this.displayEXTResponse.EXT
       switch (command) {
         case "PLAY":
-          if (this.EXT.youtube.displayed && this.EXT.spotify.librespot) {
+          if (this.EXT.youtube.displayed && this.EXT.spotify.player) {
             if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
             if (this.config.Extented.youtube.useVLC) {
               this.sendSocketNotification("YT_STOP")
@@ -1450,7 +1450,7 @@ Module.register("MMM-GoogleAssistant", {
           this.sendSocketNotification("SPOTIFY_PAUSE")
           break
         case "STOP":
-          if (this.EXT.spotify.librespot) this.sendSocketNotification("SPOTIFY_STOP")
+          if (this.EXT.spotify.player) this.sendSocketNotification("SPOTIFY_STOP")
           else this.sendSocketNotification("SPOTIFY_PAUSE")
           break
         case "NEXT":
@@ -1495,7 +1495,7 @@ Module.register("MMM-GoogleAssistant", {
             }
           }
           this.sendSocketNotification("SEARCH_AND_PLAY", pl)
-          if (this.EXT.youtube.displayed && this.EXT.spotify.librespot) {
+          if (this.EXT.youtube.displayed && this.EXT.spotify.player) {
             if (this.config.Extented.youtube.useVLC) {
               this.sendSocketNotification("YT_STOP")
               this.EXT.youtube.displayed = false
@@ -1534,7 +1534,7 @@ Module.register("MMM-GoogleAssistant", {
         this.displayEXTResponse.hideDisplay()
       }
     }
-    if (this.EXT.spotify.librespot) {
+    if (this.EXT.spotify.player) {
       if (this.config.Extented.spotify.player.usePause) this.sendSocketNotification("SPOTIFY_PAUSE")
       else this.sendSocketNotification("SPOTIFY_STOP")
     }
@@ -1547,7 +1547,7 @@ Module.register("MMM-GoogleAssistant", {
   radioCommand: function(payload) {
     if (!this.config.Extented.useEXT) return
     this.EXT = this.displayEXTResponse.EXT
-    if (this.EXT.spotify.librespot) this.sendSocketNotification("SPOTIFY_STOP")
+    if (this.EXT.spotify.player) this.sendSocketNotification("SPOTIFY_STOP")
     if (this.EXT.youtube.displayed) {
       if (this.config.Extented.youtube.useVLC) {
         this.sendSocketNotification("YT_STOP")

@@ -112,12 +112,14 @@ module.exports = NodeHelper.create({
               this.socketNotificationReceived("SPOTIFY_PLAY", payload)
             }
             if ((code !== 204) && (code !== 202)) {
-              this.sendSocketNotification("WARNING", { message: "LibrespotNoResponse" })
+              if (this.config.Extented.spotify.player.type == "Librespot") this.sendSocketNotification("WARNING", { message: "LibrespotNoResponse" })
+              if (this.config.Extented.spotify.player.type == "Raspotify") this.sendSocketNotification("WARNING", { message: "RaspotifyNoResponse" })
               return console.log("[SPOTIFY:PLAY] RETRY Error", code, error, result)
             }
             else {
               logEXT("[SPOTIFY] RETRY: DONE_PLAY")
-              this.sendSocketNotification("INFORMATION", { message: "LibrespotConnected" })
+              if (this.config.Extented.spotify.player.type == "Librespot") this.sendSocketNotification("INFORMATION", { message: "LibrespotConnected" })
+              if (this.config.Extented.spotify.player.type == "Raspotify") this.sendSocketNotification("INFORMATION", { message: "RaspotifyConnected" })
             }
           })
         }, 3000)
@@ -130,7 +132,16 @@ module.exports = NodeHelper.create({
             if (this.config.Extented.spotify.player.type == "Librespot") {
               console.log("[SPOTIFY] No response from librespot !")
               this.sendSocketNotification("INFORMATION", { message: "LibrespotConnecting" })
-              this.librespot()
+              this.Librespot()
+              timeout= setTimeout(() => {
+                this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.spotify.player.deviceName)
+                this.socketNotificationReceived("SPOTIFY_RETRY_PLAY", payload)
+              }, 3000)
+            }
+            if (this.config.Extented.spotify.player.type == "Raspotify") {
+              console.log("[SPOTIFY] No response from raspotify !")
+              this.sendSocketNotification("INFORMATION", { message: "RaspotifyConnecting" })
+              this.Raspotify()
               timeout= setTimeout(() => {
                 this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.spotify.player.deviceName)
                 this.socketNotificationReceived("SPOTIFY_RETRY_PLAY", payload)
@@ -165,10 +176,8 @@ module.exports = NodeHelper.create({
         })
         break
       case "SPOTIFY_STOP":
-        pm2.restart("librespot", (err, proc) => {
-          if (err) console.log("[PM2] librespot error: " + err)
-          else logEXT("[PM2] Restart librespot")
-        })
+        if (this.config.Extented.spotify.player.type == "Librespot") this.LibrespotRestart()
+        if (this.config.Extented.spotify.player.type == "Raspotify") this.Raspotify(true)
         break
       case "SPOTIFY_NEXT":
         this.spotify.next((code, error, result) => {
@@ -470,7 +479,7 @@ module.exports = NodeHelper.create({
       }
       if (this.config.Extented.spotify.player.type == "Librespot") {
         console.log("[SPOTIFY] Launch Librespot...")
-        this.librespot()
+        this.Librespot()
       } else if (this.config.Extented.spotify.player.type == "Raspotify") {
         this.raspotify = new this.EXT.Systemd("raspotify")
         console.log("[SPOTIFY] Launch Raspotify...")
@@ -496,7 +505,7 @@ module.exports = NodeHelper.create({
   },
 
   /** launch librespot with pm2 **/
-  librespot: function() {
+  Librespot: function() {
     var file = "librespot"
     var filePath = path.resolve(__dirname, "components/librespot/target/release", file)
     var cacheDir = __dirname + "/components/librespot/cache"
@@ -546,12 +555,23 @@ module.exports = NodeHelper.create({
     })
   },
 
-  Raspotify: async function () {
-    if (!this.raspotify) return console.log("[Raspotify] error")
-    this.RStatus = await this.raspotify.status()
-    console.log("[EXT:RASPOTIFY] @test: Main programm to check status", this.RStatus)
-    this.RRestart = await this.raspotify.restart()
-    console.log("[EXT:RASPOTIFY] @test: Main programm to restart", this.RRestart)
+  LibrespotRestart() {
+    pm2.restart("librespot", (err, proc) => {
+      if (err) console.log("[PM2] librespot error: " + err)
+      else logEXT("[PM2] Restart librespot")
+    })
+  },
+
+  Raspotify: async function (force = false) {
+    if (!this.raspotify) return console.log("[RASPOTIFY] systemd library error!")
+    const RaspotifyStatus = await this.raspotify.status()
+    console.log("[RASPOTIFY] @test: Main programm to check status", RaspotifyStatus)
+    if (RaspotifyStatus.error) return console.error("[RASPOTIFY] Error: Raspotify is not installed!")
+    if (RaspotifyStatus.state == "running" && !force) return console.log("[RASPOTIFY] Raspotify already running")
+    // restart respotify service
+    const RaspotifyRestart = await this.raspotify.restart()
+    console.log("[RASPOTIFY] @test: Main programm to restart", RaspotifyRestart)
+    if (RaspotifyRestart.error) console.log("[RASPOTIFY] Error when restart Raspotify!")
   },
 
   /** Spotify Search sub-function **/
