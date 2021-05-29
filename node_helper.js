@@ -472,8 +472,9 @@ module.exports = NodeHelper.create({
         console.log("[SPOTIFY] Launch Librespot...")
         this.librespot()
       } else if (this.config.Extented.spotify.player.type == "Raspotify") {
+        this.raspotify = new this.EXT.Systemd("raspotify")
         console.log("[SPOTIFY] Launch Raspotify...")
-        this.raspotify()
+        this.Raspotify()
       }
       else { console.log("[SPOTIFY] No player activated.") }
     }
@@ -545,8 +546,12 @@ module.exports = NodeHelper.create({
     })
   },
 
-  raspotify: function () {
-    console.log("[EXT] @todo: Main programm to check/launch Raspotify")
+  Raspotify: async function () {
+    if (!this.raspotify) return console.log("[Raspotify] error")
+    this.RStatus = await this.raspotify.status()
+    console.log("[EXT:RASPOTIFY] @test: Main programm to check status", this.RStatus)
+    this.RRestart = await this.raspotify.restart()
+    console.log("[EXT:RASPOTIFY] @test: Main programm to restart", this.RRestart)
   },
 
   /** Spotify Search sub-function **/
@@ -703,7 +708,7 @@ module.exports = NodeHelper.create({
               this.EXT[libraryName] = require(libraryToLoad)
               logGA("Loaded " + libraryToLoad)
             } catch (e) {
-              console.error("[GA]", libraryToLoad, "Loading error!")
+              console.error("[GA]", libraryToLoad, "Loading error!" , e)
               this.sendSocketNotification("WARNING" , {message: "LibraryError", values: libraryToLoad })
               errors++
             }
