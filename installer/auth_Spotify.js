@@ -1,6 +1,8 @@
 /** Spotify setup **/
 /** @bugsounet **/
 
+
+// @todo recode with new config !!!
 const fs = require("fs")
 const path = require("path")
 const Spotify = require("@bugsounet/spotify")

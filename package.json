@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
   "version": "3.0.0",
-  "rev": "210528-2",
+  "rev": "210529-1",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -37,6 +37,7 @@
     "@bugsounet/cvlc": "^1.0.4",
     "@bugsounet/google-assistant": "^1.1.0",
     "@bugsounet/google-photos": "github:bugsounet/google-photos",
+    "@bugsounet/systemd": "github:bugsounet/systemd",
     "@bugsounet/governor": "^1.0.3",
     "@bugsounet/internet": "^1.0.0",
     "@bugsounet/node-buffertomp3": "^1.0.0",

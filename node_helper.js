@@ -122,7 +122,7 @@ module.exports = NodeHelper.create({
           })
         }, 3000)
         break
-      case "SPOTIFY_PLAY":
+      case "SPOTIFY_PLAY": //@todo do a counter loop when failed
         this.spotify.play(payload, (code, error, result) => {
           clearTimeout(timeout)
           timeout= null
@@ -471,7 +471,11 @@ module.exports = NodeHelper.create({
       if (this.config.Extented.spotify.player.type == "Librespot") {
         console.log("[SPOTIFY] Launch Librespot...")
         this.librespot()
+      } else if (this.config.Extented.spotify.player.type == "Raspotify") {
+        console.log("[SPOTIFY] Launch Raspotify...")
+        this.raspotify()
       }
+      else { console.log("[SPOTIFY] No player activated.") }
     }
     if (this.config.Extented.photos.usePhotos && this.config.Extented.photos.useGooglePhotosAPI && this.EXT.GPhotos) {
       logEXT("Starting GooglePhotosAPI module...")
@@ -539,6 +543,10 @@ module.exports = NodeHelper.create({
         console.log("[LIBRESPOT] Killed")
       })
     })
+  },
+
+  raspotify: function () {
+    console.log("[EXT] @todo: Main programm to check/launch Raspotify")
   },
 
   /** Spotify Search sub-function **/
@@ -676,7 +684,8 @@ module.exports = NodeHelper.create({
       { "@bugsounet/cast": [ "CastServer", "Extented.cast.useCast" ] },
       { "@bugsounet/spotify": [ "Spotify", "Extented.spotify.useSpotify" ] },
       { "@bugsounet/cvlc": [ "cvlc", "Extented.youtube.useVLC" ] },
-      { "@bugsounet/google-photos" : [ "GPhotos", "Extented.photos.useGooglePhotosAPI" ] }
+      { "@bugsounet/google-photos" : [ "GPhotos", "Extented.photos.useGooglePhotosAPI" ] },
+      { "@bugsounet/systemd": [ "Systemd", "Extented.spotify.useSpotify" ] }
     ]
     let errors = 0
     return new Promise(resolve => {
