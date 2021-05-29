@@ -39,6 +39,6 @@ fi
 echo
 
 Installer_info "Raspotify Configuration..."
-node Raspotify_Configuration || Installer_error "Not found... under-coding!"
+node RaspotifyConfig || Installer_error "Under-coding!"
 
 Installer_exit "Raspotify for GoogleAssistant is now installed !"

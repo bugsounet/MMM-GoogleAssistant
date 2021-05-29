@@ -155,7 +155,7 @@ Module.register("MMM-GoogleAssistant", {
         player: {
           type: "Librespot",
           deviceName: "MagicMirror",
-          username: "",
+          email: "",
           password: "",
           minVolume: 10,
           maxVolume: 90,

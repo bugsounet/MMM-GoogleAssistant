@@ -532,7 +532,7 @@ module.exports = NodeHelper.create({
           out_file: "/dev/null",
           args: [
             "-n", this.config.Extented.spotify.player.deviceName,
-            "-u", this.config.Extented.spotify.player.username,
+            "-u", this.config.Extented.spotify.player.email,
             "-p", this.config.Extented.spotify.player.password,
             "--initial-volume" , this.config.Extented.spotify.player.maxVolume,
             "-c", cacheDir
