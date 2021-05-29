@@ -20,13 +20,14 @@ else return console.log("config.js not found !?")
 for (let [nb, module] of Object.entries(MMModules)) {
   if (module.module == "MMM-GoogleAssistant") {
     found = true
-    if (!module.config.Extented.spotify || !module.config.Extented) return console.log("Extented Spotify module not configured in config.js")
-    if (!module.config.Extented.spotify.CLIENT_SECRET) return console.log("CLIENT_SECRET is not defined in spotify module !")
-    if (!module.config.Extented.spotify.CLIENT_ID) return console.log("CLIENT_ID is not defined in spotify module !")
+    if (!module.config.Extented || !module.config.Extented.spotify) return console.log("Extented Spotify module is not configured in config.js")
+    if (!module.config.Extented.spotify.visual) return console.log("visual feature of spotify module is not defined in config.js")
+    if (!module.config.Extented.spotify.visual.CLIENT_SECRET) return console.log("CLIENT_SECRET is not defined in visual feature of spotify module !")
+    if (!module.config.Extented.spotify.visual.CLIENT_ID) return console.log("CLIENT_ID is not defined in visual feature of spotify module !")
     /** All is Good ! **/
     config.TOKEN = "./tokenSpotify.json"
-    config.CLIENT_SECRET = module.config.Extented.spotify.CLIENT_SECRET
-    config.CLIENT_ID = module.config.Extented.spotify.CLIENT_ID
+    config.CLIENT_SECRET = module.config.Extented.spotify.visual.CLIENT_SECRET
+    config.CLIENT_ID = module.config.Extented.spotify.visual.CLIENT_ID
     config.PATH = "../../../tokens/"
   }
 }
