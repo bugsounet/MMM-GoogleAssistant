@@ -452,7 +452,6 @@ Module.register("MMM-GoogleAssistant", {
       var bar = document.createElement("div")
       bar.id = "EXT_BAR"
       if (!this.config.Extented.screen.useScreen || (this.config.Extented.screen.displayStyle == "Text") || !this.config.Extented.screen.displayBar) bar.className = "hidden"
-      //var screenBar = document.createElement(this.config.Extented.screen.displayStyle == "Bar" ? "progress" : "div")
       var screenBar = document.createElement("div")
       screenBar.id = "EXT_SCREEN_BAR"
       screenBar.classList.add(this.config.Extented.screen.displayStyle)

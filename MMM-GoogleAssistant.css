@@ -333,13 +333,6 @@
   margin-right: auto;
 }
 
-#EXT_SCREEN_BAR.Bar {
-  margin-bottom:4px;
-  height: 4px;
-  width: 100%;
-  position:relative;
-}
-
 /** Spotify css**/
 
 #EXT_SPOTIFY {
