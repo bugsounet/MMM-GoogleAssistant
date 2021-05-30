@@ -153,7 +153,7 @@ Module.register("MMM-GoogleAssistant", {
           CLIENT_SECRET: "",
         },
         player: {
-          type: "Librespot",
+          type: "Raspotify",
           deviceName: "MagicMirror",
           email: "",
           password: "",

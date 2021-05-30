@@ -36,6 +36,7 @@ module.exports = NodeHelper.create({
     this.YouTube = null
     this.YT = 0
     this.checkConfigMerge()
+    this.retryPlayerCount = 0
   },
 
   socketNotificationReceived: function (noti, payload) {
@@ -118,6 +119,7 @@ module.exports = NodeHelper.create({
             }
             else {
               logEXT("[SPOTIFY] RETRY: DONE_PLAY")
+              this.retryPlayerCount = 0
               if (this.config.Extented.spotify.player.type == "Librespot") this.sendSocketNotification("INFORMATION", { message: "LibrespotConnected" })
               if (this.config.Extented.spotify.player.type == "Raspotify") this.sendSocketNotification("INFORMATION", { message: "RaspotifyConnected" })
             }
@@ -129,6 +131,8 @@ module.exports = NodeHelper.create({
           clearTimeout(timeout)
           timeout= null
           if ((code == 404) && (result.error.reason == "NO_ACTIVE_DEVICE")) {
+            this.retryPlayerCount++
+            if (this.retryPlayerCount >= 4) return this.retryPlayerCount = 0
             if (this.config.Extented.spotify.player.type == "Librespot") {
               console.log("[SPOTIFY] No response from librespot !")
               this.sendSocketNotification("INFORMATION", { message: "LibrespotConnecting" })
@@ -151,7 +155,10 @@ module.exports = NodeHelper.create({
           if ((code !== 204) && (code !== 202)) {
             return console.log("[SPOTIFY:PLAY] Error", code, error, result)
           }
-          else logEXT("[SPOTIFY] DONE_PLAY")
+          else {
+            logEXT("[SPOTIFY] DONE_PLAY")
+            this.retryPlayerCount = 0
+          }
         })
         break
       case "SPOTIFY_VOLUME":
@@ -563,15 +570,24 @@ module.exports = NodeHelper.create({
   },
 
   Raspotify: async function (force = false) {
-    if (!this.raspotify) return console.log("[RASPOTIFY] systemd library error!")
+    if (!this.raspotify) {
+      this.sendSocketNotification("WARNING" , { message: "RaspotifyError", values: "systemd library error" })
+      return console.log("[RASPOTIFY] systemd library error!")
+    }
     const RaspotifyStatus = await this.raspotify.status()
     console.log("[RASPOTIFY] @test: Main programm to check status", RaspotifyStatus)
-    if (RaspotifyStatus.error) return console.error("[RASPOTIFY] Error: Raspotify is not installed!")
+    if (RaspotifyStatus.error) {
+      this.sendSocketNotification("WARNING" , { message: "RaspotifyNoInstalled" })
+      return console.error("[RASPOTIFY] Error: Raspotify is not installed!")
+    }
     if (RaspotifyStatus.state == "running" && !force) return console.log("[RASPOTIFY] Raspotify already running")
     // restart respotify service
     const RaspotifyRestart = await this.raspotify.restart()
     console.log("[RASPOTIFY] @test: Main programm to restart", RaspotifyRestart)
-    if (RaspotifyRestart.error) console.log("[RASPOTIFY] Error when restart Raspotify!")
+    if (RaspotifyRestart.error) {
+      this.sendSocketNotification("WARNING" , { message: "RaspotifyError", values: "restart failed!" })
+      console.log("[RASPOTIFY] Error when restart Raspotify!")
+    }
   },
 
   /** Spotify Search sub-function **/

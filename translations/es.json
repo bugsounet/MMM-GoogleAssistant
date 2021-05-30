@@ -65,6 +65,12 @@
   "LibrespotNoInstalled": "librespot is not installed !",
   "LibrespotError": "Librespot: {VALUES}",
 
+  "RaspotifyNoResponse": "No response from raspotify!",
+  "RaspotifyConnected": "Connected to raspotify!",
+  "RaspotifyConnecting": "Please wait, connecting to raspotify...",
+  "RaspotifyNoInstalled": "Raspotify is not installed !",
+  "RaspotifyError": "Raspotify: {VALUES}",
+
   "YouTubePlaying": "YouTube will playing: {VALUES}",
   "YouTubeError": "YouTube: {VALUES}",
 
