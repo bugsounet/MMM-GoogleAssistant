@@ -223,6 +223,10 @@ Module.register("MMM-GoogleAssistant", {
     this.aliveTimer = null
     this.userPresence = null
     this.lastPresence = null
+    this.Infos= {
+      displayed: false,
+      buffer: []
+    }
     const helperConfig = [
       "debug", "recipes", "assistantConfig", "micConfig",
       "responseConfig", "Extented", "NPMCheck"
@@ -1590,8 +1594,8 @@ Module.register("MMM-GoogleAssistant", {
     return diff
   },
 
-  /** Informations Display with translate **/
-  Informations: function(type, info) {
+  /** Information buffer to array **/
+  Informations(type,info) {
     let informationsType = [ "warning", "information" ]
     if (informationsType.indexOf(type) == -1) {
       logGA("debug information:", type, info)
@@ -1601,7 +1605,19 @@ Module.register("MMM-GoogleAssistant", {
       logGA("debug information:", info)
       return this.Informations("warning", { message: "Core Information: no message!" })
     }
-    clearTimeout(this.warningTimeout)
+
+    let infoObject = {
+      type: type,
+      info: info
+    }
+    this.Infos.buffer.push(infoObject)
+    logGA("Informations Buffer Add:", this.Infos)
+    this.InformationsBuffer(this.Infos.buffer[0].type, this.Infos.buffer[0].info)
+  },
+
+  /** Informations Display with translate from buffer **/
+  InformationsBuffer: function(type, info) {
+    if (this.Infos.displayed || !this.Infos.buffer.length) return
     logGA(type + ":", info)
     if (type == "warning" && this.config.responseConfig.useChime) this.assistantResponse.infoWarning.src = this.assistantResponse.resourcesDir + this.assistantResponse.chime["warning"]
     if (type == "information" && !this.config.responseConfig.useInformations) return
@@ -1631,10 +1647,15 @@ Module.register("MMM-GoogleAssistant", {
     if (e.animationName == "bounceOutUp" && e.path[0].id == "Infos")
       Infos.classList.add("hidden")
       this.showInformations("")
+      this.Infos.buffer.shift()
+      this.Infos.displayed=false
+      logGA("Informations Buffer deleted", this.Infos)
+      if(this.Infos.buffer.length) this.InformationsBuffer(this.Infos.buffer[0].type, this.Infos.buffer[0].info)
     }, {once: true})
   },
 
   InformationShow: function () {
+    this.Infos.displayed=true
     this.assistantResponse.infosDiv.classList.remove("hidden", "animate__bounceOutUp")
     this.assistantResponse.infosDiv.classList.add('animate__bounceInDown')
   },
