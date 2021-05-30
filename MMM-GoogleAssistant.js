@@ -633,7 +633,7 @@ Module.register("MMM-GoogleAssistant", {
       case "SCREEN_BAR":
         if (this.config.Extented.screen.displayStyle == "Bar") {
           let bar = document.getElementById("EXT_SCREEN_BAR")
-          bar.value= this.config.screen.delay - payload
+          bar.value= this.config.Extented.screen.delay - payload
         }
         else if (this.config.Extented.screen.displayStyle != "Text") {
           let value = (100 - ((payload * 100) / this.config.Extented.screen.delay))/100
