@@ -29,16 +29,23 @@ Installer_warning "Open the fridge and take a beer..."
 Installer_warning "And keep cool..."
 Install_error=0
 
-curl -sL https://dtcooper.github.io/raspotify/install.sh | sh || Install_error=0
+curl -sL https://dtcooper.github.io/raspotify/install.sh | sh || Install_error=1
 
 if  [ "$Install_error" == 1 ]; then
   echo
   Installer_error "Error detected !"
   exit 255
 fi
+
 echo
-
 Installer_info "Raspotify Configuration..."
-node RaspotifyConfig || Installer_error "Under-coding!"
+sudo node RaspotifyConfig || Install_error=1
 
-Installer_exit "Raspotify for GoogleAssistant is now installed !"
+if  [ "$Install_error" == 1 ]; then
+  echo
+  Installer_error "Error detected !"
+  exit 255
+else
+  echo
+  Installer_exit "Raspotify for GoogleAssistant is now installed !"
+fi
