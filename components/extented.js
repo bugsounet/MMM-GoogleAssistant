@@ -693,7 +693,7 @@ class Extented {
       albumCover.style.backgroundImage = `url(modules/MMM-GoogleAssistant/tmp/cache/${album.id})`
       var albumTitle = document.createElement("div")
       albumTitle.classList.add("albumTitle")
-      albumTitle.innerHTML = "Album: " + album.title
+      albumTitle.innerHTML = this.config.photos.GPAlbumName+ " " + album.title
       var photoTime = document.createElement("div")
       photoTime.classList.add("photoTime")
       photoTime.innerHTML = (this.config.photos.timeFormat == "relative")

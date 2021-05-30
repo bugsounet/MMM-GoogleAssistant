@@ -118,5 +118,6 @@
   "GPhotosBckGrndActivated": "GooglePhotos useBackground is activated",
   "GPFailedOpenURL": "Google Photos: Image load failed",
   "GPOpen": "Open Google Photos",
-  "GPClose": "Close Google Photos"
+  "GPClose": "Close Google Photos",
+  "GPAlbumName": "Album:"
 }

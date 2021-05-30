@@ -17,17 +17,44 @@ function checkConfig() {
   if (fs.existsSync(file)) MMConfig = require(file)
   else return console.error("config.js not found !")
   let GAModule = MMConfig.modules.find(m => m.module == "MMM-GoogleAssistant")
-  //console.log("Found MMM-GoogleAssistant Config:\n", GAModule,"\n")
-  if (!GAModule) return console.error("MMM-GoogleAssistant configuration not found in config.js !")
-  if (!GAModule.config.Extented) return console.log("Extented display is not defined in config.js (Extented: [])")
-  if (!GAModule.config.Extented.useEXT) console.log("Extented display is not activated in config.js (useEXT)")
-  if (!GAModule.config.Extented.spotify) return console.log("spotify is not defined in config.js (spotify:{})")
+
+  if (!GAModule) {
+    console.error("Fatal: MMM-GoogleAssistant configuration not found in config.js !")
+    return process.exit(1)
+  }
+
+  if (!GAModule.config.Extented) {
+    console.log("Fatal: Extented display is not defined in config.js (Extented: [])")
+    return process.exit(1)
+  }
+
+  if (!GAModule.config.Extented.useEXT) console.log("Warning: Extented display is not activated in config.js (useEXT)")
+
+  if (!GAModule.config.Extented.spotify) {
+    console.log("Fatal: spotify is not defined in config.js (spotify:{})")
+    return process.exit(1)
+  }
+
   if (!GAModule.config.Extented.spotify.useSpotify) console.log("Warning: Spotify is not enabled. (useSpotify)")
-  if (!GAModule.config.Extented.spotify.player) return console.log("Warning: player feature of Spotify module is not defined. (player:{})")
+
+  if (!GAModule.config.Extented.spotify.player) {
+    console.log("Warning: player feature of Spotify module is not defined. (player:{})")
+    return process.exit(1)
+  }
+
   if (!GAModule.config.Extented.spotify.player.deviceName) console.log("Warning: Spotify devicename not found! (deviceName) using default name:", SpotifyDeviceName)
   else SpotifyDeviceName= GAModule.config.Extented.spotify.player.deviceName
-  if (!GAModule.config.Extented.spotify.player.email) return console.log("Warning: email field needed in player feature of spotify module")
-  if (!GAModule.config.Extented.spotify.player.password) return console.log("Warning: password field needed in player feature of spotify module")
+
+  if (!GAModule.config.Extented.spotify.player.email) {
+    console.log("Fatal: email field needed in player feature of spotify module")
+    return process.exit(1)
+  }
+
+  if (!GAModule.config.Extented.spotify.player.password) {
+    console.log("Fatal: password field needed in player feature of spotify module")
+    return process.exit(1)
+  }
+
   if (!GAModule.config.Extented.spotify.player.maxVolume) console.log("Warning: maxVolume field is not defined in player feature of spotify module (maxVolume) using default value:", RaspotifyInitialVolume)
   else RaspotifyInitialVolume = GAModule.config.Extented.spotify.player.maxVolume
 
@@ -42,7 +69,7 @@ function checkConfig() {
 async function defineAudioOutput() {
   console.log("\nChoose your audio card ?\n")
   console.log("Choose 999 for default card")
-  console.log("warning: if pulse audio is enabled, default card will not works\n")
+  console.log("Warning: if pulse audio is enabled, default card will not works\n")
   const { stdout, stderr } = await exec("aplay -l")
   console.log(stdout)
 
@@ -60,10 +87,8 @@ async function defineAudioOutput() {
   }
 }
 
-
 async function createConfig() {
   // before overwrite config... let's check if raspotify is installed
-
   const Systemd = new systemd("raspotify")
   const RaspotifyStatus = await Systemd.status()
   if (RaspotifyStatus.error) {
@@ -96,21 +121,20 @@ DEVICE_TYPE="speaker"
 `
   }
 
-  console.log(RaspotifyConfig)
-
   // push new config
   fs.writeFile("/etc/default/raspotify", RaspotifyConfig, async (err, data) => {
     if (err) {
       console.log("[RASPOTIFY] Error:", err.message)
       return process.exit(1)
     }
-    // apply new config
+    // apply new config and restart raspotify
+    console.log("[RASPOTIFY] Restart Raspotify with new configuration.")
     const RaspotifyRestart = await Systemd.restart()
     if (RaspotifyRestart.error) {
       console.log("[RASPOTIFY] Error when restart Raspotify!")
       return process.exit(1)
     }
-    console.log("[RASPOTIFY] Restart Raspotify with new configuration.")
+    console.log("[RASPOTIFY] Done.")
   })
 }
 

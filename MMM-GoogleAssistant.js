@@ -356,6 +356,7 @@ Module.register("MMM-GoogleAssistant", {
       this.config.Extented.spotify.visual.deviceDisplay = this.translate("SpotifyListenText")
       this.config.Extented.spotify.visual.SpotifyForGA = this.translate("SpotifyForGA")
       this.config.Extented.photos.LoadingText= this.translate("LOADING")
+      this.config.Extented.photos.GPAlbumName= this.translate("GPAlbumName")
 
       this.displayEXTResponse = new Extented(this.config.Extented, callbacks)
       if (this.config.Extented.spotify.useSpotify) this.spotify = new Spotify(this.config.Extented.spotify.visual, callbacks, this.config.debug)
@@ -447,13 +448,10 @@ Module.register("MMM-GoogleAssistant", {
       var bar = document.createElement("div")
       bar.id = "EXT_BAR"
       if (!this.config.Extented.screen.useScreen || (this.config.Extented.screen.displayStyle == "Text") || !this.config.Extented.screen.displayBar) bar.className = "hidden"
-      var screenBar = document.createElement(this.config.Extented.screen.displayStyle == "Bar" ? "meter" : "div")
+      //var screenBar = document.createElement(this.config.Extented.screen.displayStyle == "Bar" ? "progress" : "div")
+      var screenBar = document.createElement("div")
       screenBar.id = "EXT_SCREEN_BAR"
       screenBar.classList.add(this.config.Extented.screen.displayStyle)
-      if (this.config.Extented.screen.displayStyle == "Bar") {
-        screenBar.value = 0
-        screenBar.max= this.config.Extented.screen.delay
-      }
       bar.appendChild(screenBar)
       screenContener.appendChild(bar)
 
@@ -631,11 +629,7 @@ Module.register("MMM-GoogleAssistant", {
         }
         break
       case "SCREEN_BAR":
-        if (this.config.Extented.screen.displayStyle == "Bar") {
-          let bar = document.getElementById("EXT_SCREEN_BAR")
-          bar.value= this.config.Extented.screen.delay - payload
-        }
-        else if (this.config.Extented.screen.displayStyle != "Text") {
+        if (this.config.Extented.screen.displayStyle != "Text") {
           let value = (100 - ((payload * 100) / this.config.Extented.screen.delay))/100
           let timeOut = moment(new Date(this.config.Extented.screen.delay-payload)).format("mm:ss")
           this.displayEXTResponse.bar.animate(value, {
@@ -1382,7 +1376,7 @@ Module.register("MMM-GoogleAssistant", {
   checkStyle: function () {
     /** Crash prevent on Time Out Style Displaying **/
     /** --> Set to "Text" if not found */
-    let Style = [ "Text", "Line", "SemiCircle", "Circle", "Bar" ]
+    let Style = [ "Text", "Line", "SemiCircle", "Circle" ]
     let found = Style.find((style) => {
       return style == this.config.Extented.screen.displayStyle
     })
