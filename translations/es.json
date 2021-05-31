@@ -49,67 +49,6 @@
   "GALoading": "Cargando...",
   "GAReady": "Listos!",
   "GABegin": "Hola, Como puedo ayudar?",
-  "GAContinue": "Estoy escuchandote...",
-  "GAErrorRecipe": "[FATAL] Error cargando esta receta: {VALUES}",
-  "GAErrorCredentials": "[FATAL] Asistente: Falta credentials.json",
-  "GAErrorTokenGA": "[FATAL] Asistente: Falta tokenGA.json",
-  "GAErrorTokenYoutube": "[FATAL] Token de Youtube: Falta tokenYT.json",
-
-  "LibraryLoading": "Cargando librerias extendidas...",
-  "LibraryLoaded": "Librerias extendidas de GoogleAssistant cargadas!",
-  "LibraryError": "Error cargando: {VALUES} libreria",
-
-{
-  "NO_RESPONSE" : "Lo siento, no te entiendo.",
-  "NO_AUDIO_RESPONSE" : " ",
-  "TOO_SHORT" : "Lo siento, no te entiendo..",
-  "CONVERSATION_ERROR" : "Error en la conversación. (micrófono sin configurar)",
-  "QUERY_REPLY" : "Google Assistant va a ser activado",
-  "QUERY_HELP" : "Puedes usar Google Assistant vía texto con este comando.",
-
-  "RESTART_HELP" : "Reiniciar MagicMirror con pm2",
-  "RESTART_DONE" : "Reiniciado!",
-  "RESTART_ERROR" : "<id> No encontrado !",
-
-  "WAKEUP_HELP": "Pantalla encendida y contador reiniciado",
-  "WAKEUP_REPLY": "Pantalla Encendida!",
-
-  "HIDE_HELP": "Ocultar el módulo deseado",
-  "HIDE_ALREADY": " ya está oculto",
-  "HIDE_DONE": " ahora está oculto",
-  "HIDE_LOCKED": " está bloqueado por otro programa, no puedo ocultarlo",
-
-  "SHOW_HELP": "Mostrar el módulo deseado",
-  "SHOW_ALREADY": " ya está visible",
-  "SHOW_DONE": " ahora está visible",
-  "SHOW_LOCKED": " está bloqueado por otro programa, no puedo mostrarlo",
-
-  "MODULE_NOTFOUND": "No encuentro el Módulo: ",
-  "MODULE_NAME": "Te falta el nombre del módulo",
-
-  "STOP_HELP": "Parar Extented Display si está activo",
-  "STOP_EXT": "He parado Extented Display",
-
-  "EXT_OPEN": "Abriendo link: ",
-  "EXT_INVALID": "El link utilizado no es válido!",
-  "EXT_HELP": "Activar Extented Display con un link",
-
-  "VOLUME_HELP": "Ajusta el volumen de tu aparato",
-
-  "DADDY": "Papaito @bugsounet dice... NO, NO Y NO !!!",
-
-  "DAY" : "día",
-  "DAYS" : "días",
-  "HOUR" : "hora",
-  "HOURS" : "horas",
-  "MINUTE" : "minuto",
-  "MINUTES" : "minutos",
-  "SECOND": "segundo",
-  "SECONDS": "segundos",
-
-  "GALoading": "Cargando...",
-  "GAReady": "Listos!",
-  "GABegin": "Hola, Como puedo ayudar?",
   "GAContinue": "Estoy escuchándote...",
   "GAErrorRecipe": "[FATAL] Error cargando esta receta: {VALUES}",
   "GAErrorCredentials": "[FATAL] Asistente: Falta credentials.json",
