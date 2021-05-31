@@ -80,7 +80,7 @@ Module.register("MMM-GoogleAssistant", {
       photos: {
         usePhotos: false,
         useGooglePhotosAPI: false,
-        displayType: "Module",
+        displayType: "none",
         displayDelay: 10 * 1000,
         albums: [],
         sort: "new", // "old", "random"
@@ -431,7 +431,7 @@ Module.register("MMM-GoogleAssistant", {
       }
 
       /** GPhotos Module mode**/
-      if (this.config.Extented.photos.displayType == "Module") {
+      if (this.config.Extented.photos.usePhotos && this.config.Extented.photos.useGooglePhotosAPI && this.config.Extented.photos.displayType == "Module") {
         var GPhotosAPI = document.createElement("div")
         GPhotosAPI.id = "EXT_GPHOTO"
         GPhotosAPI.style.height= this.config.Extented.photos.moduleHeight + "px"
