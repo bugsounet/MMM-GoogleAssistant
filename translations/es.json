@@ -46,14 +46,83 @@
   "SECOND": "segundo",
   "SECONDS": "segundos",
 
-  "GALoading": "Loading...",
-  "GAReady": "Ready!",
-  "GABegin": "Hi, how can i help?",
-  "GAContinue": "I'm listening to you...",
-  "GAErrorRecipe": "[FATAL] Error when loading this recipe: {VALUES}",
-  "GAErrorCredentials": "[FATAL] Assistant: credentials.json missing",
-  "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json missing",
-  "GAErrorTokenYoutube": "[FATAL] Token Youtube: tokenYT.json missing",
+  "GALoading": "Cargando...",
+  "GAReady": "Listos!",
+  "GABegin": "Hola, Como puedo ayudar?",
+  "GAContinue": "Estoy escuchandote...",
+  "GAErrorRecipe": "[FATAL] Error cargando esta receta: {VALUES}",
+  "GAErrorCredentials": "[FATAL] Asistente: Falta credentials.json",
+  "GAErrorTokenGA": "[FATAL] Asistente: Falta tokenGA.json",
+  "GAErrorTokenYoutube": "[FATAL] Token de Youtube: Falta tokenYT.json",
+
+  "LibraryLoading": "Cargando librerias extendidas...",
+  "LibraryLoaded": "Librerias extendidas de GoogleAssistant cargadas!",
+  "LibraryError": "Error cargando: {VALUES} libreria",
+
+  "LibrespotNoResponse": "No hay respuesta desde librespot!",
+  "LibrespotConnected": "Conectado a librespot!",
+  "LibrespotConnecting": "Espera por favor, conectando a librespot...",
+  "LibrespotNoInstalled": "librespot no está instalado !",
+  "LibrespotError": "Librespot: {VALUES}",
+
+  "RaspotifyNoResponse": "No hay respuesta desde raspotify!",
+  "RaspotifyConnected": "Conectado a raspotify!",
+  "RaspotifyConnecting": "Espere por favor, conectando a raspotify...",
+  "RaspotifyNoInstalled": "Raspotify no está instalado !",
+  "RaspotifyError": "Raspotify: {VALUES}",
+
+  "YouTubePlaying": "YouTube reproduciendo: {VALUES}",
+  "YouTubeError": "YouTube: {VALUES}",
+
+  "Volume": "Volumen: {VALUES}",
+  "VolumePresetError": "Volumen: Error de preselección!",
+  "VolumeText": "Volumen:",
+  "VolumeDisabled": "Control de volumen desactivado",
+
+  "GovernorError": "Controlador: {VALUES}",
+
+  "PirError": "Sensor Pir código de error: {VALUES}",
+
+  "SpotifyNoResult": "Spotify: No se encuentran resultados",
+  "SpotifySearchFailed": "Spotify: Busqueda y reproducción fallida",
+  "SpotifyListenText": "Escuchando",
+  "SpotifyForGA": "Spotify para el Asistente de Google",
+
+  "ScreenWakeUp": "Pantalla activada por {VALUES}",
+  "ScreenLock": "Pantalla bloqueada por {VALUES}",
+  "ScreenUnLock": "Pantalla desbloqueada por {VALUES}",
+  "ScreenTurnOff": "Apagado automático de la pantalla:",
+  "ScreenLastPresence": "Última presencia:",
+  "ScreenPowerOn": "Encender Pantalla",
+  "ScreenPowerOff": "Apagar Pantalla",
+
+  "InternetDown" : "{VALUES}, NO hay Internet!",
+  "InternetRestart": "Internet está disponible de nuevo! Reiniciando MagicMirror...",
+  "InternetAvailable": "Internet está disponible, después de {VALUES}",
+  
+  "EXTStop": "Todos los procesos extra estan detenidos",
+  "EXTNotActivated": "La pantalla extendida no está activada",
+
+  "CastStart": "Iniciar Emisión de YouTube",
+  "CastStop" : "Detener Emisión de YouTube",
+
+  "ShellExecError": "ShellExec devolvió errores",
+  "ShellExecDone": "ShellExec se ejecutó correctamente",
+
+  "LinksOpen": "Abriendo Navegador de Pantalla Extendida",
+  "LinksClose": "Cerrando Navegador de Pantalla Extendida",
+
+  "PhotosNotActivated": "El módulo de Fotos NO está activado",
+
+  "GPhotosNotActivated": "El API de GooglePhotos no está activado",
+  "GPhotosRecipeNotActivated": "El modo recetasd de GooglePhotos no está activado",
+  "GPhotosBckGrndActivated": "Activado el fonde de GooglePhotos",
+  "GPhotosModuleActivated": "El módulo de GooglePhotos está activado",
+  "GPFailedOpenURL": "Google Photos: Fallo al cargar la imagen",
+  "GPOpen": "Abrir Google Photos",
+  "GPClose": "Cerrar Google Photos",
+  "GPAlbumName": "Álbum:"
+}
 
   "LibraryLoading": "Loading Extented libraries...",
   "LibraryLoaded": "GoogleAssistant Extented Library Loaded!",
