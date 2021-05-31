@@ -691,6 +691,14 @@ progress[value]#EXT_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
 }
 
 /** Google Photos API **/
+
+#EXT_GPHOTO_INFO.Module{
+  --top: 0;
+  --left: 0;
+  --bottom: none;
+  --right: none;
+}
+
 #EXT_GPHOTO_INFO {
   --top: none;
   --left: none;
@@ -714,8 +722,8 @@ progress[value]#EXT_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
 
 #EXT_GPHOTO {
     position: relative;
-    /* min-width: 300px; */
-    /* min-height: 300px; */
+    min-width: 300px;
+    min-height: 300px;
     height: 100%;
     width: 100%;
 }
@@ -758,12 +766,13 @@ progress[value]#EXT_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
   left: var(--left);
   bottom: var(--bottom);
   right: var(--right);
-  margin:10px;
+  margin:5px;
   background-color: rgba(0,0,0,0.5);
-  padding: 10px;
+  padding: 1px;
   border-radius: 36px;
   line-height: 100%;
   text-align:left;
+  font-size: large;
 }
 
 #EXT_GPHOTO_INFO .albumCover {

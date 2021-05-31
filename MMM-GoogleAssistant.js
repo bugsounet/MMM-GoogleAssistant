@@ -80,12 +80,14 @@ Module.register("MMM-GoogleAssistant", {
       photos: {
         usePhotos: false,
         useGooglePhotosAPI: false,
-        useBackground: false,
+        displayType: "Module",
         displayDelay: 10 * 1000,
         albums: [],
         sort: "new", // "old", "random"
         hiResolution: true,
-        timeFormat: "DD/MM/YYYY HH:mm"
+        timeFormat: "DD/MM/YYYY HH:mm",
+        moduleHeight: 300,
+        moduleWidth: 300,
       },
       volume: {
         useVolume: false,
@@ -428,6 +430,30 @@ Module.register("MMM-GoogleAssistant", {
         dom.appendChild(spotify)
       }
 
+      /** GPhotos Module mode**/
+      if (this.config.Extented.photos.displayType == "Module") {
+        var GPhotosAPI = document.createElement("div")
+        GPhotosAPI.id = "EXT_GPHOTO"
+        GPhotosAPI.style.height= this.config.Extented.photos.moduleHeight + "px"
+        GPhotosAPI.style.width= this.config.Extented.photos.moduleWidth + "px"
+        var GPhotosAPIBack = document.createElement("div")
+        GPhotosAPIBack.id = "EXT_GPHOTO_BACK"
+        var GPhotosAPICurrent = document.createElement("div")
+        GPhotosAPICurrent.id = "EXT_GPHOTO_CURRENT"
+        GPhotosAPICurrent.addEventListener('animationend', ()=>{
+          GPhotosAPICurrent.classList.remove("animated")
+        })
+        var GPhotosAPIInfo = document.createElement("div")
+        GPhotosAPIInfo.id = "EXT_GPHOTO_INFO"
+        GPhotosAPIInfo.className= "Module"
+        GPhotosAPIInfo.innerHTML = "Extented GPhotos Loading..."
+
+        GPhotosAPI.appendChild(GPhotosAPIBack)
+        GPhotosAPI.appendChild(GPhotosAPICurrent)
+        GPhotosAPI.appendChild(GPhotosAPIInfo)
+        dom.appendChild(GPhotosAPI)
+      }
+
       /** Screen Contener (text, bar, last presence) **/
       var screenContener = document.createElement("div")
       screenContener.id = "EXT_SCREEN_CONTENER"
@@ -529,7 +555,7 @@ Module.register("MMM-GoogleAssistant", {
         this.Loading()
         if (this.config.Extented.useEXT &&
           this.config.Extented.photos.usePhotos &&
-          this.config.Extented.photos.useBackground
+          (this.config.Extented.photos.displayType == "Background" || this.config.Extented.photos.displayType == "Module")
         ) {
           setTimeout(() => {
             if (this.config.Extented.photos.useGooglePhotosAPI) this.displayEXTResponse.showBackgroundGooglePhotoAPI()
@@ -1573,7 +1599,9 @@ Module.register("MMM-GoogleAssistant", {
     if (!this.config.Extented.useEXT) return this.Informations("warning", { message: "EXTNotActivated" })
     if (!this.config.Extented.photos.usePhotos) return this.Informations("warning", { message: "PhotosNotActivated" })
     if (!this.config.Extented.photos.useGooglePhotosAPI) return this.Informations("warning", { message: "GPhotosNotActivated" })
-    if (this.config.Extented.photos.useBackground) return this.Informations("warning", { message: "GPhotosBckGrndActivated" })
+    if (this.config.Extented.photos.displayType == "Background") return this.Informations("warning", { message: "GPhotosBckGrndActivated" })
+    if (this.config.Extented.photos.displayType == "Module") return this.Informations("warning", { message: "GPhotosModuleActivated" })
+    if (this.config.Extented.photos.displayType != "Recipe") return this.Informations("warning", { message: "GPhotosRecipeNotActivated" })
     this.displayEXTResponse.showGooglePhotoAPI()
   },
 /***********************
@@ -1684,7 +1712,7 @@ Module.register("MMM-GoogleAssistant", {
         }
       }
       if (this.config.Extented.photos.usePhotos &&
-        this.config.Extented.photos.useBackground &&
+        this.config.Extented.photos.displayType == "Background" &&
         this.config.Extented.photos.useGooglePhotosAPI
       ) {
         var GPhotos = document.getElementById("EXT_GPHOTO")
@@ -1704,7 +1732,7 @@ Module.register("MMM-GoogleAssistant", {
         }
       }
       if (this.config.Extented.photos.usePhotos &&
-        this.config.Extented.photos.useBackground &&
+        this.config.Extented.photos.displayType == "Background" &&
         this.config.Extented.photos.useGooglePhotosAPI
       ) {
         var GPhotos = document.getElementById("EXT_GPHOTO")

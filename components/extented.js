@@ -388,8 +388,8 @@ class Extented {
     scoutphoto.classList.add("hidden")
     scoutpan.appendChild(scoutphoto)
 
-    if (this.config.photos.useBackground) this.prepareGPhotosBackground()
-    else {
+    if (this.config.photos.displayType == "Background") this.prepareGPhotosBackground()
+    if (this.config.photos.displayType == "Recipe") {
       var scoutGPhotosAPI = document.createElement("div")
       scoutGPhotosAPI.id = "EXT_GPHOTO"
       scoutGPhotosAPI.classList.add("hidden")
@@ -520,7 +520,7 @@ class Extented {
     if (!this.EXT.links.displayed) iframe.classList.add("hidden")
     if (!this.EXT.photos.displayed) {
       photo.classList.add("hidden")
-      if (!this.config.photos.useBackground) photoAPI.classList.add("hidden")
+      if (this.config.photos.displayType == "Recipe") photoAPI.classList.add("hidden")
     }
     if (!this.working()) {
       winEXT.classList.add("hidden")
@@ -661,7 +661,7 @@ class Extented {
     if (this.EXT.GPhotos.index >= this.EXT.GPhotos.scanned.length) {
       this.EXT.GPhotos.index = 0
       this.EXT.GPhotos.needMorePicsFlag = true
-      if (!this.config.photos.useBackground) this.hideGooglePhotoAPI()
+      if (this.config.photos.displayType == "Recipe") this.hideGooglePhotoAPI()
     }
     if (this.EXT.GPhotos.needMorePicsFlag) {
       this.sendSocketNotification("GP_MORE_PICTS")

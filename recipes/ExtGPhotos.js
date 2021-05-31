@@ -20,7 +20,7 @@ var recipe = {
       soundExec: {
         chime: "open"
       },
-      displayResponse: true
+      displayResponse: false
     }
   }
 }

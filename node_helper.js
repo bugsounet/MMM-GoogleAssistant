@@ -345,8 +345,6 @@ module.exports = NodeHelper.create({
 
     logGA("Activate delay is set to " + this.config.responseConfig.activateDelay + " ms")
 
-    this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
-
     this.sendSocketNotification("INFORMATION" , {message: "LibraryLoading" })
     let bugsounet = await this.loadBugsounetLibrary()
     if (bugsounet) {
@@ -363,6 +361,7 @@ module.exports = NodeHelper.create({
       await this.Extented()
       console.log("[GA:EXT] Extented Display is initialized.")
     }
+    this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
     if (this.config.NPMCheck.useChecker && this.EXT.npmCheck) {
       var cfg = {
         dirName: __dirname,

@@ -109,7 +109,9 @@
   "PhotosNotActivated": "Photo module is not activated",
 
   "GPhotosNotActivated": "GooglePhotos API is not activated",
-  "GPhotosBckGrndActivated": "GooglePhotos useBackground is activated",
+  "GPhotosRecipeNotActivated": "GooglePhotos Recipe mode is not activated",
+  "GPhotosBckGrndActivated": "GooglePhotos Background mode is activated",
+  "GPhotosModuleActivated": "GooglePhotos Module mode is activated",
   "GPFailedOpenURL": "Google Photos: Image load failed",
   "GPOpen": "Open Google Photos",
   "GPClose": "Close Google Photos",
