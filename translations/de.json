@@ -49,11 +49,11 @@
   "GALoading": "Lade...",
   "GAReady": "Bereit!",
   "GABegin": "Hallo, wie kann ich helfen?",
-  "GAContinue": "I'm listening to you...",
-  "GAErrorRecipe": "[FATAL] Error when loading this recipe: {VALUES}",
-  "GAErrorCredentials": "[FATAL] Assistant: credentials.json missing",
-  "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json missing",
-  "GAErrorTokenYoutube": "[FATAL] Token Youtube: tokenYT.json missing",
+  "GAContinue": "Ich höre...",
+  "GAErrorRecipe": "[FATAL] Fehler beim Laden des Rezepts: {VALUES}",
+  "GAErrorCredentials": "[FATAL] Assistant: credentials.json fehlt",
+  "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json fehlt",
+  "GAErrorTokenYoutube": "[FATAL] Token Youtube: tokenYT.json fehlt",
 
   "LibraryLoading": "Lade erweiterte Bibliotheken...",
   "LibraryLoaded": "Erweiterte GoogleAssistant Bibliotheken geladen!",
@@ -80,7 +80,7 @@
   "SpotifyNoResult": "Spotify: Kein Ergebnis gefunden",
   "SpotifySearchFailed": "Spotify: Suche und Wiedergabe fehlgeschlagen",
   "SpotifyListenText": "Zuhören aktiv",
-  "SpotifyForGA": "Spotify for Google Assistant",
+  "SpotifyForGA": "Spotify für Google Assistant",
 
   "ScreenWakeUp": "Display aktivieren durch {VALUES}",
   "ScreenLock": "Display sperren durch {VALUES}",
@@ -95,7 +95,7 @@
   "InternetAvailable": "Internet ist jetzt verfügbar, nach {VALUES}",
 
   "EXTStop": "Alle erweiterten Prozesse werden jetzt beendet.",
-  "EXTNotActivated": "Extented Display is not activated",
+  "EXTNotActivated": "Erweiterte Anzeige ist nicht aktiv.",
 
   "CastStart": "Starte YouTube-Casting.",
   "CastStop" : "Beende YouTube-Casting. ",
@@ -103,20 +103,20 @@
   "ShellExecError": "ShellExec gibt Fehler zurück.",
   "ShellExecDone": "ShellExec erfolgreich ausgeführt.",
 
-  "LinksOpen": "Opening Extended Display Browser",
-  "LinksClose": "Closing Extented Display Browser",
+  "LinksOpen": "Öffne Browser in erweiterter Anzeige.",
+  "LinksClose": "Schließe Browser der erweiterten Anzeige.",
 
-  "PhotosNotActivated": "Photo module is not activated",
+  "PhotosNotActivated": "Foto-Modul ist nicht aktiviert.",
 
-  "GPhotosNotActivated": "GooglePhotos API is not activated",
-  "GPhotosRecipeNotActivated": "GooglePhotos Recipe mode is not activated",
-  "GPhotosBckGrndActivated": "GooglePhotos Background mode is activated",
-  "GPhotosModuleActivated": "GooglePhotos Module mode is activated",
-  "GPFailedOpenURL": "Google Photos: Image load failed",
-  "GPOpen": "Open Google Photos",
-  "GPClose": "Close Google Photos",
+  "GPhotosNotActivated": "GooglePhotos-API ist nicht aktiviert.",
+  "GPhotosRecipeNotActivated": "Google Photos Rezept-Modus ist nicht aktiviert.",
+  "GPhotosBckGrndActivated": "Google Photos Hintergrund-Modus ist aktiviert.",
+  "GPhotosModuleActivated": "Google Photos Modul-Modus ist aktiviert.",
+  "GPFailedOpenURL": "Google Photos: Laden von Foto fehlgeschlagen.",
+  "GPOpen": "Öffne Google Photos",
+  "GPClose": "Schließe Google Photos",
   "GPAlbumName": "Album:",
-  "GPError": "GooglePhotos: No photos to display",
-  "GPNoPhotoFound" : "GooglePhotos: No picture found",
-  "GPReceive": "GooglePhotos receive {VALUES} pictures"
+  "GPError": "Google Photos: Keine anzeigbaren Fotos.",
+  "GPNoPhotoFound" : "Google Photos: Kein Foto gefunden.",
+  "GPReceive": "Google Photos empfängt {VALUES} Fotos."
 }
