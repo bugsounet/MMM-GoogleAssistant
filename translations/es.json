@@ -121,5 +121,8 @@
   "GPFailedOpenURL": "Google Photos: Fallo al cargar la imagen",
   "GPOpen": "Abrir Google Photos",
   "GPClose": "Cerrar Google Photos",
-  "GPAlbumName": "Álbum:"
+  "GPAlbumName": "Álbum:",
+  "GPError": "GooglePhotos: No photos to display",
+  "GPNoPhotoFound" : "GooglePhotos: No picture found",
+  "GPReceive": "GooglePhotos receive {VALUES} pictures"
 }

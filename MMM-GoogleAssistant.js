@@ -290,7 +290,8 @@ Module.register("MMM-GoogleAssistant", {
         }
       },
       "YTError": (error) => this.Informations("warning", { message: error }),
-      "Informations": (info) => this.Informations("information", info)
+      "Informations": (info) => this.Informations("information", info),
+      "Warning": (info) => this.Informations("warning", info)
     }
 
     this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
@@ -798,6 +799,7 @@ Module.register("MMM-GoogleAssistant", {
           this.EXT.GPhotos.scanned = payload
           this.EXT.GPhotos.index = 0
           this.EXT.GPhotos.scanned = payload
+          this.Informations("information", {message: "GPReceive", values: payload.length })
         }
         break
       case "GPhotos_INIT":

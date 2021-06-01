@@ -7,6 +7,7 @@ class Extented {
     this.config = Config
     this.sendSocketNotification = callbacks.sendSocketNotification
     this.Informations = callbacks.Informations
+    this.Warning = callbacks.Warning
     this.radioStop = callbacks.radioStop
     this.YTError = callbacks.YTError
     this.timer = null
@@ -20,7 +21,8 @@ class Extented {
         albums: null,
         scanned: [],
         index: 0,
-        needMorePicsFlag: true
+        needMorePicsFlag: true,
+        warning: 0
       },
       radioPlayer: {
         play: false,
@@ -645,7 +647,8 @@ class Extented {
 
   /** GPhotos API **/
   updatePhotos () {
-    if (this.EXT.GPhotos.scanned.length == 0) {
+    if (this.EXT.GPhotos.scanned.length == 0) { // To see there bug
+      console.log("!!! GPhotos debug: " + this.EXT.GPhotos.scanned.length)
       this.sendSocketNotification("GP_MORE_PICTS")
       return
     }
@@ -706,22 +709,40 @@ class Extented {
       infoText.appendChild(albumTitle)
       infoText.appendChild(photoTime)
       info.appendChild(infoText)
-      logEXT("GPHOTOS: Image loaded:", url)
+      logEXT("GPHOTOS: Image loaded ["+ this.EXT.GPhotos.index + "/" + this.EXT.GPhotos.scanned.length + "]:", url)
       this.sendSocketNotification("GP_LOADED", url)
     }
     hidden.src = url
   }
 
   showGooglePhotoAPI () {
-    this.Informations({message: "GPOpen" })
-    this.EXTLock()
-    this.EXT.photos.displayed = true
-    this.showDisplay()
-    this.updatePhotos()
-
-    this.EXT.GPhotos.updateTimer = setInterval(()=>{
+    if (this.EXT.GPhotos.scanned.length == 0) {
+      clearTimeout(this.EXT.GPhotos.updateTimer)
+      this.EXT.GPhotos.updateTimer = null
+      this.Informations({message: "GPNoPhotoFound" })
+      this.sendSocketNotification("GP_MORE_PICTS")
+      this.EXT.GPhotos.warning++
+      if (this.EXT.GPhotos.warning >= 5) {
+        this.Warning({message: "GPError" })
+        this.EXT.GPhotos.warning = 0
+        return
+      }
+      this.EXT.GPhotos.updateTimer = setInterval(()=>{
+        this.showBackgroundGooglePhotoAPI()
+      }, 15000)
+    } else {
+      this.Informations({message: "GPOpen" })
+      clearTimeout(this.EXT.GPhotos.updateTimer)
+      this.EXT.GPhotos.updateTimer = null
+      this.EXTLock()
+      this.EXT.photos.displayed = true
+      this.showDisplay()
       this.updatePhotos()
-    }, this.config.photos.displayDelay)
+
+      this.EXT.GPhotos.updateTimer = setInterval(()=>{
+        this.updatePhotos()
+      }, this.config.photos.displayDelay)
+    }
   }
 
   hideGooglePhotoAPI () {
@@ -732,12 +753,30 @@ class Extented {
   }
 
   showBackgroundGooglePhotoAPI () {
-    if (this.EXT.GPhotos.albums) this.Informations({message: "GPOpen" })
-    this.updatePhotos()
-
-    this.EXT.GPhotos.updateTimer = setInterval(()=>{
+    if (this.EXT.GPhotos.scanned.length == 0) {
+      clearTimeout(this.EXT.GPhotos.updateTimer)
+      this.EXT.GPhotos.updateTimer = null
+      this.Informations({message: "GPNoPhotoFound" })
+      this.sendSocketNotification("GP_MORE_PICTS")
+      this.EXT.GPhotos.warning++
+      if (this.EXT.GPhotos.warning >= 5) {
+        this.Warning({message: "GPError" })
+        this.EXT.GPhotos.warning = 0
+        return
+      }
+      this.EXT.GPhotos.updateTimer = setInterval(()=>{
+        this.showBackgroundGooglePhotoAPI()
+      }, 15000)
+    } else {
+      if (this.EXT.GPhotos.albums) this.Informations({message: "GPOpen" })
+      clearTimeout(this.EXT.GPhotos.updateTimer)
+      this.EXT.GPhotos.updateTimer = null
       this.updatePhotos()
-    }, this.config.photos.displayDelay)
+
+      this.EXT.GPhotos.updateTimer = setInterval(()=>{
+        this.updatePhotos()
+      }, this.config.photos.displayDelay)
+    }
   }
 
   stopGooglePhotoAPI () {
