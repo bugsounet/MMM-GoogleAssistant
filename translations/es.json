@@ -87,6 +87,10 @@
   "SpotifySearchFailed": "Spotify: Búsqueda y reproducción fallida",
   "SpotifyListenText": "Escuchando",
   "SpotifyForGA": "Spotify para el Asistente de Google",
+  "SpotifySearchTypePlaylist": "playlist",
+  "SpotifySearchTypeAlbum": "album",
+  "SpotifySearchTypeTrack": "track",
+  "SpotifySearchTypeArtist": "artist",
 
   "ScreenWakeUp": "Pantalla activada por {VALUES}",
   "ScreenLock": "Pantalla bloqueada por {VALUES}",

@@ -86,6 +86,10 @@
   "SpotifySearchFailed": "Spotify: Search and Play fallito",
   "SpotifyListenText": "Ascoltando",
   "SpotifyForGA": "Spotify for Google Assistant",
+  "SpotifySearchTypePlaylist": "playlist",
+  "SpotifySearchTypeAlbum": "album",
+  "SpotifySearchTypeTrack": "track",
+  "SpotifySearchTypeArtist": "artist",
 
   "ScreenWakeUp": "MagicMirror svegliato da {VALUES}",
   "ScreenLock": "MagicMirror bloccato da {VALUES}",

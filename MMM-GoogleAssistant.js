@@ -1,7 +1,7 @@
 /**
  ** Module : MMM-GoogleAssistant v3
  ** @bugsounet
- ** ©05-2021
+ ** ©06-2021
  ** support: http://forum.bugsounet.fr
  **/
 
@@ -61,6 +61,7 @@ Module.register("MMM-GoogleAssistant", {
     Extented: {
       useEXT: false,
       stopCommand: "stop",
+      deviceName: "MagicMirror",
       youtube: {
         useYoutube: false,
         youtubeCommand: "youtube",
@@ -140,7 +141,6 @@ Module.register("MMM-GoogleAssistant", {
       },
       cast: {
         useCast: false,
-        castName: "MagicMirror",
         port: 8569
       },
       spotify: {
@@ -156,18 +156,11 @@ Module.register("MMM-GoogleAssistant", {
         },
         player: {
           type: "Raspotify",
-          deviceName: "MagicMirror",
           email: "",
           password: "",
           minVolume: 10,
           maxVolume: 90,
           usePause: true
-        },
-        search: {
-          typeArtist: "artist",
-          typePlaylist: "playlist",
-          typeAlbum: "album",
-          typeTrack: "track"
         }
       }
     },
@@ -736,7 +729,7 @@ Module.register("MMM-GoogleAssistant", {
           this.EXT.spotify.repeat = payload.repeat_state
           this.EXT.spotify.shuffle = payload.shuffle_state
 
-          if (payload.device.name == this.config.Extented.spotify.player.deviceName) {
+          if (payload.device.name == this.config.Extented.deviceName) {
             if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
             this.EXT.spotify.currentVolume = payload.device.volume_percent
             if (!this.EXT.spotify.player) this.EXT.spotify.player = true
@@ -1499,14 +1492,14 @@ Module.register("MMM-GoogleAssistant", {
           break
         case "SEARCH":
           /** enforce type **/
-          var type = payload.query.split(" ")
-          if (type[0] == this.config.Extented.spotify.search.typePlaylist) type = "playlist"
-          else if (type[0] == this.config.Extented.spotify.search.typeAlbum) type= "album"
-          else if (type[0] == this.config.Extented.spotify.search.typeTrack) type= "track"
-          else if (type[0] == this.config.Extented.spotify.search.typeArtist) type= "artist"
-          else type = null
+          var searchType = payload.query.split(" ")
+          var type = null
+          if (searchType[0] == this.translate("SpotifySearchTypePlaylist")) type = "playlist"
+          else if (searchType[0] == this.translate("SpotifySearchTypeAlbum")) type= "album"
+          else if (searchType[0] == this.translate("SpotifySearchTypeTrack")) type= "track"
+          else if (searchType[0] == this.translate("SpotifySearchTypeArtist")) type= "artist"
           if (type) {
-            payload.query = payload.query.replace(type + " ","")
+            payload.query = payload.query.replace(searchType[0] + " ","")
             payload.type = type
           }
           var pl = {

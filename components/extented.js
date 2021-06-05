@@ -210,8 +210,8 @@ class Extented {
 
       if (Spotify) {
         if (this.EXT.radioPlayer.play) this.radioStop()
-        if (!this.EXT.spotify.connected && this.config.spotify.deviceName) {
-          this.sendSocketNotification("SPOTIFY_TRANSFER", this.config.spotify.deviceName)
+        if (!this.EXT.spotify.connected && this.config.deviceName) {
+          this.sendSocketNotification("SPOTIFY_TRANSFER", this.config.deviceName)
         }
 
         setTimeout(() => {

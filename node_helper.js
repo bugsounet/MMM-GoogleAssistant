@@ -138,7 +138,7 @@ module.exports = NodeHelper.create({
               this.sendSocketNotification("INFORMATION", { message: "LibrespotConnecting" })
               this.Librespot()
               timeout= setTimeout(() => {
-                this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.spotify.player.deviceName)
+                this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.deviceName)
                 this.socketNotificationReceived("SPOTIFY_RETRY_PLAY", payload)
               }, 3000)
             }
@@ -147,7 +147,7 @@ module.exports = NodeHelper.create({
               this.sendSocketNotification("INFORMATION", { message: "RaspotifyConnecting" })
               this.Raspotify()
               timeout= setTimeout(() => {
-                this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.spotify.player.deviceName)
+                this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.deviceName)
                 this.socketNotificationReceived("SPOTIFY_RETRY_PLAY", payload)
               }, 3000)
             }
@@ -469,8 +469,13 @@ module.exports = NodeHelper.create({
     }
     if (this.config.Extented.cast.useCast && this.EXT.CastServer) {
       logEXT("Starting Cast module...")
-      this.cast = new this.EXT.CastServer(this.config.Extented.cast, callbacks.sendSocketNotification, this.config.debug)
-      this.cast.start()
+      if (this.config.Extented.deviceName) {
+        this.config.Extented.cast.deviceName = this.config.Extented.castName
+        this.cast = new this.EXT.CastServer(this.config.Extented.cast, callbacks.sendSocketNotification, this.config.debug)
+        this.cast.start()
+      } else {
+        this.sendSocketNotification("WARNING" , {  message: "Cast: deviceName error" } )
+      }
     }
     if (this.config.Extented.spotify.useSpotify && this.EXT.Spotify) {
       logEXT("Starting Spotify module...")
@@ -537,7 +542,7 @@ module.exports = NodeHelper.create({
           name: "librespot",
           out_file: "/dev/null",
           args: [
-            "-n", this.config.Extented.spotify.player.deviceName,
+            "-n", this.config.Extented.deviceName,
             "-u", this.config.Extented.spotify.player.email,
             "-p", this.config.Extented.spotify.player.password,
             "--initial-volume" , this.config.Extented.spotify.player.maxVolume,
@@ -574,7 +579,6 @@ module.exports = NodeHelper.create({
       return console.log("[RASPOTIFY] systemd library error!")
     }
     const RaspotifyStatus = await this.raspotify.status()
-    console.log("[RASPOTIFY] @test: Main programm to check status", RaspotifyStatus)
     if (RaspotifyStatus.error) {
       this.sendSocketNotification("WARNING" , { message: "RaspotifyNoInstalled" })
       return console.error("[RASPOTIFY] Error: Raspotify is not installed!")
@@ -582,7 +586,6 @@ module.exports = NodeHelper.create({
     if (RaspotifyStatus.state == "running" && !force) return console.log("[RASPOTIFY] Raspotify already running")
     // restart respotify service
     const RaspotifyRestart = await this.raspotify.restart()
-    console.log("[RASPOTIFY] @test: Main programm to restart", RaspotifyRestart)
     if (RaspotifyRestart.error) {
       this.sendSocketNotification("WARNING" , { message: "RaspotifyError", values: "restart failed!" })
       console.log("[RASPOTIFY] Error when restart Raspotify!")

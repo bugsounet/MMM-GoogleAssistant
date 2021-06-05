@@ -81,6 +81,10 @@
   "SpotifySearchFailed": "Spotify: Suche und Wiedergabe fehlgeschlagen",
   "SpotifyListenText": "Zuhören aktiv",
   "SpotifyForGA": "Spotify für Google Assistant",
+  "SpotifySearchTypePlaylist": "playlist",
+  "SpotifySearchTypeAlbum": "album",
+  "SpotifySearchTypeTrack": "track",
+  "SpotifySearchTypeArtist": "artist",
 
   "ScreenWakeUp": "Display aktivieren durch {VALUES}",
   "ScreenLock": "Display sperren durch {VALUES}",

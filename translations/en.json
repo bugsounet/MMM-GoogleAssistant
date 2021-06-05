@@ -87,6 +87,10 @@
   "SpotifySearchFailed": "Spotify: Search and Play failed",
   "SpotifyListenText": "Listening on",
   "SpotifyForGA": "Spotify for Google Assistant",
+  "SpotifySearchTypePlaylist": "playlist",
+  "SpotifySearchTypeAlbum": "album",
+  "SpotifySearchTypeTrack": "track",
+  "SpotifySearchTypeArtist": "artist",
 
   "ScreenWakeUp": "Screen Wakeup by {VALUES}",
   "ScreenLock": "Screen Lock by {VALUES}",

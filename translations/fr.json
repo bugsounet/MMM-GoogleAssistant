@@ -87,6 +87,10 @@
   "SpotifySearchFailed": "Spotify: erreur Search and Play",
   "SpotifyListenText": "En écoute sur",
   "SpotifyForGA": "Spotify pour Google Assistant",
+  "SpotifySearchTypePlaylist": "playlist",
+  "SpotifySearchTypeAlbum": "album",
+  "SpotifySearchTypeTrack": "piste",
+  "SpotifySearchTypeArtist": "artiste",
 
   "ScreenWakeUp": "Réveil de l'écran demandé par {VALUES}",
   "ScreenLock": "Verrouillage de l'écran demandé par {VALUES}",
