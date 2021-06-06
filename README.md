@@ -18,7 +18,7 @@ Read the docs in [wiki](https://github.com/bugsounet/MMM-GoogleAssistant/wiki)<b
 ## [Dedicated Support is now open](http://forum.bugsounet.fr)
 
 ## Last Tested
-- MagicMirror : 2.14.0
+- MagicMirror : 2.15.0
 - RPI 4 / raspbian 10 (buster)
 - debian 10
 
