@@ -155,7 +155,7 @@ Module.register("MMM-GoogleAssistant", {
           CLIENT_SECRET: "",
         },
         player: {
-          type: "Raspotify",
+          type: "none",
           email: "",
           password: "",
           minVolume: 10,

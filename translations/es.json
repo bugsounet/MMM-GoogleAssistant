@@ -1,6 +1,6 @@
 {
   "NO_RESPONSE" : "Lo siento, no te entiendo.",
-  "NO_AUDIO_RESPONSE" : " ",
+  "NO_AUDIO_RESPONSE" : "No hay respuesta",
   "TOO_SHORT" : "Lo siento, no te entiendo..",
   "CONVERSATION_ERROR" : "Error en la conversación. (micrófono sin configurar)",
   "QUERY_REPLY" : "Google Assistant va a ser activado",
@@ -87,10 +87,10 @@
   "SpotifySearchFailed": "Spotify: Búsqueda y reproducción fallida",
   "SpotifyListenText": "Escuchando",
   "SpotifyForGA": "Spotify para el Asistente de Google",
-  "SpotifySearchTypePlaylist": "playlist",
-  "SpotifySearchTypeAlbum": "album",
-  "SpotifySearchTypeTrack": "track",
-  "SpotifySearchTypeArtist": "artist",
+  "SpotifySearchTypePlaylist": "lista",
+  "SpotifySearchTypeAlbum": "álbum",
+  "SpotifySearchTypeTrack": "canción",
+  "SpotifySearchTypeArtist": "artista",
 
   "ScreenWakeUp": "Pantalla activada por {VALUES}",
   "ScreenLock": "Pantalla bloqueada por {VALUES}",
@@ -126,7 +126,7 @@
   "GPOpen": "Abrir Google Photos",
   "GPClose": "Cerrar Google Photos",
   "GPAlbumName": "Álbum:",
-  "GPError": "GooglePhotos: No photos to display",
-  "GPNoPhotoFound" : "GooglePhotos: No picture found",
-  "GPReceive": "GooglePhotos receive {VALUES} pictures"
+  "GPError": "GooglePhotos: No hay imágenes para mostrar",
+  "GPNoPhotoFound" : "GooglePhotos: No se encuentra la imagen",
+  "GPReceive": "GooglePhotos recibidas {VALUES} imagenes"
 }
