@@ -1,1 +1,87 @@
-const HTMLParser=require("node-html-parser"),path=require("path"),fs=require("fs"),Entities=require("html-entities").AllHtmlEntities,entities=new Entities;var _log=Function.prototype.bind.call(console.log,console,"[GA:SP]"),log=function(){};class SCREENPARSER{constructor(e,t){this.config=e,1==t&&(log=_log)}parse(e,t=(()=>{})){if(e.screen){var r=this.config.screenOutputURI,n=path.resolve(__dirname,"..",r);if(!e.screen.originalContent)return;var o=e.screen.originalContent.toString("utf8");o=(e=>e.replace(/document\.body,"display","none"/gim,e=>'document.body,"display","block"'))(o);var s="/modules/MMM-GoogleAssistant/"+this.config.screenOutputCSS+"?seed="+Date.now();o=o.replace(/<style>html,body[^<]+<\/style>/gim,`<link rel="stylesheet" href="${s}">`);var i=HTMLParser.parse(e.screen.originalContent),l=i.querySelector(".popout-content");l&&(e.screen.text=l.structuredText),e.screen=this.parseScreenLink(e.screen),e.screen.photos=[];var a=i.querySelectorAll(".photo_tv_image");if(a)for(var u=0;u<a.length;u++)e.screen.photos.push(a[u].attributes["data-image-url"]);fs.writeFile(n,o,o=>{o?(log("CONVERSATION:SCREENOUTPUT_CREATION_ERROR",o),t(o)):(log("CONVERSATION:SCREENOUTPUT_CREATED"),e.screen.path=n,e.screen.uri=r,t(e))})}}parseScreenLink(e){var t=e.originalContent;e.links=[];for(var r=[/data-url=\"([^\"]+)\"/gim,/ (http[s]?\:\/\/[^ \)]+)[ ]?\)/gim,/\: (http[s]?\:\/\/[^ <]+)/gim],n=null,o=[],s=0;s<r.length;s++)for(var i=r[s];null!==(n=i.exec(t));)o.push(entities.decode(n[1]));if(0==o.length){var l=new RegExp("http[s]?://m.youtube.com/watch\\?v=([0-9a-zA-Z-_]+)","ig"),a=new RegExp("http[s]?://m.youtube.com/playlist\\?list=([a-zA-Z0-9-_]+)","ig"),u=l.exec(e.text);a.exec(e.text)?(log("YouTube playlist found:",youtubePlayList[0]),o.push(youtubePlayList[0])):u&&(log("YouTube video found:",u[0]),o.push(u[0]))}return e.links=o,e}}module.exports=SCREENPARSER;
+const HTMLParser = require("node-html-parser")
+const path = require("path")
+const fs = require("fs")
+const Entities = require('html-entities').AllHtmlEntities
+const entities = new Entities()
+
+var _log = function() {
+    var context = "[GA:SP]"
+    return Function.prototype.bind.call(console.log, console, context)
+}()
+
+var log = function() {
+  //do nothing
+}
+
+class SCREENPARSER {
+  constructor(config,debug) {
+    this.config = config
+    if (debug == true) log = _log
+  }
+
+  parse(response, endCallback=()=>{}) {
+    if (response.screen) {
+      var uri = this.config.responseOutputURI
+      var filePath = path.resolve(__dirname, "..", uri)
+      if (!response.screen.originalContent) return
+      var str = response.screen.originalContent.toString("utf8")
+      var disableTimeoutFromScreenOutput = (str) => {
+        return str.replace(/document\.body,"display","none"/gim,(x)=>{
+          return `document.body,"display","block"`
+        })
+      }
+      str = disableTimeoutFromScreenOutput(str)
+      str = str.replace("html", 'html style="zoom:' + this.config.responseOutputZoom + '"')
+
+      var url = "/modules/MMM-GoogleAssistant/" + this.config.responseOutputCSS + "?seed=" + Date.now()
+      str = str.replace(/<style>html,body[^<]+<\/style>/gmi, `<link rel="stylesheet" href="${url}">`)
+
+      var ret = HTMLParser.parse(response.screen.originalContent)
+      var dom = ret.querySelector(".popout-content")
+      response.screen.text = dom ? dom.structuredText : null
+      response.text= dom && dom.querySelector(".show_text_content") ? dom.querySelector(".show_text_content").structuredText : null
+      response.screen = this.parseScreenLink(response.screen)
+      response.screen.photos = []
+      var photos = ret.querySelectorAll(".photo_tv_image")
+      if (photos) {
+        for (var i=0; i < photos.length; i++) {
+          response.screen.photos.push(photos[i].attributes["data-image-url"])
+        }
+      }
+
+      var contents = fs.writeFile(filePath, str, (error) => {
+        if (error) {
+         log("CONVERSATION:SCREENOUTPUT_CREATION_ERROR", error)
+         endCallback(error)
+        } else {
+          log("CONVERSATION:SCREENOUTPUT_CREATED")
+          response.screen.path = filePath
+          response.screen.uri = uri
+          endCallback(response)
+        }
+      })
+    }
+  }
+
+  parseScreenLink(screen) {
+    var html = screen.originalContent
+    screen.links = []
+    var links = [
+      /data-url=\"([^\"]+)\"/gmi,
+      / (http[s]?\:\/\/[^ \)]+)[ ]?\)/gmi,
+      /\: (http[s]?\:\/\/[^ <]+)/gmi,
+    ]
+    var r = null
+    var res = []
+    for (var i = 0; i < links.length; i++) {
+      var link = links[i]
+      while ((r = link.exec(html)) !== null) {
+        res.push(entities.decode(r[1]))
+      }
+    }
+    screen.links = res
+    return screen
+  }
+}
+
+module.exports = SCREENPARSER
