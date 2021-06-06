@@ -42,8 +42,8 @@ function checkConfig() {
     return process.exit(1)
   }
 
-  if (!GAModule.config.Extented.spotify.player.deviceName) console.log("Warning: Spotify devicename not found! (deviceName) using default name:", SpotifyDeviceName)
-  else SpotifyDeviceName= GAModule.config.Extented.spotify.player.deviceName
+  if (!GAModule.config.Extented.deviceName) console.log("Warning: Spotify devicename not found! (deviceName) using default name:", SpotifyDeviceName)
+  else SpotifyDeviceName= GAModule.config.Extented.deviceName
 
   if (!GAModule.config.Extented.spotify.player.email) {
     console.log("Fatal: email field needed in player feature of spotify module")
