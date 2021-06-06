@@ -1,4 +1,4 @@
-# MMM-GoogleAssistant
+# MMM-GoogleAssistant v3
 
 ![](https://img.shields.io/npm/dm/@bugsounet/secure-ga) ![](https://img.shields.io/npm/dt/@bugsounet/secure-ga)
 
@@ -11,11 +11,6 @@
 - FullScreen UI
 
 ![](https://github.com/bugsounet/MMM-GoogleAssistant/blob/dev/resources/previewFS.jpg)
-
-## Demo videos
-
-- [EN version](https://youtu.be/viE9Ds8IvUQ)
-- [FR version](https://www.youtube.com/watch?v=1hpx4xujqHg)
 
 ## Installation, update & Guides
 Read the docs in [wiki](https://github.com/bugsounet/MMM-GoogleAssistant/wiki)<br>
