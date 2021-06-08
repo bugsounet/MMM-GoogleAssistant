@@ -288,6 +288,7 @@ module.exports = NodeHelper.create({
     let configModule = MMConfig.modules.find(m => m.module == "MMM-GoogleAssistant")
     if (!configModule.configDeepMerge) {
       console.error("[FATAL] MMM-GoogleAssistant Module Configuration Error: ConfigDeepMerge is not actived !")
+      console.error("[GA] Please review your MagicMirror config.js file!")
       process.exit(1)
     }
     console.log("[GA] Perfect ConfigDeepMerge activated!")

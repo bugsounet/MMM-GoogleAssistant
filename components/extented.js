@@ -605,7 +605,7 @@ class Extented {
   prepareBody() {
     document.body.id = "EXT_SCREEN_ANIMATE"
     document.body.className= "animate__animated"
-    document.body.style.setProperty('--animate-duration', '0.5s')
+    document.body.style.setProperty('--animate-duration', '1s')
   }
 
   /** Volume display **/
@@ -818,7 +818,6 @@ class Extented {
   /** MagicMirror Show / hide rules (with body anmiation) **/
   async screenShowing () {
     if (this.config.screen.animateBody && this.init) {
-      console.log("??")
       clearTimeout(this.awaitBeforeTurnOnTimer)
       this.awaitBeforeTurnOnTimer= null
       await this.awaitBeforeWakeUp(this.config.screen.animateTime)
