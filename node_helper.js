@@ -470,7 +470,7 @@ module.exports = NodeHelper.create({
     if (this.config.Extented.cast.useCast && this.EXT.CastServer) {
       logEXT("Starting Cast module...")
       if (this.config.Extented.deviceName) {
-        this.config.Extented.cast.deviceName = this.config.Extented.castName
+        this.config.Extented.cast.castName = this.config.Extented.deviceName
         this.cast = new this.EXT.CastServer(this.config.Extented.cast, callbacks.sendSocketNotification, this.config.debug)
         this.cast.start()
       } else {
