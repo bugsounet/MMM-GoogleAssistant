@@ -779,11 +779,9 @@ Module.register("MMM-GoogleAssistant", {
 
       /** detector ON/OFF **/
       case "DETECTOR_START":
-      case "SNOWBOY_START": // deprecied soon
         this.sendNotification("DETECTOR_START")
         break
       case "DETECTOR_STOP":
-      case "SNOWBOY_STOP": // deprecied soon
         this.sendNotification("DETECTOR_STOP")
         break
       /** GPhotos **/
