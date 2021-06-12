@@ -605,7 +605,7 @@ class Extented {
   prepareBody() {
     document.body.id = "EXT_SCREEN_ANIMATE"
     document.body.className= "animate__animated"
-    document.body.style.setProperty('--animate-duration', '0.5s')
+    document.body.style.setProperty('--animate-duration', '1s')
   }
 
   /** Volume display **/
@@ -816,7 +816,12 @@ class Extented {
 
 
   /** MagicMirror Show / hide rules (with body anmiation) **/
-  screenShowing () {
+  async screenShowing () {
+    if (this.config.screen.animateBody && this.init) {
+      clearTimeout(this.awaitBeforeTurnOnTimer)
+      this.awaitBeforeTurnOnTimer= null
+      await this.awaitBeforeWakeUp(this.config.screen.animateTime)
+    }
     MM.getModules().enumerate((module)=> {
       module.show(500, {lockString: "EXT_SCREEN"})
     })
@@ -829,6 +834,8 @@ class Extented {
 
   screenHiding () {
     if (this.config.screen.animateBody) {
+      clearTimeout(this.awaitBeforeTurnOnTimer)
+      this.awaitBeforeTurnOnTimer= null
       document.body.classList.remove("animate__zoomIn")
       document.body.classList.add("animate__zoomOut")
       document.body.addEventListener('animationend', (e) => {
@@ -914,5 +921,12 @@ class Extented {
     module.classList.remove("hidden")
     module.classList.remove("animate__flipOutX")
     module.classList.add("animate__flipInX")
+  }
+
+  /** need to sleep ? **/
+  awaitBeforeWakeUp(ms=3000) {
+    return new Promise((resolve) => {
+      this.awaitBeforeTurnOnTimer = setTimeout(resolve, ms)
+    })
   }
 }
