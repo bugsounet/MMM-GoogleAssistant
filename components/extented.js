@@ -816,11 +816,12 @@ class Extented {
 
 
   /** MagicMirror Show / hide rules (with body anmiation) **/
-  async screenShowing () {
+  screenShowing () {
     if (this.config.screen.animateBody && this.init) {
       clearTimeout(this.awaitBeforeTurnOnTimer)
       this.awaitBeforeTurnOnTimer= null
-      await this.awaitBeforeWakeUp(this.config.screen.animateTime)
+      // don't execute rules ... to much time for wakeup screen ...
+      //await this.awaitBeforeWakeUp(this.config.screen.animateTime)
     }
     MM.getModules().enumerate((module)=> {
       module.show(500, {lockString: "EXT_SCREEN"})
