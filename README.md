@@ -1,6 +1,6 @@
 # MMM-GoogleAssistant v3
 
-![](https://img.shields.io/npm/dm/@bugsounet/secure-ga) ![](https://img.shields.io/npm/dt/@bugsounet/secure-ga)
+![](https://img.shields.io/npm/dm/@bugsounet/secure-ga-v3) ![](https://img.shields.io/npm/dt/@bugsounet/secure-ga-v3)
 
 `MMM-GoogleAssistant` is an embedded Google assistant on MagicMirror.
 
