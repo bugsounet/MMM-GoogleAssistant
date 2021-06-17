@@ -582,6 +582,9 @@ Module.register("MMM-GoogleAssistant", {
           this.Informations("information", { message: "ScreenUnLock", values: sender.name })
         }
         break
+      case "EXT_OPEN": /** External activation of extented **/
+        if (this.config.Extented.useEXT) this.ExtentedOpen(payload)
+        break
     }
   },
 
@@ -1032,7 +1035,6 @@ Module.register("MMM-GoogleAssistant", {
       "photos": null,
       "urls": null,
     }
-
     if (response.screen && (response.screen.links.length > 0 || response.screen.photos.length > 0)) {
       opt.photos = response.screen.photos
       opt.urls= response.screen.links
@@ -1048,6 +1050,22 @@ Module.register("MMM-GoogleAssistant", {
     }
     logGA("Send YouTube Response to Extented Display.")
     this.displayEXTResponse.start(opt)
+  },
+
+  ExtentedOpen(response) {
+    logGA("Received External Extented instructions", response)
+    if (!response || !response.urls || !response.photos) return
+    var opt = {
+      "photos": null,
+      "urls": null,
+    }
+    if (response.urls.length > 0 || response.photos.length > 0) {
+      opt.photos = response.photos
+      opt.urls= response.urls
+      logGA("Send Extented Display Response.")
+      this.displayEXTResponse.start(opt)
+    }
+    else logGA("[Error] External Extented instructions.")
   },
 
   /****************************/
