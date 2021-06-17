@@ -113,15 +113,15 @@ module.exports = NodeHelper.create({
               this.socketNotificationReceived("SPOTIFY_PLAY", payload)
             }
             if ((code !== 204) && (code !== 202)) {
-              if (this.config.Extented.spotify.player.type == "Librespot") this.sendSocketNotification("WARNING", { message: "LibrespotNoResponse" })
-              if (this.config.Extented.spotify.player.type == "Raspotify") this.sendSocketNotification("WARNING", { message: "RaspotifyNoResponse" })
+              if (this.config.Extented.spotify.player.type == "Librespot") this.sendSocketNotification("WARNING", { message: "LibrespotNoResponse", values: this.config.Extented.deviceName })
+              if (this.config.Extented.spotify.player.type == "Raspotify") this.sendSocketNotification("WARNING", { message: "RaspotifyNoResponse", values: this.config.Extented.deviceName })
               return console.log("[SPOTIFY:PLAY] RETRY Error", code, error, result)
             }
             else {
               logEXT("[SPOTIFY] RETRY: DONE_PLAY")
               this.retryPlayerCount = 0
-              if (this.config.Extented.spotify.player.type == "Librespot") this.sendSocketNotification("INFORMATION", { message: "LibrespotConnected" })
-              if (this.config.Extented.spotify.player.type == "Raspotify") this.sendSocketNotification("INFORMATION", { message: "RaspotifyConnected" })
+              if (this.config.Extented.spotify.player.type == "Librespot") this.sendSocketNotification("INFORMATION", { message: "LibrespotConnected", values: this.config.Extented.deviceName })
+              if (this.config.Extented.spotify.player.type == "Raspotify") this.sendSocketNotification("INFORMATION", { message: "RaspotifyConnected", values: this.config.Extented.deviceName })
             }
           })
         }, 3000)
@@ -533,22 +533,22 @@ module.exports = NodeHelper.create({
         if (err) return console.log(err)
         if (list && Object.keys(list).length > 0) {
           for (let [item, info] of Object.entries(list)) {
-            if (info.name == "librespot" && info.pid && !restart) {
-              return console.log("[PM2] librespot already launched")
+            if (info.name == "librespot" && info.pid) {
+              let deleted = false
+              if (restart) {
+                pm2.delete("librespot" , (err) => {
+                  if (err) console.log("[PM2] Librespot Process not found")
+                  else {
+                    console.log("[PM2] Librespot Process deleted! (refreshing ident)")
+                    deleted= true
+                    this.Librespot() // recreate process with new ident !
+                  }
+                })
+              }
+              if (deleted) return
+              else return console.log("[PM2] librespot already launched")
             }
           }
-        }
-        if (restart) {
-          let deleted = false
-          pm2.delete("librespot" , (err) => {
-            if (err) console.log("[PM2] Librespot Process not found")
-            else {
-              console.log("[PM2] Librespot Process deleted!")
-              deleted= true
-              this.Librespot() // recreate process with new ident !
-            }
-          })
-          if (deleted) return
         }
         pm2.start({
           script: filePath,
