@@ -59,14 +59,14 @@
   "LibraryLoaded": "GoogleAssistant Extented Library Loaded!",
   "LibraryError": "Error when loading: {VALUES} library",
 
-  "LibrespotNoResponse": "No response from librespot!",
-  "LibrespotConnected": "Connected to librespot!",
+  "LibrespotNoResponse": "No response from librespot! ({VALUES})",
+  "LibrespotConnected": "Connected to librespot! ({VALUES})",
   "LibrespotConnecting": "Please wait, connecting to librespot...",
   "LibrespotNoInstalled": "librespot is not installed !",
   "LibrespotError": "Librespot: {VALUES}",
 
-  "RaspotifyNoResponse": "No response from raspotify!",
-  "RaspotifyConnected": "Connected to raspotify!",
+  "RaspotifyNoResponse": "No response from raspotify! ({VALUES})",
+  "RaspotifyConnected": "Connected to raspotify! ({VALUES})",
   "RaspotifyConnecting": "Please wait, connecting to raspotify...",
   "RaspotifyNoInstalled": "Raspotify is not installed !",
   "RaspotifyError": "Raspotify: {VALUES}",

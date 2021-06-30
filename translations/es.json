@@ -1,7 +1,7 @@
 {
   "NO_RESPONSE" : "Lo siento, no te entiendo.",
   "NO_AUDIO_RESPONSE" : "No hay respuesta",
-  "TOO_SHORT" : "Lo siento, no te entiendo..",
+  "TOO_SHORT" : "Lo siento, no te entiendo, demasiado corto..",
   "CONVERSATION_ERROR" : "Error en la conversación. (micrófono sin configurar)",
   "QUERY_REPLY" : "Google Assistant va a ser activado",
   "QUERY_HELP" : "Puedes usar Google Assistant vía texto con este comando.",
@@ -10,7 +10,7 @@
   "RESTART_DONE" : "Reiniciado!",
   "RESTART_ERROR" : "<id> No encontrado !",
 
-  "WAKEUP_HELP": "Pantalla encendida y contador reiniciado",
+  "WAKEUP_HELP": "Pantalla encendida y reiniciar contador",
   "WAKEUP_REPLY": "Pantalla Encendida!",
 
   "HIDE_HELP": "Ocultar el módulo deseado",
@@ -27,7 +27,7 @@
   "MODULE_NAME": "Te falta el nombre del módulo",
 
   "STOP_HELP": "Parar Extented Display si está activo",
-  "STOP_EXT": "He parado Extented Display",
+  "STOP_EXT": "Extented Display parado",
 
   "EXT_OPEN": "Abriendo link: ",
   "EXT_INVALID": "El link utilizado no es válido!",
@@ -59,19 +59,19 @@
   "LibraryLoaded": "Librerías extendidas de GoogleAssistant cargadas!",
   "LibraryError": "Error cargando: {VALUES} librería",
 
-  "LibrespotNoResponse": "No hay respuesta desde librespot!",
-  "LibrespotConnected": "Conectado a librespot!",
+  "LibrespotNoResponse": "No hay respuesta desde librespot! ({VALUES})",
+  "LibrespotConnected": "Conectado a librespot! ({VALUES})",
   "LibrespotConnecting": "Espera por favor, conectando a librespot...",
   "LibrespotNoInstalled": "librespot no está instalado!",
   "LibrespotError": "Librespot: {VALUES}",
 
-  "RaspotifyNoResponse": "No hay respuesta desde raspotify!",
-  "RaspotifyConnected": "Conectado a raspotify!",
+  "RaspotifyNoResponse": "No hay respuesta desde raspotify! ({VALUES})",
+  "RaspotifyConnected": "Conectado a raspotify! ({VALUES})",
   "RaspotifyConnecting": "Espere por favor, conectando a raspotify...",
   "RaspotifyNoInstalled": "Raspotify no está instalado!",
   "RaspotifyError": "Raspotify: {VALUES}",
 
-  "YouTubePlaying": "YouTube reproduciendo: {VALUES}",
+  "YouTubePlaying": "Reproduciendo en Youtube: {VALUES}",
   "YouTubeError": "YouTube: {VALUES}",
 
   "Volume": "Volumen: {VALUES}",
@@ -81,7 +81,7 @@
 
   "GovernorError": "Controlador: {VALUES}",
 
-  "PirError": "Sensor Pir código de error: {VALUES}",
+  "PirError": "Error en el sensor Pir, código de error: {VALUES}",
 
   "SpotifyNoResult": "Spotify: No se encuentran resultados",
   "SpotifySearchFailed": "Spotify: Búsqueda y reproducción fallida",

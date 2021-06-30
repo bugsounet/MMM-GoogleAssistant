@@ -57,14 +57,14 @@
   "LibraryLoaded": "GoogleAssistant Uitgebreide bibliotheek geladen!",
   "LibraryError": "Fout bij het laden: {VALUES} bibliotheek",
 
-  "LibrespotNoResponse": "Geen reactie van librespot!",
-  "LibrespotConnected": "Verbonden met librespot!",
+  "LibrespotNoResponse": "Geen reactie van librespot! ({VALUES})",
+  "LibrespotConnected": "Verbonden met librespot! ({VALUES})",
   "LibrespotConnecting": " Even geduld, verbinding maken met librespot...",
   "LibrespotNoInstalled": "librespot is niet geïnstalleerd !",
   "LibrespotError": "Librespot: {VALUES}",
 
-  "RaspotifyNoResponse": "Geen reactie van raspotify!",
-  "RaspotifyConnected": "Verbonden met raspotify!",
+  "RaspotifyNoResponse": "Geen reactie van raspotify! ({VALUES})",
+  "RaspotifyConnected": "Verbonden met raspotify! ({VALUES})",
   "RaspotifyConnecting": "Even geduld, verbinding maken met raspotify...",
   "RaspotifyNoInstalled": "Raspotify is niet geïnstalleerd !",
   "RaspotifyError": "Raspotify: {VALUES}",
