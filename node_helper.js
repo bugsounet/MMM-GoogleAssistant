@@ -57,7 +57,7 @@ module.exports = NodeHelper.create({
             console.log("[GA] ShellExec Error:" + e)
             this.sendSocketNotification("WARNING", { message: "ShellExecError"} )
           }
-          this.sendSocketNotification("INFORMATION", { message: "ShellExecDone" } )
+          //this.sendSocketNotification("INFORMATION", { message: "ShellExecDone" } )
           logGA("SHELLEXEC_RESULT", {
             executed: payload,
             result: {
