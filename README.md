@@ -13,7 +13,7 @@
 ![](https://github.com/bugsounet/MMM-GoogleAssistant/blob/dev/resources/previewFS.jpg)
 
 ## Installation, update & Guides
-Read the docs in [wiki](https://github.com/bugsounet/MMM-GoogleAssistant/wiki)<br>
+Read the docs in [wiki](http://wiki.bugsounet.fr/en/MMM-GoogleAssistant)<br>
 
 ## [Dedicated Support is now open](http://forum.bugsounet.fr)
 
