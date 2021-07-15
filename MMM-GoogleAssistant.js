@@ -114,10 +114,8 @@ Module.register("MMM-GoogleAssistant", {
         detectorSleeping: false,
         governorSleeping: false,
         displayLastPresence: true,
-        notification: {
-          userPresence: true,
-          screenStatus: true
-        }
+        userPresenceNotification: true,
+        screenStatusNotification: true
       },
       touch: {
         useTouch: true,
@@ -685,7 +683,7 @@ Module.register("MMM-GoogleAssistant", {
         }
         break
       case "SCREEN_PRESENCE":
-        if (this.config.Extented.screen.notification.userPresence) this.sendNotification("USER_PRESENCE", payload ? true : false)
+        if (this.config.Extented.screen.userPresenceNotification) this.sendNotification("USER_PRESENCE", payload ? true : false)
         if (payload) this.lastPresence = moment().format("LL HH:mm")
         else this.userPresence = this.lastPresence
         if (this.userPresence && this.config.Extented.screen.displayLastPresence) {
@@ -702,7 +700,7 @@ Module.register("MMM-GoogleAssistant", {
         this.displayEXTResponse.screenHiding()
         break
       case "SCREEN_POWER":
-        if (this.config.Extented.screen.notification.screenStatus) {
+        if (this.config.Extented.screen.screenStatusNotification) {
           if (payload) this.sendNotification("SCREEN_ON")
           else this.sendNotification("SCREEN_OFF")
         }
