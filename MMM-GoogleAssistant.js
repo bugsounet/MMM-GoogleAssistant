@@ -113,7 +113,11 @@ Module.register("MMM-GoogleAssistant", {
         displayStyle: "Text",
         detectorSleeping: false,
         governorSleeping: false,
-        displayLastPresence: true
+        displayLastPresence: true,
+        notification: {
+          userPresence: true,
+          screenStatus: true
+        }
       },
       touch: {
         useTouch: true,
@@ -585,6 +589,17 @@ Module.register("MMM-GoogleAssistant", {
       case "EXT_OPEN": /** External activation of extented **/
         if (this.config.Extented.useEXT) this.ExtentedOpen(payload)
         break
+      case "USER_PRESENCE": /** Read user presence from other modules **/
+        if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
+          if ((payload == "true") || (payload == true) || (payload == 1) || (payload == "1")) {
+            this.sendSocketNotification("SCREEN_WAKEUP")
+            this.Informations("information", { message: "ScreenWakeUp", values: sender.name })
+          } else {
+            this.sendSocketNotification("SCREEN_FORCE_END")
+            this.Informations("information", { message: "ScreenPowerOff" })
+          }
+        }
+        break
     }
   },
 
@@ -670,6 +685,7 @@ Module.register("MMM-GoogleAssistant", {
         }
         break
       case "SCREEN_PRESENCE":
+        if (this.config.Extented.screen.notification.userPresence) this.sendNotification("USER_PRESENCE", payload ? true : false)
         if (payload) this.lastPresence = moment().format("LL HH:mm")
         else this.userPresence = this.lastPresence
         if (this.userPresence && this.config.Extented.screen.displayLastPresence) {
@@ -686,7 +702,10 @@ Module.register("MMM-GoogleAssistant", {
         this.displayEXTResponse.screenHiding()
         break
       case "SCREEN_POWER":
-        this.sendNotification("SCREEN_POWER", payload)
+        if (this.config.Extented.screen.notification.screenStatus) {
+          if (payload) this.sendNotification("SCREEN_ON")
+          else this.sendNotification("SCREEN_OFF")
+        }
         if (payload) this.Informations("information", { message: "ScreenPowerOn" })
         else this.Informations("information", { message: "ScreenPowerOff" })
         break
