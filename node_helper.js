@@ -50,6 +50,7 @@ module.exports = NodeHelper.create({
         break
       case "SHELLEXEC":
         var command = payload.command
+        if (!command) return console.log("[GA] ShellExec: no command to execute!")
         command += (payload.options) ? (" " + payload.options) : ""
         exec (command, (e,so,se)=> {
           logGA("ShellExec command:", command)

@@ -1007,8 +1007,10 @@ Module.register("MMM-GoogleAssistant", {
         var fs = (typeof se.exec == "function") ? se.exec(param, from) : se.exec
         var so = (se.options) ? ((typeof se.options == "function") ? se.options(param, from) : se.options) : null
         var fo = (typeof so == "function") ? so(param, key) : so
-        logGA(`Command ${commandId} is executed (shellExec).`)
-        this.sendSocketNotification("SHELLEXEC", {command:fs, options:fo})
+        if (fs) {
+          logGA(`Command ${commandId} is executed (shellExec).`)
+          this.sendSocketNotification("SHELLEXEC", {command:fs, options:fo})
+        }
       }
     }
 
