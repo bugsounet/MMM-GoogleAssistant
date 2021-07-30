@@ -29,8 +29,11 @@ tar -xzvf ../installer/LogosRadiosFR.tar.gz -C ../resources && Installer_success
 
 echo
 
+Installer_info "Prepare PIR sensor using"
 # for pir sensor
 sudo usermod -a -G gpio pi || echo "Error command: sudo usermod -a -G gpio pi"
+Installer_success "Done"
+echo
 
 # Disable Screensaver
 ### Part of script of @sdetweil magicmirror_script ###
@@ -45,7 +48,7 @@ sudo usermod -a -G gpio pi || echo "Error command: sudo usermod -a -G gpio pi"
 
 screen_saver_running=$(ps -A -o args | awk '{print $1}' | grep -m1 [s]aver | awk -F\/ '{print $NF}');
 
-echo "Try to Disable screen saver..."
+Installer_info "Try to Disable screen saver..."
 
 # if we found something
 if [ "$screen_saver_running." != "." ]; then
@@ -128,6 +131,12 @@ if [ -d "/etc/xdg/lxsession/LXDE-pi" ]; then
     echo "lxsession screen saver already disabled"
   fi
 fi
+Installer_success "Done"
+echo
+
+Installer_info "Minify Main code"
+node minify.js
+Installer_success "Done"
 echo
 
 # the end...
