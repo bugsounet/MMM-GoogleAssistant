@@ -1,7 +1,5 @@
 /* EXT Class for displaying */
 
-
-
 class Extented {
   constructor (Config, callbacks) {
     this.config = Config
@@ -58,6 +56,11 @@ class Extented {
         repeat: null,
         shuffle: null,
         forceVolume: false
+      },
+      radio: {
+        play: false,
+        img: null,
+        link: null
       }
     }
     console.log("[GA:EXT] ExtentedClass Loaded")

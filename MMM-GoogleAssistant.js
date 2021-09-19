@@ -165,6 +165,10 @@ Module.register("MMM-GoogleAssistant", {
           maxVolume: 90,
           usePause: true
         }
+      },
+      music: {
+        useMusic: false,
+        useUSB: true,
       }
     },
     recipes: [],
@@ -192,6 +196,7 @@ Module.register("MMM-GoogleAssistant", {
        "/modules/MMM-GoogleAssistant/components/youtube.js",
        "/modules/MMM-GoogleAssistant/components/progressbar.js",
        "/modules/MMM-GoogleAssistant/components/spotify.js",
+       "/modules/MMM-GoogleAssistant/components/musicplayer.js",
        "https://cdn.materialdesignicons.com/5.2.45/css/materialdesignicons.min.css",
        "https://code.iconify.design/1/1.0.6/iconify.min.js",
        "/modules/MMM-GoogleAssistant/components/long-press-event.js"
@@ -364,6 +369,7 @@ Module.register("MMM-GoogleAssistant", {
 
       this.displayEXTResponse = new Extented(this.config.Extented, callbacks)
       if (this.config.Extented.spotify.useSpotify) this.spotify = new Spotify(this.config.Extented.spotify.visual, callbacks, this.config.debug)
+      if (this.config.Extented.music.useMusic) this.Music = new Music(this.config.Extented.music, callbacks, this.config.debug)
       this.EXT = this.displayEXTResponse.EXT
       if (this.config.Extented.youtube.useYoutube && this.config.Extented.youtube.useVLC) this.initializeVolumeVLC()
     }
@@ -426,6 +432,11 @@ Module.register("MMM-GoogleAssistant", {
       if (this.config.Extented.spotify.useSpotify && !this.config.Extented.spotify.visual.useBottomBar) {
         spotify= this.spotify.prepareMini()
         dom.appendChild(spotify)
+      }
+
+      if (this.config.Extented.music.useMusic) {
+        music= this.Music.prepare()
+        dom.appendChild(music)
       }
 
       /** GPhotos Module mode**/
@@ -817,6 +828,10 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "GPhotos_INIT":
         this.EXT.GPhotos.albums = payload
+        break
+      /** Music Player **/
+      case "Music_Player":
+        this.Music.updateSongInfo(payload)
         break
     }
   },
