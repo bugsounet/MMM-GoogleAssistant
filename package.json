@@ -36,7 +36,6 @@
   "dependencies": {
     "@bugsounet/secure-ga-v3": "^1.0.0",
     "base64-img": "^1.0.4",
-    "convert-seconds": "^1.0.1",
     "minify": "^7.0.2",
     "music-metadata": "^7.11.4"
   }
