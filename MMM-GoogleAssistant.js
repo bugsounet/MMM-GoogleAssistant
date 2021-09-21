@@ -170,7 +170,9 @@ Module.register("MMM-GoogleAssistant", {
         useUSB: false,
         musicPath: "/home/pi/Music",
         checkSubDirectory: false,
-        autoStart: false
+        autoStart: false,
+        minVolume: 30,
+        maxVolume: 100
       }
     },
     recipes: [],
@@ -374,6 +376,7 @@ Module.register("MMM-GoogleAssistant", {
       if (this.config.Extented.music.useMusic) this.Music = new Music(this.config.Extented.music, callbacks, this.config.debug)
       this.EXT = this.displayEXTResponse.EXT
       if (this.config.Extented.youtube.useYoutube && this.config.Extented.youtube.useVLC) this.initializeVolumeVLC()
+      if (this.config.Extented.music.useMusic) this.initializeMusicVolumeVLC()
     }
   },
 
@@ -1397,6 +1400,10 @@ Module.register("MMM-GoogleAssistant", {
           this.MusicCommand("VOLUME", parseInt(((args[1]*256)/100).toFixed(0)))
         } else handler.reply("TEXT", "Define volume [0-100]")
       }
+      if (args[0] == "switch") {
+        handler.reply("TEXT", "Switch Database (USB Key/Local Folder)")
+        this.MusicCommand("SWITCH")
+      }
     } else {
       handler.reply("TEXT", 'Need Help for /music commands ?\n\n\
   *play*: Launch music (last title)\n\
@@ -1406,6 +1413,7 @@ Module.register("MMM-GoogleAssistant", {
   *previous*: Previous track\n\
   *rebuild*: Rebuild music Database\n\
   *volume*: Volume control, it need a value 0-100\n\
+  *switch*: Switch between USB Key and Local Folder\n\
   ',{parse_mode:'Markdown'})
     }
   },
@@ -1571,7 +1579,37 @@ Module.register("MMM-GoogleAssistant", {
       console.error("[GA:EXT] config.youtube.maxVolume error!", e)
       this.config.Extented.youtube.maxVolume = 255
     }
-    console.log("[GA:EXT] VLC Volume Control initialized!")
+    console.log("[GA:EXT] YouTube -- VLC Volume Control initialized!")
+  },
+
+  /** initialise Music volume control for VLC **/
+  initializeMusicVolumeVLC: function() {
+    /** convert volume **/
+    try {
+      let valueMin = null
+      valueMin = parseInt(this.config.Extented.music.minVolume)
+      if (typeof valueMin === "number" && valueMin >= 0 && valueMin <= 100) this.config.Extented.music.minVolume = ((valueMin * 255) / 100).toFixed(0)
+      else {
+        console.error("[GA:EXT] config.music.minVolume error! Corrected with 30")
+        this.config.Extented.music.minVolume = 70
+      }
+    } catch (e) {
+      console.error("[GA:EXT] config.music.minVolume error!", e)
+      this.config.Extented.music.minVolume = 70
+    }
+    try {
+      let valueMax = null
+      valueMax = parseInt(this.config.Extented.music.maxVolume)
+      if (typeof valueMax === "number" && valueMax >= 0 && valueMax <= 100) this.config.Extented.music.maxVolume = ((valueMax * 255) / 100).toFixed(0)
+      else {
+        console.error("[GA:EXT] config.music.maxVolume error! Corrected with 100")
+        this.config.Extented.music.maxVolume = 255
+      }
+    } catch (e) {
+      console.error("[GA:EXT] config.music.maxVolume error!", e)
+      this.config.Extented.music.maxVolume = 255
+    }
+    console.log("[GA:EXT] Music -- VLC Volume Control initialized!")
   },
 
 /**************************
@@ -1701,6 +1739,9 @@ Module.register("MMM-GoogleAssistant", {
           break
         case "REBUILD":
           this.sendSocketNotification("MUSIC_REBUILD")
+          break
+        case "SWITCH":
+          this.sendSocketNotification("MUSIC_SWITCH")
           break
       }
     }

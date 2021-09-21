@@ -248,6 +248,9 @@ module.exports = NodeHelper.create({
       case 'MUSIC_REBUILD':
         this.RebuildMusic()
         break
+      case 'MUSIC_SWITCH':
+        this.SwitchMusic()
+        break
       /** Restart with pm2 **/
       case "RESTART":
         this.pm2Restart(payload)
@@ -539,10 +542,11 @@ module.exports = NodeHelper.create({
     }
     if (this.config.Extented.music.useMusic) {
       logEXT("Starting Music module...")
-      const CvlcAudioPlayer = require("./components/cvlcAudioPlayer.js") // need to be transformed as a library
-      this.config.Extented.music.modulePath = this.config.assistantConfig["modulePath"]
-      this.music = new CvlcAudioPlayer(this.config.Extented.music, this.config.debug, callbacks)
-      this.music.start()
+      try {
+        this.config.Extented.music.modulePath = this.config.assistantConfig["modulePath"]
+        this.music = new this.EXT.MusicPlayer(this.config.Extented.music, this.config.debug, callbacks)
+        this.music.start()
+      } catch (e) { console.log("[EXT] Music " + e) } // testing
     }
   },
 
@@ -789,6 +793,11 @@ module.exports = NodeHelper.create({
     this.music.rebuild()
   },
 
+  SwitchMusic: function() {
+    this.music.setSwitch()
+  },
+
+
   pm2Restart: function(id) {
     var pm2 = "pm2 restart " + id
     exec (pm2, (err, stdout, stderr)=> {
@@ -812,7 +821,7 @@ module.exports = NodeHelper.create({
       { "@bugsounet/cvlc": [ "cvlc", "Extented.youtube.useVLC" ] },
       { "@bugsounet/google-photos" : [ "GPhotos", "Extented.photos.useGooglePhotosAPI" ] },
       { "@bugsounet/systemd": [ "Systemd", "Extented.spotify.useSpotify" ] },
-      //{ "@bugsounet/musicplayer": ["MusicPlayer", "Extented.music.useMusic" ] }
+      { "@bugsounet/cvlcmusicplayer": ["MusicPlayer", "Extented.music.useMusic" ] }
     ]
     let errors = 0
     return new Promise(resolve => {
