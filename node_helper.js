@@ -11,9 +11,6 @@ const readJson = require("r-json")
 const Youtube = require("youtube-api")
 const pm2 = require('pm2')
 var he = require('he')
-const mm = require('music-metadata');
-var base64Img = require('base64-img');
-var file = "/home/bugsounet/alan.mp3";
 
 logGA = (...args) => { /* do nothing */ }
 logEXT = (...args) => { /* do nothing */ }
@@ -40,23 +37,6 @@ module.exports = NodeHelper.create({
     this.YT = 0
     this.checkConfigMerge()
     this.retryPlayerCount = 0
-    this.Music = null
-    this.MusicInterval = null
-    this.MusicPlaylist = []
-    this.MusicPlayerStatus = {
-      connected: false,
-      current: 0,
-      duration: 0,
-      file: null,
-      title: "",
-      artist: "",
-      volume: 0,
-      date: 0,
-      seed: 0,
-      cover: null,
-      id: null,
-      idMax: 0
-    }
   },
 
   socketNotificationReceived: function (noti, payload) {
@@ -246,6 +226,28 @@ module.exports = NodeHelper.create({
       case "YT_VOLUME":
         this.VolumeVLC(payload)
         break
+      /** Music module **/
+      case "MUSIC_PLAY":
+        this.PlayMusic()
+        break
+      case "MUSIC_STOP":
+        this.StopMusic()
+        break
+      case "MUSIC_PAUSE":
+        this.PauseMusic()
+        break
+      case "MUSIC_NEXT":
+        this.NextMusic()
+        break
+      case "MUSIC_PREVIOUS":
+        this.PreviousMusic()
+        break
+      case "MUSIC_VOLUME":
+        this.VolumeMusic(payload)
+        break
+      case 'MUSIC_REBUILD':
+        this.RebuildMusic()
+        break
       /** Restart with pm2 **/
       case "RESTART":
         this.pm2Restart(payload)
@@ -394,7 +396,6 @@ module.exports = NodeHelper.create({
       this.Checker= new this.EXT.npmCheck(cfg, update => this.sendSocketNotification("NPM_UPDATE", update))
     }
     console.log("[GA] Google Assistant is initialized.")
-    if (this.config.Extented.music.useMusic) setTimeout(() => { this.MusicPlayList() } ,5000)
   },
 
   loadRecipes: function(callback=()=>{}) {
@@ -535,6 +536,13 @@ module.exports = NodeHelper.create({
         error = "Google Photos: tokenGP.json file not found !"
         this.sendSocketNotification("WARNING" , {  message: error } )
       }
+    }
+    if (this.config.Extented.music.useMusic) {
+      logEXT("Starting Music module...")
+      const CvlcAudioPlayer = require("./components/cvlcAudioPlayer.js") // need to be transformed as a library
+      this.config.Extented.music.modulePath = this.config.assistantConfig["modulePath"]
+      this.music = new CvlcAudioPlayer(this.config.Extented.music, this.config.debug, callbacks)
+      this.music.start()
     }
   },
 
@@ -743,6 +751,44 @@ module.exports = NodeHelper.create({
     }
   },
 
+  StopMusic: function() {
+    if (this.music) {
+      this.music.setStop()
+    }
+  },
+
+  PlayMusic: function () {
+    this.music.setPlay()
+  },
+
+  PauseMusic: function() {
+    if (this.music) {
+      this.music.setPause()
+    }
+  },
+
+  PreviousMusic: function() {
+    if (this.music) {
+      this.music.setPrevious()
+    }
+  },
+
+  NextMusic: function() {
+    if (this.music) {
+      this.music.setNext()
+    }
+  },
+
+  VolumeMusic: function(volume) {
+    if (this.music) {
+      this.music.setVolume(volume)
+    }
+  },
+
+  RebuildMusic: function() {
+    this.music.rebuild()
+  },
+
   pm2Restart: function(id) {
     var pm2 = "pm2 restart " + id
     exec (pm2, (err, stdout, stderr)=> {
@@ -767,7 +813,6 @@ module.exports = NodeHelper.create({
       { "@bugsounet/google-photos" : [ "GPhotos", "Extented.photos.useGooglePhotosAPI" ] },
       { "@bugsounet/systemd": [ "Systemd", "Extented.spotify.useSpotify" ] },
       //{ "@bugsounet/musicplayer": ["MusicPlayer", "Extented.music.useMusic" ] }
-      { "@bugsounet/cvlc": [ "cvlc", "Extented.music.useMusic" ] }, // needed for musicplayer
     ]
     let errors = 0
     return new Promise(resolve => {
@@ -796,109 +841,5 @@ module.exports = NodeHelper.create({
       })
       resolve(errors)
     })
-  },
-
-
-  MusicPlayList: function (playlist) { //testing playlist
-    if (this.Music) {
-      this.Music.destroy()
-      this.Music= null
-      console.log("player destroy!")
-    }
-    if (!playlist) { // for testing
-      this.MusicPlaylist = [
-        "/home/bugsounet/alan.mp3",
-        "/home/bugsounet/abba.mp3",
-        "/home/bugsounet/k-391.mp3"
-      ]
-      this.MusicPlayerStatus.idMax = this.MusicPlaylist.length-1
-    } else {
-      this.MusicPlaylist = playlist
-      this.MusicPlayerStatus.idMax = this.MusicPlaylist.length-1
-    }
-
-    if (this.MusicPlayerStatus.id == null) {
-      this.MusicPlayerStatus.id = 0
-      this.MusicPlayer()
-    }
-    else {
-      this.MusicPlayerStatus.id++
-      if (this.MusicPlayerStatus.id > this.MusicPlaylist.length-1) this.MusicPlayerStatus.id = null
-      else this.MusicPlayer() 
-    }
-  },
-
-
-  /** Music Player **/
-  MusicPlayer: async function () { //testing
-    var cvlcArgs = ["--no-http-forward-cookies", "--play-and-exit", "--video-title=library @bugsounet/cvlc Music Player"];
-
-    try {
-      const metadata = await mm.parseFile(this.MusicPlaylist[this.MusicPlayerStatus.id])
-
-      console.log("Infos from file:", this.MusicPlaylist[this.MusicPlayerStatus.id])
-      console.log("Title:", metadata.common.title)
-      console.log("Artist:" , metadata.common.artist)
-      console.log("Release Date:", metadata.common.date)
-      console.log("Duration:", parseInt((metadata.format.duration).toFixed(0)) + " secs")
-
-      // make structure
-      this.MusicPlayerStatus.connected= false
-      this.MusicPlayerStatus.current= 0
-      this.MusicPlayerStatus.duration= parseInt((metadata.format.duration).toFixed(0))
-      this.MusicPlayerStatus.file= this.MusicPlaylist[this.MusicPlayerStatus.id]
-      this.MusicPlayerStatus.title= metadata.common.title
-      this.MusicPlayerStatus.artist= metadata.common.artist
-      this.MusicPlayerStatus.date= metadata.common.date
-      this.MusicPlayerStatus.volume= 0
-      this.MusicPlayerStatus.seed = Date.now()
-
-      const cover = mm.selectCover(metadata.common.picture);
-      let picture = `data:${cover.format};base64,${cover.data.toString('base64')}`;
-  
-      console.log("Cover Format:", cover.format)
-      var filepath = base64Img.imgSync(picture, this.config.assistantConfig["modulePath"]+ "/tmp/Music/", 'cover');
-      console.log("Cover Saved to:", filepath)
-      this.MusicPlayerStatus.cover = path.basename(filepath)
-      this.Music = new this.EXT.cvlc(cvlcArgs)
-      this.Music.play(
-        this.MusicPlayerStatus.file,
-        ()=> {
-          this.MusicPlayerStatus.connected = true
-          console.log("Start playing:", this.MusicPlayerStatus.file)
-          this.test()
-        },
-        ()=> {
-          if (this.MusicPlayerStatus.id+1 > this.MusicPlayerStatus.idMax) {
-            this.MusicPlayerStatus.connected = false
-            this.sendSocketNotification("Music_Player", this.MusicPlayerStatus)
-          }
-          console.log("Music is now ended !")
-          clearInterval(this.MusicInterval)
-          this.MusicPlayList()
-        }
-      )
-    } catch (error) {
-      console.error("Music Player Error:", error.message)
-      clearInterval(this.MusicInterval)
-      if (this.MusicPlayerStatus.id+1 > this.MusicPlayerStatus.idMax) {
-        this.MusicPlayerStatus.connected = false
-        this.sendSocketNotification("Music_Player", this.MusicPlayerStatus)
-      }      
-      this.MusicPlayList()
-    }
-  },
-
-  test: function() { // read and send data ONLY for testing
-    this.MusicInterval = setInterval(() => {
-      this.Music.cmd("get_time", (err, response) => {
-        this.MusicPlayerStatus.current= (parseInt(response)+1)
-        this.Music.cmd("volume", (err,res) => {
-          this.MusicPlayerStatus.volume= (parseInt(res)*100)/256
-        })
-        this.sendSocketNotification("Music_Player", this.MusicPlayerStatus)
-      })
-    }, 1000)
   }
-  
 })

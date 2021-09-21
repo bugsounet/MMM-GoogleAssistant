@@ -61,6 +61,9 @@ class Extented {
         play: false,
         img: null,
         link: null
+      },
+      music: {
+        connected: false
       }
     }
     console.log("[GA:EXT] ExtentedClass Loaded")
@@ -77,6 +80,9 @@ class Extented {
         this.resetYT()
       }
       else this.player.command("stopVideo")
+    }
+    if (this.EXT.music.connected) {
+      this.sendSocketNotification("MUSIC_STOP")
     }
     if (this.EXT.photos.displayed) {
       this.resetPhotos()
@@ -184,6 +190,9 @@ class Extented {
         let Type
         let YouTubeResponse = {}
         if (this.EXT.radioPlayer.play) this.radioStop()
+        if (this.EXT.music.connected) {
+          this.sendSocketNotification("MUSIC_STOP")
+        }
         if (this.EXT.spotify.player && this.config.spotify.useSpotify) {
           this.sendSocketNotification("SPOTIFY_PAUSE")
         }
@@ -213,6 +222,9 @@ class Extented {
 
       if (Spotify) {
         if (this.EXT.radioPlayer.play) this.radioStop()
+        if (this.EXT.music.connected) {
+          this.sendSocketNotification("MUSIC_STOP")
+        }
         if (!this.EXT.spotify.connected && this.config.deviceName) {
           this.sendSocketNotification("SPOTIFY_TRANSFER", this.config.deviceName)
         }
@@ -351,6 +363,9 @@ class Extented {
     }
     if (this.EXT.spotify.connected && this.EXT.spotify.player) {
       this.sendSocketNotification("SPOTIFY_PAUSE")
+    }
+    if (this.EXT.music.connected) {
+      this.sendSocketNotification("MUSIC_STOP")
     }
     if (this.EXT.photos.displayed) {
       this.resetPhotos()

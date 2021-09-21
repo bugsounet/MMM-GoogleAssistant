@@ -167,8 +167,10 @@ Module.register("MMM-GoogleAssistant", {
         }
       },
       music: {
-        useMusic: false,
-        useUSB: true,
+        useUSB: false,
+        musicPath: "/home/pi/Music",
+        checkSubDirectory: false,
+        autoStart: false
       }
     },
     recipes: [],
@@ -429,11 +431,13 @@ Module.register("MMM-GoogleAssistant", {
     if (this.config.Extented.useEXT) {
       dom.id = "EXT_DISPLAY"
 
+      /** Create Spotify **/
       if (this.config.Extented.spotify.useSpotify && !this.config.Extented.spotify.visual.useBottomBar) {
         spotify= this.spotify.prepareMini()
         dom.appendChild(spotify)
       }
 
+      /** create Music **/
       if (this.config.Extented.music.useMusic) {
         music= this.Music.prepare()
         dom.appendChild(music)
@@ -831,6 +835,21 @@ Module.register("MMM-GoogleAssistant", {
         break
       /** Music Player **/
       case "Music_Player":
+        if (payload.connected) {
+          this.EXT.music.connected = true
+          if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
+          if (this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
+            this.sendSocketNotification("SCREEN_WAKEUP")
+            this.sendSocketNotification("SCREEN_LOCK", true)
+            this.displayEXTResponse.hideDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
+          }
+        } else {
+          this.EXT.music.connected = false
+          if (this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
+            this.sendSocketNotification("SCREEN_LOCK", false)
+            this.displayEXTResponse.showDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
+          }
+        }
         this.Music.updateSongInfo(payload)
         break
     }
@@ -1158,6 +1177,13 @@ Module.register("MMM-GoogleAssistant", {
           callback: "tbSpotify"
         })
       }
+      if (this.config.Extented.music.useMusic) {
+        commander.add({
+          command: "music",
+          description: "Music player commands",
+          callback: "tbMusic"
+        })
+      }
     }
   },
 
@@ -1329,6 +1355,62 @@ Module.register("MMM-GoogleAssistant", {
   ',{parse_mode:'Markdown'})
     }
   },
+
+
+  tbMusic: function(command, handler) {
+    if (handler.args) {
+      var args = handler.args.toLowerCase().split(" ")
+      var params = handler.args.split(" ")
+      if (args[0] == "play") {
+        handler.reply("TEXT", "Music PLAY")
+        this.MusicCommand("PLAY")
+      }
+      if (args[0] == "pause") {
+        handler.reply("TEXT", "Music PAUSE")
+        this.MusicCommand("PAUSE")
+      }
+      if (args[0] == "stop") {
+        handler.reply("TEXT", "Music STOP")
+        this.MusicCommand("STOP")
+      }
+      if (args[0] == "next") {
+        handler.reply("TEXT", "Music NEXT")
+        this.MusicCommand("NEXT")
+      }
+      if (args[0] == "previous") {
+        handler.reply("TEXT", "Music PREVIOUS")
+        this.MusicCommand("PREVIOUS")
+      }
+      if (args[0] == "rebuild") {
+        handler.reply("TEXT", "Rebuild music database")
+        this.MusicCommand("REBUILD")
+      }
+      if (args[0] == "volume") {
+        if (args[1]) {
+          if (isNaN(args[1])) return handler.reply("TEXT", "Must be a number ! [0-100]")
+          if (args[1] > 100) args[1] = 100
+          if (args[1] < 0) args[1] = 0
+          handler.reply("TEXT", "Music VOLUME: " + args[1])
+          /* 100 -> 256
+           * args[1] -> y
+           */
+          this.MusicCommand("VOLUME", parseInt(((args[1]*256)/100).toFixed(0)))
+        } else handler.reply("TEXT", "Define volume [0-100]")
+      }
+    } else {
+      handler.reply("TEXT", 'Need Help for /music commands ?\n\n\
+  *play*: Launch music (last title)\n\
+  *pause*: Pause music\n\
+  *stop*: Stop music\n\
+  *next*: Next track\n\
+  *previous*: Previous track\n\
+  *rebuild*: Rebuild music Database\n\
+  *volume*: Volume control, it need a value 0-100\n\
+  ',{parse_mode:'Markdown'})
+    }
+  },
+
+
 
   /********************************/
   /** Extented Display**/
@@ -1580,6 +1662,50 @@ Module.register("MMM-GoogleAssistant", {
     }
   },
 
+  /** Music commands (for recipe) **/
+  MusicCommand: function(command, payload) {
+    if (!this.config.Extented.useEXT) return
+    if (this.config.Extented.music.useMusic) {
+      this.EXT = this.displayEXTResponse.EXT
+      switch (command) {
+        case "PLAY":
+          if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
+          if (this.EXT.youtube.displayed) {
+            if (this.config.Extented.youtube.useVLC) {
+              this.sendSocketNotification("YT_STOP")
+              this.EXT.youtube.displayed = false
+              this.displayEXTResponse.showYT()
+              this.displayEXTResponse.EXTUnlock()
+              this.displayEXTResponse.resetYT()
+            }
+            else this.displayEXTResponse.player.command("stopVideo")
+          }
+          if (this.config.Extented.spotify.useSpotify && this.EXT.spotify.player) this.sendSocketNotification("SPOTIFY_STOP")
+          this.sendSocketNotification("MUSIC_PLAY")
+          break
+        case "PAUSE":
+          this.sendSocketNotification("MUSIC_PAUSE")
+          break
+        case "STOP":
+          this.sendSocketNotification("MUSIC_STOP")
+          break
+        case "NEXT":
+          this.sendSocketNotification("MUSIC_NEXT")
+          break
+        case "PREVIOUS":
+          this.sendSocketNotification("MUSIC_PREVIOUS")
+          break
+        case "VOLUME":
+          //this.EXT.spotify.forceVolume = true
+          this.sendSocketNotification("MUSIC_VOLUME", payload)
+          break
+        case "REBUILD":
+          this.sendSocketNotification("MUSIC_REBUILD")
+          break
+      }
+    }
+  },
+
   /** stopCommand (for recipe) **/
   stopCommand: function() {
     if (!this.config.Extented.useEXT) return
@@ -1609,6 +1735,7 @@ Module.register("MMM-GoogleAssistant", {
       else this.sendSocketNotification("SPOTIFY_STOP")
     }
     if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
+    if (this.EXT.music.connected) this.sendSocketNotification("MUSIC_STOP")
     this.sendNotification("TV-STOP") // Stop MMM-FreeboxTV
     this.Informations("information", { message: "EXTStop" })
   },
@@ -1618,6 +1745,7 @@ Module.register("MMM-GoogleAssistant", {
     if (!this.config.Extented.useEXT) return
     this.EXT = this.displayEXTResponse.EXT
     if (this.EXT.spotify.player) this.sendSocketNotification("SPOTIFY_STOP")
+    if (this.EXT.music.connected) this.sendSocketNotification("MUSIC_STOP")
     if (this.EXT.youtube.displayed) {
       if (this.config.Extented.youtube.useVLC) {
         this.sendSocketNotification("YT_STOP")
