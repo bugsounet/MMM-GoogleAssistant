@@ -1,4 +1,5 @@
-/* Spotify library rev: 210526 */
+/* Music library rev: 21/09/21 */
+/* From ... Spotify Display ... */
 
 class Music {
   constructor (Config, callbacks, debug) {
@@ -78,7 +79,8 @@ class Music {
   getFAIcon(iconType) {
     switch (iconType) {
       case 'MUSICPLAYER':
-        return 'fas fa-file-audio'
+        //return 'fas fa-file-audio'
+        return "fab fa-google"
       case 'USB':
         return 'fa fa-usb'
       case 'OUT':
@@ -150,12 +152,9 @@ class Music {
 
   getMusicLogoContainer() {
     const logo = this.getHTMLElementWithID('div', "EXT_MUSIC_LOGO")
-    logo.appendChild(
-      this.getIconContainer(this.getFAIconClass('MUSICPLAYER'), "EXT_MUSIC_LOGO_ICON"),
-    )
     const text = document.createElement("span")
     text.className = "text"
-    text.textContent = "Assistant Music Player" //this.config.SpotifyForGA
+    text.textContent = "Google Assistant Music Player"
     logo.appendChild(text)
 
     return logo
@@ -172,7 +171,8 @@ class Music {
       artist: "",
       volume: 0,
       seed: 0,
-      cover: null
+      cover: null,
+      format: XXX
     }
     */
     if (!playbackItem) return
@@ -229,8 +229,12 @@ class Music {
 
     let artistName = playbackItem.artist
     artist.textContent = artistName
+
+    const deviceIcon = document.getElementById("EXT_MUSIC_DEVICE_ICON")
+    deviceIcon.className= this.getDeviceIconClass(playbackItem.device)
+    
     const USB = document.querySelector("#EXT_MUSIC_DEVICE .text")
-    USB.textContent = playbackItem.format //From Local File" //"My USB Key Name"
+    USB.textContent = playbackItem.format + (this.debug ? (" ("+(playbackItem.id+1) +"/"+(playbackItem.idMax+1) +")") : "")
     this.updateVolume(playbackItem.volume)
     this.updateProgress(playbackItem.current,playbackItem.duration)
   }
@@ -252,6 +256,11 @@ class Music {
     if (volume_percent < 40) iconClass = 'VOL_LOW'
     else iconClass = volume_percent > 70 ? 'VOL_HIGH' : 'VOL_MID'
     return this.getFAIconClass(iconClass)
+  }
+
+  getDeviceIconClass(device) {
+    if (device == "USB") return this.getFAIconClass("USB")
+    else return this.getFAIconClass("FOLDER")
   }
 
   updateProgress(progressMS, durationMS) {

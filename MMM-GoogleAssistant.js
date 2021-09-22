@@ -222,7 +222,8 @@ Module.register("MMM-GoogleAssistant", {
       it: "translations/it.json",
       de: "translations/de.json",
       es: "translations/es.json",
-      nl: "translations/nl.json"
+      nl: "translations/nl.json",
+      pt: "translations/pt.json"
     }
   },
 
@@ -1397,7 +1398,7 @@ Module.register("MMM-GoogleAssistant", {
           /* 100 -> 256
            * args[1] -> y
            */
-          this.MusicCommand("VOLUME", parseInt(((args[1]*256)/100).toFixed(0)))
+          this.MusicCommand("VOLUME", parseInt(((args[1]*256)/100).toFixed(0)), true)
         } else handler.reply("TEXT", "Define volume [0-100]")
       }
       if (args[0] == "switch") {
@@ -1440,6 +1441,9 @@ Module.register("MMM-GoogleAssistant", {
           this.EXT.spotify.targetVolume = this.EXT.spotify.currentVolume
           this.sendSocketNotification("SPOTIFY_VOLUME", this.config.Extented.spotify.player.minVolume)
         }
+        if (this.config.Extented.music.useMusic && this.EXT.music.connected) {
+          this.sendSocketNotification("MUSIC_VOLUME", this.config.Extented.music.minVolume)
+        }
         if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.volume = 0.1
         break
       case "hook": // to see with hook !?
@@ -1452,6 +1456,9 @@ Module.register("MMM-GoogleAssistant", {
         }
         if (this.config.Extented.spotify.useSpotify && this.EXT.spotify.player && !this.EXT.spotify.forceVolume) {
           this.sendSocketNotification("SPOTIFY_VOLUME", this.EXT.spotify.targetVolume)
+        }
+        if (this.config.Extented.music.useMusic && this.EXT.music.connected) {
+          this.sendSocketNotification("MUSIC_VOLUME", this.config.Extented.music.maxVolume)
         }
         this.EXT.spotify.forceVolume= false
         if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.volume = 0.6
@@ -1701,7 +1708,7 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   /** Music commands (for recipe) **/
-  MusicCommand: function(command, payload) {
+  MusicCommand: function(command, payload, realValue) {
     if (!this.config.Extented.useEXT) return
     if (this.config.Extented.music.useMusic) {
       this.EXT = this.displayEXTResponse.EXT
@@ -1734,8 +1741,15 @@ Module.register("MMM-GoogleAssistant", {
           this.sendSocketNotification("MUSIC_PREVIOUS")
           break
         case "VOLUME":
-          //this.EXT.spotify.forceVolume = true
-          this.sendSocketNotification("MUSIC_VOLUME", payload)
+          if (!realValue) {
+            var volumeValue = payload
+            if (isNaN(volumeValue)) return console.log("ERROR MUSIC VOLUME", "Must be a number ! [0-100]", volumeValue)
+            if (payload > 100) volumeValue = 100
+            if (payload < 0) volumeValue = 0
+            volumeValue= parseInt(((volumeValue*256)/100).toFixed(0))
+          }
+          this.config.Extented.music.maxVolume = realValue ? payload: volumeValue
+          this.sendSocketNotification("MUSIC_VOLUME_TARGET", realValue ? payload: volumeValue)
           break
         case "REBUILD":
           this.sendSocketNotification("MUSIC_REBUILD")

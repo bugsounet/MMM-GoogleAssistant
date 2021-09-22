@@ -242,6 +242,9 @@ module.exports = NodeHelper.create({
       case "MUSIC_PREVIOUS":
         this.PreviousMusic()
         break
+      case "MUSIC_VOLUME_TARGET":
+        this.config.Extented.music.maxVolume = payload // informe helper
+        this.VolumeNewMax(payload)
       case "MUSIC_VOLUME":
         this.VolumeMusic(payload)
         break
@@ -781,6 +784,10 @@ module.exports = NodeHelper.create({
     if (this.music) {
       this.music.setNext()
     }
+  },
+
+  VolumeNewMax: function (max) {
+    this.music.setNewMax(this.config.Extented.music.maxVolume)
   },
 
   VolumeMusic: function(volume) {
