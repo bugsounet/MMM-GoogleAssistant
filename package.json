@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/bugsounet/MMM-GoogleAssistant",
   "dependencies": {
-    "@bugsounet/secure-ga-v3": "^1.0.0",
+    "@bugsounet/secure-ga-v3": "^1.0.1",
     "check-node-version": "^4.1.0",
     "minify": "^7.0.2"
   }
