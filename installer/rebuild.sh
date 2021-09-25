@@ -26,8 +26,32 @@ Installer_warning "This script will erase current build"
 Installer_error "Use this script only for the new version of Magic Mirror or developer request"
 Installer_error "recipes, credentials.json, token.json will be not erased"
 Installer_error "after executing this script, it will restart the installation, you must do it!"
-Installer_error "in this case, Audio check is not necessary" 
 Installer_yesno "Do you want to continue ?" || exit 0
+
+Installer_update_dependencies () {
+  Installer_debug "Test Wanted dependencies: ${dependencies[*]}"
+  local missings=()
+  for package in "${dependencies[@]}"; do
+      Installer_is_installed "$package" || missings+=($package)
+  done
+  if [ ${#missings[@]} -gt 0 ]; then
+    Installer_warning "Updating package..."
+    for missing in "${missings[@]}"; do
+      Installer_error "Missing package: $missing"
+    done
+    Installer_info "Installing missing package..."
+    Installer_update || exit 1
+    Installer_install ${missings[@]} || exit 1
+  fi
+}
+
+echo
+# check dependencies
+dependencies=(git curl unclutter libasound2-dev sox libsox-fmt-all gcc-7 libsox-fmt-mp3 build-essential mpg321 vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
+Installer_info "Update all dependencies..."
+Installer_update_dependencies
+Installer_success "All Dependencies needed are updated !"
+
 
 cd ~/MagicMirror/modules/MMM-GoogleAssistant
 echo
