@@ -33,6 +33,10 @@
     "type": "git",
     "url": "https://github.com/bugsounet/MMM-GoogleAssistant"
   },
+  "volta": {
+    "node": ">=12",
+    "npm": ">=7"
+  },
   "homepage": "https://github.com/bugsounet/MMM-GoogleAssistant",
   "volta": {
     "node": ">=12",

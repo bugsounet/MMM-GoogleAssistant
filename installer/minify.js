@@ -22,6 +22,7 @@ check(
            "../components/spotify.js",
            "../components/youtube.js",
            "../components/musicplayer.js"
+           "../components/youtube.js"
           ]
 
           files.forEach(file => {
