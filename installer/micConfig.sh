@@ -26,6 +26,11 @@ Installer_beep=true
 
 echo
 
+Installer_warning "This script is deprecied !"
+Installer_warning "You don't have to create ANY micConfig part!"
+Installer_warning "MMM-GoogleAssistant is now able to determinate it automaticaly!"
+Installer_warning "This script is reserved to Linux Expert!"
+
 # Audio out/in checking
 Installer_info "Checking Speaker and Microphone..."
 

@@ -39,12 +39,36 @@ if $prompt; then
   echo
 fi
 
+Installer_update_dependencies () {
+  Installer_debug "Test Wanted dependencies: ${dependencies[*]}"
+  local missings=()
+  for package in "${dependencies[@]}"; do
+      Installer_is_installed "$package" || missings+=($package)
+  done
+  if [ ${#missings[@]} -gt 0 ]; then
+    Installer_warning "Updating package..."
+    for missing in "${missings[@]}"; do
+      Installer_error "Missing package: $missing"
+    done
+    Installer_info "Installing missing package..."
+    Installer_update || exit 1
+    Installer_install ${missings[@]} || exit 1
+  fi
+}
+
+echo
+# check dependencies
+dependencies=(git curl unclutter libasound2-dev sox libsox-fmt-all gcc-7 libsox-fmt-mp3 build-essential mpg321 vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
+Installer_info "Update all dependencies..."
+Installer_update_dependencies
+Installer_success "All Dependencies needed are updated !"
+
 cd ~/MagicMirror/modules/MMM-GoogleAssistant
 # deleting package.json because npm install add/update package
 rm -f package.json package-lock.json
 
 if $prompt; then
-  Installer_info "Updating..."
+  Installer_info "Updating Main core..."
 fi
 
 git reset --hard HEAD
