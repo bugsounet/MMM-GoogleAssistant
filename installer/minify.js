@@ -21,7 +21,7 @@ check(
            "../components/screenParser.js",
            "../components/spotify.js",
            "../components/youtube.js",
-           "../components/musicplayer.js"
+           "../components/musicplayer.js",
            "../components/youtube.js"
           ]
 
