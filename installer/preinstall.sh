@@ -25,7 +25,7 @@ source utils.sh
 Installer_module="MMM-GoogleAssistant"
 
 # check version
-Installer_version="$(cat ../package.json | grep version | cut -c14-30 2>/dev/null)"
+Installer_version="$(cat ../package.json | grep '"version":' | cut -c14-30 2>/dev/null)"
 
 # Let's start !
 Installer_info "Welcome to $Installer_module $Installer_version"
