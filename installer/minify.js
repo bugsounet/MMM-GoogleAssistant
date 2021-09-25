@@ -20,7 +20,8 @@ check(
            "../components/response.js",
            "../components/screenParser.js",
            "../components/spotify.js",
-           "../components/youtube.js"
+           "../components/youtube.js",
+           "../components/musicplayer.js"
           ]
 
           files.forEach(file => {
