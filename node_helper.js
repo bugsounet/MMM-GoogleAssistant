@@ -11,6 +11,8 @@ const readJson = require("r-json")
 const Youtube = require("youtube-api")
 const pm2 = require('pm2')
 var he = require('he')
+const si = require('systeminformation')
+const isPi = require('detect-rpi')
 
 logGA = (...args) => { /* do nothing */ }
 logEXT = (...args) => { /* do nothing */ }
@@ -392,9 +394,17 @@ module.exports = NodeHelper.create({
     }
 
     if (this.config.Extented.useEXT) {
-      console.log("[GA:EXT] Extented Display Server Started")
-      await this.Extented()
-      console.log("[GA:EXT] Extented Display is initialized.")
+      let PiVersion = await this.getVersion()
+      if (PiVersion >= 4) {
+        console.log("[GA:EXT] Extented Display Server Started")
+        await this.Extented()
+        console.log("[GA:EXT] Extented Display is initialized.")
+      } else {
+        this.config.Extented.useEXT = false
+        this.sendSocketNotification("EXTNONE")
+        console.log("[GA:EXT] Extented Display Server disabled: Need a Pi 4 or more.")
+        this.sendSocketNotification("INFORMATION" , {message: "Extented Display is disabled: Need a Pi 4 or more." })
+      }
     }
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
     if (this.config.NPMCheck.useChecker && this.EXT.npmCheck) {
@@ -455,6 +465,32 @@ module.exports = NodeHelper.create({
     if (details) console.log("[GA][ERROR]" + err, details.message, details)
     else console.log("[GA][ERROR]" + err)
     return this.sendSocketNotification("NOT_INITIALIZED", { message: error.message, values: error.values })
+  },
+
+  getVersion: function() {
+    return new Promise((resolve) => {
+      var model = null
+      if (isPi()) {
+        exec ("cat /sys/firmware/devicetree/base/model", (err, stdout, stderr)=> {
+          if (err == null) {
+            var type = stdout.trim()
+            var str = type.split(' ')
+            str.splice(3,10) // delete rev num // rev display // model
+            console.log("[GA] Detected:", str)
+            str= str.slice(2, 3) // keep only pi number
+            var type = str.join()
+            model= parseInt(type) ? parseInt(type): 0
+            resolve(this.config.Extented.dev ? 4 : model)
+          } else {
+            console.log("[GA] Error Can't determinate RPI version!")
+            resolve(4)
+          }
+        })
+      } else {
+        console.log("[GA] You are not using a pi :)")
+        resolve(4)
+      }
+    })
   },
 
   /*****************/

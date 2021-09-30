@@ -655,6 +655,9 @@ Module.register("MMM-GoogleAssistant", {
       case "INFORMATION":
         this.Informations("information", payload)
         break
+      case "EXTNONE":
+        this.config.Extented.useEXT = false
+        break
       case "INITIALIZED":
         logGA("Initialized.")
         this.Version(payload)

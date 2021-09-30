@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
   "version": "3.1.0",
-  "rev": "210925-4",
+  "rev": "210930-1",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -40,7 +40,9 @@
   },
   "dependencies": {
     "@bugsounet/secure-ga-v3": "^1.0.1",
-    "minify": "^7.0.2"
+    "detect-rpi": "^1.4.0",
+    "minify": "^7.0.2",
+    "systeminformation": "^5.9.4"
   },
   "devDependencies": {
     "check-node-version": "^4.1.0"
