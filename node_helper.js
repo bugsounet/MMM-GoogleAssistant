@@ -476,7 +476,8 @@ module.exports = NodeHelper.create({
             var type = stdout.trim()
             var str = type.split(' ')
             str.splice(3,10) // delete rev num // rev display // model
-            console.log("[GA] Detected:", str)
+            let PiModel = str.join(" ")
+            console.log("[GA] Detected:", PiModel)
             str= str.slice(2, 3) // keep only pi number
             var type = str.join()
             model= parseInt(type) ? parseInt(type): 0
