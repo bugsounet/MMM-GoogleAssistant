@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
   "version": "3.1.0",
-  "rev": "210930-1",
+  "rev": "211001-1",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -10,7 +10,6 @@
     "update": "installer/update.sh",
     "rebuild": "installer/rebuild.sh",
     "tokens": "installer/tokens.sh",
-    "micConfig": "installer/micConfig.sh",
     "cvlc": "node installer/cvlc.js",
     "librespot": "installer/librespot.sh",
     "raspotify": "installer/raspotify.sh",

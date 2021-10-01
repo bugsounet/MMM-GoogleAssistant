@@ -7,6 +7,7 @@ const fs = require("fs")
 const path = require("path")
 const Assistant = require("./components/assistant.js")
 const ScreenParser = require("./components/screenParser.js")
+const { getPlatform } = require("./components/platform.js")
 const readJson = require("r-json")
 const Youtube = require("youtube-api")
 const pm2 = require('pm2')
@@ -39,6 +40,11 @@ module.exports = NodeHelper.create({
     this.YT = 0
     this.checkConfigMerge()
     this.retryPlayerCount = 0
+    this.PLATFORM_RECORDER = new Map()
+    this.PLATFORM_RECORDER.set("linux", "arecord")
+    this.PLATFORM_RECORDER.set("mac", "sox")
+    this.PLATFORM_RECORDER.set("raspberry-pi", "arecord")
+    this.PLATFORM_RECORDER.set("windows", "sox")
   },
 
   socketNotificationReceived: function (noti, payload) {
@@ -379,6 +385,18 @@ module.exports = NodeHelper.create({
           return this.DisplayError("VolumePreset error", {message: "VolumePresetError"})
       }
     }
+
+    let platform
+    try {
+      platform = getPlatform()
+    } catch (error) {
+      console.error("[GA] Google Assistant does not support this platform. Supported platforms include macOS (x86_64), Windows (x86_64), Linux (x86_64), and Raspberry Pi")
+      process.exit(1)
+      return
+    }
+    let recorderType = this.PLATFORM_RECORDER.get(platform)
+    console.log(`[GA] Platform: '${platform}'; attempting to use '${recorderType}' to access microphone ...`)
+    this.config.micConfig.recorder= recorderType
 
     logGA("Activate delay is set to " + this.config.responseConfig.activateDelay + " ms")
 

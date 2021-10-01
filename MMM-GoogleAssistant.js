@@ -54,10 +54,6 @@ Module.register("MMM-GoogleAssistant", {
         responseOutput: "60%"
       }
     },
-    micConfig: {
-      recorder: "arecord",
-      device: "default"
-    },
     Extented: {
       useEXT: false,
       stopCommand: "stop",
@@ -182,6 +178,10 @@ Module.register("MMM-GoogleAssistant", {
       useAlert: true
     }
   },
+  micConfig: {
+    recorder: "auto",
+    device: "default"
+  },
   plugins: {
     onReady: [],
     onNotificationReceived: [],
@@ -237,10 +237,11 @@ Module.register("MMM-GoogleAssistant", {
       buffer: []
     }
     const helperConfig = [
-      "debug", "recipes", "assistantConfig", "micConfig",
+      "debug", "recipes", "assistantConfig",
       "responseConfig", "Extented", "NPMCheck"
     ]
     this.helperConfig = {}
+    this.helperConfig.micConfig = this.micConfig
     if (this.config.debug) {
       logGA = (...args) => { console.log("[GA]", ...args) }
       logEXT = (...args) => { console.log("[GA:EXT]", ...args) }
