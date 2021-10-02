@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
   "version": "3.1.0",
-  "rev": "211001-1",
+  "rev": "211002-1",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -13,7 +13,6 @@
     "cvlc": "node installer/cvlc.js",
     "librespot": "installer/librespot.sh",
     "raspotify": "installer/raspotify.sh",
-    "test": "check-node-version --volta && echo 'Verification Done !'"
   },
   "keywords": [
     "magic mirror",
@@ -33,17 +32,7 @@
     "url": "https://github.com/bugsounet/MMM-GoogleAssistant"
   },
   "homepage": "https://github.com/bugsounet/MMM-GoogleAssistant",
-  "volta": {
-    "node": ">=12",
-    "npm": "=6.14.15"
-  },
   "dependencies": {
-    "@bugsounet/secure-ga-v3": "^1.0.1",
-    "detect-rpi": "^1.4.0",
-    "minify": "^7.0.2",
-    "systeminformation": "^5.9.4"
-  },
-  "devDependencies": {
-    "check-node-version": "^4.1.0"
+    "@bugsounet/secure-ga-v3": "^1.0.5"
   }
 }
