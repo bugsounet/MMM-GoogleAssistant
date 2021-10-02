@@ -35,7 +35,7 @@
   "homepage": "https://github.com/bugsounet/MMM-GoogleAssistant",
   "volta": {
     "node": ">=12",
-    "npm": ">=7"
+    "npm": "=6.14.15"
   },
   "dependencies": {
     "@bugsounet/secure-ga-v3": "^1.0.1",
