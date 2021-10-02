@@ -5,7 +5,7 @@
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
-    "preinstall": "npm test && installer/preinstall.sh",
+    "preinstall": "installer/preinstall.sh",
     "postinstall": "installer/postinstall.sh",
     "update": "installer/update.sh",
     "rebuild": "installer/rebuild.sh",
