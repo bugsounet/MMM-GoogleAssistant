@@ -269,5 +269,15 @@ class Music {
 
     if (bar.max != durationMS) bar.max = durationMS
   }
+
+  setPause () {
+    const Dom = document.getElementById("EXT_MUSIC")
+    Dom.classList.add("pausing")
+  }
+
+  setPlay () {
+    const Dom = document.getElementById("EXT_MUSIC")
+    Dom.classList.remove("pausing")
+  }
 }
 

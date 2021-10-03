@@ -845,6 +845,7 @@ Module.register("MMM-GoogleAssistant", {
       case "Music_Player":
         if (payload.connected) {
           this.EXT.music.connected = true
+          if (!payload.pause) this.Music.setPlay()
           if (this.EXT.radioPlayer.play) this.displayEXTResponse.radio.pause()
           if (this.config.Extented.screen.useScreen && !this.displayEXTResponse.working()) {
             this.sendSocketNotification("SCREEN_WAKEUP")
@@ -859,6 +860,9 @@ Module.register("MMM-GoogleAssistant", {
           }
         }
         this.Music.updateSongInfo(payload)
+        break
+      case "Music_Player_PAUSE":
+        this.Music.setPause()
         break
     }
   },
