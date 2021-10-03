@@ -334,7 +334,6 @@
 }
 
 /** Spotify css**/
-
 #EXT_SPOTIFY {
   position: relative;
   border-radius:10px;
@@ -610,6 +609,7 @@ progress[value]#EXT_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
   margin-left: -5px;
 }
 
+
 #EXT_SPOTIFY.mini #EXT_SPOTIFY_PROGRESS_BAR {
   margin:5px;
   width: 95%;
@@ -801,4 +801,224 @@ progress[value]#EXT_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
   font-size:18px;
   line-height:100%;
   color:#FFF;
+}
+
+/** Music Player **/
+
+#EXT_MUSIC {
+  position: relative;
+  border-radius:10px;
+  box-sizing:border-box;
+  color:#EEE;
+  font-weight:normal;
+  font-size: 16px;
+  text-align:left;
+  line-height:120%;
+  text-shadow:black 2px 2px 2px;
+  width: 360px;
+  margin-bottom: 5px;
+  height: auto;
+}
+
+#EXT_MUSIC .mdi {
+  font-size: 14px;
+}
+
+#EXT_MUSIC .infoicon {
+  margin-right: 6px;
+}
+
+#EXT_MUSIC_BACKGROUND {
+  background-size: cover;
+  background-position: center center;
+  filter: blur(16px) opacity(90%) grayscale(33%);
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+}
+
+#EXT_MUSIC_FOREGROUND {
+  position:relative;
+  filter:none;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  display:flex;
+  box-sizing:border-box;
+  flex-direction:row;
+  justify-content: space-between;
+  padding:0;
+}
+
+#EXT_MUSIC_COVER {
+  margin-bottom:0.5vh;
+  position: relative;
+  /*z-index:1;*/
+  width:140px;
+  height:140px;
+  padding:0;
+}
+
+#EXT_MUSIC_COVER_IMAGE {
+  width:100%;
+  box-shadow:black 1px 1px 1px 1px;
+  height:140px;
+  border-radius: 20px;
+}
+
+#EXT_MUSIC_PROGRESS_BAR {
+  position: relative;
+  height: 2px;
+  margin-bottom: 5px;
+  margin:5px;
+  width: 95%;
+  border: 1px solid #aaaaaa;
+  height: 10px;
+}
+
+progress[value]#EXT_MUSIC_PROGRESS_BAR::-webkit-progress-value {
+  background-color: #FFF;
+}
+
+progress[value]#EXT_MUSIC_PROGRESS_BAR::-webkit-progress-bar {
+  background-color: #666;
+}
+
+#EXT_MUSIC_PROGRESS_TIME {
+  display:none;
+}
+
+#EXT_MUSIC_CONTROL_PLAY {
+  display: inline-block;
+  margin: auto;
+  width: 50px;
+}
+
+#EXT_MUSIC_MISC {
+  display: unset;
+  flex-direction: initial;
+  justify-content: initial;
+  margin-left: initial;
+  margin-right: initial;
+  overflow: initial;
+  width: initial;
+}
+
+#EXT_MUSIC_INFO {
+  width:220px;
+  padding-left:10px;
+  margin-top:5px;
+  display: block;
+  height: auto;
+  justify-content: initial;
+  align-items: initial;
+}
+
+#EXT_MUSIC_INFO > * {
+  display: flex;
+  justify-content: flex-start;
+}
+
+#EXT_MUSIC_INFO .text {
+  width: 290px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display:inline-block;
+  margin-left: -5px;
+}
+
+#EXT_MUSIC_INFO .infoicon {
+  width: 23px;
+  margin-right: 10px;
+  text-shadow: black 2px 2px 2px;
+  align-items: center;
+  text-align: center;
+  line-height: inherit;
+}
+
+#EXT_MUSIC_TITLE {
+  font-weight: bold;
+}
+
+#EXT_MUSIC_LOGO {
+  position: relative;
+  text-align: center;
+  left: auto;
+  transform: none;
+}
+
+#EXT_MUSIC_INFO_FOOTER {
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  align-content: flex-end;
+}
+
+#EXT_MUSIC_COVER_IMAGE.fade-in {
+  animation: fadeInOpacity 1s 1;
+  animation-timing-function: linear;
+}
+
+#EXT_MUSIC.bottomIn {
+  animation-duration: 1s;
+  animation-name: fadeInBottom;
+}
+
+#EXT_MUSIC.bottomOut {
+  animation-duration: 1s;
+  animation-name: fadeOutBottom;
+  animation-fill-mode: forwards;
+}
+
+#EXT_MUSIC .text {
+  width: inherit;
+  margin-right: 0.5em;
+  white-space: nowrap;
+  display:inline-block;
+  font-size: 1em;
+}
+
+#EXT_MUSIC .iconify {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  margin-right: 0px;
+}
+
+#EXT_MUSIC .infoicon {
+  margin-right: 8px;
+}
+
+#EXT_MUSIC_VOLUME {
+  margin-left: 10px;
+}
+
+#EXT_MUSIC_VOLUME .mdi {
+  font-size: 20px;
+}
+
+#EXT_MUSIC_VOLUME .infoicon {
+  margin-right: 3px;
+  text-shadow: black 2px 2px 2px;
+  align-items: center;
+  text-align: center;
+  line-height: inherit;
+  font-size: 17px;
+  margin-left: 3px;
+}
+
+#EXT_MUSIC.pausing #EXT_MUSIC_CONTROL_PLAY,
+#EXT_MUSIC.pausing #EXT_MUSIC_COVER_IMAGE,
+#EXT_MUSIC.pausing #EXT_MUSIC_PROGRESS_BAR,
+#EXT_MUSIC.pausing #EXT_MUSIC_MISC {
+  filter:brightness(50%) grayscale(75%);
+}
+
+#EXT_MUSIC.inactive {
+ display:none;
 }

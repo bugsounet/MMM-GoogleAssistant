@@ -7,10 +7,13 @@ const fs = require("fs")
 const path = require("path")
 const Assistant = require("./components/assistant.js")
 const ScreenParser = require("./components/screenParser.js")
+const { getPlatform } = require("./components/platform.js")
 const readJson = require("r-json")
 const Youtube = require("youtube-api")
 const pm2 = require('pm2')
 var he = require('he')
+const si = require('systeminformation')
+const isPi = require('detect-rpi')
 
 logGA = (...args) => { /* do nothing */ }
 logEXT = (...args) => { /* do nothing */ }
@@ -37,6 +40,11 @@ module.exports = NodeHelper.create({
     this.YT = 0
     this.checkConfigMerge()
     this.retryPlayerCount = 0
+    this.PLATFORM_RECORDER = new Map()
+    this.PLATFORM_RECORDER.set("linux", "arecord")
+    this.PLATFORM_RECORDER.set("mac", "sox")
+    this.PLATFORM_RECORDER.set("raspberry-pi", "arecord")
+    this.PLATFORM_RECORDER.set("windows", "sox")
   },
 
   socketNotificationReceived: function (noti, payload) {
@@ -226,6 +234,34 @@ module.exports = NodeHelper.create({
       case "YT_VOLUME":
         this.VolumeVLC(payload)
         break
+      /** Music module **/
+      case "MUSIC_PLAY":
+        this.PlayMusic()
+        break
+      case "MUSIC_STOP":
+        this.StopMusic()
+        break
+      case "MUSIC_PAUSE":
+        this.PauseMusic()
+        break
+      case "MUSIC_NEXT":
+        this.NextMusic()
+        break
+      case "MUSIC_PREVIOUS":
+        this.PreviousMusic()
+        break
+      case "MUSIC_VOLUME_TARGET":
+        this.config.Extented.music.maxVolume = payload // informe helper
+        this.VolumeNewMax(payload)
+      case "MUSIC_VOLUME":
+        this.VolumeMusic(payload)
+        break
+      case 'MUSIC_REBUILD':
+        this.RebuildMusic()
+        break
+      case 'MUSIC_SWITCH':
+        this.SwitchMusic()
+        break
       /** Restart with pm2 **/
       case "RESTART":
         this.pm2Restart(payload)
@@ -293,6 +329,13 @@ module.exports = NodeHelper.create({
       process.exit(1)
     }
     console.log("[GA] Perfect ConfigDeepMerge activated!")
+    /*
+    if (!configModule.config.dev) {
+      console.error("[FATAL] Please use `prod` branch for MMM-GoogleAssistant")
+      console.error("[GA] You can't use this branch, it's reserved to developer.")
+      process.exit(1)
+    }
+    */
   },
 
   initialize: async function (config) {
@@ -345,6 +388,18 @@ module.exports = NodeHelper.create({
       }
     }
 
+    let platform
+    try {
+      platform = getPlatform()
+    } catch (error) {
+      console.error("[GA] Google Assistant does not support this platform. Supported platforms include macOS (x86_64), Windows (x86_64), Linux (x86_64), and Raspberry Pi")
+      process.exit(1)
+      return
+    }
+    let recorderType = this.PLATFORM_RECORDER.get(platform)
+    console.log(`[GA] Platform: '${platform}'; attempting to use '${recorderType}' to access microphone ...`)
+    this.config.micConfig.recorder= recorderType
+
     logGA("Activate delay is set to " + this.config.responseConfig.activateDelay + " ms")
 
     this.sendSocketNotification("INFORMATION" , {message: "LibraryLoading" })
@@ -359,9 +414,17 @@ module.exports = NodeHelper.create({
     }
 
     if (this.config.Extented.useEXT) {
-      console.log("[GA:EXT] Extented Display Server Started")
-      await this.Extented()
-      console.log("[GA:EXT] Extented Display is initialized.")
+      let PiVersion = await this.getVersion()
+      if (PiVersion >= 4) {
+        console.log("[GA:EXT] Extented Display Server Started")
+        await this.Extented()
+        console.log("[GA:EXT] Extented Display is initialized.")
+      } else {
+        this.config.Extented.useEXT = false
+        this.sendSocketNotification("EXTNONE")
+        console.log("[GA:EXT] Extented Display Server disabled: Need a Pi 4 or more.")
+        this.sendSocketNotification("INFORMATION" , {message: "Extented Display is disabled: Need a Pi 4 or more." })
+      }
     }
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
     if (this.config.NPMCheck.useChecker && this.EXT.npmCheck) {
@@ -422,6 +485,33 @@ module.exports = NodeHelper.create({
     if (details) console.log("[GA][ERROR]" + err, details.message, details)
     else console.log("[GA][ERROR]" + err)
     return this.sendSocketNotification("NOT_INITIALIZED", { message: error.message, values: error.values })
+  },
+
+  getVersion: function() {
+    return new Promise((resolve) => {
+      var model = null
+      if (isPi()) {
+        exec ("cat /sys/firmware/devicetree/base/model", (err, stdout, stderr)=> {
+          if (err == null) {
+            var type = stdout.trim()
+            var str = type.split(' ')
+            str.splice(3,10) // delete rev num // rev display // model
+            let PiModel = str.join(" ")
+            console.log("[GA] Detected:", PiModel)
+            str= str.slice(2, 3) // keep only pi number
+            var type = str.join()
+            model= parseInt(type) ? parseInt(type): 0
+            resolve(this.config.Extented.dev ? 4 : model)
+          } else {
+            console.log("[GA] Error Can't determinate RPI version!")
+            resolve(4)
+          }
+        })
+      } else {
+        console.log("[GA] You are not using a pi :)")
+        resolve(4)
+      }
+    })
   },
 
   /*****************/
@@ -514,6 +604,14 @@ module.exports = NodeHelper.create({
         error = "Google Photos: tokenGP.json file not found !"
         this.sendSocketNotification("WARNING" , {  message: error } )
       }
+    }
+    if (this.config.Extented.music.useMusic) {
+      logEXT("Starting Music module...")
+      try {
+        this.config.Extented.music.modulePath = this.config.assistantConfig["modulePath"]
+        this.music = new this.EXT.MusicPlayer(this.config.Extented.music, this.config.debug, callbacks)
+        this.music.start()
+      } catch (e) { console.log("[EXT] Music " + e) } // testing
     }
   },
 
@@ -722,6 +820,53 @@ module.exports = NodeHelper.create({
     }
   },
 
+  StopMusic: function() {
+    if (this.music) {
+      this.music.setStop()
+    }
+  },
+
+  PlayMusic: function () {
+    this.music.setPlay()
+  },
+
+  PauseMusic: function() {
+    if (this.music) {
+      this.music.setPause()
+    }
+  },
+
+  PreviousMusic: function() {
+    if (this.music) {
+      this.music.setPrevious()
+    }
+  },
+
+  NextMusic: function() {
+    if (this.music) {
+      this.music.setNext()
+    }
+  },
+
+  VolumeNewMax: function (max) {
+    this.music.setNewMax(this.config.Extented.music.maxVolume)
+  },
+
+  VolumeMusic: function(volume) {
+    if (this.music) {
+      this.music.setVolume(volume)
+    }
+  },
+
+  RebuildMusic: function() {
+    this.music.rebuild()
+  },
+
+  SwitchMusic: function() {
+    this.music.setSwitch()
+  },
+
+
   pm2Restart: function(id) {
     var pm2 = "pm2 restart " + id
     exec (pm2, (err, stdout, stderr)=> {
@@ -744,7 +889,8 @@ module.exports = NodeHelper.create({
       { "@bugsounet/spotify": [ "Spotify", "Extented.spotify.useSpotify" ] },
       { "@bugsounet/cvlc": [ "cvlc", "Extented.youtube.useVLC" ] },
       { "@bugsounet/google-photos" : [ "GPhotos", "Extented.photos.useGooglePhotosAPI" ] },
-      { "@bugsounet/systemd": [ "Systemd", "Extented.spotify.useSpotify" ] }
+      { "@bugsounet/systemd": [ "Systemd", "Extented.spotify.useSpotify" ] },
+      { "@bugsounet/cvlcmusicplayer": ["MusicPlayer", "Extented.music.useMusic" ] }
     ]
     let errors = 0
     return new Promise(resolve => {
@@ -759,8 +905,10 @@ module.exports = NodeHelper.create({
           // libraryActivate: verify if the needed path of config is activated (result of reading config value: true/false) **/
           if (libraryActivate) {
             try {
-              this.EXT[libraryName] = require(libraryToLoad)
-              logGA("Loaded " + libraryToLoad)
+              if (!this.EXT[libraryName]) {
+                this.EXT[libraryName] = require(libraryToLoad)
+                logGA("Loaded " + libraryToLoad)
+              }
             } catch (e) {
               console.error("[GA]", libraryToLoad, "Loading error!" , e)
               this.sendSocketNotification("WARNING" , {message: "LibraryError", values: libraryToLoad })
