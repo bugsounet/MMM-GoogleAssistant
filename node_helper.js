@@ -420,10 +420,14 @@ module.exports = NodeHelper.create({
         await this.Extented()
         console.log("[GA:EXT] Extented Display is initialized.")
       } else {
-        this.config.Extented.useEXT = false
-        this.sendSocketNotification("EXTNONE")
-        console.log("[GA:EXT] Extented Display Server disabled: Need a Pi 4 or more.")
-        this.sendSocketNotification("INFORMATION" , {message: "Extented Display is disabled: Need a Pi 4 or more." })
+        if (!this.config.dev) {
+          this.config.Extented.useEXT = false
+          this.sendSocketNotification("EXTNONE")
+          console.log("[GA:EXT] Extented Display Server disabled: Need a Pi 4 or more.")
+          this.sendSocketNotification("INFORMATION" , {message: "Extented Display is disabled: Need a Pi 4 or more." })
+        } else {
+          console.log("[GA:EXT][Force] Extented Display is initialized.")
+        }
       }
     }
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
