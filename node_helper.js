@@ -162,7 +162,7 @@ module.exports = NodeHelper.create({
             }
           }
           if ((code !== 204) && (code !== 202)) {
-            return console.log("[SPOTIFY:PLAY] Error", code, error, result)
+            return console.log("[SPOTIFY:PLAY] Error", code, result)
           }
           else {
             logEXT("[SPOTIFY] DONE_PLAY")
@@ -172,7 +172,7 @@ module.exports = NodeHelper.create({
         break
       case "SPOTIFY_VOLUME":
         this.spotify.volume(payload, (code, error, result) => {
-          if (code !== 204) console.log("[SPOTIFY:VOLUME] Error", code, error, result)
+          if (code !== 204) console.log("[SPOTIFY:VOLUME] Error", code, result)
           else {
             this.sendSocketNotification("DONE_SPOTIFY_VOLUME", payload)
             logEXT("[SPOTIFY] DONE_VOLUME:", payload)
@@ -181,13 +181,13 @@ module.exports = NodeHelper.create({
         break
       case "SPOTIFY_PAUSE":
         this.spotify.pause((code, error, result) => {
-          if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:PAUSE] Error", code, error, result)
+          if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:PAUSE] Error", code, result)
           else logEXT("[SPOTIFY] DONE_PAUSE")
         })
         break
       case "SPOTIFY_TRANSFER":
         this.spotify.transferByName(payload, (code, error, result) => {
-          if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:TRANSFER] Error", code, error, result)
+          if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:TRANSFER] Error", code, result)
           else logEXT("[SPOTIFY] DONE_TRANSFER")
         })
         break
@@ -197,25 +197,25 @@ module.exports = NodeHelper.create({
         break
       case "SPOTIFY_NEXT":
         this.spotify.next((code, error, result) => {
-          if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:NEXT] Error", code, error, result)
+          if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:NEXT] Error", code, result)
           else logEXT("[SPOTIFY] DONE_NEXT")
         })
         break
       case "SPOTIFY_PREVIOUS":
         this.spotify.previous((code, error, result) => {
-          if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:PREVIOUS] Error", code, error, result)
+          if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:PREVIOUS] Error", code, result)
           else logEXT("[SPOTIFY] DONE_PREVIOUS")
         })
         break
       case "SPOTIFY_SHUFFLE":
         this.spotify.shuffle(payload,(code, error, result) => {
-          if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:SHUFFLE] Error", code, error, result)
+          if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:SHUFFLE] Error", code, result)
           else logEXT("[SPOTIFY] DONE_SHUFFLE")
         })
         break
       case "SPOTIFY_REPEAT":
         this.spotify.repeat(payload, (code, error, result) => {
-          if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:REPEAT] Error", code, error, result)
+          if ((code !== 204) && (code !== 202)) console.log("[SPOTIFY:REPEAT] Error", code, result)
           else logEXT("[SPOTIFY] DONE_REPEAT")
         })
         break
