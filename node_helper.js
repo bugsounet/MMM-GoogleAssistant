@@ -415,19 +415,15 @@ module.exports = NodeHelper.create({
 
     if (this.config.Extented.useEXT) {
       let PiVersion = await this.getVersion()
-      if (PiVersion >= 4) {
-        console.log("[GA:EXT] Extented Display Server Started")
+      if ((PiVersion >= 4) || this.config.Extented.dev) {
+        console.log("[GA:EXT]" + (this.config.Extented.dev ? "[Force]" : "") + " Extented Display Server Started")
         await this.Extented()
-        console.log("[GA:EXT] Extented Display is initialized.")
+        console.log("[GA:EXT]"+ (this.config.Extented.dev ? "[Force]" : "") + " Extented Display is initialized.")
       } else {
-        if (!this.config.dev) {
-          this.config.Extented.useEXT = false
-          this.sendSocketNotification("EXTNONE")
-          console.log("[GA:EXT] Extented Display Server disabled: Need a Pi 4 or more.")
-          this.sendSocketNotification("INFORMATION" , {message: "Extented Display is disabled: Need a Pi 4 or more." })
-        } else {
-          console.log("[GA:EXT][Force] Extented Display is initialized.")
-        }
+        this.config.Extented.useEXT = false
+        this.sendSocketNotification("EXTNONE")
+        console.log("[GA:EXT] Extented Display Server disabled: Need a Pi 4 or more.")
+        this.sendSocketNotification("INFORMATION" , {message: "Extented Display is disabled: Need a Pi 4 or more." })
       }
     }
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
@@ -508,7 +504,7 @@ module.exports = NodeHelper.create({
             resolve(this.config.Extented.dev ? 4 : model)
           } else {
             console.log("[GA] Error Can't determinate RPI version!")
-            resolve(4)
+            resolve(3)
           }
         })
       } else {
