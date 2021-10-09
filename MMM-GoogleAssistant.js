@@ -163,6 +163,7 @@ Module.register("MMM-GoogleAssistant", {
         }
       },
       music: {
+        useMusic: false,
         useUSB: false,
         musicPath: "/home/pi/Music",
         checkSubDirectory: false,
