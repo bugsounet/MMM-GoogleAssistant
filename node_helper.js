@@ -329,13 +329,11 @@ module.exports = NodeHelper.create({
       process.exit(1)
     }
     console.log("[GA] Perfect ConfigDeepMerge activated!")
-    /*
     if (!configModule.config.dev) {
       console.error("[FATAL] Please use `prod` branch for MMM-GoogleAssistant")
-      console.error("[GA] You can't use this branch, it's reserved to developer.")
+      console.error("[GA] You can't use this branch, it's reserved to developers.")
       process.exit(1)
     }
-    */
   },
 
   initialize: async function (config) {
