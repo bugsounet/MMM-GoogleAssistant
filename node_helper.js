@@ -34,6 +34,7 @@ module.exports = NodeHelper.create({
       "RESPEAKER_SPEAKER": "amixer -M sset Speaker #VOLUME#%",
       "RESPEAKER_PLAYBACK": "amixer -M sset Playback #VOLUME#%"
     }
+    this.PiVersion = false
     timeout = null
     retry = null
     this.YouTube = null
@@ -398,8 +399,8 @@ module.exports = NodeHelper.create({
     console.log(`[GA] Platform: '${platform}'; attempting to use '${recorderType}' to access microphone ...`)
     this.config.micConfig.recorder= recorderType
 
-    logGA("Activate delay is set to " + this.config.responseConfig.activateDelay + " ms")
-
+    let piNumber = await this.getVersion()
+    let _Force= piNumber < 4 ? "[Force]" : ""
     this.sendSocketNotification("INFORMATION" , {message: "LibraryLoading" })
     let bugsounet = await this.loadBugsounetLibrary()
     if (bugsounet) {
@@ -412,11 +413,10 @@ module.exports = NodeHelper.create({
     }
 
     if (this.config.Extented.useEXT) {
-      let PiVersion = await this.getVersion()
-      if ((PiVersion >= 4) || this.config.Extented.dev) {
-        console.log("[GA:EXT]" + (this.config.Extented.dev ? "[Force]" : "") + " Extented Display Server Started")
+      if (this.PiVersion) {
+        console.log("[GA:EXT]" + _Force + " Extented Display Server Started")
         await this.Extented()
-        console.log("[GA:EXT]"+ (this.config.Extented.dev ? "[Force]" : "") + " Extented Display is initialized.")
+        console.log("[GA:EXT]"+ _Force + " Extented Display is initialized.")
       } else {
         this.config.Extented.useEXT = false
         this.sendSocketNotification("EXTNONE")
@@ -499,15 +499,18 @@ module.exports = NodeHelper.create({
             str= str.slice(2, 3) // keep only pi number
             var type = str.join()
             model= parseInt(type) ? parseInt(type): 0
-            resolve(this.config.Extented.dev ? 4 : model)
+            this.PiVersion = (model >=4 || this.config.Extented.dev) ? true : false
+            resolve(this.config.Extented.dev ? 999 : model)
           } else {
             console.log("[GA] Error Can't determinate RPI version!")
-            resolve(3)
+            this.PiVersion = this.config.Extented.dev ? true : false
+            resolve(1)
           }
         })
       } else {
         console.log("[GA] You are not using a pi :)")
-        resolve(4)
+        this.PiVersion = true
+        resolve(999)
       }
     })
   },
@@ -877,18 +880,18 @@ module.exports = NodeHelper.create({
   /** It will not crash MM (black screen) **/
   loadBugsounetLibrary: function() {
     let libraries= [
-      // { "library to load" : [ "store library name", "path to check"] }
-      { "@bugsounet/npmcheck": [ "npmCheck", "NPMCheck.useChecker" ] },
-      { "@bugsounet/screen": [ "Screen", "Extented.screen.useScreen" ] },
-      { "@bugsounet/pir": [ "Pir", "Extented.pir.usePir" ] },
-      { "@bugsounet/governor": [ "Governor", "Extented.governor.useGovernor" ] },
-      { "@bugsounet/internet": [ "Internet", "Extented.internet.useInternet" ] },
-      { "@bugsounet/cast": [ "CastServer", "Extented.cast.useCast" ] },
-      { "@bugsounet/spotify": [ "Spotify", "Extented.spotify.useSpotify" ] },
-      { "@bugsounet/cvlc": [ "cvlc", "Extented.youtube.useVLC" ] },
-      { "@bugsounet/google-photos" : [ "GPhotos", "Extented.photos.useGooglePhotosAPI" ] },
-      { "@bugsounet/systemd": [ "Systemd", "Extented.spotify.useSpotify" ] },
-      { "@bugsounet/cvlcmusicplayer": ["MusicPlayer", "Extented.music.useMusic" ] }
+      // { "library to load" : [ "store library name", "path to check", needed without EXT ?] }
+      { "@bugsounet/npmcheck": [ "npmCheck", "NPMCheck.useChecker", true ] },
+      { "@bugsounet/screen": [ "Screen", "Extented.screen.useScreen", false ] },
+      { "@bugsounet/pir": [ "Pir", "Extented.pir.usePir", false ] },
+      { "@bugsounet/governor": [ "Governor", "Extented.governor.useGovernor", false ] },
+      { "@bugsounet/internet": [ "Internet", "Extented.internet.useInternet", false ] },
+      { "@bugsounet/cast": [ "CastServer", "Extented.cast.useCast", false ] },
+      { "@bugsounet/spotify": [ "Spotify", "Extented.spotify.useSpotify", false ] },
+      { "@bugsounet/cvlc": [ "cvlc", "Extented.youtube.useVLC", false ] },
+      { "@bugsounet/google-photos" : [ "GPhotos", "Extented.photos.useGooglePhotosAPI", false ] },
+      { "@bugsounet/systemd": [ "Systemd", "Extented.spotify.useSpotify", false ] },
+      { "@bugsounet/cvlcmusicplayer": ["MusicPlayer", "Extented.music.useMusic", false ] }
     ]
     let errors = 0
     return new Promise(resolve => {
@@ -897,10 +900,14 @@ module.exports = NodeHelper.create({
           let libraryToLoad = name,
               libraryName = configValues[0],
               libraryPath = configValues[1],
-              index = (obj,i) => { return obj[i] },
-              libraryActivate = libraryPath.split(".").reduce(index,this.config)
+              libraryNeeded = configValues[2], // needed without EXT ?
+              index = (obj,i) => { return obj[i] }
+
+          // reverse condition if EXT
+          if (!libraryNeeded && this.PiVersion && this.config.Extented.useEXT) libraryNeeded = true
 
           // libraryActivate: verify if the needed path of config is activated (result of reading config value: true/false) **/
+          let libraryActivate = libraryNeeded && libraryPath.split(".").reduce(index,this.config) 
           if (libraryActivate) {
             try {
               if (!this.EXT[libraryName]) {

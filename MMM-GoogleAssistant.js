@@ -22,7 +22,6 @@ Module.register("MMM-GoogleAssistant", {
       useResponseOutput: true,
       responseOutputCSS: "response_output.css",
       screenOutputTimer: 5000,
-      activateDelay: 250,
       useAudioOutput: true,
       useChime: true,
       confirmationChime: true,
@@ -920,10 +919,8 @@ Module.register("MMM-GoogleAssistant", {
       chime: true
     }
     var options = Object.assign({}, options, payload)
-    setTimeout(() => {
-      this.assistantResponse.status(options.type, (options.chime) ? true : false)
-      this.sendSocketNotification("ACTIVATE_ASSISTANT", options)
-    }, this.config.responseConfig.activateDelay)
+    this.assistantResponse.status(options.type, (options.chime) ? true : false)
+    this.sendSocketNotification("ACTIVATE_ASSISTANT", options)
   },
 
   endResponse: function() {
