@@ -9,11 +9,7 @@ const Assistant = require("./components/assistant.js")
 const ScreenParser = require("./components/screenParser.js")
 const { getPlatform } = require("./components/platform.js")
 const readJson = require("r-json")
-const Youtube = require("youtube-api")
-const pm2 = require('pm2')
-var he = require('he')
-const si = require('systeminformation')
-const isPi = require('detect-rpi')
+const isPi = require("detect-rpi")
 
 logGA = (...args) => { /* do nothing */ }
 logEXT = (...args) => { /* do nothing */ }
@@ -67,7 +63,7 @@ module.exports = NodeHelper.create({
             console.log("[GA] ShellExec Error:" + e)
             this.sendSocketNotification("WARNING", { message: "ShellExecError"} )
           }
-          //this.sendSocketNotification("INFORMATION", { message: "ShellExecDone" } )
+
           logGA("SHELLEXEC_RESULT", {
             executed: payload,
             result: {
@@ -358,34 +354,6 @@ module.exports = NodeHelper.create({
       error = "[FATAL] Assistant: tokenGA.json file not found !"
       return this.DisplayError(error, {message: "GAErrorTokenGA"})
     }
-    if (this.config.Extented.useEXT) {
-      if (this.config.Extented.youtube.useYoutube) {
-        try {
-          const CREDENTIALS = readJson(this.config.assistantConfig["modulePath"] + "/credentials.json")
-          const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenYT.json")
-          let oauth = Youtube.authenticate({
-            type: "oauth",
-            client_id: CREDENTIALS.installed.client_id,
-            client_secret: CREDENTIALS.installed.client_secret,
-            redirect_url: CREDENTIALS.installed.redirect_uris,
-            access_token: TOKEN.access_token,
-            refresh_token: TOKEN.refresh_token,
-          })
-          console.log("[GA] YouTube Search Function initilized.")
-        } catch (e) {
-          console.log("[GA] " + e)
-          error = "[FATAL] Youtube: tokenYT.json file not found !"
-          return this.DisplayError(error, {message: "GAErrorTokenYoutube", values: "tokenYT.json"})
-        }
-      }
-      if (this.config.Extented.volume.useVolume) {
-        let exists = (data) => {
-          return data !== null && data !== undefined
-        }
-        if (!exists(this.volumeScript[this.config.Extented.volume.volumePreset]))
-          return this.DisplayError("VolumePreset error", {message: "VolumePresetError"})
-      }
-    }
 
     let platform
     try {
@@ -416,14 +384,44 @@ module.exports = NodeHelper.create({
       if (this.PiVersion) {
         console.log("[GA:EXT]" + _Force + " Extented Display Server Started")
         await this.Extented()
-        console.log("[GA:EXT]"+ _Force + " Extented Display is initialized.")
+        console.log("[GA:EXT]" + _Force + " Extented Display is initialized.")
       } else {
         this.config.Extented.useEXT = false
         this.sendSocketNotification("EXTNONE")
-        console.log("[GA:EXT] Extented Display Server disabled: Need a Pi 4 or more.")
+        console.log("[GA:EXT] Extented Display Server disabled: Need a Raspberry Pi 4 or more.")
         this.sendSocketNotification("INFORMATION" , {message: "Extented Display is disabled: Need a Pi 4 or more." })
       }
     }
+
+    if (this.config.Extented.useEXT) {
+      if (this.config.Extented.youtube.useYoutube) {
+        try {
+          const CREDENTIALS = readJson(this.config.assistantConfig["modulePath"] + "/credentials.json")
+          const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenYT.json")
+          let oauth = this.EXT.YouTubeAPI.authenticate({
+            type: "oauth",
+            client_id: CREDENTIALS.installed.client_id,
+            client_secret: CREDENTIALS.installed.client_secret,
+            redirect_url: CREDENTIALS.installed.redirect_uris,
+            access_token: TOKEN.access_token,
+            refresh_token: TOKEN.refresh_token,
+          })
+          console.log("[GA] YouTube Search Function initilized.")
+        } catch (e) {
+          console.log("[GA] " + e)
+          error = "[FATAL] Youtube: tokenYT.json file not found !"
+          return this.DisplayError(error, {message: "GAErrorTokenYoutube", values: "tokenYT.json"})
+        }
+      }
+      if (this.config.Extented.volume.useVolume) {
+        let exists = (data) => {
+          return data !== null && data !== undefined
+        }
+        if (!exists(this.volumeScript[this.config.Extented.volume.volumePreset]))
+          return this.DisplayError("VolumePreset error", {message: "VolumePresetError"})
+      }
+    }
+
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
     if (this.config.NPMCheck.useChecker && this.EXT.npmCheck) {
       var cfg = {
@@ -467,9 +465,9 @@ module.exports = NodeHelper.create({
  /** YouTube Search **/
   YoutubeSearch: async function (query) {
     try {
-      var results = await Youtube.search.list({q: query, part: 'snippet', maxResults: 1, type: "video"})
+      var results = await this.EXT.YouTubeAPI.search.list({q: query, part: 'snippet', maxResults: 1, type: "video"})
       var item = results.data.items[0]
-      var title = he.decode(item.snippet.title)
+      var title = this.EXT.he.decode(item.snippet.title)
       console.log('[GA] Found YouTube Title: %s - videoId: %s', title, item.id.videoId)
       this.sendSocketNotification("YouTube_RESULT", item.id.videoId)
       this.sendSocketNotification("INFORMATION", { message: "YouTubePlaying", values: title })
@@ -626,17 +624,17 @@ module.exports = NodeHelper.create({
       this.sendSocketNotification("WARNING" , { message: "LibrespotNoInstalled" })
       return
     }
-    pm2.connect((err) => {
+    this.EXT.pm2.connect((err) => {
       if (err) return console.log(err)
       console.log("[PM2] Connected!")
-      pm2.list((err,list) => {
+      this.EXT.pm2.list((err,list) => {
         if (err) return console.log(err)
         if (list && Object.keys(list).length > 0) {
           for (let [item, info] of Object.entries(list)) {
             if (info.name == "librespot" && info.pid) {
               let deleted = false
               if (restart) {
-                pm2.delete("librespot" , (err) => {
+                this.EXT.pm2.delete("librespot" , (err) => {
                   if (err) console.log("[PM2] Librespot Process not found")
                   else {
                     console.log("[PM2] Librespot Process deleted! (refreshing ident)")
@@ -650,7 +648,7 @@ module.exports = NodeHelper.create({
             }
           }
         }
-        pm2.start({
+        this.EXT.pm2.start({
           script: filePath,
           name: "librespot",
           out_file: "/dev/null",
@@ -673,14 +671,14 @@ module.exports = NodeHelper.create({
     })
     process.on('exit', (code) => {
       // try to kill librespot on exit ... or not ...
-      pm2.stop("librespot", (e,p) => {
+      this.EXT.pm2.stop("librespot", (e,p) => {
         console.log("[LIBRESPOT] Killed")
       })
     })
   },
 
   LibrespotRestart() {
-    pm2.restart("librespot", (err, proc) => {
+    this.EXT.pm2.restart("librespot", (err, proc) => {
       if (err) console.log("[PM2] librespot error: " + err)
       else logEXT("[PM2] Restart librespot")
     })
@@ -887,12 +885,16 @@ module.exports = NodeHelper.create({
       { "@bugsounet/governor": [ "Governor", "Extented.governor.useGovernor", false ] },
       { "@bugsounet/internet": [ "Internet", "Extented.internet.useInternet", false ] },
       { "@bugsounet/cast": [ "CastServer", "Extented.cast.useCast", false ] },
-      { "@bugsounet/spotify": [ "Spotify", "Extented.spotify.useSpotify", false ] },
       { "@bugsounet/cvlc": [ "cvlc", "Extented.youtube.useVLC", false ] },
       { "@bugsounet/google-photos" : [ "GPhotos", "Extented.photos.useGooglePhotosAPI", false ] },
+      { "@bugsounet/spotify": [ "Spotify", "Extented.spotify.useSpotify", false ] },
       { "@bugsounet/systemd": [ "Systemd", "Extented.spotify.useSpotify", false ] },
-      { "@bugsounet/cvlcmusicplayer": ["MusicPlayer", "Extented.music.useMusic", false ] }
+      { "@bugsounet/cvlcmusicplayer": ["MusicPlayer", "Extented.music.useMusic", false ] },
+      { "pm2": [ "pm2", "Extented.spotify.useSpotify", false ] },
+      { "youtube-api": [ "YouTubeAPI", "Extented.youtube.useYoutube", false ] },
+      { "he": [ "he", "Extented.youtube.useYoutube", false ] }
     ]
+
     let errors = 0
     return new Promise(resolve => {
       libraries.forEach(library => {
