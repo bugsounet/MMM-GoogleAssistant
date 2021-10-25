@@ -1,49 +1,10 @@
 {
   "NO_RESPONSE" : "Sorry ik heb het niet verstaan.",
+  "NO_AUDIO_RESPONSE" : " ",
   "TOO_SHORT" : "Sorry ik heb het niet verstaan.",
   "CONVERSATION_ERROR" : "Gespreksfout.(verkeerd geconfigureerd microfoon)",
   "QUERY_REPLY" : "Google Assistant wordt geactiveerd",
   "QUERY_HELP" : "Met deze opdracht kun je `Google Assistant` per tekst bedienen.",
-
-  "RESTART_HELP" : " herstart MagicMirror met pm2",
-  "RESTART_DONE" : "Ik zal het opnieuw opstarten !",
-  "RESTART_ERROR" : "<id> missend !",
-
-  "WAKEUP_HELP": " het scherm wakker maken en de teller opnieuw starten",
-  "WAKEUP_REPLY": "Scherm wakker worden !",
-
-  "HIDE_HELP": "verberg de gewenste module",
-  "HIDE_ALREADY": " is al verborgen",
-  "HIDE_DONE": " is nu verborgen",
-  "HIDE_LOCKED": " is vergrendeld door een ander programma, kan het niet verbergen",
-
-  "SHOW_HELP": "toon gewenste module",
-  "SHOW_ALREADY": "wordt al getoond",
-  "SHOW_DONE": "wordt nu getoond",
-  "SHOW_LOCKED": " is al vergrendeld door een ander programma, kan het niet tonen",
-
-  "MODULE_NOTFOUND": "Module niet gevonden ",
-  "MODULE_NAME": "Naam van de module ontbreekt",
-
-  "STOP_HELP": "Stop uitgebreide weergave indien actief",
-  "STOP_EXT": "Ik stop Uitgebreide Weergave",
-
-  "EXT_OPEN": "Open link: ",
-  "EXT_INVALID": "Deze link is niet ongeldig!",
-  "EXT_HELP": "Activeer Uitgebreide weergave met link",
-
-  "VOLUME_HELP": "Stel het volume van uw apparaat in",
-
-  "DADDY": "vader @bugsounet zegt... nee,nee en nee !!!",
-
-  "DAY" : "dag",
-  "DAYS" : "dagen",
-  "HOUR" : "uur",
-  "HOURS" : "uren",
-  "MINUTE" : "minuut",
-  "MINUTES" : "minuten",
-  "SECOND": "second",
-  "SECONDS": "seconden",
 
   "GALoading": "Laden...",
   "GAReady": "Klaar!",
@@ -52,77 +13,11 @@
   "GAErrorRecipe": "[FATAL] Fout tijdens het laden van dit recept: {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json niet aanwezig",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json niet aanwezig",
-  "GAErrorTokenYoutube": "[FATAL] Token Youtube: TokenYT.json niet aanwezig",
+
   "LibraryLoading": "Uitgebreide bibliotheken laden...",
   "LibraryLoaded": "GoogleAssistant Uitgebreide bibliotheek geladen!",
   "LibraryError": "Fout bij het laden: {VALUES} bibliotheek",
 
-  "LibrespotNoResponse": "Geen reactie van librespot! ({VALUES})",
-  "LibrespotConnected": "Verbonden met librespot! ({VALUES})",
-  "LibrespotConnecting": " Even geduld, verbinding maken met librespot...",
-  "LibrespotNoInstalled": "librespot is niet geïnstalleerd !",
-  "LibrespotError": "Librespot: {VALUES}",
-
-  "RaspotifyNoResponse": "Geen reactie van raspotify! ({VALUES})",
-  "RaspotifyConnected": "Verbonden met raspotify! ({VALUES})",
-  "RaspotifyConnecting": "Even geduld, verbinding maken met raspotify...",
-  "RaspotifyNoInstalled": "Raspotify is niet geïnstalleerd !",
-  "RaspotifyError": "Raspotify: {VALUES}",
-
-  "YouTubePlaying": "YouTube wordt afgespeeld: {VALUES}",
-  "YouTubeError": "YouTube: {VALUES}",
-
-  "Volume": "Volume: {VALUES}",
-  "VolumePresetError": "Volume: vooraf ingestelde fout!",
-  "VolumeText": "Volume:",
-  "VolumeDisabled": "Volumeregeling is uitgeschakeld",
-
-  "GovernorError": "Governor: {VALUES}",
-
-  "PirError": "Pir sensor fout code: {VALUES}",
-  "SpotifyNoResult": "Spotify: Geen resultaat gevonden",
-  "SpotifySearchFailed": "Spotify: Zoeken en Afspelen mislukt",
-  "SpotifyListenText": "Luisteren naar",
-  "SpotifyForGA": "Spotify for Google Assistant",
-  "SpotifySearchTypePlaylist": "Speellijst",
-  "SpotifySearchTypeAlbum": "album",
-  "SpotifySearchTypeTrack": "nummer",
-  "SpotifySearchTypeArtist": "artist",
-
-  "ScreenWakeUp": "Scherm wordt wakker door {VALUES}",
-  "ScreenLock": "Scherm vergrendeld door {VALUES}",
-  "ScreenUnLock": "Scherm ontgrendeld door {VALUES}",
-  "ScreenTurnOff": "Automatisch Scherm Uit:",
-  "ScreenLastPresence": "Laatst getoond:",
-  "ScreenPowerOn": "Scherm aan",
-  "ScreenPowerOff": "Scherm uit",
-
-  "InternetDown" : "{VALUES}, Internet is UIT!",
-  "InternetRestart": "Internet is nu beschikbaar! Herstart MagicMirror...",
-  "InternetAvailable": "Internet is nu BESCHIKBAAR, na {VALUES}",
-
-  "EXTStop": "Alle uitgebreide processen zijn nu gestopt",
-  "EXTNotActivated": "Uitgebreide weergave is niet geactiveerd",
-
-  "CastStart": "Begin met het casten van YouTube",
-  "CastStop" : "Stop met het casten van YouTube",
   "ShellExecError": "ShellExec return some Errors",
-  "ShellExecDone": "ShellExec executed sucessfully",
-
-  "LinksOpen": "Uitgebreide weergavebrowser openen",
-  "LinksClose": "Uitgebreide weergavebrowser sluiten",
-
-  "PhotosNotActivated": "Fotomodule is niet geactiveerd",
-
-  "GPhotosNotActivated": "GooglePhotos API is niet geactiveerd",
-  "GPhotosRecipeNotActivated": "GooglePhotos Receptmodus is niet geactiveerd",
-  "GPhotosBckGrndActivated": "GooglePhotos Receptmodus is niet geactiveerd",
-  "GPhotosModuleActivated": "GooglePhotos-module is geactiveerd",
-  "GPFailedOpenURL": "Google Foto's: laden van afbeelding mislukt",
-  "GPOpen": "Open Google Foto's",
-  "GPClose": "Sluit Google Fhoto's",
-  "GPAlbumName": "Album:",
-  "GPError": "GooglePhotos: genn foto's om weer te geven",
-  "GPNoPhotoFound" : "GooglePhotos: Geen Foto's gevonden",
-  "GPReceive": "GooglePhotos ontvangt {VALUES} Foto's"
+  "ShellExecDone": "ShellExec executed sucessfully"
 }

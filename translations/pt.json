@@ -1,49 +1,10 @@
 {
   "NO_RESPONSE" : "Desculpa, não estou a perceber.",
+  "NO_AUDIO_RESPONSE" : " ",
   "TOO_SHORT" : "Desculpa, não estou a perceber.",
   "CONVERSATION_ERROR" : "Erro de conversação. (microfone mal configurado)",
   "QUERY_REPLY" : "Assistente Google irá ser ativado",
   "QUERY_HELP" : "Podes controlar o `Assistente Google` por texto com o seguinte comando.",
-
-  "RESTART_HELP" : "reeiniciar MagicMirror com pm2",
-  "RESTART_DONE" : "Irá reeiniciar !",
-  "RESTART_ERROR" : "<id> em falta !",
-
-  "WAKEUP_HELP": "ligar o ecrã e reeiniciar o contador",
-  "WAKEUP_REPLY": "Ligar Ecrã !",
-
-  "HIDE_HELP": "ocultar o módulo desejado",
-  "HIDE_ALREADY": " já está oculto",
-  "HIDE_DONE": " está oculto",
-  "HIDE_LOCKED": " trancado por outro programa, não é possivel ocultar",
-
-  "SHOW_HELP": "mostrar o módulo desejado",
-  "SHOW_ALREADY": " já está visivel",
-  "SHOW_DONE": " está visivel",
-  "SHOW_LOCKED": " trancado por outro programa, impossivel mostrar",
-
-  "MODULE_NOTFOUND": "Módulo não encontrado: ",
-  "MODULE_NAME": "Nome do Módulo em falta",
-
-  "STOP_HELP": "Parar a Visualização Extendida se estiver em execução",
-  "STOP_EXT": "Eu parei a Visualização Extendida ",
-
-  "EXT_OPEN": "A abrir ligação: ",
-  "EXT_INVALID": "Link inválido!",
-  "EXT_HELP": "Link ativado com Visualização Extendida",
-
-  "VOLUME_HELP": "Definir o volume",
-
-  "DADDY": "papá @bugsounet diz... NÃO, NÃO E NÃO !!!",
-
-  "DAY" : "dia",
-  "DAYS" : "dias",
-  "HOUR" : "hora",
-  "HOURS" : "horas",
-  "MINUTE" : "minuto",
-  "MINUTES" : "minutos",
-  "SECOND": "segundo",
-  "SECONDS": "segundos",
 
   "GALoading": "A carregar...",
   "GAReady": "Pronto!",
@@ -52,80 +13,11 @@
   "GAErrorRecipe": "[FATAL] Erro ao carregar esta receita: {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json em falta",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json missing",
-  "GAErrorTokenYoutube": "[FATAL] Token Youtube: tokenYT.json em falta",
 
   "LibraryLoading": "A carregar Livraria Extendida...",
   "LibraryLoaded": "Livraria Extendida do Assistente Google carregada!",
   "LibraryError": "Erro ao carregar: {VALUES} livraria",
 
-  "LibrespotNoResponse": "Sem resposta do librespot!",
-  "LibrespotConnected": "Conectado a librespot!",
-  "LibrespotConnecting": "Aguarde por favor, a conectar ao librespot...",
-  "LibrespotNoInstalled": "O librespot não está instalado!",
-  "LibrespotError": "Librespot: {VALUES}",
-
-  "RaspotifyNoResponse": "Sem resposta do raspotify!",
-  "RaspotifyConnected": "Conectado a raspotify!",
-  "RaspotifyConnecting": "Por favor aguarde, a conectar ao raspotify...",
-  "RaspotifyNoInstalled": "Raspotify não esta instalado!",
-  "RaspotifyError": "Raspotify: {VALUES}",
-  
-  "YouTubePlaying": "A transmitir no YouTube: {VALUES}",
-  "YouTubeError": "YouTube: {VALUES}",
-
-  "Volume": "Volume: {VALUES}",
-  "VolumePresetError": "Volume: Preset Error!",
-  "VolumeText": "Volume:",
-  "VolumeDisabled": "Controlo de volume desactivado",
-
-  "GovernorError": "Governor: {VALUES}",
-
-  "PirError": "Código de erro do sensor Pir: {VALUES}",
-
-  "SpotifyNoResult": "Spotify: Sem resultados",
-  "SpotifySearchFailed": "Spotify: Falha na procura",
-  "SpotifyListenText": "A ouvir em",
-  "SpotifyForGA": "Spotify para o Assistente Google",
-  "SpotifySearchTypePlaylist": "playlist",
-  "SpotifySearchTypeAlbum": "album",
-  "SpotifySearchTypeTrack": "faixa",
-  "SpotifySearchTypeArtist": "artista",
-
-  "ScreenWakeUp": "Ecrã ligado {VALUES}",
-  "ScreenLock": "Ecrã bloqueado por {VALUES}",
-  "ScreenUnLock": "Ecrã desbloqueado por {VALUES}",
-  "ScreenTurnOff": "Desbloqueio automático do Ecrã:",
-  "ScreenLastPresence": "Última utilização",
-  "ScreenPowerOn": "Ligar Ecrã",
-  "ScreenPowerOff": "Desligar Ecrã",
-
-  "InternetDown" : "{VALUES}, Sem internet!",
-  "InternetRestart": "A internet está agora disponivel! A reeiniciar O MagicMirror...",
-  "InternetAvailable": "A internet está agora disponivel, depois de {VALUES}",
-  
-  "EXTStop": "Todos os Extented Process estão agora parados",
-  "EXTNotActivated": "Extented Display não está ativo",
-
-  "CastStart": "A começar a transmissão do YouTube",
-  "CastStop" : "A parar a transmissão YouTube",
-
   "ShellExecError": "ShellExec returnou alguns Erros",
-  "ShellExecDone": "ShellExec foi executado com sucesso",
-
-  "LinksOpen": "A abrir o Extended Display Navegador",
-  "LinksClose": "A fechar Extented Display Navegador",
-
-  "PhotosNotActivated": "O modulo de fotos não está ativado",
-
-  "GPhotosNotActivated": "GooglePhotos API não está ativado",
-  "GPhotosRecipeNotActivated": "GooglePhotos Recipe mode não está activo",
-  "GPhotosBckGrndActivated": "GooglePhotos em segundo plano foi ativado",
-  "GPhotosModuleActivated": "GooglePhotos Module mode foi ativado",
-  "GPFailedOpenURL": "Google Photos: Carregamento de imagem falhou",
-  "GPOpen": "Abrir Google Photos",
-  "GPClose": "Fechar Google Photos",
-  "GPAlbumName": "Album:",
-  "GPError": "GooglePhotos: Não existem fotos para mostrar",
-  "GPNoPhotoFound" : "GooglePhotos: Imagem não encontrada",
-  "GPReceive": "GooglePhotos a receber {VALUES} fotos"
+  "ShellExecDone": "ShellExec foi executado com sucesso"
 }
