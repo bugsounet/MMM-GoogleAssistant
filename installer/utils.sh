@@ -325,4 +325,9 @@ Installer_chk () {
   Installer_success "Checking $2: $CHKUSER/$CHKGROUP"
 }
 
+is_pifour() {
+   grep -q "^Revision\s*:\s*[ 123][0-9a-fA-F][0-9a-fA-F]3[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]$" /proc/cpuinfo
+   return $?
+}
+
 Installer_debug "[LOADED] utils.sh"

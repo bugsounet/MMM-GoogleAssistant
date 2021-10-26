@@ -66,53 +66,54 @@ else
   fi
 fi
 
-echo
-Installer_info "NPM Version testing:"
- if [ "$(printf '%s\n' "$MinRequireNpmVer" "$CurrentNpmVer" | sort -V | head -n1)" = "$MinRequireNpmVer" ]; then 
-        Installer_warning "Require: >= ${MinRequireNpmVer} < ${MaxRequireNpmVer}"
-        if [[ "$(printf '%s\n' "$MaxRequireNpmVer" "$CurrentNpmVer" | sort -V | head -n1)" < "$MaxRequireNpmVer" ]]; then
-          Installer_success "Current: ${CurrentNpmVer} ✓"
-        else
+if is_pifour; then
+  echo
+  Installer_info "NPM Version testing:"
+   if [ "$(printf '%s\n' "$MinRequireNpmVer" "$CurrentNpmVer" | sort -V | head -n1)" = "$MinRequireNpmVer" ]; then 
+          Installer_warning "Require: >= ${MinRequireNpmVer} < ${MaxRequireNpmVer}"
+          if [[ "$(printf '%s\n' "$MaxRequireNpmVer" "$CurrentNpmVer" | sort -V | head -n1)" < "$MaxRequireNpmVer" ]]; then
+            Installer_success "Current: ${CurrentNpmVer} ✓"
+          else
+            Installer_error "Current: ${CurrentNpmVer} 𐄂"
+            Installer_error "Failed: incorrect version!"
+            echo
+            exit 255
+          fi
+   else
+          Installer_warning "Require: ${RequireNpmVer}"
           Installer_error "Current: ${CurrentNpmVer} 𐄂"
           Installer_error "Failed: incorrect version!"
-          echo
           exit 255
-        fi
- else
-        Installer_warning "Require: ${RequireNpmVer}"
-        Installer_error "Current: ${CurrentNpmVer} 𐄂"
-        Installer_error "Failed: incorrect version!"
-        exit 255
- fi
-echo
-Installer_info "NODE Version testing:"
- if [ "$(printf '%s\n' "$RequireNodeVer" "$CurrentNodeVer" | sort -V | head -n1)" = "$RequireNodeVer" ]; then 
-        Installer_warning "Require: >= ${RequireNodeVer}"
-        Installer_success "Current: ${CurrentNodeVer} ✓"
- else
-        Installer_warning "Require: >= ${RequireNodeVer}"
-        Installer_error "Current: ${CurrentNodeVer} 𐄂"
-        Installer_error "Failed: incorrect version!"
-        exit 255
- fi
-echo
-Installer_success "Passed: perfect!"
-
-echo
-# check dependencies
-dependencies=(git curl unclutter libasound2-dev sox libsox-fmt-all gcc-7 libsox-fmt-mp3 build-essential mpg321 vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
-Installer_info "Checking all dependencies..."
-Installer_check_dependencies
-Installer_success "All Dependencies needed are installed !"
-
-echo
-# force gcc v7
-Installer_info "Checking GCC Version..."
-Installer_yesno "Do you want to check compatible GCC version" && (
-  Installer_check_gcc7
-  Installer_success "GCC 7 is set by default"
-)
-
+   fi
+  echo
+  Installer_info "NODE Version testing:"
+   if [ "$(printf '%s\n' "$RequireNodeVer" "$CurrentNodeVer" | sort -V | head -n1)" = "$RequireNodeVer" ]; then 
+          Installer_warning "Require: >= ${RequireNodeVer}"
+          Installer_success "Current: ${CurrentNodeVer} ✓"
+   else
+          Installer_warning "Require: >= ${RequireNodeVer}"
+          Installer_error "Current: ${CurrentNodeVer} 𐄂"
+          Installer_error "Failed: incorrect version!"
+          exit 255
+   fi
+  echo
+  Installer_success "Passed: perfect!"
+  
+  echo
+  # check dependencies
+  dependencies=(git curl unclutter libasound2-dev sox libsox-fmt-all gcc-7 libsox-fmt-mp3 build-essential mpg321 vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
+  Installer_info "Checking all dependencies..."
+  Installer_check_dependencies
+  Installer_success "All Dependencies needed are installed !"
+  
+  echo
+  # force gcc v7
+  Installer_info "Checking GCC Version..."
+  Installer_yesno "Do you want to check compatible GCC version" && (
+    Installer_check_gcc7
+    Installer_success "GCC 7 is set by default"
+  )
+fi
 echo
 # apply @sdetweil fix
 Installer_info "Installing @sdetweil sandbox fix..."
@@ -121,7 +122,12 @@ bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scrip
 echo
 # switch branch
 Installer_info "Installing Sources..."
-git checkout -f prod 2>/dev/null || Installer_error "Installing Error !"
+if is_pifour; then
+  git checkout -f prod 2>/dev/null || Installer_error "Installing Error !"
+else
+  Installer_info "You don't use a Raspberry Pi4, installing clean sources..."
+  git checkout -f clean 2>/dev/null || Installer_error "Installing Error !"
+fi
 git pull 2>/dev/null
 
 echo
