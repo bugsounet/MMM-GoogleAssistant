@@ -100,18 +100,18 @@ Installer_success "Passed: perfect!"
 
 echo
 # check dependencies
-dependencies=(git curl unclutter libasound2-dev sox libsox-fmt-all gcc-7 libsox-fmt-mp3 build-essential mpg321 vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
+dependencies=(git curl unclutter libasound2-dev sox libsox-fmt-all libsox-fmt-mp3 build-essential vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
 Installer_info "Checking all dependencies..."
 Installer_check_dependencies
 Installer_success "All Dependencies needed are installed !"
 
-echo
+#echo
 # force gcc v7
-Installer_info "Checking GCC Version..."
-Installer_yesno "Do you want to check compatible GCC version" && (
-  Installer_check_gcc7
-  Installer_success "GCC 7 is set by default"
-)
+#Installer_info "Checking GCC Version..."
+#Installer_yesno "Do you want to check compatible GCC version" && (
+#  Installer_check_gcc7
+#  Installer_success "GCC 7 is set by default"
+#)
 
 echo
 # apply @sdetweil fix
