@@ -15,6 +15,7 @@ var NodeHelper = require("node_helper")
 
 module.exports = NodeHelper.create({
   start: function () {
+    this.EXT = {}
     this.config = {}
     this.checkConfigMerge()
     this.PLATFORM_RECORDER = new Map()
