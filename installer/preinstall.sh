@@ -118,7 +118,7 @@ Installer_info "Installing Sources..."
 if is_pifour; then
   git checkout -f prod 2>/dev/null || Installer_error "Installing Error !"
 else
-  Installer_info "You don't use a Raspberry Pi4, installing clean sources..."
+  Installer_info "You don't use a Raspberry Pi4, installing light sources..."
   git checkout -f light 2>/dev/null || Installer_error "Installing Error !"
 fi
 git pull 2>/dev/null
