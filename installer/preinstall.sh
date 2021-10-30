@@ -28,7 +28,7 @@ Installer_module="MMM-GoogleAssistant"
 Installer_version="$(cat ../package.json | grep '"version":' | cut -c14-30 2>/dev/null)"
 
 # Let's start !
-Installer_info "Welcome to $Installer_module $Installer_version"
+Installer_info "Welcome to $Installer_module Light $Installer_version"
 echo
 
 # delete package-lock.json (force)
