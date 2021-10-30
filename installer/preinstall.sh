@@ -101,7 +101,7 @@ if is_pifour; then
   
   echo
   # check dependencies
-  dependencies=(unclutter libasound2-dev sox libsox-fmt-all libsox-fmt-mp3 build-essential vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
+  dependencies=(wget unclutter libasound2-dev sox libsox-fmt-all libsox-fmt-mp3 build-essential vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
   Installer_info "Checking all dependencies..."
   Installer_check_dependencies
   Installer_success "All Dependencies needed are installed !"
