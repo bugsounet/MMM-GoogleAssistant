@@ -151,7 +151,6 @@ module.exports = NodeHelper.create({
     console.log(`[GA] Platform: '${platform}'; attempting to use '${recorderType}' to access microphone ...`)
     this.config.micConfig.recorder= recorderType
 
-    this.sendSocketNotification("INFORMATION" , {message: "LibraryLoading" })
     let bugsounet = await this.loadBugsounetLibrary()
     if (bugsounet) {
       console.error("[GA] Warning:", bugsounet, "@bugsounet library not loaded !")
@@ -159,7 +158,6 @@ module.exports = NodeHelper.create({
     }
     else {
       console.log("[GA] All needed @bugsounet library loaded !")
-      this.sendSocketNotification("INFORMATION" , {message: "LibraryLoaded" })
     }
 
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
