@@ -30,6 +30,6 @@
   },
   "homepage": "http://wiki.bugsounet.fr/en/MMM-GoogleAssistant",
   "dependencies": {
-    "@bugsounet/secure-ga-v3": "1.0.9"
+    "@bugsounet/secure-ga-v3": "1.1.0"
   }
 }
