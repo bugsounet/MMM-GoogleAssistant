@@ -28,7 +28,7 @@ module.exports = NodeHelper.create({
   socketNotificationReceived: function (noti, payload) {
     switch (noti) {
       case "INIT":
-        console.log("[GA] MMM-GoogleAssistant Version:", require('./package.json').version, "rev:", require('./package.json').rev)
+        console.log("[GA] MMM-GoogleAssistant Light Version:", require('./package.json').version, "rev:", require('./package.json').rev)
         this.initialize(payload)
         break
       case "ACTIVATE_ASSISTANT":
@@ -113,11 +113,11 @@ module.exports = NodeHelper.create({
       process.exit(1)
     }
     console.log("[GA] Perfect ConfigDeepMerge activated!")
-    if (!configModule.config.dev) {
-      console.error("[FATAL] Please use `clean` branch for MMM-GoogleAssistant")
-      console.error("[GA] You can't use this branch, it's reserved to developers.")
-      process.exit(1)
-    }
+    //if (!configModule.config.dev) {
+    //  console.error("[FATAL] Please use `clean` branch for MMM-GoogleAssistant")
+    //  console.error("[GA] You can't use this branch, it's reserved to developers.")
+    //  process.exit(1)
+    //}
   },
 
   initialize: async function (config) {
