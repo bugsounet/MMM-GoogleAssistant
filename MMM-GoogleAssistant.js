@@ -598,7 +598,7 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   Version (version) {
-    this.assistantResponse.showTranscription("MMM-GoogleAssistant v" + version.version + " (" + version.rev + ") ©bugsounet " + this.translate("GAReady"))
+    this.assistantResponse.showTranscription("MMM-GoogleAssistant Light v" + version.version + " (" + version.rev + ") ©bugsounet " + this.translate("GAReady"))
     this.assistantResponse.fullscreen(true,null,false)
     this.aliveTimer = setTimeout(() => {
       this.assistantResponse.end(false)
