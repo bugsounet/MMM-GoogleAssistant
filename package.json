@@ -12,7 +12,8 @@
     "tokens": "installer/tokens.sh",
     "cvlc": "node installer/cvlc.js",
     "librespot": "installer/librespot.sh",
-    "raspotify": "installer/raspotify.sh"
+    "raspotify": "installer/raspotify.sh",
+    "light": "installer/light.sh"
   },
   "keywords": [
     "magic mirror",
