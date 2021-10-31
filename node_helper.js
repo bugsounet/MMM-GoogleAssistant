@@ -8,7 +8,6 @@ const path = require("path")
 const Assistant = require("./components/assistant.js")
 const ScreenParser = require("./components/screenParser.js")
 const { getPlatform } = require("./components/platform.js")
-const readJson = require("r-json")
 const isPi = require("detect-rpi")
 
 logGA = (...args) => { /* do nothing */ }
@@ -396,8 +395,8 @@ module.exports = NodeHelper.create({
     if (this.config.Extented.useEXT) {
       if (this.config.Extented.youtube.useYoutube) {
         try {
-          const CREDENTIALS = readJson(this.config.assistantConfig["modulePath"] + "/credentials.json")
-          const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenYT.json")
+          const CREDENTIALS = this.EXT.readJson(this.config.assistantConfig["modulePath"] + "/credentials.json")
+          const TOKEN = this.EXT.readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenYT.json")
           let oauth = this.EXT.YouTubeAPI.authenticate({
             type: "oauth",
             client_id: CREDENTIALS.installed.client_id,
@@ -571,7 +570,6 @@ module.exports = NodeHelper.create({
     if (this.config.Extented.spotify.useSpotify && this.EXT.Spotify) {
       logEXT("Starting Spotify module...")
       try {
-        const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenSpotify.json")
         this.spotify = new this.EXT.Spotify(this.config.Extented.spotify.visual, callbacks.sendSocketNotification, this.config.debug)
         this.spotify.start()
       } catch (e) {
@@ -592,7 +590,6 @@ module.exports = NodeHelper.create({
     if (this.config.Extented.photos.usePhotos && this.config.Extented.photos.useGooglePhotosAPI && this.EXT.GPhotos) {
       logEXT("Starting GooglePhotosAPI module...")
       try {
-        const TOKEN = readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenGP.json")
         this.config.Extented.photos.CREDENTIALS = this.config.assistantConfig["modulePath"] + "/credentials.json"
         this.config.Extented.photos.TOKEN = this.config.assistantConfig["modulePath"] + "/tokens/tokenGP.json"
         this.config.Extented.photos.CACHE = this.config.assistantConfig["modulePath"] + "/tmp"
@@ -892,7 +889,8 @@ module.exports = NodeHelper.create({
       { "@bugsounet/cvlcmusicplayer": ["MusicPlayer", "Extented.music.useMusic", false ] },
       { "pm2": [ "pm2", "Extented.spotify.useSpotify", false ] },
       { "youtube-api": [ "YouTubeAPI", "Extented.youtube.useYoutube", false ] },
-      { "he": [ "he", "Extented.youtube.useYoutube", false ] }
+      { "he": [ "he", "Extented.youtube.useYoutube", false ] },
+      { "r-json": [ "readJson","Extented.youtube.useYoutube", false ] }
     ]
 
     let errors = 0
