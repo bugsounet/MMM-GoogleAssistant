@@ -1,7 +1,7 @@
 #!/bin/bash
-# +---------+
-# | Rebuild |
-# +---------+
+# +-------------------------+
+# | switch to Light version |
+# +-------------------------+
 
 # get the installer directory
 Installer_get_current_dir () {
@@ -28,7 +28,7 @@ rm -rf package.json package-lock.json node_modules
 Installer_success "Done."
 
 echo
-Installer_info "Upgrading GoogleAssistant to Light version..."
+Installer_info "Downgrading GoogleAssistant to Light version..."
 git reset --hard HEAD
 git pull
 git checkout -f light
