@@ -47,7 +47,7 @@ Installer_update_dependencies () {
 
 echo
 # check dependencies
-dependencies=(git curl unclutter libasound2-dev sox libsox-fmt-all gcc-7 libsox-fmt-mp3 build-essential mpg321 vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
+dependencies=(wget unclutter build-essential vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
 Installer_info "Update all dependencies..."
 Installer_update_dependencies
 Installer_success "All Dependencies needed are updated !"

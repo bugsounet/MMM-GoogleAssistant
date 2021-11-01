@@ -3,21 +3,6 @@
 # | updater |
 # +---------+
 
-# with or without prompt ?
-p0=$0
-prompt=true
-# if not 'bash', and some parm specified
-if [ $0 != 'bash' -a "$1." != "." ]; then
-        # then executed locally
-        # get the parm
-        p0=$1
-fi
-
-if [ $p0 = without-prompt ]; then
-  touch no-prompt
-  prompt=false
-fi
-
 # get the installer directory
 Installer_get_current_dir () {
   SOURCE="${BASH_SOURCE[0]}"
@@ -34,10 +19,9 @@ Installer_dir="$(Installer_get_current_dir)"
 # move to installler directory
 cd "$Installer_dir"
 source utils.sh
-if $prompt; then
-  Installer_info "Welcome to GA updater !"
-  echo
-fi
+
+Installer_info "Welcome to GA updater !"
+echo
 
 Installer_update_dependencies () {
   Installer_debug "Test Wanted dependencies: ${dependencies[*]}"
@@ -58,7 +42,7 @@ Installer_update_dependencies () {
 
 echo
 # check dependencies
-dependencies=(git curl unclutter libasound2-dev sox libsox-fmt-all gcc-7 libsox-fmt-mp3 build-essential mpg321 vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
+dependencies=(wget unclutter build-essential vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
 Installer_info "Update all dependencies..."
 Installer_update_dependencies
 Installer_success "All Dependencies needed are updated !"
@@ -67,9 +51,7 @@ cd ~/MagicMirror/modules/MMM-GoogleAssistant
 # deleting package.json because npm install add/update package
 rm -f package.json package-lock.json
 
-if $prompt; then
-  Installer_info "Updating Main core..."
-fi
+Installer_info "Updating Main core..."
 
 git reset --hard HEAD
 git pull
@@ -77,16 +59,12 @@ git pull
 git checkout package.json
 cd ~/MagicMirror/modules/MMM-GoogleAssistant/node_modules
 
-if $prompt; then
-  Installer_info "Deleting ALL @bugsounet libraries..."
-fi
+Installer_info "Deleting ALL @bugsounet libraries..."
 
 rm -rf @bugsounet
 cd ~/MagicMirror/modules/MMM-GoogleAssistant
 
-if $prompt; then
-  Installer_info "Ready for Installing..."
-fi
+Installer_info "Ready for Installing..."
 
 # launch installer
 npm install
