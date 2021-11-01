@@ -325,11 +325,11 @@ module.exports = NodeHelper.create({
       process.exit(1)
     }
     console.log("[GA] Perfect ConfigDeepMerge activated!")
-    if (!configModule.config.dev) {
-      console.error("[FATAL] Please use `prod` branch for MMM-GoogleAssistant")
-      console.error("[GA] You can't use this branch, it's reserved to developers.")
-      process.exit(1)
-    }
+    //if (!configModule.config.dev) {
+    //  console.error("[FATAL] Please use `prod` branch for MMM-GoogleAssistant")
+    //  console.error("[GA] You can't use this branch, it's reserved to developers.")
+    //  process.exit(1)
+    //}
   },
 
   initialize: async function (config) {
@@ -368,7 +368,6 @@ module.exports = NodeHelper.create({
 
     let piNumber = await this.getVersion()
     let _Force= piNumber < 4 ? "[Force]" : ""
-    this.sendSocketNotification("INFORMATION" , {message: "LibraryLoading" })
     let bugsounet = await this.loadBugsounetLibrary()
     if (bugsounet) {
       console.error("[GA] Warning:", bugsounet, "@bugsounet library not loaded !")
@@ -376,7 +375,6 @@ module.exports = NodeHelper.create({
     }
     else {
       console.log("[GA] All needed @bugsounet library loaded !")
-      this.sendSocketNotification("INFORMATION" , {message: "LibraryLoaded" })
     }
 
     if (this.config.Extented.useEXT) {
@@ -389,6 +387,12 @@ module.exports = NodeHelper.create({
         this.sendSocketNotification("EXTNONE")
         console.log("[GA:EXT] Extented Display Server disabled: Need a Raspberry Pi 4 or more.")
         this.sendSocketNotification("INFORMATION" , {message: "Extented Display is disabled: Need a Pi 4 or more." })
+        setTimeout(() => {
+          console.error("[GA][FATAL] This version is not ready for your system!")
+          console.error("[GA][FATAL] Use `npm run light` inside MMM-GoogleAssistant directory")
+          process.exit(1)
+        }, 10000)
+        return this.sendSocketNotification("NOT_INITIALIZED", { message: "[FATAL] This version is not ready for your system!", values: 255 })
       }
     }
 
