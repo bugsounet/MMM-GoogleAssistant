@@ -25,6 +25,8 @@ MinRequireNpmVer="6.14.15"
 MaxRequireNpmVer="7.0.0"
 CurrentNodeVer="$(node -v)"
 RequireNodeVer="v12.0.0"
+UpdatedNPM=false
+UpdatedNODE=false
 
 # module name
 Installer_module="MMM-GoogleAssistant"
@@ -68,45 +70,89 @@ fi
 
 echo
 Installer_info "NPM Version testing:"
+CurrentNodeVer="$(node -v)"
 if [ "$(printf '%s\n' "$MinRequireNpmVer" "$CurrentNpmVer" | sort -V | head -n1)" = "$MinRequireNpmVer" ]; then 
   Installer_warning "Require: >= ${MinRequireNpmVer} < ${MaxRequireNpmVer}"
   if [[ "$(printf '%s\n' "$MaxRequireNpmVer" "$CurrentNpmVer" | sort -V | head -n1)" < "$MaxRequireNpmVer" ]]; then
     Installer_success "Current: ${CurrentNpmVer} ✓"
   else
+    # > v7.00
     Installer_error "Current: ${CurrentNpmVer} 𐄂"
     Installer_error "Failed: incorrect version!"
+    Installer_yesno "Do you to correct by installing npm v6.14.15?" || exit 1
     echo
-    exit 255
+    update_npm_v6
+    UpdatedNPM=true
   fi
 else
-  Installer_warning "Require: ${RequireNpmVer}"
+  # < v6.14.15
+  Installer_warning "Require: >= ${MinRequireNpmVer} < ${MaxRequireNpmVer}"
   Installer_error "Current: ${CurrentNpmVer} 𐄂"
   Installer_error "Failed: incorrect version!"
-  exit 255
+    Installer_yesno "Do you to correct by installing npm v6.14.15?" || exit 1
+  echo
+  update_npm_v6
+  UpdatedNPM=true
+fi
+echo
+
+if $UpdatedNPM; then
+  Installer_info "NPM Version Verify:"
+  CurrentNpmVer="$(npm -v)"
+  if [ "$(printf '%s\n' "$MinRequireNpmVer" "$CurrentNpmVer" | sort -V | head -n1)" = "$MinRequireNpmVer" ]; then 
+    Installer_warning "Require: >= ${MinRequireNpmVer} < ${MaxRequireNpmVer}"
+    if [[ "$(printf '%s\n' "$MaxRequireNpmVer" "$CurrentNpmVer" | sort -V | head -n1)" < "$MaxRequireNpmVer" ]]; then
+      Installer_success "Current: ${CurrentNpmVer} ✓"
+    else
+      # > v7.00
+      Installer_error "Current: ${CurrentNpmVer} 𐄂"
+      Installer_error "Failed: Can't update npm command!"
+      exit 255
+    fi
+  else
+    # < v6.14.15
+    Installer_warning "Require: >= ${MinRequireNpmVer} < ${MaxRequireNpmVer}"
+    Installer_error "Current: ${CurrentNpmVer} 𐄂"
+    Installer_error "Failed: Can't update npm command!"
+    exit 255
+  fi
+  echo
 fi
 
 if is_pifour; then
-  echo
-  Installer_info "NODE Version testing:"
-  if [ "$(printf '%s\n' "$RequireNodeVer" "$CurrentNodeVer" | sort -V | head -n1)" = "$RequireNodeVer" ]; then 
-    Installer_warning "Require: >= ${RequireNodeVer}"
-    Installer_success "Current: ${CurrentNodeVer} ✓"
-  else
-    Installer_warning "Require: >= ${RequireNodeVer}"
-    Installer_error "Current: ${CurrentNodeVer} 𐄂"
-    Installer_error "Failed: incorrect version!"
-    exit 255
-  fi
-  echo
-  Installer_success "Passed: perfect!"
-  
+ echo
+ Installer_info "NODE Version testing:"
+ if [ "$(printf '%s\n' "$RequireNodeVer" "$CurrentNodeVer" | sort -V | head -n1)" = "$RequireNodeVer" ]; then 
+   Installer_warning "Require: >= ${RequireNodeVer}"
+   Installer_success "Current: ${CurrentNodeVer} ✓"
+ else
+   Installer_warning "Require: >= ${RequireNodeVer}"
+   Installer_error "Current: ${CurrentNodeVer} 𐄂"
+   Installer_error "Failed: incorrect version!"
+   echo
+   Installer_yesno "Do you to correct by installing node v14?" || exit 1
+   update_node_v14
+   UpdatedNODE=true
+ fi
+ if $UpdatedNODE; then
+   echo
+   Installer_info "NODE Version verify:"
+   if [ "$(printf '%s\n' "$RequireNodeVer" "$CurrentNodeVer" | sort -V | head -n1)" = "$RequireNodeVer" ]; then 
+     Installer_warning "Require: >= ${RequireNodeVer}"
+     Installer_success "Current: ${CurrentNodeVer} ✓"
+   else
+     Installer_warning "Require: >= ${RequireNodeVer}"
+     Installer_error "Current: ${CurrentNodeVer} 𐄂"
+     Installer_error "Failed: Can't update node version!"
+     exit 255
+   fi
+ fi  
   echo
   # check dependencies
   dependencies=(wget unclutter build-essential vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
   Installer_info "Checking all dependencies..."
   Installer_check_dependencies
   Installer_success "All Dependencies needed are installed !"
-  
 fi
 echo
 # apply @sdetweil fix
