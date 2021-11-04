@@ -89,7 +89,7 @@ else
   Installer_warning "Require: >= ${MinRequireNpmVer} < ${MaxRequireNpmVer}"
   Installer_error "Current: ${CurrentNpmVer} 𐄂"
   Installer_error "Failed: incorrect version!"
-    Installer_yesno "Do you to correct by installing npm v6.14.15?" || exit 1
+  Installer_yesno "Do you to correct by installing npm v6.14.15?" || exit 1
   echo
   update_npm_v6
   UpdatedNPM=true
@@ -103,6 +103,8 @@ if $UpdatedNPM; then
     Installer_warning "Require: >= ${MinRequireNpmVer} < ${MaxRequireNpmVer}"
     if [[ "$(printf '%s\n' "$MaxRequireNpmVer" "$CurrentNpmVer" | sort -V | head -n1)" < "$MaxRequireNpmVer" ]]; then
       Installer_success "Current: ${CurrentNpmVer} ✓"
+      Installer_exit "To continue, Please run again this installer for apply all modifications"
+      exit 0 
     else
       # > v7.00
       Installer_error "Current: ${CurrentNpmVer} 𐄂"
@@ -120,33 +122,36 @@ if $UpdatedNPM; then
 fi
 
 if is_pifour; then
- echo
- Installer_info "NODE Version testing:"
- if [ "$(printf '%s\n' "$RequireNodeVer" "$CurrentNodeVer" | sort -V | head -n1)" = "$RequireNodeVer" ]; then 
-   Installer_warning "Require: >= ${RequireNodeVer}"
-   Installer_success "Current: ${CurrentNodeVer} ✓"
- else
-   Installer_warning "Require: >= ${RequireNodeVer}"
-   Installer_error "Current: ${CurrentNodeVer} 𐄂"
-   Installer_error "Failed: incorrect version!"
-   echo
-   Installer_yesno "Do you to correct by installing node v14?" || exit 1
-   update_node_v14
-   UpdatedNODE=true
- fi
- if $UpdatedNODE; then
-   echo
-   Installer_info "NODE Version verify:"
-   if [ "$(printf '%s\n' "$RequireNodeVer" "$CurrentNodeVer" | sort -V | head -n1)" = "$RequireNodeVer" ]; then 
-     Installer_warning "Require: >= ${RequireNodeVer}"
-     Installer_success "Current: ${CurrentNodeVer} ✓"
-   else
-     Installer_warning "Require: >= ${RequireNodeVer}"
-     Installer_error "Current: ${CurrentNodeVer} 𐄂"
-     Installer_error "Failed: Can't update node version!"
-     exit 255
-   fi
- fi  
+  echo
+  Installer_info "NODE Version testing:"
+  if [ "$(printf '%s\n' "$RequireNodeVer" "$CurrentNodeVer" | sort -V | head -n1)" = "$RequireNodeVer" ]; then 
+    Installer_warning "Require: >= ${RequireNodeVer}"
+    Installer_success "Current: ${CurrentNodeVer} ✓"
+  else
+    Installer_warning "Require: >= ${RequireNodeVer}"
+    Installer_error "Current: ${CurrentNodeVer} 𐄂"
+    Installer_error "Failed: incorrect version!"
+    echo
+    Installer_yesno "Do you to correct by installing node v14?" || exit 1
+    update_node_v14
+    UpdatedNODE=true
+  fi
+  
+  if $UpdatedNODE; then
+    echo
+    Installer_info "NODE Version verify:"
+    if [ "$(printf '%s\n' "$RequireNodeVer" "$CurrentNodeVer" | sort -V | head -n1)" = "$RequireNodeVer" ]; then 
+      Installer_warning "Require: >= ${RequireNodeVer}"
+      Installer_success "Current: ${CurrentNodeVer} ✓"
+      Installer_exit "To continue, Please run again this installer for apply all modifications"
+      exit 0
+    else
+      Installer_warning "Require: >= ${RequireNodeVer}"
+      Installer_error "Current: ${CurrentNodeVer} 𐄂"
+      Installer_error "Failed: Can't update node version!"
+      exit 255
+    fi
+  fi
   echo
   # check dependencies
   dependencies=(wget unclutter build-essential vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
@@ -154,6 +159,7 @@ if is_pifour; then
   Installer_check_dependencies
   Installer_success "All Dependencies needed are installed !"
 fi
+
 echo
 # apply @sdetweil fix
 Installer_info "Installing @sdetweil sandbox fix..."
