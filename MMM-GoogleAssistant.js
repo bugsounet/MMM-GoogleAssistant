@@ -99,7 +99,7 @@ Module.register("MMM-GoogleAssistant", {
       es: "translations/es.json",
       nl: "translations/nl.json",
       pt: "translations/pt.json",
-      ko: "translatiios/ko.json"
+      ko: "translations/ko.json"
     }
   },
 

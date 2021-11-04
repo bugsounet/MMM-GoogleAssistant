@@ -29,23 +29,4 @@ Installer_yesno "Do you want to install/reinstall GoogleAssistant token?" && (
 )
 
 echo
-Installer_yesno "Do you want to install/reinstall YouTube token?" && (
-  rm -f ../tokens/tokenYT.json
-  node auth_YouTube
-)
-
-echo
-Installer_yesno "Do you want to install/reinstall GooglePhotos token?" && (
-  rm -f ../tokens/tokenGP.json
-  node auth_GPhotos
-)
-
-echo
-Installer_yesno "Do you want to install/reinstall Spotify token?" && (
-  rm -f ../tokens/tokenSpotify.json
-  node auth_Spotify
-  echo
-)
-
-echo
 Installer_success "Done."
