@@ -330,4 +330,34 @@ is_pifour() {
    return $?
 }
 
+update_node_v14 () {
+  Installer_warning "Updating to node v14..."
+  NODE_STABLE_BRANCH="14.x"
+  # sudo apt-get install --only-upgrade libstdc++6
+  node_info=$(curl -sL https://deb.nodesource.com/setup_$NODE_STABLE_BRANCH | sudo -E bash - )
+  if [ "$(echo $node_info | grep "not currently supported")." == "." ]; then
+    Installer_info "Install/upgrade nodejs..."
+    sudo apt-get install -y nodejs
+  else
+    Installer_error "node {$NODE_STABLE_BRANCH} version installer not available, you have to install it manually"
+    exit 255
+  fi
+  Installer_success "Node.js installation Done!"
+}
+
+update_npm_v6 () {
+  Installer_warning "Updating to npm v6..."
+  # Check if a node process is currently running.
+  # If so abort installation.
+  if pgrep "npm" > /dev/null; then
+    Installer_error "npm process is currently running. Can't upgrade."
+    Installer_error "Please quit all npm processes and restart the installer."
+    exit
+  fi
+	# update to v6.14.15
+	sudo npm i -g npm@6.14.15
+	Installer_success "npm installation Done!"
+}
+
+
 Installer_debug "[LOADED] utils.sh"
