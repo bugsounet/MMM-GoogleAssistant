@@ -382,7 +382,7 @@ module.exports = NodeHelper.create({
     }
 
     if (this.PiVersion) {
-      console.log("[GA:EXT]" + _Force + " Extented Display Server Started")
+      console.log("[GA:EXT]" + _Force + " Extented Display Server Starts...")
       await this.Extented()
       console.log("[GA:EXT]" + _Force + " Extented Display is initialized.")
     } else {

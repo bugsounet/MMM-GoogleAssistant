@@ -54,8 +54,6 @@
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json missing",
   "GAErrorTokenYoutube": "[FATAL] Token Youtube: tokenYT.json em falta",
 
-  "LibraryLoading": "A carregar Livraria Extendida...",
-  "LibraryLoaded": "Livraria Extendida do Assistente Google carregada!",
   "LibraryError": "Erro ao carregar: {VALUES} livraria",
 
   "LibrespotNoResponse": "Sem resposta do librespot!",
@@ -102,9 +100,8 @@
   "InternetDown" : "{VALUES}, Sem internet!",
   "InternetRestart": "A internet está agora disponivel! A reeiniciar O MagicMirror...",
   "InternetAvailable": "A internet está agora disponivel, depois de {VALUES}",
-  
+
   "EXTStop": "Todos os Extented Process estão agora parados",
-  "EXTNotActivated": "Extented Display não está ativo",
 
   "CastStart": "A começar a transmissão do YouTube",
   "CastStop" : "A parar a transmissão YouTube",
