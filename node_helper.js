@@ -328,6 +328,7 @@ module.exports = NodeHelper.create({
     console.log("[GA] Perfect ConfigDeepMerge activated!")
     if (configModule.dev) {
       this.config.dev= true
+      console.log("[GA] Hi, developer!")
     }
     else {
       console.error("[FATAL] Please use `prod` branch for MMM-GoogleAssistant")
