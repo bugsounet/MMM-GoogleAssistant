@@ -330,11 +330,11 @@ module.exports = NodeHelper.create({
       this.config.dev= true
       console.log("[GA] Hi, developer!")
     }
-    else {
-      console.error("[FATAL] Please use `prod` branch for MMM-GoogleAssistant")
-      console.error("[GA] You can't use this branch, it's reserved to developers.")
-      process.exit(255)
-    }
+    //else {
+    //  console.error("[FATAL] Please use `prod` branch for MMM-GoogleAssistant")
+    //  console.error("[GA] You can't use this branch, it's reserved to developers.")
+    //  process.exit(255)
+    //}
   },
 
   initialize: async function (config) {
