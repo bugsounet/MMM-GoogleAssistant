@@ -54,7 +54,6 @@ Module.register("MMM-GoogleAssistant", {
       }
     },
     Extented: {
-      useEXT: false,
       stopCommand: "stop",
       deviceName: "MagicMirror",
       youtube: {
@@ -272,11 +271,10 @@ Module.register("MMM-GoogleAssistant", {
         this.doPlugin("onStatus", {status: status})
         this.myStatus = status
         this.sendNotification("ASSISTANT_" + this.myStatus.actual.toUpperCase())
-        if (this.config.Extented.useEXT) this.EXTActionsOnStatus(this.myStatus.actual)
+        this.EXTActionsOnStatus(this.myStatus.actual)
       },
       EXT: (response)=> {
-        if (this.config.Extented.useEXT)
-         return this.ExtentedDisplay(response)
+        return this.ExtentedDisplay(response)
       },
 
       "sendSocketNotification": (noti, params) => {
@@ -306,81 +304,80 @@ Module.register("MMM-GoogleAssistant", {
     this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
 
     /** Extented part **/
-    if (this.config.Extented.useEXT) {
-      this.checkStyle()
-      this.spotifyNewVolume = false
-      this.userPresence = null
-      this.lastPresence = null
-      this.DateTranslate = {
-        day: " " + this.translate("DAY") + " ",
-        days: " " + this.translate("DAYS") + " ",
-        hour: " " + this.translate("HOUR") + " ",
-        hours: " " + this.translate("HOURS") + " ",
-        minute: " " + this.translate("MINUTE") + " ",
-        minutes: " " + this.translate("MINUTES") + " ",
-        second: " " + this.translate("SECOND"),
-        seconds: " " + this.translate("SECONDS")
+
+    this.checkStyle()
+    this.spotifyNewVolume = false
+    this.userPresence = null
+    this.lastPresence = null
+    this.DateTranslate = {
+      day: " " + this.translate("DAY") + " ",
+      days: " " + this.translate("DAYS") + " ",
+      hour: " " + this.translate("HOUR") + " ",
+      hours: " " + this.translate("HOURS") + " ",
+      minute: " " + this.translate("MINUTE") + " ",
+      minutes: " " + this.translate("MINUTES") + " ",
+      second: " " + this.translate("SECOND"),
+      seconds: " " + this.translate("SECONDS")
+    }
+    var EXTStopHooks = {
+      transcriptionHooks: {
+        "EXT_Stop": {
+          pattern: this.config.Extented.stopCommand,
+          command: "EXT_Stop"
+        }
+      },
+      commands: {
+        "EXT_Stop": {
+          moduleExec: {
+            module: ["MMM-GoogleAssistant"],
+            exec: "__FUNC__(module) => { module.stopCommand() }"
+          },
+          soundExec: {
+            "chime": "close"
+          },
+          displayResponse: false
+        }
       }
-      var EXTStopHooks = {
-        transcriptionHooks: {
-          "EXT_Stop": {
-            pattern: this.config.Extented.stopCommand,
-            command: "EXT_Stop"
+    }
+    this.parseLoadedRecipe(JSON.stringify(EXTStopHooks))
+    if (this.config.Extented.youtube.useYoutube) {
+      /** Integred YouTube recipe **/
+      var EXTYTHooks = {
+       transcriptionHooks: {
+          "SEARCH_YouTube": {
+            pattern: this.config.Extented.youtube.youtubeCommand + " (.*)",
+            command: "GA_youtube"
           }
         },
         commands: {
-          "EXT_Stop": {
+          "GA_youtube": {
             moduleExec: {
               module: ["MMM-GoogleAssistant"],
-              exec: "__FUNC__(module) => { module.stopCommand() }"
+              exec: "__FUNC__(module, params) => { module.sendSocketNotification('YouTube_SEARCH', params[1]) }"
             },
             soundExec: {
-              "chime": "close"
+              "chime": "open"
             },
-            displayResponse: false
-          }
-        }
-      }
-      this.parseLoadedRecipe(JSON.stringify(EXTStopHooks))
-      if (this.config.Extented.youtube.useYoutube) {
-        /** Integred YouTube recipe **/
-        var EXTYTHooks = {
-         transcriptionHooks: {
-            "SEARCH_YouTube": {
-              pattern: this.config.Extented.youtube.youtubeCommand + " (.*)",
-              command: "GA_youtube"
-            }
+            displayResponse: this.config.Extented.youtube.displayResponse
           },
-          commands: {
-            "GA_youtube": {
-              moduleExec: {
-                module: ["MMM-GoogleAssistant"],
-                exec: "__FUNC__(module, params) => { module.sendSocketNotification('YouTube_SEARCH', params[1]) }"
-              },
-              soundExec: {
-                "chime": "open"
-              },
-              displayResponse: this.config.Extented.youtube.displayResponse
-            },
-          }
         }
-        this.parseLoadedRecipe(JSON.stringify(EXTYTHooks))
       }
-
-      // translate needed translate part in all languages
-      this.config.Extented.volume.volumeText = this.translate("VolumeText")
-      this.config.Extented.spotify.visual.deviceDisplay = this.translate("SpotifyListenText")
-      this.config.Extented.spotify.visual.SpotifyForGA = this.translate("SpotifyForGA")
-      this.config.Extented.photos.LoadingText= this.translate("LOADING")
-      this.config.Extented.photos.GPAlbumName= this.translate("GPAlbumName")
-
-      this.displayEXTResponse = new Extented(this.config.Extented, callbacks)
-      if (this.config.Extented.spotify.useSpotify) this.spotify = new Spotify(this.config.Extented.spotify.visual, callbacks, this.config.debug)
-      if (this.config.Extented.music.useMusic) this.Music = new Music(this.config.Extented.music, callbacks, this.config.debug)
-      this.EXT = this.displayEXTResponse.EXT
-      if (this.config.Extented.youtube.useYoutube && this.config.Extented.youtube.useVLC) this.initializeVolumeVLC()
-      if (this.config.Extented.music.useMusic) this.initializeMusicVolumeVLC()
+      this.parseLoadedRecipe(JSON.stringify(EXTYTHooks))
     }
+
+    // translate needed translate part in all languages
+    this.config.Extented.volume.volumeText = this.translate("VolumeText")
+    this.config.Extented.spotify.visual.deviceDisplay = this.translate("SpotifyListenText")
+    this.config.Extented.spotify.visual.SpotifyForGA = this.translate("SpotifyForGA")
+    this.config.Extented.photos.LoadingText= this.translate("LOADING")
+    this.config.Extented.photos.GPAlbumName= this.translate("GPAlbumName")
+
+    this.displayEXTResponse = new Extented(this.config.Extented, callbacks)
+    if (this.config.Extented.spotify.useSpotify) this.spotify = new Spotify(this.config.Extented.spotify.visual, callbacks, this.config.debug)
+    if (this.config.Extented.music.useMusic) this.Music = new Music(this.config.Extented.music, callbacks, this.config.debug)
+    this.EXT = this.displayEXTResponse.EXT
+    if (this.config.Extented.youtube.useYoutube && this.config.Extented.youtube.useVLC) this.initializeVolumeVLC()
+    if (this.config.Extented.music.useMusic) this.initializeMusicVolumeVLC()
   },
 
   doPlugin: function(pluginName, args) {
@@ -434,123 +431,123 @@ Module.register("MMM-GoogleAssistant", {
 
   getDom: function() {
     var dom = document.createElement("div")
-    if (this.config.Extented.useEXT) {
-      dom.id = "EXT_DISPLAY"
 
-      /** Create Spotify **/
-      if (this.config.Extented.spotify.useSpotify && !this.config.Extented.spotify.visual.useBottomBar) {
-        spotify= this.spotify.prepareMini()
-        dom.appendChild(spotify)
-      }
+    dom.id = "EXT_DISPLAY"
 
-      /** create Music **/
-      if (this.config.Extented.music.useMusic) {
-        music= this.Music.prepare()
-        dom.appendChild(music)
-      }
-
-      /** GPhotos Module mode**/
-      if (this.config.Extented.photos.usePhotos && this.config.Extented.photos.useGooglePhotosAPI && this.config.Extented.photos.displayType == "Module") {
-        var GPhotosAPI = document.createElement("div")
-        GPhotosAPI.id = "EXT_GPHOTO"
-        GPhotosAPI.style.height= this.config.Extented.photos.moduleHeight + "px"
-        GPhotosAPI.style.width= this.config.Extented.photos.moduleWidth + "px"
-        var GPhotosAPIBack = document.createElement("div")
-        GPhotosAPIBack.id = "EXT_GPHOTO_BACK"
-        var GPhotosAPICurrent = document.createElement("div")
-        GPhotosAPICurrent.id = "EXT_GPHOTO_CURRENT"
-        GPhotosAPICurrent.addEventListener('animationend', ()=>{
-          GPhotosAPICurrent.classList.remove("animated")
-        })
-        var GPhotosAPIInfo = document.createElement("div")
-        GPhotosAPIInfo.id = "EXT_GPHOTO_INFO"
-        GPhotosAPIInfo.className= "Module"
-        GPhotosAPIInfo.innerHTML = "Extented GPhotos Loading..."
-
-        GPhotosAPI.appendChild(GPhotosAPIBack)
-        GPhotosAPI.appendChild(GPhotosAPICurrent)
-        GPhotosAPI.appendChild(GPhotosAPIInfo)
-        dom.appendChild(GPhotosAPI)
-      }
-
-      /** Screen Contener (text, bar, last presence) **/
-      var screenContener = document.createElement("div")
-      screenContener.id = "EXT_SCREEN_CONTENER"
-      screenContener.className= "animate__animated"
-      screenContener.style.setProperty('--animate-duration', '1s')
-      /***** Screen TimeOut Text *****/
-      var screen = document.createElement("div")
-      screen.id = "EXT_SCREEN"
-      if (!this.config.Extented.screen.useScreen || (this.config.Extented.screen.displayStyle != "Text")) screen.className = "hidden"
-      var screenText = document.createElement("div")
-      screenText.id = "EXT_SCREEN_TEXT"
-      screenText.textContent = this.translate("ScreenTurnOff")
-      screen.appendChild(screenText)
-      var screenCounter = document.createElement("div")
-      screenCounter.id = "EXT_SCREEN_COUNTER"
-      screenCounter.classList.add("counter")
-      screenCounter.textContent = "--:--"
-      screen.appendChild(screenCounter)
-      screenContener.appendChild(screen)
-
-      /***** Screen TimeOut Bar *****/
-      var bar = document.createElement("div")
-      bar.id = "EXT_BAR"
-      if (!this.config.Extented.screen.useScreen || (this.config.Extented.screen.displayStyle == "Text") || !this.config.Extented.screen.displayBar) bar.className = "hidden"
-      var screenBar = document.createElement("div")
-      screenBar.id = "EXT_SCREEN_BAR"
-      screenBar.classList.add(this.config.Extented.screen.displayStyle)
-      bar.appendChild(screenBar)
-      screenContener.appendChild(bar)
-
-      /***** Last user Presence *****/
-      var presence = document.createElement("div")
-      presence.id = "EXT_PRESENCE"
-      presence.className = "hidden"
-      var presenceText = document.createElement("div")
-      presenceText.id = "EXT_PRESENCE_TEXT"
-      presenceText.textContent = this.translate("ScreenLastPresence")
-      presence.appendChild(presenceText)
-      var presenceDate = document.createElement("div")
-      presenceDate.id = "EXT_PRESENCE_DATE"
-      presenceDate.classList.add("presence")
-      presenceDate.textContent = "Loading ..."
-      presence.appendChild(presenceDate)
-      screenContener.appendChild(presence)
-
-      /** internet Ping **/
-      var internet = document.createElement("div")
-      internet.id = "EXT_INTERNET"
-      if (!this.config.Extented.internet.useInternet || !this.config.Extented.internet.displayPing) internet.className = "hidden"
-      var internetText = document.createElement("div")
-      internetText.id = "EXT_INTERNET_TEXT"
-      internetText.textContent = "Ping: "
-      internet.appendChild(internetText)
-      var internetPing = document.createElement("div")
-      internetPing.id = "EXT_INTERNET_PING"
-      internetPing.classList.add("ping")
-      internetPing.textContent = "Loading ..."
-      internet.appendChild(internetPing)
-
-      /** Radio **/
-      var radio = document.createElement("div")
-      radio.id = "EXT_RADIO"
-      radio.className = "hidden animate__animated"
-      radio.style.setProperty('--animate-duration', '1s')
-      var radioBackground = document.createElement("div")
-      radioBackground.id = "EXT_RADIO_BACKGROUND"
-      radio.appendChild(radioBackground)
-      var radioForeground = document.createElement("div")
-      radioForeground.id = "EXT_RADIO_FOREGROUND"
-      radio.appendChild(radioForeground)
-      var radioImg = document.createElement("img")
-      radioImg.id = "EXT_RADIO_IMG"
-      radioForeground.appendChild(radioImg)
-
-      dom.appendChild(radio)
-      dom.appendChild(screenContener)
-      dom.appendChild(internet)
+    /** Create Spotify **/
+    if (this.config.Extented.spotify.useSpotify && !this.config.Extented.spotify.visual.useBottomBar) {
+      spotify= this.spotify.prepareMini()
+      dom.appendChild(spotify)
     }
+
+    /** create Music **/
+    if (this.config.Extented.music.useMusic) {
+      music= this.Music.prepare()
+      dom.appendChild(music)
+    }
+
+    /** GPhotos Module mode**/
+    if (this.config.Extented.photos.usePhotos && this.config.Extented.photos.useGooglePhotosAPI && this.config.Extented.photos.displayType == "Module") {
+      var GPhotosAPI = document.createElement("div")
+      GPhotosAPI.id = "EXT_GPHOTO"
+      GPhotosAPI.style.height= this.config.Extented.photos.moduleHeight + "px"
+      GPhotosAPI.style.width= this.config.Extented.photos.moduleWidth + "px"
+      var GPhotosAPIBack = document.createElement("div")
+      GPhotosAPIBack.id = "EXT_GPHOTO_BACK"
+      var GPhotosAPICurrent = document.createElement("div")
+      GPhotosAPICurrent.id = "EXT_GPHOTO_CURRENT"
+      GPhotosAPICurrent.addEventListener('animationend', ()=>{
+        GPhotosAPICurrent.classList.remove("animated")
+      })
+      var GPhotosAPIInfo = document.createElement("div")
+      GPhotosAPIInfo.id = "EXT_GPHOTO_INFO"
+      GPhotosAPIInfo.className= "Module"
+      GPhotosAPIInfo.innerHTML = "Extented GPhotos Loading..."
+
+      GPhotosAPI.appendChild(GPhotosAPIBack)
+      GPhotosAPI.appendChild(GPhotosAPICurrent)
+      GPhotosAPI.appendChild(GPhotosAPIInfo)
+      dom.appendChild(GPhotosAPI)
+    }
+
+    /** Screen Contener (text, bar, last presence) **/
+    var screenContener = document.createElement("div")
+    screenContener.id = "EXT_SCREEN_CONTENER"
+    screenContener.className= "animate__animated"
+    screenContener.style.setProperty('--animate-duration', '1s')
+    /***** Screen TimeOut Text *****/
+    var screen = document.createElement("div")
+    screen.id = "EXT_SCREEN"
+    if (!this.config.Extented.screen.useScreen || (this.config.Extented.screen.displayStyle != "Text")) screen.className = "hidden"
+    var screenText = document.createElement("div")
+    screenText.id = "EXT_SCREEN_TEXT"
+    screenText.textContent = this.translate("ScreenTurnOff")
+    screen.appendChild(screenText)
+    var screenCounter = document.createElement("div")
+    screenCounter.id = "EXT_SCREEN_COUNTER"
+    screenCounter.classList.add("counter")
+    screenCounter.textContent = "--:--"
+    screen.appendChild(screenCounter)
+    screenContener.appendChild(screen)
+
+    /***** Screen TimeOut Bar *****/
+    var bar = document.createElement("div")
+    bar.id = "EXT_BAR"
+    if (!this.config.Extented.screen.useScreen || (this.config.Extented.screen.displayStyle == "Text") || !this.config.Extented.screen.displayBar) bar.className = "hidden"
+    var screenBar = document.createElement("div")
+    screenBar.id = "EXT_SCREEN_BAR"
+    screenBar.classList.add(this.config.Extented.screen.displayStyle)
+    bar.appendChild(screenBar)
+    screenContener.appendChild(bar)
+
+    /***** Last user Presence *****/
+    var presence = document.createElement("div")
+    presence.id = "EXT_PRESENCE"
+    presence.className = "hidden"
+    var presenceText = document.createElement("div")
+    presenceText.id = "EXT_PRESENCE_TEXT"
+    presenceText.textContent = this.translate("ScreenLastPresence")
+    presence.appendChild(presenceText)
+    var presenceDate = document.createElement("div")
+    presenceDate.id = "EXT_PRESENCE_DATE"
+    presenceDate.classList.add("presence")
+    presenceDate.textContent = "Loading ..."
+    presence.appendChild(presenceDate)
+    screenContener.appendChild(presence)
+
+    /** internet Ping **/
+    var internet = document.createElement("div")
+    internet.id = "EXT_INTERNET"
+    if (!this.config.Extented.internet.useInternet || !this.config.Extented.internet.displayPing) internet.className = "hidden"
+    var internetText = document.createElement("div")
+    internetText.id = "EXT_INTERNET_TEXT"
+    internetText.textContent = "Ping: "
+    internet.appendChild(internetText)
+    var internetPing = document.createElement("div")
+    internetPing.id = "EXT_INTERNET_PING"
+    internetPing.classList.add("ping")
+    internetPing.textContent = "Loading ..."
+    internet.appendChild(internetPing)
+
+    /** Radio **/
+    var radio = document.createElement("div")
+    radio.id = "EXT_RADIO"
+    radio.className = "hidden animate__animated"
+    radio.style.setProperty('--animate-duration', '1s')
+    var radioBackground = document.createElement("div")
+    radioBackground.id = "EXT_RADIO_BACKGROUND"
+    radio.appendChild(radioBackground)
+    var radioForeground = document.createElement("div")
+    radioForeground.id = "EXT_RADIO_FOREGROUND"
+    radio.appendChild(radioForeground)
+    var radioImg = document.createElement("img")
+    radioImg.id = "EXT_RADIO_IMG"
+    radioForeground.appendChild(radioImg)
+
+    dom.appendChild(radio)
+    dom.appendChild(screenContener)
+    dom.appendChild(internet)
+
     this.assistantResponse.preparePopup()
     this.assistantResponse.prepareBackground ()
     return dom
@@ -561,19 +558,17 @@ Module.register("MMM-GoogleAssistant", {
     switch (noti) {
       case "DOM_OBJECTS_CREATED":
         this.sendSocketNotification("INIT", this.helperConfig)
-        if (this.config.Extented.useEXT) {
-          this.displayEXTResponse.prepare()
-          if (this.config.Extented.screen.useScreen) {
-            if (this.config.Extented.screen.displayStyle != "Text") this.displayEXTResponse.prepareBar()
-            if (this.config.Extented.screen.animateBody) this.displayEXTResponse.prepareBody()
-          }
-          if (this.config.Extented.spotify.useSpotify && this.config.Extented.spotify.visual.useBottomBar) this.spotify.prepare()
-          if (this.config.Extented.touch.useTouch) this.touchScreen(this.config.Extented.touch.mode)
+        this.displayEXTResponse.prepare()
+        if (this.config.Extented.screen.useScreen) {
+          if (this.config.Extented.screen.displayStyle != "Text") this.displayEXTResponse.prepareBar()
+          if (this.config.Extented.screen.animateBody) this.displayEXTResponse.prepareBody()
         }
+        if (this.config.Extented.spotify.useSpotify && this.config.Extented.spotify.visual.useBottomBar) this.spotify.prepare()
+        if (this.config.Extented.touch.useTouch) this.touchScreen(this.config.Extented.touch.mode)
+
         this.assistantResponse.prepareGA()
         this.Loading()
-        if (this.config.Extented.useEXT &&
-          this.config.Extented.photos.usePhotos &&
+        if (this.config.Extented.photos.usePhotos &&
           (this.config.Extented.photos.displayType == "Background" || this.config.Extented.photos.displayType == "Module")
         ) {
           setTimeout(() => {
@@ -586,30 +581,30 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantActivate({ type:"MIC" })
         break
       case "WAKEUP": /** for external wakeup **/
-        if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
+        if (this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_WAKEUP")
           this.Informations("information", { message: "ScreenWakeUp", values: sender.name })
         }
         break
       case "EXT_LOCK": /** screen lock **/
-        if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
+        if (this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_LOCK", true)
           this.displayEXTResponse.hideDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
           this.Informations("information", { message: "ScreenLock", values: sender.name })
         }
         break
       case "EXT_UNLOCK": /** screen unlock **/
-        if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
+        if (this.config.Extented.screen.useScreen) {
           this.sendSocketNotification("SCREEN_LOCK", false)
           this.displayEXTResponse.showDivWithAnimatedFlip("EXT_SCREEN_CONTENER")
           this.Informations("information", { message: "ScreenUnLock", values: sender.name })
         }
         break
       case "EXT_OPEN": /** External activation of extented **/
-        if (this.config.Extented.useEXT) this.ExtentedOpen(payload)
+        this.ExtentedOpen(payload)
         break
       case "USER_PRESENCE": /** Read user presence from other modules **/
-        if (this.config.Extented.useEXT && this.config.Extented.screen.useScreen) {
+        if (this.config.Extented.screen.useScreen) {
           if ((payload == "true") || (payload == true) || (payload == 1) || (payload == "1")) {
             this.sendSocketNotification("SCREEN_WAKEUP")
             this.Informations("information", { message: "ScreenWakeUp", values: sender.name })
@@ -623,7 +618,7 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   socketNotificationReceived: function(noti, payload) {
-    if (this.config.Extented.useEXT) this.EXT = this.displayEXTResponse.EXT
+    this.EXT = this.displayEXTResponse.EXT
     switch(noti) {
       case "NPM_UPDATE":
         if (payload && payload.length > 0) {
@@ -657,15 +652,12 @@ Module.register("MMM-GoogleAssistant", {
       case "INFORMATION":
         this.Informations("information", payload)
         break
-      case "EXTNONE":
-        this.config.Extented.useEXT = false
-        break
       case "INITIALIZED":
         logGA("Initialized.")
         this.Version(payload)
         this.assistantResponse.status("standby")
         this.doPlugin("onReady")
-        if (this.config.Extented.useEXT) this.sendWelcome()
+        this.sendWelcome()
         break
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) {
@@ -1013,7 +1005,7 @@ Module.register("MMM-GoogleAssistant", {
           command.execution.forEach(exec => {
             logGA("Native Action: " + exec.command, exec.params)
             if (exec.command == "action.devices.commands.SetVolume") {
-              if (this.config.Extented.useEXT && this.config.Extented.volume.useVolume) {
+              if (this.config.Extented.volume.useVolume) {
                 logGA("Volume Control:", exec.params.volumeLevel)
                 this.sendSocketNotification("VOLUME_SET", exec.params.volumeLevel)
               }
@@ -1141,60 +1133,58 @@ Module.register("MMM-GoogleAssistant", {
       description: this.translate("QUERY_HELP"),
       callback: "tbQuery"
     })
-    if (this.config.Extented.useEXT) {
+    commander.add({
+      command: "restart",
+      description: this.translate("RESTART_HELP"),
+      callback: "tbRestart"
+    })
+    if (this.config.Extented.screen.useScreen) {
       commander.add({
-        command: "restart",
-        description: this.translate("RESTART_HELP"),
-        callback: "tbRestart"
+        command: "wakeup",
+        description: this.translate("WAKEUP_HELP"),
+        callback: "tbWakeup"
       })
-      if (this.config.Extented.screen.useScreen) {
-        commander.add({
-          command: "wakeup",
-          description: this.translate("WAKEUP_HELP"),
-          callback: "tbWakeup"
-        })
-      }
+    }
+    commander.add({
+      command: "hide",
+      description: this.translate("HIDE_HELP"),
+      callback: "tbHide"
+    })
+    commander.add({
+      command: "show",
+      description: this.translate("SHOW_HELP"),
+      callback: "tbShow"
+    })
+    commander.add({
+      command: "stop",
+      description: this.translate("STOP_HELP"),
+      callback: "tbStopEXT"
+    })
+    commander.add({
+      command: "EXT",
+      description: this.translate("EXT_HELP"),
+      callback: "tbEXT"
+    })
+    if (this.config.Extented.volume.useVolume) {
       commander.add({
-        command: "hide",
-        description: this.translate("HIDE_HELP"),
-        callback: "tbHide"
+        command: "volume",
+        description: this.translate("VOLUME_HELP"),
+        callback: "tbVolume"
       })
+    }
+    if (this.config.Extented.spotify.useSpotify) {
       commander.add({
-        command: "show",
-        description: this.translate("SHOW_HELP"),
-        callback: "tbShow"
+        command: "spotify",
+        description: "Spotify commands",
+        callback: "tbSpotify"
       })
+    }
+    if (this.config.Extented.music.useMusic) {
       commander.add({
-        command: "stop",
-        description: this.translate("STOP_HELP"),
-        callback: "tbStopEXT"
+        command: "music",
+        description: "Music player commands",
+        callback: "tbMusic"
       })
-      commander.add({
-        command: "EXT",
-        description: this.translate("EXT_HELP"),
-        callback: "tbEXT"
-      })
-      if (this.config.Extented.volume.useVolume) {
-        commander.add({
-          command: "volume",
-          description: this.translate("VOLUME_HELP"),
-          callback: "tbVolume"
-        })
-      }
-      if (this.config.Extented.spotify.useSpotify) {
-        commander.add({
-          command: "spotify",
-          description: "Spotify commands",
-          callback: "tbSpotify"
-        })
-      }
-      if (this.config.Extented.music.useMusic) {
-        commander.add({
-          command: "music",
-          description: "Music player commands",
-          callback: "tbMusic"
-        })
-      }
     }
   },
 
@@ -1632,7 +1622,6 @@ Module.register("MMM-GoogleAssistant", {
 
   /** Spotify commands (for recipe) **/
   SpotifyCommand: function(command, payload) {
-    if (!this.config.Extented.useEXT) return
     if (this.config.Extented.spotify.useSpotify) {
       this.EXT = this.displayEXTResponse.EXT
       switch (command) {
@@ -1716,7 +1705,6 @@ Module.register("MMM-GoogleAssistant", {
 
   /** Music commands (for recipe) **/
   MusicCommand: function(command, payload, realValue) {
-    if (!this.config.Extented.useEXT) return
     if (this.config.Extented.music.useMusic) {
       this.EXT = this.displayEXTResponse.EXT
       switch (command) {
@@ -1770,7 +1758,6 @@ Module.register("MMM-GoogleAssistant", {
 
   /** stopCommand (for recipe) **/
   stopCommand: function() {
-    if (!this.config.Extented.useEXT) return
     this.EXT = this.displayEXTResponse.EXT
     if (this.EXT.locked) {
       if (this.EXT.youtube.displayed) {
@@ -1804,7 +1791,6 @@ Module.register("MMM-GoogleAssistant", {
 
   /** Radio command (for recipe) **/
   radioCommand: function(payload) {
-    if (!this.config.Extented.useEXT) return
     this.EXT = this.displayEXTResponse.EXT
     if (this.EXT.spotify.player) this.sendSocketNotification("SPOTIFY_STOP")
     if (this.EXT.music.connected) this.sendSocketNotification("MUSIC_STOP")
@@ -1833,7 +1819,6 @@ Module.register("MMM-GoogleAssistant", {
 
   /** GooglePhotos API recipe **/
   showGooglePhotos() {
-    if (!this.config.Extented.useEXT) return this.Informations("warning", { message: "EXTNotActivated" })
     if (!this.config.Extented.photos.usePhotos) return this.Informations("warning", { message: "PhotosNotActivated" })
     if (!this.config.Extented.photos.useGooglePhotosAPI) return this.Informations("warning", { message: "GPhotosNotActivated" })
     if (this.config.Extented.photos.displayType == "Background") return this.Informations("warning", { message: "GPhotosBckGrndActivated" })
@@ -1940,42 +1925,38 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   resume: function() {
-    if (this.config.Extented.useEXT) {
-      if (this.config.Extented.spotify.useSpotify) {
-        this.EXT = this.displayEXTResponse.EXT
-        if (this.EXT.spotify.connected && this.config.Extented.spotify.visual.useBottomBar) {
-          this.displayEXTResponse.showSpotify()
-          logEXT("Spotify is resumed.")
-        }
+    if (this.config.Extented.spotify.useSpotify) {
+      this.EXT = this.displayEXTResponse.EXT
+      if (this.EXT.spotify.connected && this.config.Extented.spotify.visual.useBottomBar) {
+        this.displayEXTResponse.showSpotify()
+        logEXT("Spotify is resumed.")
       }
-      if (this.config.Extented.photos.usePhotos &&
-        this.config.Extented.photos.displayType == "Background" &&
-        this.config.Extented.photos.useGooglePhotosAPI
-      ) {
-        var GPhotos = document.getElementById("EXT_GPHOTO")
-        GPhotos.classList.remove("hidden")
-        logEXT("GPhotos is resumed.")
-      }
+    }
+    if (this.config.Extented.photos.usePhotos &&
+      this.config.Extented.photos.displayType == "Background" &&
+      this.config.Extented.photos.useGooglePhotosAPI
+    ) {
+      var GPhotos = document.getElementById("EXT_GPHOTO")
+      GPhotos.classList.remove("hidden")
+      logEXT("GPhotos is resumed.")
     }
   },
 
   suspend: function() {
-    if (this.config.Extented.useEXT) {
-      if (this.config.Extented.spotify.useSpotify) {
-        this.EXT = this.displayEXTResponse.EXT
-        if (this.EXT.spotify.connected && this.config.Extented.spotify.visual.useBottomBar) {
-          this.displayEXTResponse.hideSpotify()
-          logEXT("Spotify is suspended.")
-        }
+    if (this.config.Extented.spotify.useSpotify) {
+      this.EXT = this.displayEXTResponse.EXT
+      if (this.EXT.spotify.connected && this.config.Extented.spotify.visual.useBottomBar) {
+        this.displayEXTResponse.hideSpotify()
+        logEXT("Spotify is suspended.")
       }
-      if (this.config.Extented.photos.usePhotos &&
-        this.config.Extented.photos.displayType == "Background" &&
-        this.config.Extented.photos.useGooglePhotosAPI
-      ) {
-        var GPhotos = document.getElementById("EXT_GPHOTO")
-        GPhotos.classList.add("hidden")
-        logEXT("GPhotos is suspended.")
-      }
+    }
+    if (this.config.Extented.photos.usePhotos &&
+      this.config.Extented.photos.displayType == "Background" &&
+      this.config.Extented.photos.useGooglePhotosAPI
+    ) {
+      var GPhotos = document.getElementById("EXT_GPHOTO")
+      GPhotos.classList.add("hidden")
+      logEXT("GPhotos is suspended.")
     }
   }
 })

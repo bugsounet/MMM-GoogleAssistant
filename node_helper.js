@@ -30,6 +30,7 @@ module.exports = NodeHelper.create({
       "RESPEAKER_PLAYBACK": "amixer -M sset Playback #VOLUME#%"
     }
     this.PiVersion = false
+    this.
     timeout = null
     retry = null
     this.YouTube = null
@@ -325,10 +326,14 @@ module.exports = NodeHelper.create({
       process.exit(1)
     }
     console.log("[GA] Perfect ConfigDeepMerge activated!")
-    //if (!configModule.config.dev) {
+    if (configModule.dev) {
+      this.config.dev= true
+      console.log("[GA] Hi, developer!")
+    }
+    //else {
     //  console.error("[FATAL] Please use `prod` branch for MMM-GoogleAssistant")
     //  console.error("[GA] You can't use this branch, it's reserved to developers.")
-    //  process.exit(1)
+    //  process.exit(255)
     //}
   },
 
@@ -377,52 +382,44 @@ module.exports = NodeHelper.create({
       console.log("[GA] All needed @bugsounet library loaded !")
     }
 
-    if (this.config.Extented.useEXT) {
-      if (this.PiVersion) {
-        console.log("[GA:EXT]" + _Force + " Extented Display Server Started")
-        await this.Extented()
-        console.log("[GA:EXT]" + _Force + " Extented Display is initialized.")
-      } else {
-        this.config.Extented.useEXT = false
-        this.sendSocketNotification("EXTNONE")
-        console.log("[GA:EXT] Extented Display Server disabled: Need a Raspberry Pi 4 or more.")
-        this.sendSocketNotification("INFORMATION" , {message: "Extented Display is disabled: Need a Pi 4 or more." })
-        setTimeout(() => {
-          console.error("[GA][FATAL] This version is not ready for your system!")
-          console.error("[GA][FATAL] Use `npm run light` inside MMM-GoogleAssistant directory")
-          process.exit(1)
-        }, 10000)
-        return this.sendSocketNotification("NOT_INITIALIZED", { message: "[FATAL] This version is not ready for your system!", values: 255 })
-      }
+    if (this.PiVersion) {
+      console.log("[GA:EXT]" + _Force + " Extented Display Server Starts...")
+      await this.Extented()
+      console.log("[GA:EXT]" + _Force + " Extented Display is initialized.")
+    } else {
+      setTimeout(() => {
+        console.error("[GA][FATAL] This version of MMM-GoogleAssistant is not compatible for your system!")
+        console.error("[GA][FATAL] Use `npm run light` inside MMM-GoogleAssistant directory")
+        process.exit(1)
+      }, 10000)
+      return this.sendSocketNotification("NOT_INITIALIZED", { message: "[FATAL] This version is not compatible for your system!", values: 255 })
     }
 
-    if (this.config.Extented.useEXT) {
-      if (this.config.Extented.youtube.useYoutube) {
-        try {
-          const CREDENTIALS = this.EXT.readJson(this.config.assistantConfig["modulePath"] + "/credentials.json")
-          const TOKEN = this.EXT.readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenYT.json")
-          let oauth = this.EXT.YouTubeAPI.authenticate({
-            type: "oauth",
-            client_id: CREDENTIALS.installed.client_id,
-            client_secret: CREDENTIALS.installed.client_secret,
-            redirect_url: CREDENTIALS.installed.redirect_uris,
-            access_token: TOKEN.access_token,
-            refresh_token: TOKEN.refresh_token,
-          })
-          console.log("[GA] YouTube Search Function initilized.")
-        } catch (e) {
-          console.log("[GA] " + e)
-          error = "[FATAL] Youtube: tokenYT.json file not found !"
-          return this.DisplayError(error, {message: "GAErrorTokenYoutube", values: "tokenYT.json"})
-        }
+    if (this.config.Extented.youtube.useYoutube) {
+      try {
+        const CREDENTIALS = this.EXT.readJson(this.config.assistantConfig["modulePath"] + "/credentials.json")
+        const TOKEN = this.EXT.readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenYT.json")
+        let oauth = this.EXT.YouTubeAPI.authenticate({
+          type: "oauth",
+          client_id: CREDENTIALS.installed.client_id,
+          client_secret: CREDENTIALS.installed.client_secret,
+          redirect_url: CREDENTIALS.installed.redirect_uris,
+          access_token: TOKEN.access_token,
+          refresh_token: TOKEN.refresh_token,
+        })
+        console.log("[GA] YouTube Search Function initilized.")
+      } catch (e) {
+        console.log("[GA] " + e)
+        error = "[FATAL] Youtube: tokenYT.json file not found !"
+        return this.DisplayError(error, {message: "GAErrorTokenYoutube", values: "tokenYT.json"})
       }
-      if (this.config.Extented.volume.useVolume) {
-        let exists = (data) => {
-          return data !== null && data !== undefined
-        }
-        if (!exists(this.volumeScript[this.config.Extented.volume.volumePreset]))
-          return this.DisplayError("VolumePreset error", {message: "VolumePresetError"})
+    }
+    if (this.config.Extented.volume.useVolume) {
+      let exists = (data) => {
+        return data !== null && data !== undefined
       }
+      if (!exists(this.volumeScript[this.config.Extented.volume.volumePreset]))
+        return this.DisplayError("VolumePreset error", {message: "VolumePresetError"})
     }
 
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
@@ -500,11 +497,11 @@ module.exports = NodeHelper.create({
             str= str.slice(2, 3) // keep only pi number
             var type = str.join()
             model= parseInt(type) ? parseInt(type): 0
-            this.PiVersion = (model >=4 || this.config.Extented.dev) ? true : false
-            resolve(this.config.Extented.dev ? 999 : model)
+            this.PiVersion = (model >=4 || this.config.dev) ? true : false
+            resolve(this.config.dev ? 999 : model)
           } else {
             console.log("[GA] Error Can't determinate RPI version!")
-            this.PiVersion = this.config.Extented.dev ? true : false
+            this.PiVersion = this.config.dev ? true : false
             resolve(1)
           }
         })
@@ -908,7 +905,7 @@ module.exports = NodeHelper.create({
               index = (obj,i) => { return obj[i] }
 
           // reverse condition if EXT
-          if (!libraryNeeded && this.PiVersion && this.config.Extented.useEXT) libraryNeeded = true
+          if (!libraryNeeded && this.PiVersion) libraryNeeded = true
 
           // libraryActivate: verify if the needed path of config is activated (result of reading config value: true/false) **/
           let libraryActivate = libraryNeeded && libraryPath.split(".").reduce(index,this.config) 

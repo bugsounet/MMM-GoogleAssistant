@@ -55,8 +55,6 @@
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json fehlt",
   "GAErrorTokenYoutube": "[FATAL] Token Youtube: tokenYT.json fehlt",
 
-  "LibraryLoading": "Lade erweiterte Bibliotheken...",
-  "LibraryLoaded": "Erweiterte GoogleAssistant Bibliotheken geladen!",
   "LibraryError": "Fehler beim Laden von {VALUES} Bibliothek.",
 
   "LibrespotNoResponse": "Keine Antwort von librespot! ({VALUES})",
@@ -105,7 +103,6 @@
   "InternetAvailable": "Internet ist jetzt verfügbar, nach {VALUES}",
 
   "EXTStop": "Alle erweiterten Prozesse werden jetzt beendet.",
-  "EXTNotActivated": "Erweiterte Anzeige ist nicht aktiv.",
 
   "CastStart": "Starte YouTube-Casting.",
   "CastStop" : "Beende YouTube-Casting. ",
