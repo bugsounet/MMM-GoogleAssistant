@@ -28,8 +28,6 @@ function checkConfig() {
     return process.exit(1)
   }
 
-  if (!GAModule.config.Extented.useEXT) console.log("Warning: Extented display is not activated in config.js (useEXT)")
-
   if (!GAModule.config.Extented.spotify) {
     console.log("Fatal: spotify is not defined in config.js (spotify:{})")
     return process.exit(1)
