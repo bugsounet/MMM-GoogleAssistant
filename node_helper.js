@@ -30,9 +30,9 @@ module.exports = NodeHelper.create({
       "RESPEAKER_PLAYBACK": "amixer -M sset Playback #VOLUME#%"
     }
     this.PiVersion = false
-    this.
-    timeout = null
-    retry = null
+    this.blank = {}
+    this.timeout = null
+    this.retry = null
     this.YouTube = null
     this.YT = 0
     this.checkConfigMerge()
@@ -108,11 +108,11 @@ module.exports = NodeHelper.create({
 
       /** Spotify module **/
       case "SPOTIFY_RETRY_PLAY":
-        clearTimeout(timeout)
-        timeout= null
-        clearTimeout(retry)
-        retry = null
-        retry = setTimeout(() => {
+        clearTimeout(this.timeout)
+        this.timeout= null
+        clearTimeout(this.retry)
+        this.retry = null
+        this.retry = setTimeout(() => {
           this.spotify.play(payload, (code, error, result) => {
             if ((code == 404) && (result.error.reason == "NO_ACTIVE_DEVICE")) {
               logEXT("[SPOTIFY] RETRY playing...")
@@ -134,8 +134,8 @@ module.exports = NodeHelper.create({
         break
       case "SPOTIFY_PLAY":
         this.spotify.play(payload, (code, error, result) => {
-          clearTimeout(timeout)
-          timeout= null
+          clearTimeout(this.timeout)
+          this.timeout= null
           if ((code == 404) && (result.error.reason == "NO_ACTIVE_DEVICE")) {
             this.retryPlayerCount++
             if (this.retryPlayerCount >= 4) return this.retryPlayerCount = 0
@@ -143,7 +143,7 @@ module.exports = NodeHelper.create({
               console.log("[SPOTIFY] No response from librespot !")
               this.sendSocketNotification("INFORMATION", { message: "LibrespotConnecting" })
               this.Librespot(true)
-              timeout= setTimeout(() => {
+              this.timeout= setTimeout(() => {
                 this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.deviceName)
                 this.socketNotificationReceived("SPOTIFY_RETRY_PLAY", payload)
               }, 3000)
@@ -152,7 +152,7 @@ module.exports = NodeHelper.create({
               console.log("[SPOTIFY] No response from raspotify !")
               this.sendSocketNotification("INFORMATION", { message: "RaspotifyConnecting" })
               this.Raspotify(true)
-              timeout= setTimeout(() => {
+              this.timeout= setTimeout(() => {
                 this.socketNotificationReceived("SPOTIFY_TRANSFER", this.config.Extented.deviceName)
                 this.socketNotificationReceived("SPOTIFY_RETRY_PLAY", payload)
               }, 3000)
@@ -327,7 +327,7 @@ module.exports = NodeHelper.create({
     }
     console.log("[GA] Perfect ConfigDeepMerge activated!")
     if (configModule.dev) {
-      this.config.dev= true
+      this.blank.dev= true
       console.log("[GA] Hi, developer!")
     }
     //else {
@@ -497,11 +497,11 @@ module.exports = NodeHelper.create({
             str= str.slice(2, 3) // keep only pi number
             var type = str.join()
             model= parseInt(type) ? parseInt(type): 0
-            this.PiVersion = (model >=4 || this.config.dev) ? true : false
-            resolve(this.config.dev ? 999 : model)
+            this.PiVersion = (model >=4 || this.blank.dev) ? true : false
+            resolve(this.blank.dev ? 999 : model)
           } else {
             console.log("[GA] Error Can't determinate RPI version!")
-            this.PiVersion = this.config.dev ? true : false
+            this.PiVersion = this.blank.dev ? true : false
             resolve(1)
           }
         })
