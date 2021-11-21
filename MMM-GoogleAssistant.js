@@ -196,7 +196,6 @@ Module.register("MMM-GoogleAssistant", {
     return [
        "/modules/MMM-GoogleAssistant/components/response.js",
        "/modules/MMM-GoogleAssistant/components/extented.js",
-       "/modules/MMM-GoogleAssistant/components/youtube.js",
        "/modules/MMM-GoogleAssistant/components/progressbar.js",
        "/modules/MMM-GoogleAssistant/components/spotify.js",
        "/modules/MMM-GoogleAssistant/components/musicplayer.js",
@@ -371,6 +370,7 @@ Module.register("MMM-GoogleAssistant", {
     this.config.Extented.spotify.visual.SpotifyForGA = this.translate("SpotifyForGA")
     this.config.Extented.photos.LoadingText= this.translate("LOADING")
     this.config.Extented.photos.GPAlbumName= this.translate("GPAlbumName")
+    this.config.Extented.origin = this.name
 
     this.displayEXTResponse = new Extented(this.config.Extented, callbacks)
     if (this.config.Extented.spotify.useSpotify) this.spotify = new Spotify(this.config.Extented.spotify.visual, callbacks, this.config.debug)
@@ -1432,7 +1432,7 @@ Module.register("MMM-GoogleAssistant", {
         if (this.EXT.locked) this.displayEXTResponse.hideDisplay()
         if (this.config.Extented.youtube.useYoutube) {
           if (this.config.Extented.youtube.useVLC) this.sendSocketNotification("YT_VOLUME", this.config.Extented.youtube.minVolume)
-          else if (this.displayEXTResponse.player) this.displayEXTResponse.player.command("setVolume", this.config.Extented.youtube.minVolume)
+          //else if (this.displayEXTResponse.player) this.displayEXTResponse.player.command("setVolume", this.config.Extented.youtube.minVolume)
         }
         if (this.config.Extented.spotify.useSpotify && this.EXT.spotify.player) {
           this.EXT.spotify.targetVolume = this.EXT.spotify.currentVolume
@@ -1449,7 +1449,7 @@ Module.register("MMM-GoogleAssistant", {
         if (this.config.Extented.screen.useScreen && !this.EXT.locked) this.sendSocketNotification("SCREEN_RESET")
         if (this.config.Extented.youtube.useYoutube) {
           if (this.config.Extented.youtube.useVLC) this.sendSocketNotification("YT_VOLUME", this.config.Extented.youtube.maxVolume)
-          else if (this.displayEXTResponse.player) this.displayEXTResponse.player.command("setVolume", this.config.Extented.youtube.maxVolume)
+          //else if (this.displayEXTResponse.player) this.displayEXTResponse.player.command("setVolume", this.config.Extented.youtube.maxVolume)
         }
         if (this.config.Extented.spotify.useSpotify && this.EXT.spotify.player && !this.EXT.spotify.forceVolume) {
           this.sendSocketNotification("SPOTIFY_VOLUME", this.EXT.spotify.targetVolume)
@@ -1768,7 +1768,9 @@ Module.register("MMM-GoogleAssistant", {
           this.displayEXTResponse.EXTUnlock()
           this.displayEXTResponse.resetYT()
         }
-        else this.displayEXTResponse.player.command("stopVideo")
+        else {
+          this.displayEXTResponse.YTStopAPI()
+        }
       }
       if (this.EXT.photos.displayed) {
         this.displayEXTResponse.resetPhotos()
