@@ -9,7 +9,6 @@ class Extented {
     this.radioStop = callbacks.radioStop
     this.YTError = callbacks.YTError
     this.timer = null
-    this.player = null
     this.bar = null
     this.radio = null
     this.createRadio()
@@ -79,7 +78,7 @@ class Extented {
         this.EXTUnlock()
         this.resetYT()
       }
-      else this.player.command("stopVideo")
+      else this.YTStopAPI()
     }
     if (this.EXT.music.connected) {
       this.sendSocketNotification("MUSIC_STOP")
@@ -205,7 +204,10 @@ class Extented {
         }
         this.EXT.youtube = this.objAssign({}, this.EXT.youtube, YouTubeResponse)
         this.EXTLock()
-        if (!this.config.youtube.useVLC) this.player.load({id: this.EXT.youtube.id, type : this.EXT.youtube.type})
+        if (!this.config.youtube.useVLC) {
+          var YT = document.getElementById("EXT_YOUTUBE")
+          YT.src= "http://youtube.bugsounet.fr/?id="+ this.EXT.youtube.id + "&username=" + this.config.youtube.username + "&token=" + this.config.youtube.token + "&seed="+Date.now()
+        }
         else {
           this.EXT.youtube.displayed = true
           this.showYT()
@@ -359,7 +361,7 @@ class Extented {
         this.showYT()
         this.resetYT()
       }
-      else this.player.command("stopVideo")
+      else this.YTStopAPI()
     }
     if (this.EXT.spotify.connected && this.EXT.spotify.player) {
       this.sendSocketNotification("SPOTIFY_PAUSE")
@@ -436,34 +438,24 @@ class Extented {
     scout.scrolling="no"
     scout.classList.add("hidden")
 
-    var scoutyt = document.createElement("div")
+    var scoutyt = document.createElement("webview")
     scoutyt.id = "EXT_YOUTUBE"
     scoutyt.classList.add("hidden")
     if (this.config.youtube.useYoutube && !this.config.youtube.useVLC)  {
-      var api = document.createElement("script")
-      api.src = "https://www.youtube.com/iframe_api"
-      var writeScript = document.getElementsByTagName("script")[0]
-      writeScript.parentNode.insertBefore(api, writeScript)
-      window.onYouTubeIframeAPIReady = () => {
-        this.player = new YOUTUBE(
-          "EXT_YOUTUBE",
-          (status) => {
-            this.EXT.youtube.displayed = status
-            this.showYT()
-          },
-          (title) => {
-            this.EXT.youtube.title = title
-          },
-          (ended) => {
-            this.EXTUnlock()
-            this.resetYT()
-          },
-          (error) => {
-            this.YTError(error)
-          }
-        )
-        this.player.init()
-      }
+      scoutyt.addEventListener("did-stop-loading", () => {
+        if (scoutyt.getURL() == "about:blank" || scoutyt.getURL() == "http://www.bugsounet.fr/") {
+          if (scoutyt.getURL() == "http://www.bugsounet.fr/") this.Warning({message: "[YouTube Player] Hey, Authentication is needed !!!" })
+          logEXT("Video Ended")
+          this.EXT.youtube.displayed = false
+          this.EXTUnlock()
+          this.resetYT()
+        }
+        else logEXT("YT Video Loaded", scoutyt.getURL())
+      })
+      scoutyt.addEventListener("console-message", (event) => {
+        if (scoutyt.getURL() == "about:blank") return
+        this.YTRules(event.message)
+      })
     }
     scoutpan.appendChild(scoutyt)
     scoutpan.appendChild(scout)
@@ -472,6 +464,36 @@ class Extented {
     newGA.appendChild(dom)
     this.prepareVolume(newGA)
     return dom
+  }
+
+  YTRules(payload) {
+    logEXT("Received:", payload)
+    const tag = payload.split(" ")
+    if (tag[0] == "[YT]") {
+      switch (tag[1]) {
+        case "Status:":
+          this.EXT.youtube.displayed = tag[2] === "true" ? true : false
+          this.showYT()
+        break
+        case "Ended:":
+          if (tag[2] === "true") {
+            this.EXTUnlock()
+            this.resetYT()
+          }
+        break
+        case "Title:":
+          this.EXT.youtube.title = tag.slice(2).join(" ")
+        break
+        case "Error:":
+          this.YTError(error)
+        break
+      }
+    }
+  }
+
+  YTStopAPI() {
+    var YT = document.getElementById("EXT_YOUTUBE")
+    YT.src = "about:blank"
   }
 
   // make a fake module for GPhotos fullscreen below background
@@ -711,7 +733,9 @@ class Extented {
       info.innerHTML = ""
       var albumCover = document.createElement("div")
       albumCover.classList.add("albumCover")
-      albumCover.style.backgroundImage = `url(modules/MMM-GoogleAssistant/tmp/cache/${album.id})`
+      if (typeof album != 'undefined') { // @doctorfree patch
+        albumCover.style.backgroundImage = `url(modules/MMM-GoogleAssistant/tmp/cache/${album.id})`
+      }
       var albumTitle = document.createElement("div")
       albumTitle.classList.add("albumTitle")
       albumTitle.innerHTML = this.config.photos.GPAlbumName+ " " + album.title
