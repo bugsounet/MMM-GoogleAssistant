@@ -206,7 +206,7 @@ class Extented {
         this.EXTLock()
         if (!this.config.youtube.useVLC) {
           var YT = document.getElementById("EXT_YOUTUBE")
-          YT.src= "http://youtube.bugsounet.fr/?id="+ this.EXT.youtube.id + "&origin=" + this.config.origin + "&seed="+Date.now()
+          YT.src= "http://youtube.bugsounet.fr/?id="+ this.EXT.youtube.id + "&username=" + this.config.youtube.username + "&token=" + this.config.youtube.token + "&seed="+Date.now()
         }
         else {
           this.EXT.youtube.displayed = true

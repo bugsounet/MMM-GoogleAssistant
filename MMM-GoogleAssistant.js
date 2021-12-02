@@ -62,7 +62,9 @@ Module.register("MMM-GoogleAssistant", {
         displayResponse: true,
         useVLC: false,
         minVolume: 30,
-        maxVolume: 100
+        maxVolume: 100,
+        username: null,
+        token: null
       },
       links: {
         useLinks: false,
@@ -370,7 +372,6 @@ Module.register("MMM-GoogleAssistant", {
     this.config.Extented.spotify.visual.SpotifyForGA = this.translate("SpotifyForGA")
     this.config.Extented.photos.LoadingText= this.translate("LOADING")
     this.config.Extented.photos.GPAlbumName= this.translate("GPAlbumName")
-    this.config.Extented.origin = this.name
 
     this.displayEXTResponse = new Extented(this.config.Extented, callbacks)
     if (this.config.Extented.spotify.useSpotify) this.spotify = new Spotify(this.config.Extented.spotify.visual, callbacks, this.config.debug)
