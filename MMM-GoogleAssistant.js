@@ -995,10 +995,8 @@ Module.register("MMM-GoogleAssistant", {
           command.execution.forEach(exec => {
             logGA("Native Action: " + exec.command, exec.params)
             if (exec.command == "action.devices.commands.SetVolume") {
-              if (this.config.Extented.volume.useVolume) {
-                logGA("Volume Control:", exec.params.volumeLevel)
-                this.sendNotification("EXT_VOLUME_SET", exec.params.volumeLevel)
-              }
+              logGA("Volume Control:", exec.params.volumeLevel)
+              this.sendNotification("EXT_VOLUME_SET", exec.params.volumeLevel)
             }
           })
         })
