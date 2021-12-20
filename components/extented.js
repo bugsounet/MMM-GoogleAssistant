@@ -462,7 +462,6 @@ class Extented {
     dom.appendChild(scoutpan)
 
     newGA.appendChild(dom)
-    this.prepareVolume(newGA)
     return dom
   }
 
@@ -646,43 +645,6 @@ class Extented {
     document.body.id = "EXT_SCREEN_ANIMATE"
     document.body.className= "animate__animated"
     document.body.style.setProperty('--animate-duration', '1s')
-  }
-
-  /** Volume display **/
-  prepareVolume (newGA) {
-    var volume = document.createElement("div")
-    volume.id = "EXT_VOLUME"
-    volume.classList.add("hidden")
-    volume.className= "hidden animate__animated"
-    volume.style.setProperty('--animate-duration', '1s')
-    var volumeText = document.createElement("div")
-    volumeText.id = "EXT_VOLUME_TEXT"
-    volume.appendChild(volumeText)
-    var volumeBar = document.createElement("div")
-    volumeBar.id = "EXT_VOLUME_BAR"
-    volume.appendChild(volumeBar)
-    newGA.appendChild(volume)
-    return volume
-  }
-
-  drawVolume (current) {
-    var volume = document.getElementById("EXT_VOLUME")
-    volume.classList.remove("hidden", "animate__zoomOut")
-    volume.classList.add("animate__zoomIn")
-    var volumeText = document.getElementById("EXT_VOLUME_TEXT")
-    volumeText.innerHTML = this.config.volume.volumeText + " " + current + "%"
-    var volumeBar = document.getElementById("EXT_VOLUME_BAR")
-    volumeBar.style.width = current + "%"
-    setTimeout(()=>{
-      volume.classList.remove("animate__zoomIn")
-      volume.classList.add("animate__zoomOut")
-      volume.addEventListener('animationend', (e) => {
-        if (e.animationName == "flipOutX" && e.path[0].id == "EXT_VOLUME") {
-          volume.classList.add("hidden")
-        }
-        e.stopPropagation()
-      }, {once: true})
-    }, 3000)
   }
 
   /** GPhotos API **/

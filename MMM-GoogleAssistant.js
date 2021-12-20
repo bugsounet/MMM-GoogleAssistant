@@ -1,7 +1,7 @@
 /**
- ** Module : MMM-GoogleAssistant v3
+ ** Module : MMM-GoogleAssistant v4
  ** @bugsounet
- ** ©06-2021
+ ** ©01-2022
  ** support: http://forum.bugsounet.fr
  **/
 
@@ -9,7 +9,7 @@ logGA = (...args) => { /* do nothing */ }
 logEXT = (...args) => { /* do nothing */ }
 
 Module.register("MMM-GoogleAssistant", {
-  requiresVersion: "2.15.0",
+  requiresVersion: "2.18.0",
   defaults: {
     debug:false,
     assistantConfig: {
@@ -85,11 +85,6 @@ Module.register("MMM-GoogleAssistant", {
         timeFormat: "DD/MM/YYYY HH:mm",
         moduleHeight: 300,
         moduleWidth: 300,
-      },
-      volume: {
-        useVolume: false,
-        volumePreset: "PULSE",
-        myScript: null
       },
       welcome: {
         useWelcome: false,
@@ -367,7 +362,6 @@ Module.register("MMM-GoogleAssistant", {
     }
 
     // translate needed translate part in all languages
-    this.config.Extented.volume.volumeText = this.translate("VolumeText")
     this.config.Extented.spotify.visual.deviceDisplay = this.translate("SpotifyListenText")
     this.config.Extented.spotify.visual.SpotifyForGA = this.translate("SpotifyForGA")
     this.config.Extented.photos.LoadingText= this.translate("LOADING")
@@ -662,7 +656,7 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) {
-          this.sendSocketNotification("VOLUME_SET", payload.volume)
+          this.sendNotification("EXT_VOLUME_SET", payload.volume)
         }
         this.assistantResponse.start(payload)
         break
@@ -808,11 +802,6 @@ Module.register("MMM-GoogleAssistant", {
         this.displayEXTResponse.showYT()
         this.displayEXTResponse.EXTUnlock()
         this.displayEXTResponse.resetYT()
-        break
-
-      /** Volume module callback **/
-      case "VOLUME_DONE":
-        this.displayEXTResponse.drawVolume(payload)
         break
 
       /** detector ON/OFF **/
@@ -1008,7 +997,7 @@ Module.register("MMM-GoogleAssistant", {
             if (exec.command == "action.devices.commands.SetVolume") {
               if (this.config.Extented.volume.useVolume) {
                 logGA("Volume Control:", exec.params.volumeLevel)
-                this.sendSocketNotification("VOLUME_SET", exec.params.volumeLevel)
+                this.sendNotification("EXT_VOLUME_SET", exec.params.volumeLevel)
               }
             }
           })
@@ -1166,13 +1155,6 @@ Module.register("MMM-GoogleAssistant", {
       description: this.translate("EXT_HELP"),
       callback: "tbEXT"
     })
-    if (this.config.Extented.volume.useVolume) {
-      commander.add({
-        command: "volume",
-        description: this.translate("VOLUME_HELP"),
-        callback: "tbVolume"
-      })
-    }
     if (this.config.Extented.spotify.useSpotify) {
       commander.add({
         command: "spotify",
@@ -1293,16 +1275,6 @@ Module.register("MMM-GoogleAssistant", {
       else handler.reply("TEXT", this.translate("EXT_INVALID"))
     }
     else handler.reply("TEXT", "/EXT <link>")
-  },
-
-  tbVolume: function(command, handler) {
-    if (handler.args) {
-      var value = Number(handler.args)
-      if ((!value && value != 0) || ((value < 0) || (value > 100))) return handler.reply("TEXT", "/volume [0-100]")
-      this.sendSocketNotification("VOLUME_SET", value)
-      handler.reply("TEXT", "Volume " + value+"%")
-    }
-    else handler.reply("TEXT", "/volume [0-100]")
   },
 
   tbSpotify: function(command, handler) {

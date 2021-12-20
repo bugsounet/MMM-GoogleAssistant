@@ -1,5 +1,5 @@
 /******************
-**   GA css v3   **
+**   GA css v4   **
 **   BuGsounet   **
 *******************/
 
@@ -648,46 +648,6 @@ progress[value]#EXT_SPOTIFY_PROGRESS_BAR::-webkit-progress-bar {
   align-items: center;
   text-align: center;
   line-height: inherit;
-}
-
-/* Volume */
-#EXT_VOLUME {
-  top: calc(80% - 20px);
-  left: calc(50% - 200px);
-  width:400px;
-  height:40px;
-  background-color:#333;
-  position:fixed;
-  visibility:visible;
-  opacity: 1;
-  z-index: 1;
-}
-
-#EXT_VOLUME_TEXT {
-  position:absolute;
-  width:400px;
-  height:40px;
-  top:0;
-  left:0;
-  color:#FFF;
-  text-align:center;
-  font-size:24px;
-  line-height:40px;
-  z-index:9998;
-}
-
-#EXT_VOLUME_BAR {
-  position:absolute;
-  width:400px;
-  height:40px;
-  top:0;
-  left:0;
-  z-index:9999;
-  background-color: rgba(72,133,237, 0.5);
-}
-
-#EXT_VOLUME.hidden {
-  display:none;
 }
 
 /** Google Photos API **/

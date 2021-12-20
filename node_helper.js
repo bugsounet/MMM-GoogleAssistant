@@ -19,16 +19,6 @@ module.exports = NodeHelper.create({
   start: function () {
     this.EXT = {}
     this.config = {}
-    this.volumeScript= {
-      "OSX": "osascript -e 'set volume output volume #VOLUME#'",
-      "ALSA": "amixer sset -M 'PCM' #VOLUME#%",
-      "ALSA_HEADPHONE": "amixer sset -M 'Headphone' #VOLUME#%",
-      "ALSA_HDMI": "amixer sset -M 'HDMI' #VOLUME#%",
-      "HIFIBERRY-DAC": "amixer sset -M 'Digital' #VOLUME#%",
-      "PULSE": "amixer set Master #VOLUME#% -q",
-      "RESPEAKER_SPEAKER": "amixer -M sset Speaker #VOLUME#%",
-      "RESPEAKER_PLAYBACK": "amixer -M sset Playback #VOLUME#%"
-    }
     this.PiVersion = false
     this.blank = {}
     this.timeout = null
@@ -79,12 +69,6 @@ module.exports = NodeHelper.create({
         break
 
       /** Extented **/
-
-      /** Volume module **/
-      case "VOLUME_SET":
-        if (this.config.Extented.volume.useVolume) this.setVolume(payload)
-        else this.sendSocketNotification("WARNING", { message: "VolumeDisabled" })
-        break
 
       /** Screen module **/
       case "SCREEN_LOCK":
@@ -413,13 +397,6 @@ module.exports = NodeHelper.create({
         error = "[FATAL] Youtube: tokenYT.json file not found !"
         return this.DisplayError(error, {message: "GAErrorTokenYoutube", values: "tokenYT.json"})
       }
-    }
-    if (this.config.Extented.volume.useVolume) {
-      let exists = (data) => {
-        return data !== null && data !== undefined
-      }
-      if (!exists(this.volumeScript[this.config.Extented.volume.volumePreset]))
-        return this.DisplayError("VolumePreset error", {message: "VolumePresetError"})
     }
 
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
@@ -753,23 +730,6 @@ module.exports = NodeHelper.create({
       } else { //when fail
         console.log("[GA:EXT] [SPOTIFY] Search and Play failed !")
         this.sendSocketNotification("WARNING" , { message: "SpotifySearchFailed" })
-      }
-    })
-  },
-
-  /** Volume control **/
-  setVolume: function(level) {
-    var volumeScript= this.config.Extented.volume.myScript ? this.config.Extented.volume.myScript : this.volumeScript[this.config.Extented.volume.volumePreset]
-    var script = volumeScript.replace("#VOLUME#", level)
-    exec (script, (err, stdout, stderr)=> {
-      if (err) {
-        console.log("[GA:EXT] Set Volume Error:", err.toString())
-        this.sendSocketNotification("WARNING" , { message: "VolumePresetError" })
-      }
-      else {
-        logEXT("[VOLUME] Set Volume To:", level)
-        this.sendSocketNotification("VOLUME_DONE", level)
-        this.sendSocketNotification("INFORMATION" , { message: "Volume", values: level + "%" })
       }
     })
   },
