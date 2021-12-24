@@ -351,51 +351,6 @@ class Extented {
     logEXT("Reset YouTube", this.EXT)
   }
 
-/** Cast **/
-  castStart(url) {
-    /** stop all process before starting cast **/
-    if (this.EXT.youtube.displayed) {
-      if (this.config.youtube.useVLC) {
-        this.sendSocketNotification("YT_STOP")
-        this.EXT.youtube.displayed = false
-        this.showYT()
-        this.resetYT()
-      }
-      else this.YTStopAPI()
-    }
-    if (this.EXT.spotify.connected && this.EXT.spotify.player) {
-      this.sendSocketNotification("SPOTIFY_PAUSE")
-    }
-    if (this.EXT.music.connected) {
-      this.sendSocketNotification("MUSIC_STOP")
-    }
-    if (this.EXT.photos.displayed) {
-      this.resetPhotos()
-      this.hideDisplay()
-    }
-    if (this.EXT.links.displayed) {
-      this.resetLinks()
-      this.hideDisplay()
-    }
-    if (this.EXT.radioPlayer.play) this.radioStop()
-
-    /** emulation of displaying links **/
-    this.EXT.links.running = false
-    var webView = document.getElementById("EXT_OUTPUT")
-    logEXT("Cast Loading", url)
-    this.EXT.links.displayed = true
-    this.EXT.links.running = true
-    this.showDisplay()
-    this.EXTLock()
-    webView.src= url
-  }
-
-  castStop() {
-    var webView = document.getElementById("EXT_OUTPUT")
-    this.resetLinks()
-    this.hideDisplay()
-  }
-
 /** Other Cmds **/
   prepare() {
     var newGA = document.getElementById("GAv3")

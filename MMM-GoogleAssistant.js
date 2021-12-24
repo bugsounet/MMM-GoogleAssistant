@@ -133,10 +133,6 @@ Module.register("MMM-GoogleAssistant", {
         needRestart: false,
         language: config.language
       },
-      cast: {
-        useCast: false,
-        port: 8569
-      },
       spotify: {
         useSpotify: false,
         visual: {
@@ -741,17 +737,6 @@ Module.register("MMM-GoogleAssistant", {
       case "INTERNET_PING":
         var ping = document.getElementById("EXT_INTERNET_PING")
         ping.textContent = payload
-        break
-
-      /** cast module **/
-      case "CAST_START":
-        this.sendSocketNotification("SCREEN_WAKEUP")
-        this.Informations("information", { message: "CastStart" })
-        this.displayEXTResponse.castStart(payload)
-        break
-      case "CAST_STOP":
-        this.Informations("information", { message: "CastStop" })
-        this.displayEXTResponse.castStop()
         break
 
       /** Spotify module **/

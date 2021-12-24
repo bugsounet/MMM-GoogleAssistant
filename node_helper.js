@@ -535,16 +535,6 @@ module.exports = NodeHelper.create({
       this.internet = new this.EXT.Internet(this.config.Extented.internet, callbacks.sendSocketNotification, this.config.debug)
       this.internet.start()
     }
-    if (this.config.Extented.cast.useCast && this.EXT.CastServer) {
-      logEXT("Starting Cast module...")
-      if (this.config.Extented.deviceName) {
-        this.config.Extented.cast.castName = this.config.Extented.deviceName
-        this.cast = new this.EXT.CastServer(this.config.Extented.cast, callbacks.sendSocketNotification, this.config.debug)
-        this.cast.start()
-      } else {
-        this.sendSocketNotification("WARNING" , {  message: "Cast: deviceName error" } )
-      }
-    }
     if (this.config.Extented.spotify.useSpotify && this.EXT.Spotify) {
       logEXT("Starting Spotify module...")
       try {
@@ -842,7 +832,6 @@ module.exports = NodeHelper.create({
       { "@bugsounet/pir": [ "Pir", "Extented.pir.usePir", false ] },
       { "@bugsounet/governor": [ "Governor", "Extented.governor.useGovernor", false ] },
       { "@bugsounet/internet": [ "Internet", "Extented.internet.useInternet", false ] },
-      { "@bugsounet/cast": [ "CastServer", "Extented.cast.useCast", false ] },
       { "@bugsounet/cvlc": [ "cvlc", "Extented.youtube.useVLC", false ] },
       { "@bugsounet/google-photos" : [ "GPhotos", "Extented.photos.useGooglePhotosAPI", false ] },
       { "@bugsounet/spotify": [ "Spotify", "Extented.spotify.useSpotify", false ] },
