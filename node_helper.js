@@ -23,7 +23,6 @@ module.exports = NodeHelper.create({
     this.blank = {}
     this.timeout = null
     this.retry = null
-    this.YouTube = null
     this.YT = 0
     this.checkConfigMerge()
     this.retryPlayerCount = 0
@@ -63,9 +62,6 @@ module.exports = NodeHelper.create({
             }
           })
         })
-        break
-      case "YouTube_SEARCH":
-        if (payload) this.YoutubeSearch(payload)
         break
 
       /** Extented **/
@@ -205,16 +201,6 @@ module.exports = NodeHelper.create({
         this.searchAndPlay(payload.query, payload.condition)
         break
 
-      /** YouTube module **/
-      case "VLC_YOUTUBE":
-        this.playWithVlc(payload)
-        break
-      case "YT_STOP":
-        this.CloseVlc()
-        break
-      case "YT_VOLUME":
-        this.VolumeVLC(payload)
-        break
       /** Music module **/
       case "MUSIC_PLAY":
         this.PlayMusic()
@@ -379,26 +365,6 @@ module.exports = NodeHelper.create({
       return this.sendSocketNotification("NOT_INITIALIZED", { message: "[FATAL] This version is not compatible for your system!", values: 255 })
     }
 
-    if (this.config.Extented.youtube.useYoutube) {
-      try {
-        const CREDENTIALS = this.EXT.readJson(this.config.assistantConfig["modulePath"] + "/credentials.json")
-        const TOKEN = this.EXT.readJson(this.config.assistantConfig["modulePath"] + "/tokens/tokenYT.json")
-        let oauth = this.EXT.YouTubeAPI.authenticate({
-          type: "oauth",
-          client_id: CREDENTIALS.installed.client_id,
-          client_secret: CREDENTIALS.installed.client_secret,
-          redirect_url: CREDENTIALS.installed.redirect_uris,
-          access_token: TOKEN.access_token,
-          refresh_token: TOKEN.refresh_token,
-        })
-        console.log("[GA] YouTube Search Function initilized.")
-      } catch (e) {
-        console.log("[GA] " + e)
-        error = "[FATAL] Youtube: tokenYT.json file not found !"
-        return this.DisplayError(error, {message: "GAErrorTokenYoutube", values: "tokenYT.json"})
-      }
-    }
-
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
     if (this.config.NPMCheck.useChecker && this.EXT.npmCheck) {
       var cfg = {
@@ -436,21 +402,6 @@ module.exports = NodeHelper.create({
     } else {
       logGA("NO_RECIPE_TO_LOAD")
       callback()
-    }
-  },
-
- /** YouTube Search **/
-  YoutubeSearch: async function (query) {
-    try {
-      var results = await this.EXT.YouTubeAPI.search.list({q: query, part: 'snippet', maxResults: 1, type: "video"})
-      var item = results.data.items[0]
-      var title = this.EXT.he.decode(item.snippet.title)
-      console.log('[GA] Found YouTube Title: %s - videoId: %s', title, item.id.videoId)
-      this.sendSocketNotification("YouTube_RESULT", item.id.videoId)
-      this.sendSocketNotification("INFORMATION", { message: "YouTubePlaying", values: title })
-    } catch (e) {
-      console.log("[GA] YouTube Search error: ", e.toString())
-      this.sendSocketNotification("WARNING", { message: "YouTubeError", values: e.toString() })
     }
   },
 
@@ -724,49 +675,6 @@ module.exports = NodeHelper.create({
     })
   },
 
-  /** youtube control with VLC **/
-  playWithVlc: function (link) {
-    this.YT++
-    if (this.YouTube) this.CloseVlc()
-    this.YouTube = new this.EXT.cvlc()
-    this.YouTube.play(
-      link,
-      ()=> {
-        logEXT("[YouTube] Found link:", link)
-         if (this.YouTube) this.YouTube.cmd("volume "+ this.config.Extented.youtube.maxVolume)
-      },
-      ()=> {
-        this.YT--
-        if (this.YT < 0) this.YT = 0
-        logEXT("[YouTube] Video ended #" + this.YT)
-        if (this.YT == 0) {
-          logEXT("[YouTube] Finish !")
-          this.sendSocketNotification("FINISH_YOUTUBE")
-          this.YouTube = null
-        }
-      }
-    )
-  },
-
-  CloseVlc: function () {
-    if (this.YouTube) {
-      logEXT("[YouTube] Force Closing VLC...")
-      this.YouTube.destroy()
-      this.YouTube = null
-      logEXT("[YouTube] Done Closing VLC...")
-    }
-    else {
-      logEXT("[YouTube] Not running!")
-    }
-  },
-
-  VolumeVLC: function(volume) {
-    if (this.YouTube) {
-      logEXT("[YouTube] Set VLC Volume to:", volume)
-      this.YouTube.cmd("volume " + volume)
-    }
-  },
-
   StopMusic: function() {
     if (this.music) {
       this.music.setStop()
@@ -832,15 +740,11 @@ module.exports = NodeHelper.create({
       { "@bugsounet/pir": [ "Pir", "Extented.pir.usePir", false ] },
       { "@bugsounet/governor": [ "Governor", "Extented.governor.useGovernor", false ] },
       { "@bugsounet/internet": [ "Internet", "Extented.internet.useInternet", false ] },
-      { "@bugsounet/cvlc": [ "cvlc", "Extented.youtube.useVLC", false ] },
       { "@bugsounet/google-photos" : [ "GPhotos", "Extented.photos.useGooglePhotosAPI", false ] },
       { "@bugsounet/spotify": [ "Spotify", "Extented.spotify.useSpotify", false ] },
       { "@bugsounet/systemd": [ "Systemd", "Extented.spotify.useSpotify", false ] },
       { "@bugsounet/cvlcmusicplayer": ["MusicPlayer", "Extented.music.useMusic", false ] },
       { "pm2": [ "pm2", "Extented.spotify.useSpotify", false ] },
-      { "youtube-api": [ "YouTubeAPI", "Extented.youtube.useYoutube", false ] },
-      { "he": [ "he", "Extented.youtube.useYoutube", false ] },
-      { "r-json": [ "readJson","Extented.youtube.useYoutube", false ] }
     ]
 
     let errors = 0

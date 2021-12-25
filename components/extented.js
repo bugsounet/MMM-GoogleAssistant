@@ -29,23 +29,11 @@ class Extented {
       radio: false,
       speak: false,
       locked: false,
-      youtube: {
-        displayed: false,
-        id: null,
-        type: null,
-        title: null
-      },
       photos: {
         displayed: false,
         position: 0,
         urls: null,
         length: 0
-      },
-      links: {
-        displayed: false,
-        urls: null,
-        length: 0,
-        running: false
       },
       spotify: {
         connected: false,
@@ -70,25 +58,11 @@ class Extented {
 
   start(response) {
     /** Close all active windows and reset it **/
-    if (this.EXT.youtube.displayed) {
-      if (this.config.youtube.useVLC) {
-        this.sendSocketNotification("YT_STOP")
-        this.EXT.youtube.displayed = false
-        this.showYT()
-        this.EXTUnlock()
-        this.resetYT()
-      }
-      else this.YTStopAPI()
-    }
     if (this.EXT.music.connected) {
       this.sendSocketNotification("MUSIC_STOP")
     }
     if (this.EXT.photos.displayed) {
       this.resetPhotos()
-      this.hideDisplay()
-    }
-    if (this.EXT.links.displayed) {
-      this.resetLinks()
       this.hideDisplay()
     }
 
@@ -101,10 +75,6 @@ class Extented {
         position: 0,
         urls: response.photos,
         length: response.photos.length,
-      },
-      links: {
-        urls: response.urls,
-        length: response.urls.length
       }
     }
 
@@ -115,9 +85,6 @@ class Extented {
       this.EXT.photos.displayed = true
       this.photoDisplay()
       this.showDisplay()
-    }
-    else if (this.EXT.links.length > 0) {
-      this.urlsScan()
     }
     logEXT("Response Structure:", this.EXT)
   }
@@ -175,182 +142,6 @@ class Extented {
 
   }
 
-/** urls scan : dispatch links, youtube, spotify **/
-  urlsScan() {
-    let tmp = {}
-    if (this.config.youtube.useYoutube) {
-      var YouTubeRealLink= this.EXT.links.urls[0]
-      /** YouTube RegExp **/
-      var YouTubeLink = new RegExp("youtube\.com\/([a-z]+)\\?([a-z]+)\=([0-9a-zA-Z\-\_]+)", "ig")
-      /** Scan Youtube Link **/
-      var YouTube = YouTubeLink.exec(YouTubeRealLink)
-
-      if (YouTube) {
-        let Type
-        let YouTubeResponse = {}
-        if (this.EXT.radioPlayer.play) this.radioStop()
-        if (this.EXT.music.connected) {
-          this.sendSocketNotification("MUSIC_STOP")
-        }
-        if (this.EXT.spotify.player && this.config.spotify.useSpotify) {
-          this.sendSocketNotification("SPOTIFY_PAUSE")
-        }
-        if (YouTube[1] == "watch") Type = "id"
-        if (YouTube[1] == "playlist") Type = "playlist"
-        if (!Type) return console.log("[GA:EXT:YouTube] Unknow Type !" , YouTube)
-        YouTubeResponse = {
-          "id": YouTube[3],
-          "type": Type
-        }
-        this.EXT.youtube = this.objAssign({}, this.EXT.youtube, YouTubeResponse)
-        this.EXTLock()
-        if (!this.config.youtube.useVLC) {
-          var YT = document.getElementById("EXT_YOUTUBE")
-          YT.src= "http://youtube.bugsounet.fr/?id="+ this.EXT.youtube.id + "&username=" + this.config.youtube.username + "&token=" + this.config.youtube.token + "&seed="+Date.now()
-        }
-        else {
-          this.EXT.youtube.displayed = true
-          this.showYT()
-          this.sendSocketNotification("VLC_YOUTUBE", YouTubeRealLink)
-        }
-        return
-      }
-    }
-    if (this.config.spotify.useSpotify) {
-      /** Spotify RegExp **/
-      var SpotifyLink = new RegExp("open\.spotify\.com\/([a-z]+)\/([0-9a-zA-Z\-\_]+)", "ig")
-      /** Scan Spotify Link **/
-      var Spotify = SpotifyLink.exec(this.EXT.links.urls[0])
-
-      if (Spotify) {
-        if (this.EXT.radioPlayer.play) this.radioStop()
-        if (this.EXT.music.connected) {
-          this.sendSocketNotification("MUSIC_STOP")
-        }
-        if (!this.EXT.spotify.connected && this.config.deviceName) {
-          this.sendSocketNotification("SPOTIFY_TRANSFER", this.config.deviceName)
-        }
-
-        setTimeout(() => {
-          let type = Spotify[1]
-          let id = Spotify[2]
-          if (type == "track") {
-            // don't know why tracks works only with uris !?
-            this.sendSocketNotification("SPOTIFY_PLAY", {"uris": ["spotify:track:" + id ]})
-          }
-          else {
-            this.sendSocketNotification("SPOTIFY_PLAY", {"context_uri": "spotify:"+ type + ":" + id})
-          }
-        }, this.config.spotify.playDelay)
-        return
-      }
-    }
-    if (this.config.links.useLinks) {
-      this.EXTLock()
-      this.EXT.links.displayed = true
-      this.linksDisplay()
-    }
-  }
-
-/** link display **/
-  linksDisplay() {
-    this.EXT.links.running = false
-    var webView = document.getElementById("EXT_OUTPUT")
-    this.Informations({message: "LinksOpen" })
-    logEXT("Loading", this.EXT.links.urls[0])
-    this.showDisplay()
-    webView.src= this.EXT.links.urls[0]
-
-    webView.addEventListener("did-fail-load", () => {
-      console.log("[GA:EXT:LINKS] Loading error")
-    })
-    webView.addEventListener("crashed", (event) => {
-      console.log("[GA:EXT:LINKS] J'ai tout pété mon général !!!")
-      console.log("[GA:EXT:LINKS]", event)
-    })
-    webView.addEventListener("console-message", (event) => {
-      if (event.level == 1 && this.config.debug) console.log("[GA:EXT:LINKS]", event.message)
-    })
-    webView.addEventListener("did-stop-loading", () => {
-      if (this.EXT.links.running || (webView.getURL() == "about:blank")) return
-      this.EXT.links.running = true
-      logEXT("URL Loaded", webView.getURL())
-      webView.executeJavaScript(`
-      var timer = null
-      function scrollDown(posY){
-        clearTimeout(timer)
-        timer = null
-        var scrollHeight = document.body.scrollHeight
-        if (posY == 0) console.log("Begin Scrolling")
-        if (posY > scrollHeight) posY = scrollHeight
-        document.documentElement.scrollTop = document.body.scrollTop = posY;
-        if (posY == scrollHeight) return console.log("End Scrolling")
-        timer = setTimeout(function(){
-          if (posY < scrollHeight) {
-            posY = posY + ${this.config.links.scrollStep}
-            scrollDown(posY);
-          }
-        }, ${this.config.links.scrollInterval});
-      };
-      if (${this.config.links.scrollActivate}) {
-        setTimeout(scrollDown(0), ${this.config.links.scrollStart});
-      };`)
-    })
-    this.timerLinks = setTimeout(() => {
-      this.Informations({message: "LinksClose" })
-      this.resetLinks()
-      this.hideDisplay()
-    }, this.config.links.displayDelay)
-  }
-
-  resetLinks() {
-    clearTimeout(this.timerLinks)
-    this.timerLinks = null
-    let tmp = {
-      links: {
-        displayed: false,
-        urls: null,
-        length: 0,
-        running: false
-      }
-    }
-    this.EXT = this.objAssign({}, this.EXT, tmp)
-    var iframe = document.getElementById("EXT_OUTPUT")
-    iframe.src= "about:blank"
-    logEXT("Reset Links", this.EXT)
-  }
-
-/** youtube rules **/
-  showYT() {
-    var YT = document.getElementById("EXT_YOUTUBE")
-    var winh = document.getElementById("EXT")
-    if (this.EXT.youtube.displayed) {
-      this.EXTLock() // for YT playlist
-      winh.classList.remove("hidden")
-      YT.classList.remove("hidden")
-    } else {
-      if (this.EXT.photos.displayed || this.EXT.links.displayed) {
-        winh.classList.remove("hidden")
-        YT.classList.add("hidden")
-      } else {
-        this.hideDisplay()
-      }
-    }
-  }
-
-  resetYT() {
-    let tmp = {
-      youtube: {
-        displayed: false,
-        id: null,
-        type: null,
-        title: null
-      }
-    }
-    this.EXT = this.objAssign({}, this.EXT, tmp)
-    logEXT("Reset YouTube", this.EXT)
-  }
-
 /** Other Cmds **/
   prepare() {
     var newGA = document.getElementById("GAv3")
@@ -387,67 +178,10 @@ class Extented {
       scoutpan.appendChild(scoutGPhotosAPI)
     }
 
-    var scout = document.createElement("webview")
-    scout.useragent= "Mozilla/5.0 (SMART-TV; Linux; Tizen 2.4.0) AppleWebkit/538.1 (KHTML, like Gecko) SamsungBrowser/1.1 TV Safari/538.1"
-    scout.id = "EXT_OUTPUT"
-    scout.scrolling="no"
-    scout.classList.add("hidden")
-
-    var scoutyt = document.createElement("webview")
-    scoutyt.id = "EXT_YOUTUBE"
-    scoutyt.classList.add("hidden")
-    if (this.config.youtube.useYoutube && !this.config.youtube.useVLC)  {
-      scoutyt.addEventListener("did-stop-loading", () => {
-        if (scoutyt.getURL() == "about:blank" || scoutyt.getURL() == "http://www.bugsounet.fr/") {
-          if (scoutyt.getURL() == "http://www.bugsounet.fr/") this.Warning({message: "[YouTube Player] Hey, Authentication is needed !!!" })
-          logEXT("Video Ended")
-          this.EXT.youtube.displayed = false
-          this.EXTUnlock()
-          this.resetYT()
-        }
-        else logEXT("YT Video Loaded", scoutyt.getURL())
-      })
-      scoutyt.addEventListener("console-message", (event) => {
-        if (scoutyt.getURL() == "about:blank") return
-        this.YTRules(event.message)
-      })
-    }
-    scoutpan.appendChild(scoutyt)
-    scoutpan.appendChild(scout)
     dom.appendChild(scoutpan)
 
     newGA.appendChild(dom)
     return dom
-  }
-
-  YTRules(payload) {
-    logEXT("Received:", payload)
-    const tag = payload.split(" ")
-    if (tag[0] == "[YT]") {
-      switch (tag[1]) {
-        case "Status:":
-          this.EXT.youtube.displayed = tag[2] === "true" ? true : false
-          this.showYT()
-        break
-        case "Ended:":
-          if (tag[2] === "true") {
-            this.EXTUnlock()
-            this.resetYT()
-          }
-        break
-        case "Title:":
-          this.EXT.youtube.title = tag.slice(2).join(" ")
-        break
-        case "Error:":
-          this.YTError(error)
-        break
-      }
-    }
-  }
-
-  YTStopAPI() {
-    var YT = document.getElementById("EXT_YOUTUBE")
-    YT.src = "about:blank"
   }
 
   // make a fake module for GPhotos fullscreen below background
@@ -488,32 +222,24 @@ class Extented {
 
   showDisplay() {
     logEXT("Show Iframe")
-    var YT = document.getElementById("EXT_YOUTUBE")
-    var iframe = document.getElementById("EXT_OUTPUT")
     var photo = document.getElementById("EXT_PHOTO")
     var photoAPI = document.getElementById("EXT_GPHOTO")
     var winEXT = document.getElementById("EXT")
     winEXT.classList.remove("hidden")
 
-    if (this.EXT.links.displayed) iframe.classList.remove("hidden")
     if (this.EXT.photos.displayed) {
       if (this.EXT.photos.length > 0) photo.classList.remove("hidden")
       photoAPI.classList.remove("hidden")
     }
     if (this.EXT.photos.forceClose) photo.classList.add("hidden")
-    if (this.EXT.youtube.displayed) YT.classList.remove("hidden")
   }
 
   hideDisplay() {
     logEXT("Hide Iframe")
     var winEXT = document.getElementById("EXT")
-    var iframe = document.getElementById("EXT_OUTPUT")
     var photo = document.getElementById("EXT_PHOTO")
     var photoAPI = document.getElementById("EXT_GPHOTO")
-    var YT = document.getElementById("EXT_YOUTUBE")
 
-    if (!this.EXT.youtube.displayed) YT.classList.add("hidden")
-    if (!this.EXT.links.displayed) iframe.classList.add("hidden")
     if (!this.EXT.photos.displayed) {
       photo.classList.add("hidden")
       if (this.config.photos.displayType == "Recipe") photoAPI.classList.add("hidden")
@@ -592,7 +318,7 @@ class Extented {
   }
 
   working () {
-    return (this.EXT.youtube.displayed || this.EXT.photos.displayed || this.EXT.links.displayed)
+    return (this.EXT.photos.displayed)
   }
 
   /** hacking body for animated **/
