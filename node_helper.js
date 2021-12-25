@@ -452,34 +452,13 @@ module.exports = NodeHelper.create({
       },
       "screen": (param) => {
         if (this.screen && param == "WAKEUP") this.screen.wakeup()
-      },
-      "governor": (param) => {
-        if (this.governor && param == "GOVERNOR_SLEEPING") this.governor.sleeping()
-        if (this.governor && param == "GOVERNOR_WORKING") this.governor.working()
-        if (this.governor && param.error) this.sendSocketNotification("WARNING", { message: "GovernorError", values: param.error})
-      },
-      "pir": (noti,param) => {
-        if (this.screen && this.pir && noti == "PIR_DETECTED") this.screen.wakeup()
-        if (this.screen && this.pir && noti == "PIR_ERROR") {
-          this.sendSocketNotification("WARNING", { message: "PirError", values: param.code })
-        }
       }
     }
 
     if (this.config.Extented.screen.useScreen && this.EXT.Screen) {
       logEXT("Starting Screen module...")
-      this.screen = new this.EXT.Screen(this.config.Extented.screen, callbacks.sendSocketNotification, this.config.debug, callbacks.sendSocketNotification, callbacks.governor)
+      this.screen = new this.EXT.Screen(this.config.Extented.screen, callbacks.sendSocketNotification, this.config.debug, callbacks.sendSocketNotification, (gov) => console.log(gov))
       this.screen.activate()
-    }
-    if (this.config.Extented.pir.usePir && this.EXT.Pir) {
-      logEXT("Starting Pir module...")
-      this.pir = new this.EXT.Pir(this.config.Extented.pir, callbacks.pir, this.config.debug)
-      this.pir.start()
-    }
-    if (this.config.Extented.governor.useGovernor && this.EXT.Governor) {
-      logEXT("Starting Governor module...")
-      this.governor = new this.EXT.Governor(this.config.Extented.governor, callbacks.governor, this.config.debug)
-      this.governor.start()
     }
     if (this.config.Extented.internet.useInternet && this.EXT.Internet) {
       logEXT("Starting Internet module...")
@@ -737,8 +716,6 @@ module.exports = NodeHelper.create({
       // { "library to load" : [ "store library name", "path to check", needed without EXT ?] }
       { "@bugsounet/npmcheck": [ "npmCheck", "NPMCheck.useChecker", true ] },
       { "@bugsounet/screen": [ "Screen", "Extented.screen.useScreen", false ] },
-      { "@bugsounet/pir": [ "Pir", "Extented.pir.usePir", false ] },
-      { "@bugsounet/governor": [ "Governor", "Extented.governor.useGovernor", false ] },
       { "@bugsounet/internet": [ "Internet", "Extented.internet.useInternet", false ] },
       { "@bugsounet/google-photos" : [ "GPhotos", "Extented.photos.useGooglePhotosAPI", false ] },
       { "@bugsounet/spotify": [ "Spotify", "Extented.spotify.useSpotify", false ] },

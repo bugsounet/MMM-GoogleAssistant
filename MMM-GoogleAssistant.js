@@ -90,21 +90,6 @@ Module.register("MMM-GoogleAssistant", {
         userPresenceNotification: true,
         screenStatusNotification: true
       },
-      touch: {
-        useTouch: true,
-        mode: 2
-      },
-      pir: {
-        usePir: false,
-        gpio: 21,
-        reverseValue: false
-      },
-      governor: {
-        useGovernor: false,
-        useCallback: true,
-        sleeping: "powersave",
-        working: "ondemand"
-      },
       internet: {
         useInternet: false,
         displayPing: false,
@@ -512,7 +497,6 @@ Module.register("MMM-GoogleAssistant", {
           if (this.config.Extented.screen.animateBody) this.displayEXTResponse.prepareBody()
         }
         if (this.config.Extented.spotify.useSpotify && this.config.Extented.spotify.visual.useBottomBar) this.spotify.prepare()
-        if (this.config.Extented.touch.useTouch) this.touchScreen(this.config.Extented.touch.mode)
 
         this.assistantResponse.prepareGA()
         this.Loading()
@@ -1357,71 +1341,6 @@ Module.register("MMM-GoogleAssistant", {
       case "error":
         break
     }
-  },
-
-  /** TouchScreen Feature **/
-  touchScreen: function (mode) {
-    let clickCount = 0
-    let clickTimer = null
-    let EXTisplay = document.getElementById("EXT_DISPLAY")
-
-    switch (mode) {
-      case 1:
-        /** mode 1 **/
-        window.addEventListener('click', () => {
-          clickCount++
-          if (clickCount === 1) {
-            clickTimer = setTimeout(() => {
-              clickCount = 0
-              this.sendSocketNotification("SCREEN_WAKEUP")
-            }, 400)
-          } else if (clickCount === 2) {
-            clearTimeout(clickTimer)
-            clickCount = 0
-            this.sendSocketNotification("SCREEN_FORCE_END")
-          }
-        }, false)
-        break
-      case 2:
-        /** mode 2 **/
-        EXTisplay.addEventListener('click', () => {
-          if (clickCount) return clickCount = 0
-          if (!this.hidden) this.sendSocketNotification("SCREEN_WAKEUP")
-        }, false)
-
-        window.addEventListener('long-press', () => {
-          clickCount = 1
-          if (this.hidden) this.sendSocketNotification("SCREEN_WAKEUP")
-          else this.sendSocketNotification("SCREEN_FORCE_END")
-          clickTimer = setTimeout(() => { clickCount = 0 }, 400)
-        }, false)
-        break
-      case 3:
-        /** mode 3 **/
-        EXTisplay.addEventListener('click', () => {
-          clickCount++
-          if (clickCount === 1) {
-            clickTimer = setTimeout(() => {
-              clickCount = 0
-              this.sendSocketNotification("SCREEN_WAKEUP")
-            }, 400)
-          } else if (clickCount === 2) {
-            clearTimeout(clickTimer)
-            clickCount = 0
-            this.sendSocketNotification("SCREEN_FORCE_END")
-          }
-        }, false)
-
-        window.addEventListener('click', () => {
-          if (!this.hidden) return
-          clickCount = 3
-          this.sendSocketNotification("SCREEN_WAKEUP")
-          clickTimer = setTimeout(() => { clickCount = 0 }, 400)
-        }, false)
-        break
-    }
-    if (!mode) logEXT("Touch Screen Function disabled.")
-    else logEXT("Touch Screen Function added. [mode " + mode +"]")
   },
 
   /** Send Welcome **/
