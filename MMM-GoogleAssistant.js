@@ -68,10 +68,6 @@ Module.register("MMM-GoogleAssistant", {
         moduleHeight: 300,
         moduleWidth: 300,
       },
-      welcome: {
-        useWelcome: false,
-        welcome: "brief Today"
-      },
       screen: {
         useScreen: false,
         animateBody: true,
@@ -510,7 +506,8 @@ Module.register("MMM-GoogleAssistant", {
         }
         break
       case "GA_ACTIVATE":
-        this.assistantActivate({ type:"MIC" })
+        if (payload && payload.type && payload.key) this.assistantActivate(payload)
+        else this.assistantActivate({ type:"MIC" })
         break
       case "WAKEUP": /** for external wakeup **/
         if (this.config.Extented.screen.useScreen) {
@@ -589,7 +586,7 @@ Module.register("MMM-GoogleAssistant", {
         this.Version(payload)
         this.assistantResponse.status("standby")
         this.doPlugin("onReady")
-        this.sendWelcome()
+        this.sendNotification("GA_READY")
         break
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) {
@@ -1340,13 +1337,6 @@ Module.register("MMM-GoogleAssistant", {
       case "confirmation":
       case "error":
         break
-    }
-  },
-
-  /** Send Welcome **/
-  sendWelcome () {
-    if (this.config.Extented.welcome.useWelcome && this.config.Extented.welcome.welcome) {
-      this.assistantActivate({type: "TEXT", key: this.config.Extented.welcome.welcome, chime: false}, Date.now())
     }
   },
 
