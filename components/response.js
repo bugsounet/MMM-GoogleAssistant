@@ -12,7 +12,6 @@ class AssistantResponse {
     this.loopCount = 0
     this.chime = this.config.chimes
     this.resourcesDir = "/modules/MMM-GoogleAssistant/resources/"
-    this.warningEvent = false
 
     this.imgStatus = {
       "hook": this.resourcesDir + this.config.imgStatus.hook,
@@ -38,10 +37,6 @@ class AssistantResponse {
     this.audioChime = new Audio()
     this.audioChime.autoplay = true
     this.fullscreenAbove = this.config.useFullscreen
-    this.warningTimeout = null
-    this.infosDiv= null
-    this.infoWarning = new Audio()
-    this.infoWarning.autoplay = true
   }
 
   tunnel (payload) {
@@ -80,60 +75,16 @@ class AssistantResponse {
     this.myStatus.old = this.myStatus.actual
   }
   
-  preparePopup () {
-    var newGA = document.createElement("div")
-    newGA.id = "GAv3"
-    document.body.appendChild(newGA)
-  }
-
   prepareGA () {
-    var newGA = document.getElementById("GAv3")
-    /** Prepare GA Information **/
-    var Infos = document.createElement("div")
-    Infos.id = "Infos"
-    Infos.style.zoom = this.config.zoom.transcription
-    Infos.className= "hidden animate__animated"
-    Infos.style.setProperty('--animate-duration', '1s')
-    var InfosDisplay = document.createElement("div")
-    InfosDisplay.id = "InfoDisplay"
-    Infos.appendChild(InfosDisplay)
-
-    var InfosPopout = document.createElement("div")
-    InfosPopout.id = "Infos-popout"
-    InfosDisplay.appendChild(InfosPopout)
-
-    var InfosBar = document.createElement("div")
-    InfosBar.id = "Infos-bar"
-    InfosBar.className= "Infos-popout-asbar"
-    InfosBar.tabindex = -1
-    InfosPopout.appendChild(InfosBar)
-
-    //informations image
-    var InfosIcon = document.createElement("img")
-    InfosIcon.id= "Infos-Icon"
-    InfosIcon.className="Infos-assistant_icon"
-    InfosIcon.src = this.resourcesDir + "information.gif"
-    InfosBar.appendChild(InfosIcon)
-
-    //transcription informations text
-    var InfosResponse = document.createElement("span")
-    InfosResponse.id= "Infos-Transcription"
-    InfosResponse.className="Infos-assistant_response"
-    InfosResponse.textContent= "~MMM-GoogleAssistant v3 Informations displayer~"
-    InfosBar.appendChild(InfosResponse)
-
-    //document.body.appendChild(Infos)
-    newGA.appendChild(Infos)
-
     /** Main GA popups **/
-    var GA = document.createElement("div")
-    GA.id = "GA"
-    GA.style.zoom = this.config.zoom.transcription
-    GA.className= "hidden out"
+    var newGA = document.createElement("div")
+    newGA.id = "GoogleAssistant"
+    newGA.style.zoom = this.config.zoom.transcription
+    newGA.className= "hidden out"
 
     /** hidden the popup on animation end **/
-    GA.addEventListener('transitionend', (a) => {
-      if (a.path[0].className =="out") GA.classList.add("hidden")
+    newGA.addEventListener('transitionend', (a) => {
+      if (a.path[0].className =="out") newGA.classList.add("hidden")
     })
 
     /** Response popup **/
@@ -143,12 +94,12 @@ class AssistantResponse {
     var scout = document.createElement("iframe")
     scout.id = "GA-ResultOuput"
     scoutpan.appendChild(scout)
-    GA.appendChild(scoutpan)
+    newGA.appendChild(scoutpan)
 
     /** Transcription popup **/
     var GAResponse = document.createElement("div")
     GAResponse.id = "GA-Response"
-    GA.appendChild(GAResponse)
+    newGA.appendChild(GAResponse)
 
     var GAPopout = document.createElement("div")
     GAPopout.id = "GA-popout"
@@ -183,9 +134,8 @@ class AssistantResponse {
     GABarIcon.src = this.resourcesDir + "assistant_tv_logo.svg"
     GAAssistantWordIcon.appendChild(GABarIcon)
 
-    newGA.appendChild(GA)
+    document.body.appendChild(newGA)
 
-    this.infosDiv = document.getElementById("Infos")
   }
 
   // make a fake module for display fullscreen background
@@ -300,7 +250,6 @@ class AssistantResponse {
 
     var normalResponse = (response) => {
       this.showing = true
-      this.callbacks.EXT(response)
       this.status("reply")
       var so = this.showScreenOutput(response)
       var ao = this.playAudioOutput(response)
@@ -371,7 +320,7 @@ class AssistantResponse {
   }
 
   fullscreen (active, status, fs = true) {
-    var GA = document.getElementById("GA")
+    var GA = document.getElementById("GoogleAssistant")
     var FakeGA = document.getElementById("module_Fake_GA_DOM")
 
     if (active) {

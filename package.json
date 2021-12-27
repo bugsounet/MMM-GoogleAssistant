@@ -9,11 +9,7 @@
     "postinstall": "installer/postinstall.sh",
     "update": "installer/update.sh",
     "rebuild": "installer/rebuild.sh",
-    "tokens": "installer/tokens.sh",
-    "cvlc": "node installer/cvlc.js",
-    "librespot": "installer/librespot.sh",
-    "raspotify": "installer/raspotify.sh",
-    "light": "installer/light.sh"
+    "token": "installer/tokens.sh",
   },
   "keywords": [
     "magic mirror",
@@ -34,6 +30,6 @@
   },
   "homepage": "http://wiki.bugsounet.fr/en/MMM-GoogleAssistant",
   "dependencies": {
-    "@bugsounet/secure-ga-v3": "1.0.6"
+    "@bugsounet/secure-ga-v3": "1.1.0"
   }
 }

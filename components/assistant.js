@@ -24,7 +24,7 @@ class ASSISTANT {
     this.assistantConfig = {
       auth:{
         keyFilePath : path.resolve(config.modulePath, "credentials.json"),
-        savedTokensPath : path.resolve(config.modulePath, "tokens/tokenGA.json")
+        savedTokensPath : path.resolve(config.modulePath, "tokenGA.json")
       },
       conversationConfig : {
         audio : {
