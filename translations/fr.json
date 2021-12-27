@@ -6,13 +6,6 @@
   "QUERY_REPLY" : "Google Assistant va être activé.",
   "QUERY_HELP" : "Vous pouvez commander `Google Assistant` par texte avec cette commande.",
 
-  "RESTART_HELP" : "Rédemarre MagicMirror avec pm2",
-  "RESTART_DONE" : "Redémarrage en cours !",
-  "RESTART_ERROR" : "<id> manquant !",
-
-  "WAKEUP_HELP": "Allume l'écran et redémarre le compteur",
-  "WAKEUP_REPLY": "Ecran allumé !",
-
   "HIDE_HELP": "Cache le module désiré",
   "HIDE_ALREADY": " est déjà caché",
   "HIDE_DONE": " est maintenant caché",
@@ -29,22 +22,7 @@
   "STOP_HELP": "Stop Extented Display si besoin",
   "STOP_EXT": "j'arrête Extented Display",
 
-  "EXT_OPEN": "Ouverture du lien: ",
-  "EXT_INVALID": "Ce lien n'est pas valide !",
-  "EXT_HELP": "Active Extented Display avec un lien",
-
-  "VOLUME_HELP": "Défini le volume sonore",
-
   "DADDY": "Papa @bugsounet a dit... NON,NON ET NON !!!",
-
-  "DAY" : "jour",
-  "DAYS" : "jours",
-  "HOUR" : "heure",
-  "HOURS" : "heures",
-  "MINUTE" : "minute",
-  "MINUTES" : "minutes",
-  "SECOND": "seconde",
-  "SECONDS": "secondes",
 
   "GALoading": "Chargement...",
   "GAReady": "Prêt!",
@@ -53,77 +31,9 @@
   "GAErrorRecipe": "[FATAL] Erreur lors du chargement du recipe: {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json manquant",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json manquant",
-  "GAErrorTokenYoutube": "[FATAL] Token Youtube: tokenYT.json manquant",
-
-  "LibraryError": "Erreur lors du chargement de la librairie: {VALUES}",
-
-  "LibrespotNoResponse": "Pas de réponse de Librespot! ({VALUES})",
-  "LibrespotConnected": "Connecté à Librespot! ({VALUES})",
-  "LibrespotConnecting": "Patientez, connexion à Librespot...",
-  "LibrespotNoInstalled": "Librespot n'est pas installé !",
-  "LibrespotError": "Librespot: {VALUES}",
-
-  "RaspotifyNoResponse": "Pas de réponse de Raspotify! ({VALUES})",
-  "RaspotifyConnected": "Connecté à Raspotify! ({VALUES})",
-  "RaspotifyConnecting": "Patientez, connexion à Raspotify...",
-  "RaspotifyNoInstalled": "Raspotify n'est pas installé !",
-  "RaspotifyError": "Raspotify: {VALUES}",
-
-  "YouTubePlaying": "YouTube va jouer: {VALUES}",
-  "YouTubeError": "YouTube: {VALUES}",
-
-  "Volume": "Volume: {VALUES}",
-  "VolumePresetError": "Volume: Erreur de Preset !",
-  "VolumeText": "Volume:",
-  "VolumeDisabled": "Le contrôle du volume est désactivé",
-
-  "GovernorError": "Governor: {VALUES}",
-
-  "PirError": "Pir sensor erreur code: {VALUES}",
-
-  "SpotifyNoResult": "Spotify: pas de résultat trouvé",
-  "SpotifySearchFailed": "Spotify: erreur Search and Play",
-  "SpotifyListenText": "En écoute sur",
-  "SpotifyForGA": "Spotify pour Google Assistant",
-  "SpotifySearchTypePlaylist": "playlist",
-  "SpotifySearchTypeAlbum": "album",
-  "SpotifySearchTypeTrack": "piste",
-  "SpotifySearchTypeArtist": "artiste",
-
-  "ScreenWakeUp": "Réveil de l'écran demandé par {VALUES}",
-  "ScreenLock": "Verrouillage de l'écran demandé par {VALUES}",
-  "ScreenUnLock": "Déverrouillage de l'écran demandé par {VALUES}",
-  "ScreenTurnOff": "Mise en veille dans",
-  "ScreenLastPresence": "Dernière Présence:",
-  "ScreenPowerOn": "Allumage de l'écran",
-  "ScreenPowerOff": "Extinction de l'écran",
-
-  "InternetDown" : "{VALUES}, Internet est INDISPONIBLE!",
-  "InternetRestart": "Internet est maintenant disponible! Redémarrage de MagicMirror...",
-  "InternetAvailable": "Internet est maintenant DISPONIBLE, après {VALUES}",
 
   "EXTStop": "Tous les processus Extented sont maintenant arrêtés",
 
-  "CastStart": "Démarrage de YouTube-Cast",
-  "CastStop" : "Fin de YouTube-Cast",
-
   "ShellExecError": "ShellExec retourne des erreurs",
-  "ShellExecDone": "ShellExec a été executé correctement",
-
-  "LinksOpen": "Ouverture du navigateur Extended Display",
-  "LinksClose": "Fermeture du navigateur Extented Display",
-
-  "PhotosNotActivated": "Le module photos n'est pas activé",
-
-  "GPhotosNotActivated": "GooglePhotos API n'est pas activée",
-  "GPhotosRecipeNotActivated": "Le mode Recipe de GooglePhotos n'est pas activé",
-  "GPhotosBckGrndActivated": "Le mode Background de GooglePhotos est activé",
-  "GPhotosModuleActivated": "Le mode Module de GooglePhotos est activé",
-  "GPFailedOpenURL": "Google Photos: Erreur lors du chargement de l'image",
-  "GPOpen": "Ouverture de Google Photos",
-  "GPClose": "Fermeture de Google Photos",
-  "GPAlbumName": "Album:",
-  "GPError": "GooglePhotos: Aucune photos à afficher",
-  "GPNoPhotoFound" : "GooglePhotos: Aucune photo trouvé",
-  "GPReceive": "GooglePhotos a reçu {VALUES} photos"
+  "ShellExecDone": "ShellExec a été executé correctement"
 }
