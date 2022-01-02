@@ -6,7 +6,7 @@
 #--------------
 
 # postinstaller version
-Installer_vinstaller="1.0.9 by Bugsounet"
+Installer_vinstaller="1.1.0 by Bugsounet"
 
 # debug mode
 Installer_debug=false
@@ -293,36 +293,6 @@ Installer_checkmic () {
   rm -f $audiofile
  }
 
-Installer_checkmicv2 () {
-  audiofile="testmic.wav"
-  plug_rec="${plug_rec:-plughw:1}"
-  while true; do
-    if Installer_info "Checking audio input..."
-      Installer_yesno "Make sure your microphone is on, press [Yes] and say something.\nPress [No] if you don't want to check." true >/dev/null; then
-      echo
-      Installer_debug "Actual test input config: $plug_rec"
-      rm -f $audiofile
-      arecord -D $plug_rec -r 16000 -c 1 -d 3 -t wav -f S16_LE $audiofile 2>/dev/null || Installer_error "Current configuration not Working !"
-      if [ -f $audiofile ]; then
-        Installer_info "Using default output speaker for playing"
-        play $audiofile || Installer_error "Output device error ! (default speaker not set)"
-        Installer_yesno "Did you hear yourself?" true >/dev/null && break
-      fi
-      echo
-      Installer_warning "Selection of the microphone device"
-      devices="$(arecord -l)"
-      Installer_info "$devices"
-      read -p "Indicate the card # to use [0-9]: " card
-      plug_rec="plughw:$card"
-      Installer_info "you have selected: $plug_rec"
-    else
-      plug_rec=""
-      break
-    fi
-  done
-  rm -f $audiofile
- }
-
 # Updates alsa user config at ~/.asoundrc
 # $1 - play_hw
 # $2 - rec_hw
@@ -344,5 +314,50 @@ EOM
     Installer_warning "Reloading Alsa..."
     sudo /etc/init.d/alsa-utils restart
 }
+
+Installer_chk () {
+  CHKUSER=$(stat -c '%U' $1)
+  CHKGROUP=$(stat -c '%G' $1)
+  if [ $CHKUSER == "root" ] || [ $CHKGROUP == "root" ]; then
+     Installer_error "Checking $2: $CHKUSER/$CHKGROUP"
+     exit 255
+  fi
+  Installer_success "Checking $2: $CHKUSER/$CHKGROUP"
+}
+
+is_pifour() {
+   grep -q "^Revision\s*:\s*[ 123][0-9a-fA-F][0-9a-fA-F]3[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]$" /proc/cpuinfo
+   return $?
+}
+
+update_node_v14 () {
+  Installer_warning "Updating to node v14..."
+  NODE_STABLE_BRANCH="14.x"
+  # sudo apt-get install --only-upgrade libstdc++6
+  node_info=$(curl -sL https://deb.nodesource.com/setup_$NODE_STABLE_BRANCH | sudo -E bash - )
+  if [ "$(echo $node_info | grep "not currently supported")." == "." ]; then
+    Installer_info "Install/upgrade nodejs..."
+    sudo apt-get install -y nodejs
+  else
+    Installer_error "node {$NODE_STABLE_BRANCH} version installer not available, you have to install it manually"
+    exit 255
+  fi
+  Installer_success "Node.js installation Done!"
+}
+
+update_npm_v6 () {
+  Installer_warning "Updating to npm v6..."
+  # Check if a node process is currently running.
+  # If so abort installation.
+  if pgrep "npm" > /dev/null; then
+    Installer_error "npm process is currently running. Can't upgrade."
+    Installer_error "Please quit all npm processes and restart the installer."
+    exit
+  fi
+	# update to v6.14.15
+	sudo npm i -g npm@6.14.15
+	Installer_success "npm installation Done!"
+}
+
 
 Installer_debug "[LOADED] utils.sh"
