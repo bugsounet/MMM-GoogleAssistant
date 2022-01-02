@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
-  "version": "3.3.1",
-  "rev": "211223-1",
+  "version": "3.3.2",
+  "rev": "220102",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -34,6 +34,29 @@
   },
   "homepage": "http://wiki.bugsounet.fr/en/MMM-GoogleAssistant",
   "dependencies": {
-    "@bugsounet/secure-ga-v3": "1.2.0"
+    "@bugsounet/cast": "^1.1.0",
+    "@bugsounet/cvlc": "^1.0.4",
+    "@bugsounet/google-assistant": "^1.1.0",
+    "@bugsounet/google-photos": "^1.0.0",
+    "@bugsounet/governor": "^1.0.3",
+    "@bugsounet/internet": "^1.0.0",
+    "@bugsounet/cvlcmusicplayer": "^1.1.0",
+    "@bugsounet/node-buffertomp3": "^1.0.0",
+    "@bugsounet/node-lpcm16": "^2.0.0",
+    "@bugsounet/npmcheck": "^0.9.0",
+    "@bugsounet/pir": "^1.0.5",
+    "@bugsounet/screen": "^1.1.3",
+    "@bugsounet/spotify": "^1.0.2",
+    "@bugsounet/systemd": "^1.0.0",
+    "he": "^1.2.0",
+    "html-entities": "^1.2.1",
+    "node-html-parser": "^1.1.16",
+    "pm2": "^5.1.2",
+    "r-json": "^1.2.10",
+    "youtube-api": "^3.0.1",
+    "detect-rpi": "^1.4.0",
+    "minify": "^7.0.2",
+    "systeminformation": "^5.9.4",
+    "check-node-version": "^4.1.0"
   }
 }
