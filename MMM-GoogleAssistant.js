@@ -53,6 +53,7 @@ Module.register("MMM-GoogleAssistant", {
       }
     },
     recipes: [],
+    stopCommand: "stop",
     NPMCheck: {
       useChecker: true,
       delay: 10 * 60 * 1000,
@@ -113,7 +114,7 @@ Module.register("MMM-GoogleAssistant", {
     for(var i = 0; i < helperConfig.length; i++) {
       this.helperConfig[helperConfig[i]] = this.config[helperConfig[i]]
     }
-    this.myStatus = {
+    this.GAStatus = {
       actual: "standby",
       old : "standby"
     }
@@ -121,7 +122,7 @@ Module.register("MMM-GoogleAssistant", {
       assistantActivate: (payload)=>{
         this.assistantActivate(payload)
       },
-      postProcess: (response, callback_done, callback_none)=>{
+      postProcess: (response, callback_done, callback_none)=> {
         this.postProcess(response, callback_done, callback_none)
       },
       endResponse: ()=>{
@@ -130,10 +131,10 @@ Module.register("MMM-GoogleAssistant", {
       translate: (text) => {
         return this.translate(text)
       },
-      myStatus: (status) => {
+      GAStatus: (status) => {
         this.doPlugin("onStatus", {status: status})
-        this.myStatus = status
-        this.sendNotification("ASSISTANT_" + this.myStatus.actual.toUpperCase())
+        this.GAStatus = status
+        this.sendNotification("ASSISTANT_" + this.GAStatus.actual.toUpperCase())
       },
       "sendSocketNotification": (noti, params) => {
         this.sendSocketNotification(noti, params)
@@ -141,6 +142,27 @@ Module.register("MMM-GoogleAssistant", {
     }
 
     this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
+    var StopHooks = {
+      transcriptionHooks: {
+        "EXT_Stop": {
+          pattern: this.config.stopCommand,
+          command: "EXT_Stop"
+        }
+      },
+      commands: {
+        "EXT_Stop": {
+          moduleExec: {
+            module: ["MMM-GoogleAssistant"],
+            exec: "__FUNC__(module) => { module.stopCommand() }"
+          },
+          soundExec: {
+            "chime": "close"
+          },
+          displayResponse: false
+        }
+      }
+    }
+    this.parseLoadedRecipe(JSON.stringify(StopHooks))
   },
 
   doPlugin: function(pluginName, args) {
@@ -315,9 +337,9 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   assistantActivate: function(payload) {
-    if (this.myStatus.actual != "standby" && !payload.force) return logGA("Assistant is busy.")
+    if (this.GAStatus.actual != "standby" && !payload.force) return logGA("Assistant is busy.")
     this.clearAliveTimers()
-    if (this.myStatus.actual== "continue") this.assistantResponse.showTranscription(this.translate("GAContinue"))
+    if (this.GAStatus.actual== "continue") this.assistantResponse.showTranscription(this.translate("GAContinue"))
     else this.assistantResponse.showTranscription(this.translate("GABegin"))
     this.sendNotification("DETECTOR_STOP")
     this.doPlugin("onActivate")
@@ -329,7 +351,7 @@ Module.register("MMM-GoogleAssistant", {
       lang: this.config.assistantConfig.lang,
       useResponseOutput: this.config.responseConfig.useResponseOutput,
       useAudioOutput: this.config.responseConfig.useAudioOutput,
-      status: this.myStatus.old,
+      status: this.GAStatus.old,
       chime: true
     }
     var options = Object.assign({}, options, payload)
@@ -601,12 +623,16 @@ Module.register("MMM-GoogleAssistant", {
     this.assistantResponse.fullscreen(true,null,false)
   },
 
-  Version (version) {
+  Version: function (version) {
     this.assistantResponse.showTranscription("MMM-GoogleAssistant v" + version.version + " (" + version.rev + ") ©bugsounet " + this.translate("GAReady"))
     this.assistantResponse.fullscreen(true,null,false)
     this.aliveTimer = setTimeout(() => {
       this.assistantResponse.end(false)
       this.assistantResponse.showTranscription("")
     }, this.config.responseConfig.screenOutputTimer)
+  },
+
+  stopCommand: function() {
+    this.sendNotification("EXT_STOP")
   }
 })

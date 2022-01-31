@@ -8,7 +8,7 @@ class AssistantResponse {
     this.response = null
     this.aliveTimer = null
     this.allStatus = [ "hook", "standby", "reply", "error", "think", "continue", "listen", "confirmation" ]
-    this.myStatus = { "actual" : "standby" , "old" : "standby" }
+    this.GAStatus = { "actual" : "standby" , "old" : "standby" }
     this.loopCount = 0
     this.chime = this.config.chimes
     this.resourcesDir = "/modules/MMM-GoogleAssistant/resources/"
@@ -61,18 +61,18 @@ class AssistantResponse {
   }
 
   status (status, beep) {
-    this.myStatus.actual = status
+    this.GAStatus.actual = status
     var Status = document.getElementById("GA-Status")
-    if (beep && this.myStatus.old != "continue") this.playChime("beep")
+    if (beep && this.GAStatus.old != "continue") this.playChime("beep")
     if (status == "error" || status == "continue") this.playChime(status)
     if (status == "confirmation" && this.config.confirmationChime) this.playChime("confirmation")
-    if (status == "WAVEFILE" || status == "TEXT") this.myStatus.actual = "think"
-    if (status == "MIC") this.myStatus.actual = (this.myStatus.old == "continue") ? "continue" : "listen"
-    if (this.myStatus.actual == this.myStatus.old) return
-    logGA("Status from " + this.myStatus.old + " to " + this.myStatus.actual)
-    Status.src = (this.myStatus.old == "hook") ? this.imgStatus["hook"] : this.imgStatus[this.myStatus.actual]
-    this.callbacks.myStatus(this.myStatus) // send status external
-    this.myStatus.old = this.myStatus.actual
+    if (status == "WAVEFILE" || status == "TEXT") this.GAStatus.actual = "think"
+    if (status == "MIC") this.GAStatus.actual = (this.GAStatus.old == "continue") ? "continue" : "listen"
+    if (this.GAStatus.actual == this.GAStatus.old) return
+    logGA("Status from " + this.GAStatus.old + " to " + this.GAStatus.actual)
+    Status.src = (this.GAStatus.old == "hook") ? this.imgStatus["hook"] : this.imgStatus[this.GAStatus.actual]
+    this.callbacks.GAStatus(this.GAStatus) // send status external
+    this.GAStatus.old = this.GAStatus.actual
   }
   
   prepareGA () {
@@ -198,13 +198,13 @@ class AssistantResponse {
         this.aliveTimer = null
         this.aliveTimer = setTimeout(()=>{
           this.stopResponse(()=>{
-            this.fullscreen(false, this.myStatus)
+            this.fullscreen(false, this.GAStatus)
           })
         }, this.config.screenOutputTimer)
       }
     } else {
       this.status("standby")
-      this.fullscreen(false, this.myStatus)
+      this.fullscreen(false, this.GAStatus)
       if (cb) this.callbacks.endResponse()
     }
   }
