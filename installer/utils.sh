@@ -39,6 +39,18 @@ Installer_checkOS () {
     *)        Installer_error "$OSTYPE is not a supported platform"
               exit 0;;
   esac
+
+  # Check if this is a Debian or RPM based system
+  debian=
+  have_apt=`type -p apt-get`
+  have_dpkg=`type -p dpkg`
+  have_dnf=`type -p dnf`
+  have_yum=`type -p yum`
+  [ -f /etc/os-release ] && {
+    id_like="$(cat /etc/os-release | grep ^ID_LIKE= | cut -f2 -d=)"
+  }
+  [ "${id_like}" == "debian" ] && debian=1
+  [ "${debian}" ] || [ -f /etc/debian_version ] && debian=1
 }
 
 # check if all dependencies are installed
@@ -66,25 +78,6 @@ Installer_check_dependencies () {
     Installer_warning "Please logout and login for new group permissions to take effect, then restart npm install"
     exit
   fi
-}
-
-# check the version of GCC and downgrade it if it's not 7
-Installer_check_gcc7 () {
-	Installer_debug "gcc: $Installer_gcc"
-	Installer_debug "gcc revision: $Installer_gcc_rev"
-	Installer_debug "gcc version: $Installer_gcc_version"
-	if [[ "$Installer_gcc_version" != "7" ]]; then
-		Installer_debug "Forced script to reconize as GCC 8"
-		Installer_warning "You are using GCC $Installer_gcc_version, this is not compatible with this program."
-		Installer_warning "You have to downgrade to GCC 7."
-		Installer_yesno "Do you want to make changes ?" || exit 1
-		Installer_info "Installing GCC 7..."
-		sudo apt-get install gcc-7 || exit 1
-		Installer_success "GCC 7 installed"
-		Installer_info "Making GCC 7 by default..."
-		sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 10 || exit 1
-		sudo update-alternatives --config gcc || exit 1
-	fi
 }
 
 # Do electron rebuild
@@ -191,29 +184,91 @@ Installer_log () {
   exec > >(tee >(Installer_add_timestamps >> installer.log)) 2>&1
 }
 
-# display gcc version
-Installer_gcc="$(gcc --version | grep gcc)"
-Installer_gcc_rev="$(echo "${Installer_gcc#g*) }")"
-Installer_gcc_version="$(echo $Installer_gcc_rev | cut -c1)"
-
 #  Installer_update
 Installer_update () {
-  sudo apt-get update -y
+  if [ "${debian}" ]
+  then
+    sudo apt-get update -y
+  else
+    if [ "${have_dnf}" ]
+    then
+      sudo dnf makecache --refresh
+    else
+      if [ "${have_yum}" ]
+      then
+        sudo yum makecache --refresh
+      else
+        sudo apt-get update -y
+      fi
+    fi
+  fi
 }
 
 # indicates if a package is installed
 #
 # $1 - package to verify
 Installer_is_installed () {
-  hash "$1" 2>/dev/null || (dpkg -s "$1" 2>/dev/null | grep -q "installed")
+  if [ "${debian}" ]
+  then
+    if [ "${have_dpkg}" ]
+    then
+      hash "$1" 2>/dev/null || (dpkg -s "$1" 2>/dev/null | grep -q "installed")
+    else
+      if [ "${have_apt}" ]
+      then
+        hash "$1" 2>/dev/null || (apt-cache policy "$1" 2>/dev/null | grep -q "Installed")
+      else
+        hash "$1" 2>/dev/null || (dpkg -s "$1" 2>/dev/null | grep -q "installed")
+      fi
+    fi
+  else
+    if [ "${have_dnf}" ]
+    then
+      hash "$1" 2>/dev/null || (dnf lists installed "$1" > /dev/null 2>&1)
+    else
+      if [ "${have_yum}" ]
+      then
+        hash "$1" 2>/dev/null || (yum list installed "$1" > /dev/null 2>&1)
+      else
+        hash "$1" 2>/dev/null || (dpkg -s "$1" 2>/dev/null | grep -q "installed")
+      fi
+    fi
+  fi
 }
 
 # install packages, used for dependencies
 #
 # $@ - list of packages to install
 Installer_install () {
-  sudo apt-get install -y $@
-  sudo apt-get clean
+  if [ "${debian}" ]
+  then
+    if [ "${have_apt}" ]
+    then
+        sudo apt-get install -y $@
+        sudo apt-get clean
+    else
+      if [ "${have_dpkg}" ]
+      then
+        sudo dpkg -i $@
+      else
+        sudo apt install $@
+        sudo apt clean
+      fi
+    fi
+  else
+    if [ "${have_dnf}" ]
+    then
+      sudo dnf -y install $@
+    else
+      if [ "${have_yum}" ]
+      then
+        sudo yum -y install $@
+      else
+        sudo apt install $@
+        sudo apt clean
+      fi
+    fi
+  fi
 }
 
 # remove packages, used for uninstalls
@@ -222,7 +277,32 @@ Installer_install () {
 Installer_remove () {
   echo
   Installer_info "Removing $@"
-  sudo apt-get autoremove --purge $@
+  if [ "${debian}" ]
+  then
+    if [ "${have_apt}" ]
+    then
+      sudo apt-get autoremove --purge $@
+    else
+      if [ "${have_dpkg}" ]
+      then
+        sudo dpkg -P $@
+      else
+        sudo apt-get autoremove --purge $@
+      fi
+    fi
+  else
+    if [ "${have_dnf}" ]
+    then
+      sudo dnf autoremove $@
+    else
+      if [ "${have_yum}" ]
+      then
+        sudo yum autoremove $@
+      else
+        sudo apt-get autoremove --purge $@
+      fi
+    fi
+  fi
   echo
 }
 
@@ -337,7 +417,32 @@ update_node_v14 () {
   node_info=$(curl -sL https://deb.nodesource.com/setup_$NODE_STABLE_BRANCH | sudo -E bash - )
   if [ "$(echo $node_info | grep "not currently supported")." == "." ]; then
     Installer_info "Install/upgrade nodejs..."
-    sudo apt-get install -y nodejs
+    if [ "${debian}" ]
+    then
+      if [ "${have_apt}" ]
+      then
+        sudo apt-get install -y nodejs
+      else
+        if [ "${have_dpkg}" ]
+        then
+          sudo dpkg -i nodejs
+        else
+          sudo apt install nodejs
+        fi
+      fi
+    else
+      if [ "${have_dnf}" ]
+      then
+        sudo dnf -y install nodejs
+      else
+        if [ "${have_yum}" ]
+        then
+          sudo yum -y install nodejs
+        else
+          sudo apt install nodejs
+        fi
+      fi
+    fi
   else
     Installer_error "node {$NODE_STABLE_BRANCH} version installer not available, you have to install it manually"
     exit 255

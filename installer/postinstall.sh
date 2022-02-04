@@ -59,7 +59,7 @@ if [ "$screen_saver_running." != "." ]; then
         gsettings set org.mate.screensaver idle-activation-enabled false	 2>/dev/null
         gsettings set org.mate.screensaver lock_delay 0	 2>/dev/null
      echo " $screen_saver_running disabled"
-     DISPLAY=:0  mate-screensaver  >/dev/null 2>&1 &
+     DISPLAY=${DISPLAY:=:0} mate-screensaver  >/dev/null 2>&1 &
      ;;
    gnome-screensaver) echo 'Found: gnome screen saver'
      gnome_screensaver-command -d >/dev/null 2>&1
@@ -126,7 +126,7 @@ if [ -d "/etc/xdg/lxsession/LXDE-pi" ]; then
     # turn it off for the future
     sudo su -c "echo -e '@xset s noblank\n@xset s off\n@xset -dpms' >> /etc/xdg/lxsession/LXDE-pi/autostart"
     # turn it off now
-    export DISPLAY=:0; xset s noblank;xset s off;xset -dpms
+    export DISPLAY=${DISPLAY:=:0}; xset s noblank;xset s off;xset -dpms
   else
     echo "lxsession screen saver already disabled"
   fi
