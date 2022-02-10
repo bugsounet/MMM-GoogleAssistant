@@ -250,6 +250,7 @@ class AssistantResponse {
 
     var normalResponse = (response) => {
       this.showing = true
+      this.callbacks.Gateway(response)
       this.status("reply")
       var so = this.showScreenOutput(response)
       var ao = this.playAudioOutput(response)

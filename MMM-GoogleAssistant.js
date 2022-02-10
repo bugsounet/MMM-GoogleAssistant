@@ -136,6 +136,10 @@ Module.register("MMM-GoogleAssistant", {
         this.GAStatus = status
         this.sendNotification("ASSISTANT_" + this.GAStatus.actual.toUpperCase())
       },
+      Gateway: (response)=> {
+        return this.SendToGateway(response)
+      },
+
       "sendSocketNotification": (noti, params) => {
         this.sendSocketNotification(noti, params)
       }
@@ -634,5 +638,17 @@ Module.register("MMM-GoogleAssistant", {
 
   stopCommand: function() {
     this.sendNotification("EXT_STOP")
+  },
+
+  /** Send needed part of response to Gateway **/
+  SendToGateway: function(response) {
+    if (response.screen && (response.screen.links.length > 0 || response.screen.photos.length > 0)) {
+      let opt = {
+        "photos": response.screen.photos,
+        "urls": response.screen.links,
+      }
+      logGA("Send response to Gateway:", opt)
+      this.sendNotification("EXT_GATEWAY", opt)
+    }
   }
 })
