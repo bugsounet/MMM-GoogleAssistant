@@ -5,19 +5,6 @@
   "QUERY_REPLY" : "Assistente Google irá ser ativado",
   "QUERY_HELP" : "Podes controlar o `Assistente Google` por texto com o seguinte comando.",
 
-  "HIDE_HELP": "ocultar o módulo desejado",
-  "HIDE_ALREADY": " já está oculto",
-  "HIDE_DONE": " está oculto",
-  "HIDE_LOCKED": " trancado por outro programa, não é possivel ocultar",
-
-  "SHOW_HELP": "mostrar o módulo desejado",
-  "SHOW_ALREADY": " já está visivel",
-  "SHOW_DONE": " está visivel",
-  "SHOW_LOCKED": " trancado por outro programa, impossivel mostrar",
-
-  "MODULE_NOTFOUND": "Módulo não encontrado: ",
-  "MODULE_NAME": "Nome do Módulo em falta",
-
   "STOP_HELP": "Parar a Visualização Extendida se estiver em execução",
   "STOP_EXT": "Eu parei a Visualização Extendida ",
 

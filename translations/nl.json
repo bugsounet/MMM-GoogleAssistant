@@ -5,19 +5,6 @@
   "QUERY_REPLY" : "Google Assistant wordt geactiveerd",
   "QUERY_HELP" : "Met deze opdracht kun je `Google Assistant` per tekst bedienen.",
 
-  "HIDE_HELP": "verberg de gewenste module",
-  "HIDE_ALREADY": " is al verborgen",
-  "HIDE_DONE": " is nu verborgen",
-  "HIDE_LOCKED": " is vergrendeld door een ander programma, kan het niet verbergen",
-
-  "SHOW_HELP": "toon gewenste module",
-  "SHOW_ALREADY": "wordt al getoond",
-  "SHOW_DONE": "wordt nu getoond",
-  "SHOW_LOCKED": " is al vergrendeld door een ander programma, kan het niet tonen",
-
-  "MODULE_NOTFOUND": "Module niet gevonden ",
-  "MODULE_NAME": "Naam van de module ontbreekt",
-
   "STOP_HELP": "Stop uitgebreide weergave indien actief",
   "STOP_EXT": "Ik stop Uitgebreide Weergave",
 

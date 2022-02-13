@@ -6,19 +6,6 @@
   "QUERY_REPLY" : "Google Assistant wird aktiviert.",
   "QUERY_HELP" : "Mit `/query` können Texteingaben an Google Assistant übermittelt werden.",
 
-  "HIDE_HELP": "Verstecke angegebenes Modul.",
-  "HIDE_ALREADY": " ist bereits versteckt.",
-  "HIDE_DONE": " ist jetzt versteckt.",
-  "HIDE_LOCKED": " ist durch einen anderen Prozess gesperrt und kann nicht versteckt werden.",
-
-  "SHOW_HELP": "Zeige angegebenes Modul.",
-  "SHOW_ALREADY": " ist bereits angezeigt.",
-  "SHOW_DONE": " wird jetzt angezeigt.",
-  "SHOW_LOCKED": " ist durch einen anderen Prozess gesperrt und kann nicht angezeigt werden.",
-
-  "MODULE_NOTFOUND": "Modul nicht gefunden: ",
-  "MODULE_NAME": "Name des Moduls fehlt.",
-
   "STOP_HELP": "Beendet eventuelle Aktivität der erweiterten Anzeige.",
   "STOP_EXT": "Beende erweiterte Anzeige.",
 

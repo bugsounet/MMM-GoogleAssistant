@@ -541,14 +541,9 @@ Module.register("MMM-GoogleAssistant", {
       callback: "tbQuery"
     })
     commander.add({
-      command: "hide",
-      description: this.translate("HIDE_HELP"),
-      callback: "tbHide"
-    })
-    commander.add({
-      command: "show",
-      description: this.translate("SHOW_HELP"),
-      callback: "tbShow"
+      command: "stop",
+      description: this.translate("STOP_HELP"),
+      callback: "tbStopEXT"
     })
   },
 
@@ -558,67 +553,9 @@ Module.register("MMM-GoogleAssistant", {
     else this.assistantActivate({ type:"TEXT", key: query })
   },
 
-  tbHide: function(command, handler) {
-    var found = false
-    var unlock = false
-    if (handler.args) {
-      if (handler.args == "MMM-GoogleAssistant") {
-        return handler.reply("TEXT", this.translate("DADDY"))
-      }
-      MM.getModules().enumerate((m)=> {
-        if (m.name == handler.args) {
-          found = true
-          if (m.hidden) return handler.reply("TEXT", handler.args + this.translate("HIDE_ALREADY"))
-          if (m.lockStrings.length > 0) {
-            m.lockStrings.forEach( lock => {
-              if (lock == "TB_EXT") {
-                m.hide(500, {lockString: "TB_EXT"})
-                if (m.lockStrings.length == 0) {
-                  unlock = true
-                  handler.reply("TEXT", handler.args + this.translate("HIDE_DONE"))
-                }
-              }
-            })
-            if (!unlock) return handler.reply("TEXT", handler.args + this.translate("HIDE_LOCKED"))
-          }
-          else {
-            m.hide(500, {lockString: "TB_EXT"})
-            handler.reply("TEXT", handler.args + this.translate("HIDE_DONE"))
-          }
-        }
-      })
-      if (!found) handler.reply("TEXT", this.translate("MODULE_NOTFOUND") + handler.args)
-    } else return handler.reply("TEXT", this.translate("MODULE_NAME"))
-  },
-
-  tbShow: function(command, handler) {
-    var found = false
-    var unlock = false
-    if (handler.args) {
-      MM.getModules().enumerate((m)=> {
-        if (m.name == handler.args) {
-          found = true
-          if (!m.hidden) return handler.reply("TEXT", handler.args + this.translate("SHOW_ALREADY"))
-          if (m.lockStrings.length > 0) {
-            m.lockStrings.forEach( lock => {
-              if (lock == "TB_EXT") {
-                m.show(500, {lockString: "TB_EXT"})
-                if (m.lockStrings.length == 0) {
-                  unlock = true
-                  handler.reply("TEXT", handler.args + this.translate("SHOW_DONE"))
-                }
-              }
-            })
-            if (!unlock) return handler.reply("TEXT", handler.args + this.translate("SHOW_LOCKED"))
-          }
-          else {
-            m.show(500, {lockString: "TB_EXT"})
-            handler.reply("TEXT", handler.args + this.translate("SHOW_DONE"))
-          }
-        }
-      })
-      if (!found) handler.reply("TEXT", this.translate("MODULE_NOTFOUND") + handler.args)
-    } else return handler.reply("TEXT", this.translate("MODULE_NAME"))
+  tbStopEXT: function(command, handler) {
+    this.stopCommand()
+    handler.reply("TEXT", this.translate("STOP_EXT"))
   },
 
   Loading: function () {
@@ -637,6 +574,10 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   stopCommand: function() {
+    this.sendNotification("EXT_ALERT", {
+      type: "information",
+      message: this.translate("EXTStop")
+    })
     this.sendNotification("EXT_STOP")
   },
 

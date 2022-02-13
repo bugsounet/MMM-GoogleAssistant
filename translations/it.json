@@ -6,19 +6,6 @@
   "QUERY_REPLY" : "Google Assistant si attiva",
   "QUERY_HELP" : "Puoi comandare `Google Assistant` scrivendo dopo questo comando.",
 
-  "HIDE_HELP": "nascondi il modulo scelto",
-  "HIDE_ALREADY": " è già nascosto",
-  "HIDE_DONE": " è ora nascosto",
-  "HIDE_LOCKED": " è bloccato da un altro programma, non lo posso nascondere",
-
-  "SHOW_HELP": "mostra il modulo indicato",
-  "SHOW_ALREADY": " è già mostrato",
-  "SHOW_DONE": " è ora mostrato",
-  "SHOW_LOCKED": " è già bloccato da un altro programma, non lo posso mostrare",
-
-  "MODULE_NOTFOUND": "modulo non trovato: ",
-  "MODULE_NAME": "nome del modulo mancante",
-
   "STOP_HELP": "Stop Extented Display se in funzione",
   "STOP_EXT": "Extented Display chiuso",
 
