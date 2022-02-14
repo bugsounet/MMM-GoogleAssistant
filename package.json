@@ -9,7 +9,7 @@
     "postinstall": "installer/postinstall.sh",
     "update": "installer/update.sh",
     "rebuild": "installer/rebuild.sh",
-    "token": "installer/tokens.sh"
+    "token": "installer/token.sh"
   },
   "keywords": [
     "magic mirror",
