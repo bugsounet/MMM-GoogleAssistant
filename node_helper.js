@@ -68,8 +68,6 @@ module.exports = NodeHelper.create({
     var assistantConfig = Object.assign({}, this.config.assistantConfig)
     assistantConfig.debug = this.config.debug
     assistantConfig.lang = payload.lang
-    assistantConfig.useScreenOutput = payload.useResponseOutput
-    assistantConfig.useAudioOutput = payload.useAudioOutput
     assistantConfig.micConfig = this.config.micConfig
     this.assistant = new Assistant(assistantConfig, (obj)=>{this.tunnel(obj)})
 

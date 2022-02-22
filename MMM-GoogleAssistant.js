@@ -14,17 +14,15 @@ Module.register("MMM-GoogleAssistant", {
     assistantConfig: {
       lang: "en-US",
       latitude: 51.508530,
-      longitude: -0.076132
+      longitude: -0.076132,
+      projectId: null
     },
     responseConfig: {
       useFullscreen: false,
-      useResponseOutput: true,
       responseOutputCSS: "response_output.css",
       screenOutputTimer: 5000,
-      useAudioOutput: true,
       useChime: true,
       confirmationChime: true,
-      useInformations: true,
       chimes: {
         beep: "beep.mp3",
         error: "error.mp3",
@@ -118,34 +116,8 @@ Module.register("MMM-GoogleAssistant", {
       actual: "standby",
       old : "standby"
     }
-    var callbacks = {
-      assistantActivate: (payload)=>{
-        this.assistantActivate(payload)
-      },
-      postProcess: (response, callback_done, callback_none)=> {
-        this.postProcess(response, callback_done, callback_none)
-      },
-      endResponse: ()=>{
-        this.endResponse()
-      },
-      translate: (text) => {
-        return this.translate(text)
-      },
-      GAStatus: (status) => {
-        this.doPlugin("onStatus", {status: status})
-        this.GAStatus = status
-        this.sendNotification("ASSISTANT_" + this.GAStatus.actual.toUpperCase())
-      },
-      Gateway: (response)=> {
-        return this.SendToGateway(response)
-      },
-
-      "sendSocketNotification": (noti, params) => {
-        this.sendSocketNotification(noti, params)
-      }
-    }
-
-    this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
+    this.assistantResponse = null
+    this.loadAssistantResponse()
     var StopHooks = {
       transcriptionHooks: {
         "EXT_Stop": {
@@ -167,6 +139,36 @@ Module.register("MMM-GoogleAssistant", {
       }
     }
     this.parseLoadedRecipe(JSON.stringify(StopHooks))
+  },
+
+  loadAssistantResponse: function () {
+    var callbacks = {
+      assistantActivate: (payload)=>{
+        this.assistantActivate(payload)
+      },
+      postProcess: (response, callback_done, callback_none)=> {
+        this.postProcess(response, callback_done, callback_none)
+      },
+      endResponse: ()=>{
+        this.endResponse()
+      },
+      translate: (text) => {
+        return this.translate(text)
+      },
+      GAStatus: (status) => {
+        this.doPlugin("onStatus", {status: status})
+        this.GAStatus = status
+        this.sendNotification("ASSISTANT_" + this.GAStatus.actual.toUpperCase())
+      },
+      Gateway: (response)=> {
+        return this.SendToGateway(response)
+      },
+      "sendSocketNotification": (noti, params) => {
+        this.sendSocketNotification(noti, params)
+      }
+    }
+
+    this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
   },
 
   doPlugin: function(pluginName, args) {
@@ -238,6 +240,14 @@ Module.register("MMM-GoogleAssistant", {
         if (payload && payload.type && payload.key) this.assistantActivate(payload)
         else this.assistantActivate({ type:"MIC" })
         break
+      case "GA_FORCE_FULLSCREEN":
+        if (this.config.responseConfig.useFullscreen) return logGA("Force Fullscreen: Already activated")
+        // change configuration and reload AssistantResponse
+        this.config.responseConfig.useFullscreen= true
+        this.assistantResponse = null
+        this.loadAssistantResponse()
+        logGA("Force Fullscreen: AssistantResponse Reloaded")
+        break
     }
   },
 
@@ -266,14 +276,16 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantResponse.showError(this.translate(payload.message,{ VALUES: payload.values } ))
         this.assistantResponse.forceStatusImg("userError")
         break
-      case "ERROR":
-        //this.Informations("warning", { message: payload })
-        break
       case "WARNING":
-        //this.Informations("warning", payload)
+        this.sendNotification("EXT_ALERT", {
+          message: this.translate(payload),
+          type: "warning",
+          timer: 10000
+        })
         break
       case "INFORMATION":
-        //this.Informations("information", payload)
+      case "ERROR":
+        // maybe for futur
         break
       case "INITIALIZED":
         logGA("Initialized.")
@@ -353,8 +365,6 @@ Module.register("MMM-GoogleAssistant", {
       type: "TEXT",
       key: null,
       lang: this.config.assistantConfig.lang,
-      useResponseOutput: this.config.responseConfig.useResponseOutput,
-      useAudioOutput: this.config.responseConfig.useAudioOutput,
       status: this.GAStatus.old,
       chime: true
     }

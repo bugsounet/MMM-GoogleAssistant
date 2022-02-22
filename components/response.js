@@ -186,7 +186,6 @@ class AssistantResponse {
           profile: response.lastQuery.profile,
           key: null,
           lang: response.lastQuery.lang,
-          useResponseOutput: response.lastQuery.useResponseOutput,
           force: true
         }, Date.now())
 
@@ -223,7 +222,6 @@ class AssistantResponse {
           profile: response.lastQuery.profile,
           key: response.transcription.transcription,
           lang: response.lastQuery.lang,
-          useResponseOutput: response.lastQuery.useResponseOutput,
           force: true,
           chime: false
         }, null)
@@ -236,7 +234,6 @@ class AssistantResponse {
           profile: response.lastQuery.profile,
           key: null,
           lang: response.lastQuery.lang,
-          useResponseOutput: response.lastQuery.useResponseOutput,
           force: true
         }, Date.now())
         this.loopCount += 1
@@ -287,7 +284,7 @@ class AssistantResponse {
   }
 
   playAudioOutput (response) {
-    if (response.audio && this.config.useAudioOutput) {
+    if (response.audio) {
       this.showing = true
       this.audioResponse.src = this.makeUrl(response.audio.uri)
       return true
@@ -296,7 +293,7 @@ class AssistantResponse {
   }
 
   showScreenOutput (response) {
-    if (!this.sercretMode && response.screen && this.config.useResponseOutput) {
+    if (!this.sercretMode && response.screen) {
       if (!response.audio) {
         this.showTranscription(this.callbacks.translate("NO_AUDIO_RESPONSE"))
       }
@@ -307,12 +304,14 @@ class AssistantResponse {
       winh.classList.remove("hidden")
       return true
     }
+    /* really needed ?
     else {
       if (response.text && !this.config.useResponseOutput) {
         this.showTranscription(response.text)
         return true
       }
     }
+    */
     return false
   }
 
