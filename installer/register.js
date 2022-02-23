@@ -85,21 +85,21 @@ Auth(config).then (() => {
 registerDevice = function(config) {
   return new Promise(async(res, rej) => {
     try {
-      const projectid = config.project_id
+      const projectId = config.project_id
       const accesstoken = config.token
-      const modelid = `${projectid}-GAv4`
-      const deviceid = "MMM-GoogleAssistant"
+      const modelId = projectId+"-bugsounet_GA"
+      const deviceId = "MMM-GoogleAssistant"
       // define a model
       let model = await axios({
         method: 'post',
-        url: `https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectid}/deviceModels/`,
+        url: `https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectId}/deviceModels/`,
         headers: {
           'Authorization': `Bearer ${accesstoken}`,
           'Content-Type': 'application/json'
         },
         data: {
-          "project_id": projectid,
-          "device_model_id": `${projectid}-GAv4`,
+          "project_id": projectId,
+          "device_model_id": modelId,
           "manifest": {
             "manufacturer": "@bugsounet",
             "product_name": "MMM-GoogleAssistant",
@@ -122,14 +122,14 @@ registerDevice = function(config) {
       console.log("[GA] Model device created: MMM-GoogleAssistant")
       let instance = await axios({
         method: 'post',
-        url: `https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectid}/devices/`,
+        url: `https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectId}/devices/`,
         headers: {
           'Authorization': `Bearer ${accesstoken}`,
           'Content-Type': 'application/json'
         },
         data: {
-          "id": deviceid,
-          "model_id": modelid,
+          "id": deviceId,
+          "model_id": modelId,
           "nickname": "Jarvis",
           "client_type": "SDK_SERVICE"
         }

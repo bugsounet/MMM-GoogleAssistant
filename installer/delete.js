@@ -1,4 +1,3 @@
-
 const axios = require ("axios")
 const path = require('path')
 const fs = require("fs")
@@ -88,7 +87,7 @@ removeDevice = function(config) {
     try {
       const projectId = config.project_id
       const accesstoken = config.token
-      const modelId = projectId+"-GAv4";
+      const modelId = projectId+"-bugsounet_GA"
       const deviceId = "MMM-GoogleAssistant"
       let instance = await axios({
         method: 'delete',

@@ -52,7 +52,7 @@ class ASSISTANT {
       }
 
       if (this.projectId) {
-        this.assistantConfig.conversationConfig.deviceModelId = this.projectId+"-GAv4"
+        this.assistantConfig.conversationConfig.deviceModelId = this.projectId+"-bugsounet_GA"
         this.assistantConfig.conversationConfig.deviceId = "MMM-GoogleAssistant"
         log("Used project_id:", this.projectId)
         log("deviceModelId is:", this.assistantConfig.conversationConfig.deviceModelId)
