@@ -15,7 +15,7 @@ Module.register("MMM-GoogleAssistant", {
       lang: "en-US",
       latitude: 51.508530,
       longitude: -0.076132,
-      projectId: null
+      deviceRegistred: false
     },
     responseConfig: {
       useFullscreen: false,

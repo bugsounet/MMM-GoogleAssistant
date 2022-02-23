@@ -17,9 +17,9 @@ var log = function() {
 class ASSISTANT {
   constructor(config, tunnel = ()=>{}) {
     var debug = (config.debug) ? config.debug : false
+    if (debug == true) log = _log
     this.modulePath = config.modulePath
     this.micConfig = config.micConfig
-
     this.assistantConfig = {
       auth:{
         keyFilePath : path.resolve(config.modulePath, "credentials.json"),
@@ -44,11 +44,21 @@ class ASSISTANT {
         lang: config.lang
       },
     }
-    if (config.projectId) {
-      this.assistantConfig.conversationConfig.deviceModelId = config.projectId+"-GAv4"
-      this.assistantConfig.conversationConfig.deviceId = "MMM-GoogleAssistant"
+    if (config.deviceRegistred) {
+      try {
+        this.projectId = require("../credentials.json").installed.project_id
+      } catch (e) {
+        console.error("[GA:AS] project_id not found on credentials.json")
+      }
+
+      if (this.projectId) {
+        this.assistantConfig.conversationConfig.deviceModelId = this.projectId+"-GAv4"
+        this.assistantConfig.conversationConfig.deviceId = "MMM-GoogleAssistant"
+        log("Used project_id:", this.projectId)
+        log("deviceModelId is:", this.assistantConfig.conversationConfig.deviceModelId)
+        log("deviceId is", this.assistantConfig.conversationConfig.deviceId)
+      }
     }
-    if (debug == true) log = _log
     this.debug = debug
     this.micMode = false
     this.tunnel = tunnel
