@@ -2,7 +2,7 @@
  ** Module : MMM-GoogleAssistant v4
  ** @bugsounet
  ** ©01-2022
- ** support: http://forum.bugsounet.fr
+ ** support: https://forum.bugsounet.fr
  **/
 
 logGA = (...args) => { /* do nothing */ }
@@ -11,6 +11,7 @@ Module.register("MMM-GoogleAssistant", {
   requiresVersion: "2.18.0",
   defaults: {
     debug:false,
+    stopCommand: "stop",
     assistantConfig: {
       lang: "en-US",
       latitude: 51.508530,
@@ -50,13 +51,7 @@ Module.register("MMM-GoogleAssistant", {
         responseOutput: "60%"
       }
     },
-    recipes: [],
-    stopCommand: "stop",
-    NPMCheck: {
-      useChecker: true,
-      delay: 10 * 60 * 1000,
-      useAlert: true
-    }
+    recipes: []
   },
   micConfig: {
     recorder: "auto",
@@ -103,7 +98,7 @@ Module.register("MMM-GoogleAssistant", {
     this.aliveTimer = null
     const helperConfig = [
       "debug", "recipes", "assistantConfig",
-      "responseConfig", "NPMCheck"
+      "responseConfig"
     ]
     this.helperConfig = {}
     this.helperConfig.micConfig = this.micConfig
@@ -253,21 +248,6 @@ Module.register("MMM-GoogleAssistant", {
 
   socketNotificationReceived: function(noti, payload) {
     switch(noti) {
-      case "NPM_UPDATE":
-        if (payload && payload.length > 0) {
-          if (this.config.NPMCheck.useAlert) {
-            payload.forEach(npm => {
-              this.sendNotification("SHOW_ALERT", {
-                type: "notification" ,
-                message: "[NPM] " + npm.library + " v" + npm.installed +" -> v" + npm.latest,
-                title: this.translate("UPDATE_NOTIFICATION_MODULE", { MODULE_NAME: npm.module }),
-                timer: this.config.NPMCheck.delay - 2000
-              })
-            })
-          }
-          this.sendNotification("NPM_UPDATE", payload)
-        }
-        break
       case "LOAD_RECIPE":
         this.parseLoadedRecipe(payload)
         break

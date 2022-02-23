@@ -8,7 +8,6 @@ const path = require("path")
 const Assistant = require("./components/assistant.js")
 const ScreenParser = require("./components/screenParser.js")
 const { getPlatform } = require("./components/platform.js")
-const npmCheck = require("@bugsounet/npmcheck")
 
 logGA = (...args) => { /* do nothing */ }
 
@@ -156,15 +155,6 @@ module.exports = NodeHelper.create({
     this.config.micConfig.recorder= recorderType
 
     this.loadRecipes(()=> this.sendSocketNotification("INITIALIZED", Version))
-    if (this.config.NPMCheck.useChecker) {
-      var cfg = {
-        dirName: __dirname,
-        moduleName: this.name,
-        timer: this.config.NPMCheck.delay,
-        debug: this.config.debug
-      }
-      this.Checker= new npmCheck(cfg, update => this.sendSocketNotification("NPM_UPDATE", update))
-    }
     console.log("[GA] Google Assistant is initialized.")
   },
 
