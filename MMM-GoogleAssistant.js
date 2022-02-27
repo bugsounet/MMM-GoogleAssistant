@@ -276,7 +276,7 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) {
-          this.sendNotification("EXT_VOLUME_SET", payload.volume)
+          this.sendNotification("EXT_VOLUME-SET", payload.volume)
         }
         this.assistantResponse.start(payload)
         break
@@ -444,7 +444,7 @@ Module.register("MMM-GoogleAssistant", {
             logGA("Native Action: " + exec.command, exec.params)
             if (exec.command == "action.devices.commands.SetVolume") {
               logGA("Volume Control:", exec.params.volumeLevel)
-              this.sendNotification("EXT_VOLUME_SET", exec.params.volumeLevel)
+              this.sendNotification("EXT_VOLUME-SET", exec.params.volumeLevel)
             }
           })
         })
