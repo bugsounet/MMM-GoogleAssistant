@@ -272,7 +272,7 @@ Module.register("MMM-GoogleAssistant", {
         this.Version(payload)
         this.assistantResponse.status("standby")
         this.doPlugin("onReady")
-        this.sendNotification("GA_READY")
+        this.sendNotification("GAv4_READY")
         break
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) {
