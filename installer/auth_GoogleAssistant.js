@@ -9,7 +9,7 @@ const GoogleAssistant = require('@bugsounet/google-assistant');
 const config = {
   auth: {
     keyFilePath: path.resolve(__dirname, '../credentials.json'),
-    savedTokensPath: path.resolve(__dirname, '../tokens/tokenGA.json'), // where you want the tokens to be saved
+    savedTokensPath: path.resolve(__dirname, '../tokenGA.json'), // where you want the tokens to be saved
   },
   conversation: {
     lang: 'en-US', // defaults to en-US, but try other ones, it's fun!

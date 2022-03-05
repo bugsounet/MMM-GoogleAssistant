@@ -18,31 +18,29 @@ Installer_dir="$(Installer_get_current_dir)"
 
 # move to installler directory
 cd "$Installer_dir"
-
 source utils.sh
 
-# module name
-Installer_module="MMM-GoogleAssistant"
+# Go back to module root
+cd ..
 
-# check version
-Installer_version="$(cat ../package.json | grep '"version":' | cut -c14-30 2>/dev/null)"
+echo
+# check version in package.json file
+Installer_version="$(grep -Eo '\"version\"[^,]*' ./package.json | grep -Eo '[^:]*$' | awk  -F'\"' '{print $2}')"
+Installer_module="$(grep -Eo '\"name\"[^,]*' ./package.json | grep -Eo '[^:]*$' | awk  -F'\"' '{print $2}')"
 
 # Let's start !
-Installer_info "Welcome to $Installer_module $Installer_version"
+Installer_info "Welcome to $Installer_module v$Installer_version"
+
 echo
 
-# delete package-lock.json (force)
-rm -f ../package-lock.json
-
 # Check not run as root
+Installer_info "No root checking..."
 if [ "$EUID" -eq 0 ]; then
   Installer_error "npm install must not be used as root"
-  exit 1
+  exit 255
 fi
-
-Installer_chk "$(pwd)/../" "MMM-GoogleAssistant"
-Installer_chk "$(pwd)/../../../" "MagicMirror"
-cd ..
+Installer_chk "$(pwd)/" "$Installer_module"
+Installer_chk "$(pwd)/../../" "MagicMirror"
 echo
 
 # Check platform compatibility
@@ -66,53 +64,5 @@ else
 fi
 
 echo
-# Check dependencies
-# Required packages on Debian based systems
-deb_dependencies=(wget unclutter build-essential vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
-# Required packages on RPM based systems
-rpm_dependencies=(blas-devel file-libs vlc wget autoconf automake binutils bison flex gcc gcc-c++ glibc-devel libtool make pkgconf strace byacc ccache cscope ctags elfutils indent ltrace perf valgrind systemd-devel libudev-devel libcec)
-# Check dependencies
-if [ "${debian}" ]
-then
-  dependencies=( "${deb_dependencies[@]}" )
-else
-  if [ "${have_dnf}" ]
-  then
-    dependencies=( "${rpm_dependencies[@]}" )
-  else
-    if [ "${have_yum}" ]
-    then
-      dependencies=( "${rpm_dependencies[@]}" )
-    else
-      dependencies=( "${deb_dependencies[@]}" )
-    fi
-  fi
-fi
+Installer_info "Installing all npm libraries..."
 
-[ "${__NO_DEP_CHECK__}" ] || {
-  Installer_info "Checking all dependencies..."
-  Installer_check_dependencies
-  Installer_success "All Dependencies needed are installed !"
-}
-
-echo
-# apply @sdetweil fix
-Installer_info "Installing @sdetweil sandbox fix..."
-bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/fixsandbox)"
-
-echo
-# switch branch
-Installer_info "Installing Sources..."
-if is_pifour; then
-  Installer_info "Raspberry Pi4 Detected."
-else
-  Installer_error "[WARN] You don't use a Raspberry Pi4, switch to light sources..."
-  git checkout -f light 2>/dev/null || Installer_error "Installing Error !"
-  git pull 2>/dev/null
-  Installer_error "~~~~~~"
-  Installer_error "~~~ Retry again npm install for continue installing ~~~"
-  Installer_error "~~~~~~"
-  exit 255
-fi
-
-echo

@@ -6,45 +6,10 @@
   "QUERY_REPLY" : "Google Assistant will be activated",
   "QUERY_HELP" : "You can command `Google Assistant` by text with this command.",
 
-  "RESTART_HELP" : "restart MagicMirror with pm2",
-  "RESTART_DONE" : "I will restart it !",
-  "RESTART_ERROR" : "<id> missing !",
-
-  "WAKEUP_HELP": "wakeup the screen and restart counter",
-  "WAKEUP_REPLY": "Screen Wake Up !",
-
-  "HIDE_HELP": "hide desired module",
-  "HIDE_ALREADY": " is already hidden",
-  "HIDE_DONE": " is now hidden",
-  "HIDE_LOCKED": " is locked by another program, can't hidden it",
-
-  "SHOW_HELP": "show desired module",
-  "SHOW_ALREADY": " is already shown",
-  "SHOW_DONE": " is now shown",
-  "SHOW_LOCKED": " is already locked by another program, can't show it",
-
-  "MODULE_NOTFOUND": "Module not found: ",
-  "MODULE_NAME": "Name of the module missing",
-
   "STOP_HELP": "Stop Extented Display if running",
   "STOP_EXT": "I stop Extented Display",
 
-  "EXT_OPEN": "Opening link: ",
-  "EXT_INVALID": "This link is not invalid!",
-  "EXT_HELP": "Activate Extented Display with link",
-
-  "VOLUME_HELP": "Set the volume of your device",
-
   "DADDY": "daddy @bugsounet says... NO,NO AND NO !!!",
-
-  "DAY" : "day",
-  "DAYS" : "days",
-  "HOUR" : "hour",
-  "HOURS" : "hours",
-  "MINUTE" : "minute",
-  "MINUTES" : "minutes",
-  "SECOND": "second",
-  "SECONDS": "seconds",
 
   "GALoading": "Loading...",
   "GAReady": "Ready!",
@@ -53,77 +18,9 @@
   "GAErrorRecipe": "[FATAL] Error when loading this recipe: {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json missing",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json missing",
-  "GAErrorTokenYoutube": "[FATAL] Token Youtube: tokenYT.json missing",
 
-  "LibraryError": "Error when loading: {VALUES} library",
-
-  "LibrespotNoResponse": "No response from librespot! ({VALUES})",
-  "LibrespotConnected": "Connected to librespot! ({VALUES})",
-  "LibrespotConnecting": "Please wait, connecting to librespot...",
-  "LibrespotNoInstalled": "librespot is not installed !",
-  "LibrespotError": "Librespot: {VALUES}",
-
-  "RaspotifyNoResponse": "No response from raspotify! ({VALUES})",
-  "RaspotifyConnected": "Connected to raspotify! ({VALUES})",
-  "RaspotifyConnecting": "Please wait, connecting to raspotify...",
-  "RaspotifyNoInstalled": "Raspotify is not installed !",
-  "RaspotifyError": "Raspotify: {VALUES}",
-  
-  "YouTubePlaying": "YouTube will playing: {VALUES}",
-  "YouTubeError": "YouTube: {VALUES}",
-
-  "Volume": "Volume: {VALUES}",
-  "VolumePresetError": "Volume: Preset Error!",
-  "VolumeText": "Volume:",
-  "VolumeDisabled": "Volume Control is disabled",
-
-  "GovernorError": "Governor: {VALUES}",
-
-  "PirError": "Pir sensor error code: {VALUES}",
-
-  "SpotifyNoResult": "Spotify: No Result found",
-  "SpotifySearchFailed": "Spotify: Search and Play failed",
-  "SpotifyListenText": "Listening on",
-  "SpotifyForGA": "Spotify for Google Assistant",
-  "SpotifySearchTypePlaylist": "playlist",
-  "SpotifySearchTypeAlbum": "album",
-  "SpotifySearchTypeTrack": "track",
-  "SpotifySearchTypeArtist": "artist",
-
-  "ScreenWakeUp": "Screen Wakeup by {VALUES}",
-  "ScreenLock": "Screen Lock by {VALUES}",
-  "ScreenUnLock": "Screen UnLock by {VALUES}",
-  "ScreenTurnOff": "Auto Turn Off Screen:",
-  "ScreenLastPresence": "Last Presence:",
-  "ScreenPowerOn": "Turn on screen",
-  "ScreenPowerOff": "Turn off screen",
-
-  "InternetDown" : "{VALUES}, Internet is DOWN!",
-  "InternetRestart": "Internet is now available! Restarting MagicMirror...",
-  "InternetAvailable": "Internet is now AVAILABLE, after {VALUES}",
-  
   "EXTStop": "All Extented Process are now stopped",
 
-  "CastStart": "Start Casting YouTube",
-  "CastStop" : "Stop Casting YouTube",
-
   "ShellExecError": "ShellExec return some Errors",
-  "ShellExecDone": "ShellExec executed sucessfully",
-
-  "LinksOpen": "Opening Extended Display Browser",
-  "LinksClose": "Closing Extented Display Browser",
-
-  "PhotosNotActivated": "Photo module is not activated",
-
-  "GPhotosNotActivated": "GooglePhotos API is not activated",
-  "GPhotosRecipeNotActivated": "GooglePhotos Recipe mode is not activated",
-  "GPhotosBckGrndActivated": "GooglePhotos Background mode is activated",
-  "GPhotosModuleActivated": "GooglePhotos Module mode is activated",
-  "GPFailedOpenURL": "Google Photos: Image load failed",
-  "GPOpen": "Open Google Photos",
-  "GPClose": "Close Google Photos",
-  "GPAlbumName": "Album:",
-  "GPError": "GooglePhotos: No photos to display",
-  "GPNoPhotoFound" : "GooglePhotos: No picture found",
-  "GPReceive": "GooglePhotos receive {VALUES} pictures"
+  "ShellExecDone": "ShellExec executed sucessfully"
 }

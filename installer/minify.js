@@ -15,12 +15,8 @@ check(
            "../node_helper.js",
            "../MMM-GoogleAssistant.js",
            "../components/assistant.js",
-           "../components/extented.js",
-           "../components/long-press-event.js",
            "../components/response.js",
-           "../components/screenParser.js",
-           "../components/spotify.js",
-           "../components/musicplayer.js"
+           "../components/screenParser.js"
           ]
 
           files.forEach(file => {
