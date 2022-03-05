@@ -19,13 +19,19 @@ Installer_dir="$(Installer_get_current_dir)"
 # move to installler directory
 cd "$Installer_dir"
 source utils.sh
-Installer_info "Welcome to MMM-GoogleAssistant Token generator!"
-echo
-Installer_beep=false
 
-Installer_yesno "Do you want to install/reinstall GoogleAssistant token?" && (
+# Go back to module root
+cd ..
+
+# check version in package.json file
+Installer_module="$(grep -Eo '\"name\"[^,]*' ./package.json | grep -Eo '[^:]*$' | awk  -F'\"' '{print $2}')"
+
+Installer_info "Welcome to $Installer_module Token generator!"
+echo
+
+Installer_yesno "Do you want to install/reinstall $Installer_module token?" && (
   rm -f tokenGA.json
-  node auth_GoogleAssistant
+  node installer/auth_GoogleAssistant
 )
 
 echo
