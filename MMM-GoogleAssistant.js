@@ -231,11 +231,11 @@ Module.register("MMM-GoogleAssistant", {
         this.sendSocketNotification("INIT", this.helperConfig)
         this.Loading()
         break
-      case "GA_ACTIVATE":
+      case "GAv4_ACTIVATE":
         if (payload && payload.type && payload.key) this.assistantActivate(payload)
         else this.assistantActivate({ type:"MIC" })
         break
-      case "GA_FORCE_FULLSCREEN":
+      case "GAv4_FORCE_FULLSCREEN":
         if (this.config.responseConfig.useFullscreen) return logGA("Force Fullscreen: Already activated")
         // change configuration and reload AssistantResponse
         this.config.responseConfig.useFullscreen= true
@@ -292,10 +292,10 @@ Module.register("MMM-GoogleAssistant", {
 
       /** detector ON/OFF **/
       case "DETECTOR_START":
-        this.sendNotification("DETECTOR_START")
+        this.sendNotification("EXT_DETECTOR-START")
         break
       case "DETECTOR_STOP":
-        this.sendNotification("DETECTOR_STOP")
+        this.sendNotification("EXT_DETECTOR-STOP")
         break
     }
   },
@@ -337,7 +337,7 @@ Module.register("MMM-GoogleAssistant", {
     this.clearAliveTimers()
     if (this.GAStatus.actual== "continue") this.assistantResponse.showTranscription(this.translate("GAContinue"))
     else this.assistantResponse.showTranscription(this.translate("GABegin"))
-    this.sendNotification("DETECTOR_STOP")
+    this.sendNotification("EXT_DETECTOR-STOP")
     this.doPlugin("onActivate")
     this.assistantResponse.fullscreen(true)
     this.lastQuery = null
@@ -354,7 +354,7 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   endResponse: function() {
-    this.sendNotification("DETECTOR_START")
+    this.sendNotification("EXT_DETECTOR-START")
   },
 
   postProcess: function (response, callback_done=()=>{}, callback_none=()=>{}) {
