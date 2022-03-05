@@ -8,7 +8,6 @@
     "preinstall": "installer/preinstall.sh",
     "postinstall": "installer/postinstall.sh",
     "update": "installer/update.sh",
-    "rebuild": "installer/rebuild.sh",
     "token": "installer/token.sh",
     "list": "node installer/list.js",
     "delete": "node installer/delete.js",
