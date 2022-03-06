@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
-  "version": "3.3.3",
-  "rev": "220102",
+  "version": "3.3.4",
+  "rev": "220306-Last",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -42,7 +42,7 @@
     "@bugsounet/governor": "^1.0.3",
     "@bugsounet/internet": "^1.0.0",
     "@bugsounet/node-buffertomp3": "^1.0.0",
-    "@bugsounet/node-lpcm16": "^2.0.0",
+    "@bugsounet/node-lpcm16": "^1.0.2",
     "@bugsounet/npmcheck": "^0.9.0",
     "@bugsounet/pir": "^1.1.0",
     "@bugsounet/screen": "^1.1.3",
