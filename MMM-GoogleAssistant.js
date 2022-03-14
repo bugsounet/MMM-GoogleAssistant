@@ -289,14 +289,6 @@ Module.register("MMM-GoogleAssistant", {
       case "AUDIO_END":
         this.assistantResponse.end()
         break
-
-      /** detector ON/OFF **/
-      case "DETECTOR_START":
-        this.sendNotification("EXT_DETECTOR-START")
-        break
-      case "DETECTOR_STOP":
-        this.sendNotification("EXT_DETECTOR-STOP")
-        break
     }
   },
 
@@ -337,7 +329,6 @@ Module.register("MMM-GoogleAssistant", {
     this.clearAliveTimers()
     if (this.GAStatus.actual== "continue") this.assistantResponse.showTranscription(this.translate("GAContinue"))
     else this.assistantResponse.showTranscription(this.translate("GABegin"))
-    this.sendNotification("EXT_DETECTOR-STOP")
     this.doPlugin("onActivate")
     this.assistantResponse.fullscreen(true)
     this.lastQuery = null
@@ -354,7 +345,7 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   endResponse: function() {
-    this.sendNotification("EXT_DETECTOR-START")
+    logGA("Conversation End")
   },
 
   postProcess: function (response, callback_done=()=>{}, callback_none=()=>{}) {
