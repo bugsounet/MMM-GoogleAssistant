@@ -555,10 +555,6 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   stopCommand: function() {
-    this.sendNotification("EXT_ALERT", {
-      type: "information",
-      message: this.translate("EXTStop")
-    })
     this.sendNotification("EXT_STOP")
   },
 

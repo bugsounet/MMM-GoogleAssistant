@@ -18,8 +18,6 @@
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json niet aanwezig",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json niet aanwezig",
 
-  "EXTStop": "Alle uitgebreide processen zijn nu gestopt",
-
   "ShellExecError": "ShellExec return some Errors",
   "ShellExecDone": "ShellExec executed sucessfully"
 }

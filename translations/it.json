@@ -19,8 +19,6 @@
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json missing",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json missing",
 
-  "EXTStop": "Tutti gli Extented Process sono sospesi",
-
   "ShellExecError": "ShellExec riporta degli Errori",
   "ShellExecDone": "ShellExec eseguito con successo"
 }
