@@ -1,7 +1,7 @@
 #!/bin/bash
-# +-------------------------+
-# | switch to Light version |
-# +-------------------------+
+# +---------+
+# | Tokens  |
+# +---------+
 
 # get the installer directory
 Installer_get_current_dir () {
@@ -18,22 +18,21 @@ Installer_dir="$(Installer_get_current_dir)"
 
 # move to installler directory
 cd "$Installer_dir"
-
 source utils.sh
 
+# Go back to module root
 cd ..
+
+# check version in package.json file
+Installer_module="$(grep -Eo '\"name\"[^,]*' ./package.json | grep -Eo '[^:]*$' | awk  -F'\"' '{print $2}')"
+
+Installer_info "Welcome to $Installer_module Token generator!"
 echo
-Installer_info "Deleting: package-lock.json node_modules" 
-rm -rf package.json package-lock.json node_modules
-Installer_success "Done."
+
+Installer_yesno "Do you want to install/reinstall $Installer_module token?" && (
+  rm -f tokenGA.json
+  node installer/auth_GoogleAssistant
+)
 
 echo
-Installer_info "Downgrading GoogleAssistant to Light version..."
-git reset --hard HEAD
-git pull
-git checkout -f light
-git pull
 Installer_success "Done."
-echo
-Installer_info "Installing GoogleAssistant Light version..."
-npm install

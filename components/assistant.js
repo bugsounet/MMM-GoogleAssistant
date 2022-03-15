@@ -17,14 +17,13 @@ var log = function() {
 class ASSISTANT {
   constructor(config, tunnel = ()=>{}) {
     var debug = (config.debug) ? config.debug : false
+    if (debug == true) log = _log
     this.modulePath = config.modulePath
     this.micConfig = config.micConfig
-    this.useAudioOutput = config.useAudioOutput
-
     this.assistantConfig = {
       auth:{
         keyFilePath : path.resolve(config.modulePath, "credentials.json"),
-        savedTokensPath : path.resolve(config.modulePath, "tokens/tokenGA.json")
+        savedTokensPath : path.resolve(config.modulePath, "tokenGA.json")
       },
       conversationConfig : {
         audio : {
@@ -40,13 +39,26 @@ class ASSISTANT {
           }
         },
         screen : {
-          isOn: config.useScreenOutput
+          isOn: true
         },
         lang: config.lang
       },
     }
-    this.useScreenOutput = config.useScreenOutput
-    if (debug == true) log = _log
+    if (config.deviceRegistred) {
+      try {
+        this.projectId = require("../credentials.json").installed.project_id
+      } catch (e) {
+        console.error("[GA:AS] project_id not found on credentials.json")
+      }
+
+      if (this.projectId) {
+        this.assistantConfig.conversationConfig.deviceModelId = this.projectId+"-bugsounet_GA"
+        this.assistantConfig.conversationConfig.deviceId = "MMM-GoogleAssistant"
+        log("Used project_id:", this.projectId)
+        log("deviceModelId is:", this.assistantConfig.conversationConfig.deviceModelId)
+        log("deviceId is", this.assistantConfig.conversationConfig.deviceId)
+      }
+    }
     this.debug = debug
     this.micMode = false
     this.tunnel = tunnel
@@ -98,7 +110,7 @@ class ASSISTANT {
     var responseFile = "tmp/lastResponse.mp3"
     var filePath = path.resolve(this.modulePath, responseFile)
 
-    if (this.useAudioOutput) var b2m = new B2M ({debug:this.debug, file:filePath})
+    var b2m = new B2M ({debug:this.debug, file:filePath})
     this.mic = null
     if (this.micMode) {
       var defaultOption = {
@@ -141,17 +153,13 @@ class ASSISTANT {
     })
     .on('screen-data', (screen) => {
       log("CONVERSATION:SCREEN", typeof screen)
-      if (this.useScreenOutput) {
-        this.response.screen = {
-          originalContent: screen.data.toString("utf8")
-        }
+      this.response.screen = {
+        originalContent: screen.data.toString("utf8")
       }
     })
     .on('audio-data', (data) => {
-      if (this.useAudioOutput) {
-        log("CONVERSATION:AUDIO", data.length)
-        if(data.length) b2m.add(data)
-      }
+      log("CONVERSATION:AUDIO", data.length)
+      if(data.length) b2m.add(data)
     })
     .on('ended', (error, continueConversation) => {
       log("CONVERSATION_ALL_RESPONSES_RECEIVED")
@@ -169,23 +177,22 @@ class ASSISTANT {
         this.response.transcription = {transcription: originalPayload.key, done: true}
       }
 
-      if (this.useAudioOutput) {
-        if (b2m.getAudioLength() > 50) {
-          log("CONVERSATION_PP:RESPONSE_AUDIO_PROCESSED")
-          this.response.audio = {
-            path: filePath,
-            uri : responseFile,
-          }
-        } else {
-          log("CONVERSATION_PP:RESPONSE_AUDIO_TOO_SHORT_OR_EMPTY - ", b2m.getAudioLength())
-          this.response.error.audio = true
+      if (b2m.getAudioLength() > 50) {
+        log("CONVERSATION_PP:RESPONSE_AUDIO_PROCESSED")
+        this.response.audio = {
+          path: filePath,
+          uri : responseFile,
         }
-        b2m.close()
+      } else {
+        log("CONVERSATION_PP:RESPONSE_AUDIO_TOO_SHORT_OR_EMPTY - ", b2m.getAudioLength())
+        this.response.error.audio = true
       }
+      b2m.close()
+
       endCallback(this.response)
     })
     .on('error', (error) => {
-      if (this.useAudioOutput) b2m.close()
+      b2m.close()
       console.log("[GA:AS] CONVERSATION_ERROR: " + error)
       this.response.error.error = "CONVERSATION_ERROR"
       this.response.error.message = error.toString()

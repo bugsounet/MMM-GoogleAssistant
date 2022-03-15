@@ -8,11 +8,10 @@ class AssistantResponse {
     this.response = null
     this.aliveTimer = null
     this.allStatus = [ "hook", "standby", "reply", "error", "think", "continue", "listen", "confirmation" ]
-    this.myStatus = { "actual" : "standby" , "old" : "standby" }
+    this.GAStatus = { "actual" : "standby" , "old" : "standby" }
     this.loopCount = 0
     this.chime = this.config.chimes
     this.resourcesDir = "/modules/MMM-GoogleAssistant/resources/"
-    this.warningEvent = false
 
     this.imgStatus = {
       "hook": this.resourcesDir + this.config.imgStatus.hook,
@@ -38,10 +37,6 @@ class AssistantResponse {
     this.audioChime = new Audio()
     this.audioChime.autoplay = true
     this.fullscreenAbove = this.config.useFullscreen
-    this.warningTimeout = null
-    this.infosDiv= null
-    this.infoWarning = new Audio()
-    this.infoWarning.autoplay = true
   }
 
   tunnel (payload) {
@@ -66,74 +61,30 @@ class AssistantResponse {
   }
 
   status (status, beep) {
-    this.myStatus.actual = status
+    this.GAStatus.actual = status
     var Status = document.getElementById("GA-Status")
-    if (beep && this.myStatus.old != "continue") this.playChime("beep")
+    if (beep && this.GAStatus.old != "continue") this.playChime("beep")
     if (status == "error" || status == "continue") this.playChime(status)
     if (status == "confirmation" && this.config.confirmationChime) this.playChime("confirmation")
-    if (status == "WAVEFILE" || status == "TEXT") this.myStatus.actual = "think"
-    if (status == "MIC") this.myStatus.actual = (this.myStatus.old == "continue") ? "continue" : "listen"
-    if (this.myStatus.actual == this.myStatus.old) return
-    logGA("Status from " + this.myStatus.old + " to " + this.myStatus.actual)
-    Status.src = (this.myStatus.old == "hook") ? this.imgStatus["hook"] : this.imgStatus[this.myStatus.actual]
-    this.callbacks.myStatus(this.myStatus) // send status external
-    this.myStatus.old = this.myStatus.actual
+    if (status == "WAVEFILE" || status == "TEXT") this.GAStatus.actual = "think"
+    if (status == "MIC") this.GAStatus.actual = (this.GAStatus.old == "continue") ? "continue" : "listen"
+    if (this.GAStatus.actual == this.GAStatus.old) return
+    logGA("Status from " + this.GAStatus.old + " to " + this.GAStatus.actual)
+    Status.src = (this.GAStatus.old == "hook") ? this.imgStatus["hook"] : this.imgStatus[this.GAStatus.actual]
+    this.callbacks.GAStatus(this.GAStatus) // send status external
+    this.GAStatus.old = this.GAStatus.actual
   }
   
-  preparePopup () {
-    var newGA = document.createElement("div")
-    newGA.id = "GAv3"
-    document.body.appendChild(newGA)
-  }
-
   prepareGA () {
-    var newGA = document.getElementById("GAv3")
-    /** Prepare GA Information **/
-    var Infos = document.createElement("div")
-    Infos.id = "Infos"
-    Infos.style.zoom = this.config.zoom.transcription
-    Infos.className= "hidden animate__animated"
-    Infos.style.setProperty('--animate-duration', '1s')
-    var InfosDisplay = document.createElement("div")
-    InfosDisplay.id = "InfoDisplay"
-    Infos.appendChild(InfosDisplay)
-
-    var InfosPopout = document.createElement("div")
-    InfosPopout.id = "Infos-popout"
-    InfosDisplay.appendChild(InfosPopout)
-
-    var InfosBar = document.createElement("div")
-    InfosBar.id = "Infos-bar"
-    InfosBar.className= "Infos-popout-asbar"
-    InfosBar.tabindex = -1
-    InfosPopout.appendChild(InfosBar)
-
-    //informations image
-    var InfosIcon = document.createElement("img")
-    InfosIcon.id= "Infos-Icon"
-    InfosIcon.className="Infos-assistant_icon"
-    InfosIcon.src = this.resourcesDir + "information.gif"
-    InfosBar.appendChild(InfosIcon)
-
-    //transcription informations text
-    var InfosResponse = document.createElement("span")
-    InfosResponse.id= "Infos-Transcription"
-    InfosResponse.className="Infos-assistant_response"
-    InfosResponse.textContent= "~MMM-GoogleAssistant v3 Informations displayer~"
-    InfosBar.appendChild(InfosResponse)
-
-    //document.body.appendChild(Infos)
-    newGA.appendChild(Infos)
-
     /** Main GA popups **/
-    var GA = document.createElement("div")
-    GA.id = "GA"
-    GA.style.zoom = this.config.zoom.transcription
-    GA.className= "hidden out"
+    var newGA = document.createElement("div")
+    newGA.id = "GoogleAssistant"
+    newGA.style.zoom = this.config.zoom.transcription
+    newGA.className= "hidden out"
 
     /** hidden the popup on animation end **/
-    GA.addEventListener('transitionend', (a) => {
-      if (a.path[0].className =="out") GA.classList.add("hidden")
+    newGA.addEventListener('transitionend', (a) => {
+      if (a.path[0].className =="out") newGA.classList.add("hidden")
     })
 
     /** Response popup **/
@@ -143,12 +94,12 @@ class AssistantResponse {
     var scout = document.createElement("iframe")
     scout.id = "GA-ResultOuput"
     scoutpan.appendChild(scout)
-    GA.appendChild(scoutpan)
+    newGA.appendChild(scoutpan)
 
     /** Transcription popup **/
     var GAResponse = document.createElement("div")
     GAResponse.id = "GA-Response"
-    GA.appendChild(GAResponse)
+    newGA.appendChild(GAResponse)
 
     var GAPopout = document.createElement("div")
     GAPopout.id = "GA-popout"
@@ -183,9 +134,8 @@ class AssistantResponse {
     GABarIcon.src = this.resourcesDir + "assistant_tv_logo.svg"
     GAAssistantWordIcon.appendChild(GABarIcon)
 
-    newGA.appendChild(GA)
+    document.body.appendChild(newGA)
 
-    this.infosDiv = document.getElementById("Infos")
   }
 
   // make a fake module for display fullscreen background
@@ -236,7 +186,6 @@ class AssistantResponse {
           profile: response.lastQuery.profile,
           key: null,
           lang: response.lastQuery.lang,
-          useResponseOutput: response.lastQuery.useResponseOutput,
           force: true
         }, Date.now())
 
@@ -248,13 +197,13 @@ class AssistantResponse {
         this.aliveTimer = null
         this.aliveTimer = setTimeout(()=>{
           this.stopResponse(()=>{
-            this.fullscreen(false, this.myStatus)
+            this.fullscreen(false, this.GAStatus)
           })
         }, this.config.screenOutputTimer)
       }
     } else {
       this.status("standby")
-      this.fullscreen(false, this.myStatus)
+      this.fullscreen(false, this.GAStatus)
       if (cb) this.callbacks.endResponse()
     }
   }
@@ -273,7 +222,6 @@ class AssistantResponse {
           profile: response.lastQuery.profile,
           key: response.transcription.transcription,
           lang: response.lastQuery.lang,
-          useResponseOutput: response.lastQuery.useResponseOutput,
           force: true,
           chime: false
         }, null)
@@ -286,7 +234,6 @@ class AssistantResponse {
           profile: response.lastQuery.profile,
           key: null,
           lang: response.lastQuery.lang,
-          useResponseOutput: response.lastQuery.useResponseOutput,
           force: true
         }, Date.now())
         this.loopCount += 1
@@ -300,7 +247,7 @@ class AssistantResponse {
 
     var normalResponse = (response) => {
       this.showing = true
-      this.callbacks.EXT(response)
+      this.callbacks.Gateway(response)
       this.status("reply")
       var so = this.showScreenOutput(response)
       var ao = this.playAudioOutput(response)
@@ -337,7 +284,7 @@ class AssistantResponse {
   }
 
   playAudioOutput (response) {
-    if (response.audio && this.config.useAudioOutput) {
+    if (response.audio) {
       this.showing = true
       this.audioResponse.src = this.makeUrl(response.audio.uri)
       return true
@@ -346,7 +293,7 @@ class AssistantResponse {
   }
 
   showScreenOutput (response) {
-    if (!this.sercretMode && response.screen && this.config.useResponseOutput) {
+    if (!this.sercretMode && response.screen) {
       if (!response.audio) {
         this.showTranscription(this.callbacks.translate("NO_AUDIO_RESPONSE"))
       }
@@ -357,12 +304,14 @@ class AssistantResponse {
       winh.classList.remove("hidden")
       return true
     }
+    /* really needed ?
     else {
       if (response.text && !this.config.useResponseOutput) {
         this.showTranscription(response.text)
         return true
       }
     }
+    */
     return false
   }
 
@@ -371,7 +320,7 @@ class AssistantResponse {
   }
 
   fullscreen (active, status, fs = true) {
-    var GA = document.getElementById("GA")
+    var GA = document.getElementById("GoogleAssistant")
     var FakeGA = document.getElementById("module_Fake_GA_DOM")
 
     if (active) {

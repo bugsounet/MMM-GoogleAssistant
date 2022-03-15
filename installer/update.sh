@@ -20,50 +20,50 @@ Installer_dir="$(Installer_get_current_dir)"
 cd "$Installer_dir"
 source utils.sh
 
-Installer_info "Welcome to GA updater !"
-echo
+# Go back to module root
+cd ..
 
-Installer_update_dependencies () {
-  Installer_debug "Test Wanted dependencies: ${dependencies[*]}"
-  local missings=()
-  for package in "${dependencies[@]}"; do
-      Installer_is_installed "$package" || missings+=($package)
-  done
-  if [ ${#missings[@]} -gt 0 ]; then
-    Installer_warning "Updating package..."
-    for missing in "${missings[@]}"; do
-      Installer_error "Missing package: $missing"
-    done
-    Installer_info "Installing missing package..."
-    Installer_update || exit 1
-    Installer_install ${missings[@]} || exit 1
-  fi
-}
+# check version in package.json file
+Installer_version="$(grep -Eo '\"version\"[^,]*' ./package.json | grep -Eo '[^:]*$' | awk  -F'\"' '{print $2}')"
+Installer_module="$(grep -Eo '\"name\"[^,]*' ./package.json | grep -Eo '[^:]*$' | awk  -F'\"' '{print $2}')"
+
+# Let's start !
+Installer_info "Welcome to $Installer_module v$Installer_version"
 
 echo
-# check dependencies
-dependencies=(wget unclutter build-essential vlc libmagic-dev libatlas-base-dev cec-utils libudev-dev)
-Installer_info "Update all dependencies..."
-Installer_update_dependencies
-Installer_success "All Dependencies needed are updated !"
 
-cd ~/MagicMirror/modules/MMM-GoogleAssistant
+# Check not run as root
+if [ "$EUID" -eq 0 ]; then
+  Installer_error "npm install must not be used as root"
+  exit 1
+fi
+
+# Check platform compatibility
+Installer_info "Checking OS..."
+Installer_checkOS
+if  [ "$platform" == "osx" ]; then
+  Installer_error "OS Detected: $OSTYPE ($os_name $os_version $arch)"
+  Installer_error "This module is not compatible with your system"
+  exit 0
+else
+  Installer_success "OS Detected: $OSTYPE ($os_name $os_version $arch)"
+fi
+
+echo
+
 # deleting package.json because npm install add/update package
-rm -f package.json package-lock.json
+rm -f package-lock.json
 
-Installer_info "Updating Main core..."
+Installer_info "Updating..."
 
 git reset --hard HEAD
 git pull
-#fresh package.json
-git checkout package.json
-cd ~/MagicMirror/modules/MMM-GoogleAssistant/node_modules
 
+echo
 Installer_info "Deleting ALL @bugsounet libraries..."
+rm -rf node_modules/@bugsounet
 
-rm -rf @bugsounet
-cd ~/MagicMirror/modules/MMM-GoogleAssistant
-
+echo
 Installer_info "Ready for Installing..."
 
 # launch installer

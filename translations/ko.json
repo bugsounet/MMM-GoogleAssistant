@@ -6,45 +6,10 @@
   "QUERY_REPLY" : "구글 어시스턴트가 활성화됩니다.",
   "QUERY_HELP" : "이 명령을 사용하여 텍스트로 구글 어시스턴트를 명령할 수 있습니다.",
 
-  "RESTART_HELP" : "pm2로 MagicMirror 재시작",
-  "RESTART_DONE" : "재시작 하겠습니다!",
-  "RESTART_ERROR" : "<id> 누락 !",
-
-  "WAKEUP_HELP": "화면을 깨우고 카운터를 다시 시작합니다.",
-  "WAKEUP_REPLY": "화면을 깨웁니다 !",
-
-  "HIDE_HELP": "원하는 모듈을 숨깁니다.",
-  "HIDE_ALREADY": " 이/가 이미 숨겨져 있습니다.",
-  "HIDE_DONE": " 을/를 이제 숨깁니다.",
-  "HIDE_LOCKED": " 이/가 다른 프로그램에 의해 잠겨있으므로 숨길 수 없습니다.",
-
-  "SHOW_HELP": "원하는 모듈을 표시합니다.",
-  "SHOW_ALREADY": " 이/가 이미 표시되어있습니다.",
-  "SHOW_DONE": " 이/가 이제 표시됩니다.",
-  "SHOW_LOCKED": " 이/가 다른 프로그램에 의해 잠겨있으므로 표시할 수 없습니다.",
-
-  "MODULE_NOTFOUND": "모듈을 찾을 수 없습니: ",
-  "MODULE_NAME": "Name of the module이 누락되었습니다",
-
   "STOP_HELP": "실행 중인 경우 확장디스플레이를 중지합니다.",
   "STOP_EXT": "확장디스플레이를 중지합니다.",
 
-  "EXT_OPEN": "링크를 여는중입니다: ",
-  "EXT_INVALID": "유효하지 않은 링크입니다!",
-  "EXT_HELP": "링크로 확장 표시 활성화",
-
-  "VOLUME_HELP": "장치 볼륨 설정",
-
   "DADDY": "daddy @bugsounet says... NO,NO AND NO !!!",
-
-  "DAY" : "일",
-  "DAYS" : "매일",
-  "HOUR" : "시",
-  "HOURS" : "매시",
-  "MINUTE" : "분",
-  "MINUTES" : "매분",
-  "SECOND": "초",
-  "SECONDS": "매초",
 
   "GALoading": "로딩중...",
   "GAReady": "준비!",
@@ -53,77 +18,9 @@
   "GAErrorRecipe": "[FATAL] 이 recipe를 불러오는 중 오류가 발생함: {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json이 없습니다.",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json이 없습니다.",
-  "GAErrorTokenYoutube": "[FATAL] Token Youtube: tokenYT.json이 없습니다.",
-
-  "LibraryError": "로딩 중 오류: {VALUES} 라이브러리",
-
-  "LibrespotNoResponse": "librespot으로부터 응답이 없습니다! ({VALUES})",
-  "LibrespotConnected": "librespot에 연결됨! ({VALUES})",
-  "LibrespotConnecting": "잠시만 기다려주세요, librespot에 연결하는중입니다...",
-  "LibrespotNoInstalled": "librespot가 설치되지 않았습니다 !",
-  "LibrespotError": "Librespot 오류: {VALUES}",
-
-  "RaspotifyNoResponse": "raspotify으로부터 응답이 없습니다! ({VALUES})",
-  "RaspotifyConnected": "raspotify에 연결됨! ({VALUES})",
-  "RaspotifyConnecting": "잠시만 기다려주세요, raspotify에 연결하는중입니다...",
-  "RaspotifyNoInstalled": "Raspotify가 설치되지 않았습니다 !",
-  "RaspotifyError": "Raspotify 오류: {VALUES}",
-
-  "YouTubePlaying": "YouTube가 재생됩니다: {VALUES}",
-  "YouTubeError": "YouTube 오류: {VALUES}",
-
-  "Volume": "Volume: {VALUES}",
-  "VolumePresetError": "Volume: 사전 설정 오류!",
-  "VolumeText": "Volume:",
-  "VolumeDisabled": "Volume 컨트롤에 문제가 생겼습니다.",
-
-  "GovernorError": "Governor 오류: {VALUES}",
-
-  "PirError": "Pir 센서 오류 code: {VALUES}",
-
-  "SpotifyNoResult": "Spotify: 결과를 찾을 수 없습니다.",
-  "SpotifySearchFailed": "Spotify: 검색에 실패했습니다.",
-  "SpotifyListenText": "재생 중",
-  "SpotifyForGA": "Spotify for Google Assistant",
-  "SpotifySearchTypePlaylist": "재생목록",
-  "SpotifySearchTypeAlbum": "앨범",
-  "SpotifySearchTypeTrack": "트랙",
-  "SpotifySearchTypeArtist": "아티스트",
-
-  "ScreenWakeUp": "Screen Wakeup by {VALUES}",
-  "ScreenLock": "Screen Lock by {VALUES}",
-  "ScreenUnLock": "Screen UnLock by {VALUES}",
-  "ScreenTurnOff": "화면 자동 끄기:",
-  "ScreenLastPresence": "마지막 화면:",
-  "ScreenPowerOn": "화면 켜기",
-  "ScreenPowerOff": "화면 끄기",
-
-  "InternetDown" : "{VALUES}, 인터넷 연결이 끊겼습니다!",
-  "InternetRestart": "인터넷이 연결되었습니다! MagicMirror를 다시 시작하는중...",
-  "InternetAvailable": "인터넷이 연결되었습니다, after {VALUES}",
 
   "EXTStop": "모든 프로세스가 중지되었습니다",
 
-  "CastStart": "유튜브 재생을 시작합니다",
-  "CastStop" : "유튜브 재생을 중지합니다",
-
   "ShellExecError": "ShellExec return some Errors",
-  "ShellExecDone": "ShellExec executed sucessfully",
-
-  "LinksOpen": "Extended Display 브라우저를 엽니다",
-  "LinksClose": "Extented Display 브라우저를 닫습니다",
-
-  "PhotosNotActivated": "사진 모듈이 활성화되지 않았습니다",
-
-  "GPhotosNotActivated": "GooglePhotos API가 활성화되지 않았습니다",
-  "GPhotosRecipeNotActivated": "GooglePhotos Recipe mode가 활성화되지 않았습니다",
-  "GPhotosBckGrndActivated": "GooglePhotos Background mode가 활성화됐습니다",
-  "GPhotosModuleActivated": "GooglePhotos Module mode가 활성화됐습니다",
-  "GPFailedOpenURL": "Google Photos: 이미지 로드에 실패했습니다",
-  "GPOpen": "Google Photos를 실행합니다",
-  "GPClose": "Google Photos를 종료합니다",
-  "GPAlbumName": "앨범:",
-  "GPError": "GooglePhotos: 표시할 사진이 없습니다.",
-  "GPNoPhotoFound" : "GooglePhotos: 사진을 찾지 못했습니다.",
-  "GPReceive": "GooglePhotos {VALUES} 사진을 수신했습니다."
+  "ShellExecDone": "ShellExec executed sucessfully"
 }
