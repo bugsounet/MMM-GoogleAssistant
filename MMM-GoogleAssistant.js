@@ -496,7 +496,14 @@ Module.register("MMM-GoogleAssistant", {
       var fe = command.functionExec
       if (typeof fe.exec == "function") {
         logGA(`Command ${commandId} is executed (functionExec)`)
-        fe.exec(param, from)
+        try {
+         fe.exec(param, from)
+        } catch (e) { // prevent crash if function no longer exist ...
+          this.sendNotification("EXT_ALERT", {
+            message: "Function not Found!",
+            type: "warning"
+          })
+        }
       }
     }
 
