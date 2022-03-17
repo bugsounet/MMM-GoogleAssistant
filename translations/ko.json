@@ -19,8 +19,6 @@
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json이 없습니다.",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json이 없습니다.",
 
-  "EXTStop": "모든 프로세스가 중지되었습니다",
-
   "ShellExecError": "ShellExec return some Errors",
   "ShellExecDone": "ShellExec executed sucessfully"
 }
