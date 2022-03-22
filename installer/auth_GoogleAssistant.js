@@ -46,7 +46,7 @@ const promptForInput = () => {
   rl.question('Type your request: ', (request) => {
     // start the conversation
     config.conversation.textQuery = request;
-    assistant.start(config.conversation, startConversation);
+    this.assistant.start(config.conversation, startConversation);
 
     rl.close();
   });
