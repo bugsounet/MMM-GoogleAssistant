@@ -52,9 +52,14 @@ const promptForInput = () => {
   });
 };
 
-const assistant = new GoogleAssistant(config.auth);
-  assistant
-    .on('ready', promptForInput)
-    .on('error', (error) => {
-      console.log('Assistant Error:', error);
-    });
+try {
+  this.assistant = new GoogleAssistant(config.auth);
+} catch (error) {
+  return console.log(error.toString());
+}
+
+this.assistant
+  .on('ready', promptForInput)
+  .on('error', (error) => {
+    console.log('Assistant Error:', error);
+  });
