@@ -41,8 +41,9 @@ class ASSISTANT {
         screen : {
           isOn: true
         },
-        lang: config.lang
-      },
+        lang: config.lang,
+        isNew: true
+      }
     }
     if (config.deviceRegistred) {
       try {
@@ -73,6 +74,8 @@ class ASSISTANT {
       this.assistantConfig.conversationConfig.textQuery = payload.key
     }
     if (type == "MIC") this.micMode = true
+    if (payload.isNew == false) this.assistantConfig.conversationConfig.isNew = false
+
     converse = (conversation) => {
       this.initConversation(payload, conversation, callback)
     }

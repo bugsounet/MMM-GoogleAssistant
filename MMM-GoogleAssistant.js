@@ -31,6 +31,8 @@ Module.register("MMM-GoogleAssistant", {
         confirmation: "confirmation.mp3",
         open: "Google_beep_open.mp3",
         close: "Google_beep_close.mp3",
+        opening: "opening.mp3",
+        closing: "closing.mp3",
         warning: "warning.ogg"
       },
       imgStatus: {
@@ -243,6 +245,15 @@ Module.register("MMM-GoogleAssistant", {
         this.loadAssistantResponse()
         logGA("Force Fullscreen: AssistantResponse Reloaded")
         break
+      case "GAv4_STOP":
+        if (this.assistantResponse.response && this.GAStatus.actual == "reply") {
+          logGA("Force end")
+          this.assistantResponse.response = null
+          this.assistantResponse.audioResponse.src = ""
+          this.assistantResponse.playChime("closing")
+          this.assistantResponse.end()
+        }
+        break
     }
   },
 
@@ -285,9 +296,6 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "ASSISTANT_ACTIVATE":
         this.assistantActivate(payload)
-        break
-      case "AUDIO_END":
-        this.assistantResponse.end()
         break
     }
   },
@@ -512,6 +520,8 @@ Module.register("MMM-GoogleAssistant", {
       if (snde.chime && typeof snde.chime == 'string') {
         if (snde.chime == "open") this.assistantResponse.playChime("open")
         if (snde.chime == "close") this.assistantResponse.playChime("close")
+        if (snde.chime == "opening") this.assistantResponse.playChime("opening")
+        if (snde.chime == "closing") this.assistantResponse.playChime("closing")
       }
       if (snde.sound && typeof snde.sound == 'string') {
         this.assistantResponse.playChime(snde.sound, true)
