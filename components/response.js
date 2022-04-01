@@ -116,6 +116,16 @@ class AssistantResponse {
     GAAssistantIcon.id= "GA-Status"
     GAAssistantIcon.className="GA-assistant_icon"
     GAAssistantIcon.src = this.resourcesDir + "standby.gif"
+    GAAssistantIcon.onclick = (event)=> {
+      event.stopPropagation()
+      if (this.GAStatus.actual == "reply") {
+        logGA("Touch Force end")
+        this.response = null
+        this.audioResponse.src = ""
+        this.playChime("closing")
+        this.end()
+      }
+    }
     GAAssistantBar.appendChild(GAAssistantIcon)
 
     //transcription response text
@@ -186,9 +196,9 @@ class AssistantResponse {
           profile: response.lastQuery.profile,
           key: null,
           lang: response.lastQuery.lang,
+          isNew: false,
           force: true
         }, Date.now())
-
       } else {
         logGA("Conversation ends.")
         this.status("standby")
@@ -223,21 +233,23 @@ class AssistantResponse {
           key: response.transcription.transcription,
           lang: response.lastQuery.lang,
           force: true,
-          chime: false
+          chime: false,
+          isNew: false
         }, null)
         return
       }
-      if (response.error.error == "TOO_SHORT" && response.lastQuery.status == "continue" && this.loopCount < 3) { // @todo to debug
+      if (response.error.error == "TOO_SHORT" && response.lastQuery.status == "continue" && this.loopCount < 1) { // @todo to debug
         this.status("continue")
         this.callbacks.assistantActivate({
           type: "MIC",
           profile: response.lastQuery.profile,
           key: null,
           lang: response.lastQuery.lang,
+          isNew: false,
           force: true
         }, Date.now())
         this.loopCount += 1
-        logGA("Loop Continuous Count: "+ this.loopCount + "/3")
+        logGA("Loop Continuous Count: "+ this.loopCount + "/1")
         return
       }
       this.showError(response.error.message ? response.error.message : this.callbacks.translate(response.error.error))
