@@ -2,64 +2,54 @@
 
 'use strict';
 
-const readline = require('readline');
 const path = require('path');
 const GoogleAssistant = require('@bugsounet/google-assistant');
 
 const config = {
   auth: {
     keyFilePath: path.resolve(__dirname, '../credentials.json'),
-    savedTokensPath: path.resolve(__dirname, '../tokenGA.json'), // where you want the tokens to be saved
+    savedTokensPath: path.resolve(__dirname, '../tokenGA.json'),
   },
   conversation: {
-    lang: 'en-US', // defaults to en-US, but try other ones, it's fun!
+    lang: 'en-US',
   },
 };
 
 const startConversation = (conversation) => {
   // setup the conversation
   conversation
-    .on('response', text => console.log('Assistant Response:', text))
+    .on('response', text => console.log('[GA] Assistant Response:', text))
     .on('ended', (error, continueConversation) => {
       if (error) {
-        console.log('Conversation Ended Error:', error);
-      } else if (continueConversation) {
-        promptForInput();
+        console.log('[GA] Conversation Ended Error:', error);
+        process.exit()
       } else {
-        console.log('Conversation Complete');
+        console.log('[GA] Conversation Complete\n');
         conversation.end();
+        console.log("[GA] Testing Conversation ended.")
+        process.exit()
       }
     })
     // catch any errors
     .on('error', (error) => {
-      console.log('Conversation Error:', error);
+      console.log('[GA] Conversation Error:', error);
+      process.exit()
     });
-};
-
-const promptForInput = () => {
-  // type what you want to ask the assistant
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  rl.question('Type your request: ', (request) => {
-    // start the conversation
-    config.conversation.textQuery = request;
-    this.assistant.start(config.conversation, startConversation);
-
-    rl.close();
-  });
 };
 
 try {
   this.assistant = new GoogleAssistant(config.auth);
 } catch (error) {
-  return console.log(error.toString());
+  return console.log("[GA]", error.toString());
 }
 
 this.assistant
-  .on('ready', promptForInput)
+  .on('ready', () => {
+    console.log("[GA] Testing Conversation start...\n")
+    console.log("[GA] Assistant Question: What time is it?")
+    config.conversation.textQuery = "What time is it?";
+    this.assistant.start(config.conversation, startConversation);
+  })
   .on('error', (error) => {
-    console.log('Assistant Error:', error);
+    console.log('[GA] Assistant Error:', error);
   });
