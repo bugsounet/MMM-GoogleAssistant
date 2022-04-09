@@ -59,7 +59,7 @@ Auth = function(config) {
       oauthClient.getToken(oauthCode, (error, tkns) => {
         // if we have an error, print it and kill the process
         if (error) {
-          console.error('[GA] Error getting tokens:', error.response.data);
+          console.error('[GA] Error getting tokens:', error)
           process.exit()
         }
         // if we didn't have an error, save the tokens
