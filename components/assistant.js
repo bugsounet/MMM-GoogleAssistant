@@ -47,7 +47,9 @@ class ASSISTANT {
     }
     if (config.deviceRegistred) {
       try {
-        this.projectId = require("../credentials.json").installed.project_id
+        let credentials = require("../credentials.json")
+        let key = credentials.installed || credentials.web
+        this.projectId = key.project_id
       } catch (e) {
         console.error("[GA:AS] project_id not found on credentials.json")
       }
