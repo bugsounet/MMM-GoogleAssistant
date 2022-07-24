@@ -1,0 +1,23 @@
+{
+  "NO_RESPONSE" : "Συγγνώμη δεν κατάλαβα.",
+  "TOO_SHORT" : "Συγγνώμη δεν κατάλαβα.",
+  "CONVERSATION_ERROR" : "Σφάλμα συνομιλίας. (εσφαλμένη διαμόρφωση μικροφώνου)",
+  "QUERY_REPLY" : "Θα ενεργοποιηθεί ο Google Assistant",
+  "QUERY_HELP" : "Μπορείτε να δώσετε εντολή στον `Google Assistant` γράφοντας αυτή την εντολή.",
+
+  "STOP_HELP": "Τερματισμός Extented Display αν τρέχει",
+  "STOP_EXT": "Τερματισμός Extented Display",
+
+  "DADDY": "μπαμπάς @bugsounet λέει... ΌΧΙ,ΌΧΙ ΚΑΙ ΌΧΙ !!!",
+
+  "GALoading": "Φόρτωση...",
+  "GAReady": "Έτοιμο!",
+  "GABegin": "Γεια, πως μπορώ να βοηθήσω?",
+  "GAContinue": "Σε ακούω...",
+  "GAErrorRecipe": "[FATAL] Σφάλμα φόρτωσης της συνταγής: {VALUES}",
+  "GAErrorCredentials": "[FATAL] Assistant: credentials.json λείπει",
+  "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json λείπει",
+
+  "ShellExecError": "Το ShellExec επέστρεψε μερικά σφάλματα",
+  "ShellExecDone": "Επιτυχής εκτέλεση του ShellExec"
+}
