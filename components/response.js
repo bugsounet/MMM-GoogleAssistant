@@ -36,7 +36,7 @@ class AssistantResponse {
 
     this.audioChime = new Audio()
     this.audioChime.autoplay = true
-    this.fullscreenAbove = this.config.useFullscreen
+    this.GAfullscreen = this.config.useFullscreen
   }
 
   tunnel (payload) {
@@ -148,26 +148,16 @@ class AssistantResponse {
 
   }
 
-  // make a fake module for display fullscreen background
+  // make a popup for display fullscreen background
   prepareBackground () {
-    var nodes = document.getElementsByClassName("region fullscreen above")
-    var pos = nodes[0].querySelector(".container")
-    var children = pos.children
     var module = document.createElement("div")
-    module.id = "module_Fake_GA_DOM"
-    module.classList.add("module", "GA_DOM", "hidden")
-    var header = document.createElement("header")
-    header.classList.add("module-header")
-    header.style.display = "none"
-    module.appendChild(header)
-    var content = document.createElement("div")
-    content.classList.add("module-content")
+    module.id = "GA_DOM-FS"
+    module.classList.add("hidden")
     var viewDom = document.createElement("div")
     viewDom.id = "GA_DOM"
 
-    content.appendChild(viewDom)
-    module.appendChild(content)
-    pos.insertBefore(module, children[children.length])
+    module.appendChild(viewDom)
+    document.body.appendChild(module)
   }
 
   showError (text) {
@@ -333,24 +323,18 @@ class AssistantResponse {
 
   fullscreen (active, status, fs = true) {
     var GA = document.getElementById("GoogleAssistant")
-    var FakeGA = document.getElementById("module_Fake_GA_DOM")
+    var GAFS = document.getElementById("GA_DOM-FS")
 
     if (active) {
       GA.className= "in"
-      if (this.fullscreenAbove && fs) {
-        FakeGA.classList.remove("hidden")
-        MM.getModules().enumerate((module)=> {
-          module.hide(500, {lockString: "GA_LOCKED"})
-        })
+      if (this.GAfullscreen && fs) {
+        GAFS.classList.remove("hidden")
       }
     } else {
       if (status && status.actual == "standby") { // only on standby mode
         GA.className= "out"
-        if (this.fullscreenAbove) {
-          FakeGA.classList.add("hidden")
-          MM.getModules().enumerate((module)=> {
-            module.show(500, {lockString: "GA_LOCKED"})
-          })
+        if (this.GAfullscreen) {
+          GAFS.classList.add("hidden")
         }
       }
     }
