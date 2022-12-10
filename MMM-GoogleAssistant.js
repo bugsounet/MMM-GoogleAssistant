@@ -288,7 +288,7 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) {
-          this.sendNotification("EXT_VOLUME-SET", payload.volume)
+          this.sendNotification("EXT_VOLUME-SPEAKER_SET", payload.volume)
         }
         this.assistantResponse.start(payload)
         break
