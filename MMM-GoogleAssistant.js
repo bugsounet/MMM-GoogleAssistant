@@ -444,7 +444,7 @@ Module.register("MMM-GoogleAssistant", {
             logGA("Native Action: " + exec.command, exec.params)
             if (exec.command == "action.devices.commands.SetVolume") {
               logGA("Volume Control:", exec.params.volumeLevel)
-              this.sendNotification("EXT_VOLUME-SET", exec.params.volumeLevel)
+              this.sendNotification("EXT_VOLUME-SPEAKER_SET", exec.params.volumeLevel)
             }
           })
         })
