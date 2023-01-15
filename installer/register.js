@@ -105,14 +105,7 @@ registerDevice = function(config) {
             "product_name": "MMM-GoogleAssistant",
             "device_description": "Google Assistant SDK for MagicMirror²"
           },
-          "device_type": "action.devices.types.TV",
-          "traits": [
-            "action.devices.traits.OnOff",
-            "action.devices.traits.MediaState",
-            "action.devices.traits.Volume",
-            "action.devices.traits.AppSelector",
-            "action.devices.traits.Channel"
-          ]
+          "device_type": "action.devices.types.TV"
         }
       })
       if (debug) {
