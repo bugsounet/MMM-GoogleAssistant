@@ -77,7 +77,7 @@ class AssistantSearch {
   }
 
   GoogleSearch(text) {
-    if (!this.GoogleDB || !text) return false
+    if (!this.GoogleDB) return false
     if (this.GoogleDB.includes(text.toLowerCase())) {
       logGA("GoogleDB Found:", text)
       return true
@@ -86,7 +86,7 @@ class AssistantSearch {
   }
 
   YouTubeSearch(text) {
-    if (!this.YouTubeDB || !text) return false
+    if (!this.YouTubeDB) return false
     if (this.YouTubeDB.includes(text.toLowerCase())) {
       logGA("YouTubeDB Found:", text)
       return true

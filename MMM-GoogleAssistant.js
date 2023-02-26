@@ -595,11 +595,13 @@ Module.register("MMM-GoogleAssistant", {
       }
       logGA("Send response to Gateway:", opt)
       this.sendNotification("EXT_GATEWAY", opt)
-    } else if (this.AssistantSearch.GoogleSearch(response.text)) {
-      this.sendSocketNotification("GOOGLESEARCH", response.transcription.transcription)
-    } else if (this.AssistantSearch.YouTubeSearch(response.text)) {
-      logGA("Send response to EXT-YouTube:", response.transcription.transcription)
-      this.sendNotification("EXT_YOUTUBE-SEARCH", response.transcription.transcription)
+    } else if (response.text) {
+      if (this.AssistantSearch.GoogleSearch(response.text)) {
+        this.sendSocketNotification("GOOGLESEARCH", response.transcription.transcription)
+      } else if (this.AssistantSearch.YouTubeSearch(response.text)) {
+        logGA("Send response to EXT-YouTube:", response.transcription.transcription)
+        this.sendNotification("EXT_YOUTUBE-SEARCH", response.transcription.transcription)
+      }
     }
   },
 
