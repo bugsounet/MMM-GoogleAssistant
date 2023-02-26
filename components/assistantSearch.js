@@ -1,4 +1,8 @@
 /* assistant Search Database */
+/* rev: 230226 */
+/* fr-FR
+ * en-US
+ */
 
 class AssistantSearch {
   constructor (config) {
@@ -18,14 +22,14 @@ class AssistantSearch {
       ],
       // en
       "en-US": [
-        "here's a result from search",
-        "here's a result from the web",
-        "here's the top search result",
+        "Here's what I found",
+        "Here's the top search result",
+        "Here's what I found on the web",
+        "Here's a result from search",
+        "Here's a result from the web",
+        "This is the top result",
+        "This came back from a search",
         "this came back from google",
-        "this came back from a search",
-        "here's what i found on the web",
-        "this is the top result",
-        "here's what i found",
         "here's some info"
       ]
     }
@@ -42,19 +46,38 @@ class AssistantSearch {
         "Voici quelques éléments trouvés sur YouTube",
         "Voilà des éléments tirés de YouTube",
         "YouTube propose ce résultat"
+      ],
+      // en
+      "en-US": [
+        "YouTube has this result",
+        "This came back from YouTube",
+        "This is from YouTube",
+        "Here's a matching YouTube result",
+        "Here's a result from YouTube",
+        "Here's an answer from YouTube",
+        "Here's a YouTube result",
+        "Here's the top YouTube result",
+        "Here's something from YouTube",
+        "I found this on YouTube"
       ]
     }
     this.GoogleDB = GoogleSearchDB[config.lang]
     this.YouTubeDB = YouTubeSearchDB[config.lang]
-    if (this.GoogleDB) logGA("AssistantSearch Google: Loaded")
+    if (this.GoogleDB) {
+      this.GoogleDB = this.GoogleDB.map(text => text.toLowerCase())
+      logGA("AssistantSearch Google: Loaded")
+    }
     else console.warn("[GA] AssistantSearch Google: lang not found!")
-    if (this.YouTubeDB) logGA("AssistantSearch YouTube: Loaded")
+    if (this.YouTubeDB) {
+      this.YouTubeDB = this.YouTubeDB.map(text => text.toLowerCase())
+      logGA("AssistantSearch YouTube: Loaded")
+    }
     else console.warn("[GA] AssistantSearch YouTube: lang not found!")
   }
 
   GoogleSearch(text) {
     if (!this.GoogleDB) return false
-    if (this.GoogleDB.includes(text)) {
+    if (this.GoogleDB.includes(text.toLowerCase())) {
       logGA("GoogleDB Found:", text)
       return true
     }
@@ -63,7 +86,7 @@ class AssistantSearch {
 
   YouTubeSearch(text) {
     if (!this.YouTubeDB) return false
-    if (this.YouTubeDB.includes(text)) {
+    if (this.YouTubeDB.includes(text.toLowerCase())) {
       logGA("YouTubeDB Found:", text)
       return true
     }
