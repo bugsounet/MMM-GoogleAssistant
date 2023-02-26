@@ -72,7 +72,8 @@ Module.register("MMM-GoogleAssistant", {
 
   getScripts: function() {
     return [
-       "/modules/MMM-GoogleAssistant/components/response.js"
+       "/modules/MMM-GoogleAssistant/components/response.js",
+       "/modules/MMM-GoogleAssistant/components/assistantSearch.js"
     ]
   },
 
@@ -116,6 +117,7 @@ Module.register("MMM-GoogleAssistant", {
     }
     this.assistantResponse = null
     this.loadAssistantResponse()
+    this.AssistantSearch = new AssistantSearch(this.helperConfig.assistantConfig)
     var StopHooks = {
       transcriptionHooks: {
         "EXT_Stop": {
@@ -585,6 +587,17 @@ Module.register("MMM-GoogleAssistant", {
       }
       logGA("Send response to Gateway:", opt)
       this.sendNotification("EXT_GATEWAY", opt)
+    } else if (this.AssistantSearch.GoogleSearch(response.text)) {
+      logGA("Send response to Gateway:", "https://www.google.com/search?q="+response.transcription.transcription)
+      this.sendNotification("EXT_GATEWAY", {
+        "photos": [],
+        "urls": [
+          "https://www.google.com/search?q="+response.transcription.transcription
+        ]
+      })
+    } else if (this.AssistantSearch.YouTubeSearch(response.text)) {
+      logGA("Send response to EXT-YouTube:", response.transcription.transcription)
+      this.sendNotification("EXT_YOUTUBE-SEARCH", response.transcription.transcription)
     }
   }
 })
