@@ -16,7 +16,8 @@ check(
            "../MMM-GoogleAssistant.js",
            "../components/assistant.js",
            "../components/response.js",
-           "../components/screenParser.js"
+           "../components/screenParser.js",
+           "../components/assistantSearch.js"
           ]
 
           files.forEach(file => {
