@@ -278,8 +278,13 @@ Module.register("MMM-GoogleAssistant", {
         })
         break
       case "INFORMATION":
+        // maybe for later
+        break
       case "ERROR":
-        // maybe for futur
+        this.sendNotification("EXT_ALERT", {
+          message: this.translate(payload),
+          type: "error"
+        })
         break
       case "INITIALIZED":
         logGA("Initialized.")
@@ -299,6 +304,9 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "ASSISTANT_ACTIVATE":
         this.assistantActivate(payload)
+        break
+      case "GOOGLESEARCH-RESULT":
+        this.sendGoogleResult(payload)
         break
     }
   },
@@ -588,16 +596,19 @@ Module.register("MMM-GoogleAssistant", {
       logGA("Send response to Gateway:", opt)
       this.sendNotification("EXT_GATEWAY", opt)
     } else if (this.AssistantSearch.GoogleSearch(response.text)) {
-      logGA("Send response to Gateway:", "https://www.google.com/search?q="+response.transcription.transcription)
-      this.sendNotification("EXT_GATEWAY", {
-        "photos": [],
-        "urls": [
-          "https://www.google.com/search?q="+response.transcription.transcription
-        ]
-      })
+      this.sendSocketNotification("GOOGLESEARCH", response.transcription.transcription)
     } else if (this.AssistantSearch.YouTubeSearch(response.text)) {
       logGA("Send response to EXT-YouTube:", response.transcription.transcription)
       this.sendNotification("EXT_YOUTUBE-SEARCH", response.transcription.transcription)
     }
+  },
+
+  sendGoogleResult: function(link) {
+    if (!link) return console.error("[GA] No link to open!")
+    logGA("Send response to Gateway:", link)
+    this.sendNotification("EXT_GATEWAY", {
+      "photos": [],
+      "urls": [ link ]
+    })
   }
 })
