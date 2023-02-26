@@ -18,7 +18,8 @@ class AssistantSearch {
         "Une recherche nous donne ce résultat",
         "Voilà ce que j'ai trouvé",
         "Sur le Web, on trouve ce résultat",
-        "Un résultat de recherche"
+        "Un résultat de recherche",
+        "Ceci vient du Web"
       ],
       // en
       "en-US": [

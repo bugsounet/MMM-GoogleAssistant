@@ -8,6 +8,7 @@ const path = require("path")
 const Assistant = require("./components/assistant.js")
 const ScreenParser = require("./components/screenParser.js")
 const { getPlatform } = require("./components/platform.js")
+const googleIt = require('google-it')
 
 logGA = (...args) => { /* do nothing */ }
 
@@ -54,6 +55,9 @@ module.exports = NodeHelper.create({
             }
           })
         })
+        break
+      case "GOOGLESEARCH":
+        this.googleSearch(payload)
         break
     }
   },
@@ -191,5 +195,35 @@ module.exports = NodeHelper.create({
     if (details) console.log("[GA][ERROR]" + err, details.message, details)
     else console.log("[GA][ERROR]" + err)
     return this.sendSocketNotification("NOT_INITIALIZED", { message: error.message, values: error.values })
+  },
+
+  googleSearch: function (text) {
+    if (!text) return
+    var finalResult = []
+    googleIt(
+      {
+        query: text,
+        disableConsole: true,
+        limit: 5,
+        "only-urls": true
+      }
+    ).then(results => {
+      if (results && results.length) {
+        results.forEach(link => {
+          if (link.link.startsWith('http://www.google.com') || link.link.startsWith('https://www.google.com')) {
+            logGA("[GoogleSearch] ADS:", link.link)
+          } else {
+            logGA("[GoogleSearch] Link:", link.link)
+            finalResult.push(link.link)
+          }
+        })
+        logGA("[GoogleSearch] Results:",finalResult)
+        this.sendSocketNotification("GOOGLESEARCH-RESULT", finalResult[0])
+      } else {
+        logGA("[GoogleSearch] No Results found!")
+      }
+    }).catch(e => {
+      console.log("[GA][ERROR][GoogleSearch] " + err)
+    })
   }
 })
