@@ -221,9 +221,11 @@ module.exports = NodeHelper.create({
         this.sendSocketNotification("GOOGLESEARCH-RESULT", finalResult[0])
       } else {
         logGA("[GoogleSearch] No Results found!")
+        this.sendSocketNotification("ERROR", "[GoogleSearch] No Results found!")
       }
     }).catch(e => {
-      console.log("[GA][ERROR][GoogleSearch] " + err)
+      console.error("[GA][ERROR][GoogleSearch] " + e)
+      this.sendSocketNotification("ERROR", "[GoogleSearch] Sorry, an error occurred")
     })
   }
 })

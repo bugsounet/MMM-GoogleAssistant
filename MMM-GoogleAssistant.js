@@ -278,8 +278,13 @@ Module.register("MMM-GoogleAssistant", {
         })
         break
       case "INFORMATION":
+        // maybe for later
+        break
       case "ERROR":
-        // maybe for futur
+        this.sendNotification("EXT_ALERT", {
+          message: this.translate(payload),
+          type: "error"
+        })
         break
       case "INITIALIZED":
         logGA("Initialized.")
