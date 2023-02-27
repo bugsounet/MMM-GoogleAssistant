@@ -1,13 +1,33 @@
 /* assistant Search Database */
-/* rev: 230226 */
-/* fr-FR
- * en-US
+/* rev: 230227 */
+/* fr-FR @bugsounet
+ * en-US @bugsounet
+ * --
+ * beta:
+ * de-DE
+ * it-IT
  */
 
 class AssistantSearch {
   constructor (config) {
     logGA("AssistantSearch for", config.lang)
     var GoogleSearchDB = {
+      // de (maybe to complete)
+      "de-DE": [
+        "Im Internet habe ich das hier gefunden",
+        "Unter anderem gibt es das hier im Internet",
+        "Dazu habe ich Folgendes gefunden",
+        "Das Top‐Ergebnis im Internet sagt dazu Folgendes",
+        "Hier ist das Top‐Suchergebnis aus dem Netz",
+        "Ich habe unter anderem das hier gefunden"
+      ],
+      // it (maybe to complete)
+      "it-IT": [
+        "Questo è ciò che ho trovato.",
+        "Ecco cos'ho trovato.",
+        "Ecco, ho trovato questo risultato.",
+        "Ecco cosa ho trovato sul web."
+      ],
       // fr
       "fr-FR" : [
         "Voici le premier résultat de recherche",
@@ -35,6 +55,22 @@ class AssistantSearch {
       ]
     }
     var YouTubeSearchDB = {
+      // de (maybe to complete)
+      "de-DE": [
+        "Hier sind Informationen von YouTube",
+        "Hier ist ein passendes Ergebnis von YouTube",
+        "Hier ist das Top‐Ergebnis. Es kommt von YouTube",
+        "Hier ist eine Antwort von YouTube",
+        "Bei YouTube hab ich Folgendes gefunden",
+        "Bei YouTube hab ich das hier gefunden",
+        "YouTube hat dieses Ergebnis"
+      ],
+      // it (maybe to complete)
+      "it-IT": [
+        "Ho trovato questo risultato su YouTube",
+        "Ecco cos'ho trovato su YouTube.",
+        "Ecco un risultato da YouTube."
+      ],
       // fr
       "fr-FR" : [
         "Voilà ce que propose YouTube",
