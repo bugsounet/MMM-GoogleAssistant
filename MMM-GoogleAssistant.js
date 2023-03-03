@@ -543,7 +543,7 @@ Module.register("MMM-GoogleAssistant", {
   /****************************/
   /*** TelegramBot Commands ***/
   /****************************/
-  getCommands: function(commander) {
+  EXT_TELBOTCommands: function(commander) {
     commander.add({
       command: "query",
       description: this.translate("QUERY_HELP"),
