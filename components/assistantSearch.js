@@ -41,8 +41,8 @@ class AssistantSearch {
         "Un résultat de recherche",
         "Ceci vient du Web"
       ],
-      // en
       "en-US": [
+        // en
         "Here's what I found",
         "Here's the top search result",
         "Here's what I found on the web",
@@ -51,7 +51,16 @@ class AssistantSearch {
         "This is the top result",
         "This came back from a search",
         "this came back from google",
-        "here's some info"
+        "here's some info",
+        // nl
+        "Dit heb ik op internet gevonden",
+        "Dit is het beste resultaat",
+        "Dit heb ik gevonden",
+        "Hier het beste zoekresultaat",
+        "Hier is het beste zoekresultaat",
+        "Hier is een resultaat",
+        "Hier is een zoekresultaat",
+        "Ik heb dit gevonden over je zoekopdracht"
       ]
     }
     var YouTubeSearchDB = {
@@ -84,8 +93,8 @@ class AssistantSearch {
         "Voilà des éléments tirés de YouTube",
         "YouTube propose ce résultat"
       ],
-      // en
       "en-US": [
+        // en
         "YouTube has this result",
         "This came back from YouTube",
         "This is from YouTube",
@@ -95,7 +104,15 @@ class AssistantSearch {
         "Here's a YouTube result",
         "Here's the top YouTube result",
         "Here's something from YouTube",
-        "I found this on YouTube"
+        "I found this on YouTube",
+        // nl
+        "Dit is het beste resultaat",
+        "Hier is het beste zoekresultaat",
+        "Dit heb ik gevonden",
+        "Dit zijn de beste resultaten",
+        "Hier zijn een paar zoekresultaten",
+        "Hier is een resultaat",
+        "Hier is een zoekresultaat"
       ]
     }
     this.GoogleDB = GoogleSearchDB[config.lang]
