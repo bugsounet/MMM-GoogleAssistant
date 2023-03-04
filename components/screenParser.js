@@ -1,28 +1,19 @@
-const HTMLParser = require("node-html-parser")
-const path = require("path")
-const fs = require("fs")
-const Entities = require('html-entities').AllHtmlEntities
-const entities = new Entities()
+"use strict"
 
-var _log = function() {
-    var context = "[GA:SP]"
-    return Function.prototype.bind.call(console.log, console, context)
-}()
-
-var log = function() {
-  //do nothing
-}
+var logGA = (...args) => { /* do nothing */ }
 
 class SCREENPARSER {
-  constructor(config,debug) {
+  constructor(lib, config, debug) {
     this.config = config
-    if (debug == true) log = _log
+    this.lib = lib
+    if (debug == true) logGA = (...args) => { console.log("[GA] [SCREEN_PARSER]", ...args) }
+    this.Entities = this.lib["html-entities"].AllHtmlEntities
   }
 
   parse(response, endCallback=()=>{}) {
     if (response.screen) {
       var uri = this.config.responseOutputURI
-      var filePath = path.resolve(__dirname, "..", uri)
+      var filePath = this.lib.path.resolve(__dirname, "..", uri)
       if (!response.screen.originalContent) return
       var str = response.screen.originalContent.toString("utf8")
       var disableTimeoutFromScreenOutput = (str) => {
@@ -36,7 +27,7 @@ class SCREENPARSER {
       var url = "/modules/MMM-GoogleAssistant/" + this.config.responseOutputCSS + "?seed=" + Date.now()
       str = str.replace(/<style>html,body[^<]+<\/style>/gmi, `<link rel="stylesheet" href="${url}">`)
 
-      var ret = HTMLParser.parse(response.screen.originalContent)
+      var ret = this.lib.HTMLParser.parse(response.screen.originalContent)
       var dom = ret.querySelector(".popout-content")
       response.screen.text = dom ? dom.structuredText : null
       response.text= dom && dom.querySelector(".show_text_content") ? dom.querySelector(".show_text_content").structuredText : null
@@ -49,14 +40,14 @@ class SCREENPARSER {
         }
       }
 
-      var contents = fs.writeFile(filePath, str, (error) => {
+      var contents = this.lib.fs.writeFile(filePath, str, (error) => {
         if (error) {
-         log("CONVERSATION:SCREENOUTPUT_CREATION_ERROR", error)
-         endCallback(error)
+          console.error("[GA] [SCREEN_PARSER] SCREENOUTPUT_CREATION_ERROR", error)
+          endCallback(error)
         } else {
-          log("CONVERSATION:SCREENOUTPUT_CREATED")
           response.screen.path = filePath
           response.screen.uri = uri
+          logGA("SCREEN_OUTPUT_CREATED")
           endCallback(response)
         }
       })
@@ -64,6 +55,7 @@ class SCREENPARSER {
   }
 
   parseScreenLink(screen) {
+    const entities = new this.Entities()
     var html = screen.originalContent
     screen.links = []
     var links = [
@@ -80,6 +72,7 @@ class SCREENPARSER {
       }
     }
     screen.links = res
+    logGA("[LINKS] Found: ", screen.links.length)
     return screen
   }
 }
