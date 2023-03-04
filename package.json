@@ -11,7 +11,9 @@
     "token": "installer/token.sh",
     "list": "node installer/list.js",
     "delete": "node installer/delete.js",
-    "register": "node installer/register.js"
+    "register": "node installer/register.js",
+    "reset": "git reset --hard",
+    "clean": "rm -rf node_modules package-lock.json"
   },
   "keywords": [
     "magic mirror",
