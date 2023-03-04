@@ -7,7 +7,6 @@ class SCREENPARSER {
     this.config = config
     this.lib = lib
     if (debug == true) logGA = (...args) => { console.log("[GA] [SCREEN_PARSER]", ...args) }
-    this.Entities = this.lib["html-entities"].AllHtmlEntities
   }
 
   parse(response, endCallback=()=>{}) {
@@ -55,7 +54,7 @@ class SCREENPARSER {
   }
 
   parseScreenLink(screen) {
-    const entities = new this.Entities()
+    var decode = this.lib["html-entities"].decode
     var html = screen.originalContent
     screen.links = []
     var links = [
@@ -68,11 +67,11 @@ class SCREENPARSER {
     for (var i = 0; i < links.length; i++) {
       var link = links[i]
       while ((r = link.exec(html)) !== null) {
-        res.push(entities.decode(r[1]))
+        res.push(decode(r[1]))
       }
     }
     screen.links = res
-    logGA("[LINKS] Found: ", screen.links.length)
+    logGA("[LINKS] Found:", screen.links.length)
     return screen
   }
 }
