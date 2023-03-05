@@ -104,7 +104,7 @@ class ASSISTANT {
     var responseFile = "tmp/lastResponse.mp3"
     var filePath = this.lib.path.resolve(this.modulePath, responseFile)
 
-    var b2m = new this.lib.BufferToMP3 (this.lib, {debug:this.debug, file:filePath})
+    var b2m = new this.lib.BufferToMP3 ({debug:this.debug, file:filePath})
     this.mic = null
     if (this.micMode) {
       var defaultOption = {
@@ -116,7 +116,7 @@ class ASSISTANT {
         debug: this.debug
       }
 
-      this.mic = new this.lib.Recorder(this.lib, Object.assign({}, defaultOption, this.micConfig),conversation, (err)=>{ this.afterListening(err) })
+      this.mic = new this.lib.Recorder(Object.assign({}, defaultOption, this.micConfig),conversation, (err)=>{ this.afterListening(err) })
       logGA("MIC:RECORDING START.")
       this.mic.start()
     }

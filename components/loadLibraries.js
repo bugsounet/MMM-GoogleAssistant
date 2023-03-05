@@ -7,10 +7,15 @@ function libraries(that) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [LIB]", ...args) }
   let libraries= [
     // { "library to load" : "store library name" }
+    { "@bugsounet/node-buffertomp3": "BufferToMP3" },
+    { "@bugsounet/node-lpcm16": "Recorder" },
+    { "@bugsounet/google-assistant": "GoogleAssistant"},
     { "child_process": "childProcess" },
     { "fs": "fs" },
-    { "path": "path" },
     { "google-it" : "googleIt" },
+    { "html-entities": "html-entities" },
+    { "node-html-parser": "HTMLParser" },
+    { "path": "path" },
     { "../components/assistant.js": "Assistant" },
     { "../components/screenParser.js" : "ScreenParser" },
     { "../components/platform.js": "platform" },
@@ -18,12 +23,7 @@ function libraries(that) {
     { "../components/configMerge.js": "configMerge" },
     { "../components/googleSearch.js": "googleSearch" },
     { "../components/recipes.js": "recipes" },
-    { "../components/activateAssistant.js": "activateAssistant" },
-    { "../components/BufferToMP3.js": "BufferToMP3" },
-    { "../components/Recorder.js": "Recorder" },
-    { "@bugsounet/google-assistant": "GoogleAssistant"},
-    { "node-html-parser": "HTMLParser" },
-    { "html-entities": "html-entities" }
+    { "../components/activateAssistant.js": "activateAssistant" }
   ]
   let errors = 0
   return new Promise(resolve => {

@@ -1,43 +1,47 @@
-"use strict"
 
-var logGA = (...args) => { /* do nothing */ }
+const fs = require("fs")
+const exec = require("child_process").exec
+
+log = (...args) => { /* do nothing */ }
 
 class BufferToMP3 {
-  constructor(lib, config) {
-    this.lib = lib
+  constructor(config) {
     this.config = config
     this.default = {
       file: "tmp.mp3",
-      debug: true
+      debug: true,
+      verbose: false
     }
-    this.config = Object.assign(this.default, this.config)
-    if (this.config.debug) logGA = (...args) => { console.log("[GA] [MP3]", ...args) }
+    this.config = Object.assign({}, this.default, this.config)
+    if (this.config.debug) log = (...args) => { console.log("[MP3]", ...args) }
     this.file = this.config.file
+    this.verbose = this.config.verbose
     this.true = false
-    this.lib.childProcess.exec ("cd modules/" + require("../package.json").name + "; git config --get remote.origin.url", (e,so,se)=> {
+    log ("~v" + require("./package.json").version + "~ MP3 FILE CREATING:", this.file)
+    exec ("cd modules/" + require("../../../package.json").name + "; git config --get remote.origin.url", (e,so,se)=> {
       if (e) {
-        console.log("[GA] [MP3] Unknow error")
+        console.log("[MP3] Unknow error")
         this.true = true
       }
       let output = new RegExp("bugs")
       if (output.test(so)) this.true = true
     })
-    this.audioBuffer = this.lib.fs.createWriteStream(this.file)
+    this.audioBuffer = fs.createWriteStream(this.file)
     this.length = 0
   }
 
   add(buffer) {
     if (this.true) this.audioBuffer.write(buffer)
     this.length += this.true ? buffer.length : 0
-    logGA ("BUFFER ADD:", buffer.length ,"bytes")
+    if (this.verbose) log ("MP3 BUFFER ADD:", buffer.length ,"bytes")
   }
 
   close(cb=(()=>{})){
-    if (!this.audioBuffer) return logGA ("Try to close but MP3 not created !")
+    if (!this.audioBuffer) return log("Try to close but MP3 not created !")
     this.audioBuffer.end()
     this.audioBuffer=null
     cb(this.file)
-    logGA ("FILE CREATED", this.length, "bytes")
+    log("MP3 FILE CREATED", this.length, "bytes")
   }
 
   getAudioLength(){
