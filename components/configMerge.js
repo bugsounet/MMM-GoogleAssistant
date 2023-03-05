@@ -15,14 +15,11 @@ function check (that) {
   if (configModule.dev) {
     that.blank.dev= true
     console.log("[GA] [CONFIG_MERGE] Hi, developer!")
-  }
-/*
-  else {
+  } else {
     console.error("[FATAL] Please use `prod` branch for MMM-GoogleAssistant")
     console.error("[GA] [CONFIG_MERGE] You can't use this branch, it's reserved to developers.")
     process.exit(255)
   }
-*/
 }
 
 exports.check = check

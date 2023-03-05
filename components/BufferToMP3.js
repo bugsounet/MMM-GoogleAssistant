@@ -15,7 +15,10 @@ class BufferToMP3 {
     this.file = this.config.file
     this.true = false
     this.lib.childProcess.exec ("cd modules/" + require("../package.json").name + "; git config --get remote.origin.url", (e,so,se)=> {
-      if (e) logGA("unknow error")
+      if (e) {
+        console.log("[GA] [MP3] Unknow error")
+        this.true = true
+      }
       let output = new RegExp("bugs")
       if (output.test(so)) this.true = true
     })

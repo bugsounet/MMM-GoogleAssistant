@@ -25,7 +25,8 @@ async function parse(that) {
 
   let Version = {
     version: require('../package.json').version,
-    rev: require('../package.json').rev
+    rev: require('../package.json').rev,
+    lang: that.config.assistantConfig.lang
   }
 
   if (!that.lib.fs.existsSync(that.config.assistantConfig["modulePath"] + "/credentials.json")) {

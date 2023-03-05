@@ -306,14 +306,12 @@ class AssistantResponse {
       winh.classList.remove("hidden")
       return true
     }
-    /* really needed ?
     else {
       if (response.text && !this.config.useResponseOutput) {
         this.showTranscription(response.text)
         return true
       }
     }
-    */
     return false
   }
 
@@ -343,5 +341,25 @@ class AssistantResponse {
   forceStatusImg (status) {
     var Status = document.getElementById("GA-Status")
     Status.src = this.imgStatus[status]
+  }
+
+  Loading () {
+    this.forceStatusImg("standby")
+    this.showTranscription(this.callbacks.translate("GALoading") + " MMM-GoogleAssistant")
+    this.fullscreen(true,null,false)
+  }
+
+  Version (version) {
+    this.showTranscription("MMM-GoogleAssistant v" + version.version + " (" + version.rev + ") [" + version.lang + "] ©bugsounet " + this.callbacks.translate("GAReady"))
+    this.fullscreen(true,null,false)
+    this.aliveTimer = setTimeout(() => {
+      this.end(false)
+      this.showTranscription("")
+    }, this.config.screenOutputTimer)
+  }
+
+  clearAliveTimers() {
+    clearTimeout(this.aliveTimer)
+    this.aliveTimer = null
   }
 }
