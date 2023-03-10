@@ -40,7 +40,7 @@ async function parse(that) {
 
   let platform
   try {
-    platform = that.lib.platform.getPlatform()
+    platform = that.lib.platform.getPlatform(that)
   } catch (error) {
     console.error("[GA] [DATA] Google Assistant does not support this platform. Supported platforms include macOS (x86_64), Windows (x86_64), Linux (x86_64), and Raspberry Pi")
     process.exit(1)

@@ -118,13 +118,7 @@ class AssistantResponse {
     GAAssistantIcon.src = this.resourcesDir + "standby.gif"
     GAAssistantIcon.onclick = (event)=> {
       event.stopPropagation()
-      if (this.GAStatus.actual == "reply") {
-        logGA("Touch Force end")
-        this.response = null
-        this.audioResponse.src = ""
-        this.playChime("closing")
-        this.end()
-      }
+      if (this.GAStatus.actual == "reply") this.conversationForceEnd()
     }
     GAAssistantBar.appendChild(GAAssistantIcon)
 
@@ -176,36 +170,49 @@ class AssistantResponse {
     if (this.response) {
       var response = this.response
       this.response = null
-      if (response && response.continue) {
-        this.loopCount = 0
-        this.status("continue")
-        logGA("Continuous Conversation")
-        this.showTranscription("")
-        this.callbacks.assistantActivate({
-          type: "MIC",
-          profile: response.lastQuery.profile,
-          key: null,
-          lang: response.lastQuery.lang,
-          isNew: false,
-          force: true
-        }, Date.now())
-      } else {
-        logGA("Conversation ends.")
-        this.status("standby")
-        this.callbacks.endResponse()
-        clearTimeout(this.aliveTimer)
-        this.aliveTimer = null
-        this.aliveTimer = setTimeout(()=>{
-          this.stopResponse(()=>{
-            this.fullscreen(false, this.GAStatus)
-          })
-        }, this.config.screenOutputTimer)
-      }
+      if (response && response.continue) this.conversationContinue(response)
+      else this.conversationEnd()
     } else {
       this.status("standby")
       this.fullscreen(false, this.GAStatus)
       if (cb) this.callbacks.endResponse()
     }
+  }
+
+  conversationContinue(response) {
+    this.loopCount = 0
+    this.status("continue")
+    logGA("Continuous Conversation")
+    this.showTranscription("")
+    this.callbacks.assistantActivate({
+      type: "MIC",
+      profile: response.lastQuery.profile,
+      key: null,
+      lang: response.lastQuery.lang,
+      isNew: false,
+      force: true
+    }, Date.now())
+  }
+
+  conversationEnd() {
+    logGA("Conversation ends.")
+    this.status("standby")
+    this.callbacks.endResponse()
+    clearTimeout(this.aliveTimer)
+    this.aliveTimer = null
+    this.aliveTimer = setTimeout(()=>{
+      this.stopResponse(()=>{
+        this.fullscreen(false, this.GAStatus)
+      })
+    }, this.config.screenOutputTimer)
+  }
+
+  conversationForceEnd() {
+    logGA("Touch Force end")
+    this.response = null
+    this.audioResponse.src = ""
+    this.playChime("closing")
+    this.conversationEnd()
   }
 
   start (response) {
@@ -260,7 +267,7 @@ class AssistantResponse {
         this.end()
       }
     }
-    this.postProcess(
+    this.callbacks.postProcess(
       response,
       ()=>{
         response.continue = false // Issue: force to be false
@@ -281,14 +288,10 @@ class AssistantResponse {
     callback()
   }
 
-  postProcess (response, callback_done=()=>{}, callback_none=()=>{}) {
-    this.callbacks.postProcess(response, callback_done, callback_none)
-  }
-
   playAudioOutput (response) {
     if (response.audio) {
       this.showing = true
-      this.audioResponse.src = this.makeUrl(response.audio.uri)
+      this.audioResponse.src = "/modules/MMM-GoogleAssistant/" + response.audio.uri + "?seed=" + Date.now()
       return true
     }
     return false
@@ -301,7 +304,7 @@ class AssistantResponse {
       }
       this.showing = true
       var iframe = document.getElementById("GA-ResultOuput")
-      iframe.src = this.makeUrl(response.screen.uri)
+      iframe.src = "/modules/MMM-GoogleAssistant/" + response.screen.uri + "?seed=" + Date.now()
       var winh = document.getElementById("GA-Result")
       winh.classList.remove("hidden")
       return true
@@ -313,10 +316,6 @@ class AssistantResponse {
       }
     }
     return false
-  }
-
-  makeUrl (uri) {
-    return "/modules/MMM-GoogleAssistant/" + uri + "?seed=" + Date.now()
   }
 
   fullscreen (active, status, fs = true) {

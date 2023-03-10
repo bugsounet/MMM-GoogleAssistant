@@ -12,6 +12,7 @@ function libraries(that) {
     { "@bugsounet/google-assistant": "GoogleAssistant"},
     { "child_process": "childProcess" },
     { "fs": "fs" },
+    { "os": "os" },
     { "google-it" : "googleIt" },
     { "html-entities": "html-entities" },
     { "node-html-parser": "HTMLParser" },

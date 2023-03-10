@@ -32,7 +32,7 @@ class GAConfig {
         that.activateProcess.postProcess(that, response, callback_done, callback_none)
       },
       endResponse: ()=>{
-        logGA("Conversation End")
+        logGA("Conversation Done")
       },
       translate: (text) => {
         return that.translate(text)

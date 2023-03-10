@@ -120,23 +120,6 @@ class Hooks {
       }
     }
 
-/*
-    if (command.hasOwnProperty("functionExec")) {
-      var fe = command.functionExec
-      if (typeof fe.exec == "function") {
-        logGA(`Command ${commandId} is executed (functionExec)`)
-        try {
-         fe.exec(param, from)
-        } catch (e) { // prevent crash if function no longer exist ...
-          that.sendNotification("EXT_ALERT", {
-            message: "Function not Found!",
-            type: "warning"
-          })
-        }
-      }
-    }
-*/
-
     if (command.hasOwnProperty("soundExec")) {
       var snde = command.soundExec
       if (snde.chime && typeof snde.chime == 'string') {

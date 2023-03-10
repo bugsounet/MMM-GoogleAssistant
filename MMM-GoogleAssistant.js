@@ -120,13 +120,7 @@ Module.register("MMM-GoogleAssistant", {
         logGA("Force Fullscreen: AssistantResponse Reloaded")
         break
       case "GAv5_STOP":
-        if (this.assistantResponse.response && (this.GAStatus.actual == "reply" || this.GAStatus.actual == "continue")) {
-          logGA("Force end")
-          this.assistantResponse.response = null
-          this.assistantResponse.audioResponse.src = ""
-          this.assistantResponse.playChime("closing")
-          this.assistantResponse.end()
-        }
+        if (this.assistantResponse.response && this.GAStatus.actual == "reply") this.assistantResponse.conversationForceEnd()
         break
     }
   },
@@ -180,9 +174,9 @@ Module.register("MMM-GoogleAssistant", {
     }
   },
 
-  /****************************/
-  /*** TelegramBot Commands ***/
-  /****************************/
+  /********************************/
+  /*** EXT-TelegramBot Commands ***/
+  /********************************/
   EXT_TELBOTCommands: function(commander) {
     commander.add({
       command: "query",
