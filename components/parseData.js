@@ -6,7 +6,6 @@ var _load = require("../components/loadLibraries.js")
 async function init(that) {
   that.lib = { error: 0 }
   that.config = {}
-  that.blank = {}
   that.PLATFORM_RECORDER = new Map()
   that.PLATFORM_RECORDER.set("linux", "arecord")
   that.PLATFORM_RECORDER.set("mac", "sox")
