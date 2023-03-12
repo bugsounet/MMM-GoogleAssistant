@@ -34,9 +34,11 @@ function check (that) {
       if (configModule.dev) {
         console.log("[GA] [CONFIG_MERGE] Hi, developer!")
       } else {
+        /*
         console.error("[GA] [FATAL] Please use `prod` branch for MMM-GoogleAssistant")
         console.error("[GA] [CONFIG_MERGE] You can't use this branch, it's reserved to developers.")
         process.exit(255)
+        */
       }
     }
   })
