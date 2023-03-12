@@ -18,15 +18,13 @@ const config = {
 const startConversation = (conversation) => {
   // setup the conversation
   conversation
-    .on('response', text => console.log('[GA] Assistant Response:', text))
     .on('ended', (error, continueConversation) => {
       if (error) {
         console.log('[GA] Conversation Ended Error:', error);
         process.exit()
       } else {
-        console.log('[GA] Conversation Complete\n');
         conversation.end();
-        console.log("[GA] Testing Conversation ended.")
+        console.log("\n[GA] Token created!")
         process.exit()
       }
     })
@@ -45,8 +43,6 @@ try {
 
 this.assistant
   .on('ready', () => {
-    console.log("[GA] Testing Conversation start...\n")
-    console.log("[GA] Assistant Question: What time is it?")
     config.conversation.textQuery = "What time is it?";
     this.assistant.start(config.conversation, startConversation);
   })

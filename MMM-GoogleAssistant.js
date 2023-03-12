@@ -1,14 +1,14 @@
 /**
- ** Module : MMM-GoogleAssistant v4
+ ** Module : MMM-GoogleAssistant v5
  ** @bugsounet
- ** ©01-2022
+ ** ©03-2023
  ** support: https://forum.bugsounet.fr
  **/
 
 logGA = (...args) => { /* do nothing */ }
 
 Module.register("MMM-GoogleAssistant", {
-  requiresVersion: "2.18.0",
+  requiresVersion: "2.22.0",
   defaults: {
     debug:false,
     stopCommand: "stop",
@@ -55,25 +55,15 @@ Module.register("MMM-GoogleAssistant", {
     },
     recipes: []
   },
-  micConfig: {
-    recorder: "auto",
-    device: "default"
-  },
-  plugins: {
-    onReady: [],
-    onNotificationReceived: [],
-    onActivate: [],
-    onStatus: []
-  },
-  commands: {},
-  transcriptionHooks: {},
-  responseHooks: {},
-  forceResponse: false,
 
   getScripts: function() {
     return [
-       "/modules/MMM-GoogleAssistant/components/response.js",
-       "/modules/MMM-GoogleAssistant/components/assistantSearch.js"
+      "/modules/MMM-GoogleAssistant/components/GAConfig.js",
+      "/modules/MMM-GoogleAssistant/components/activateProcess.js",
+      "/modules/MMM-GoogleAssistant/components/assistantResponse.js",
+      "/modules/MMM-GoogleAssistant/components/assistantSearch.js",
+      "/modules/MMM-GoogleAssistant/components/Gateway.js",
+      "/modules/MMM-GoogleAssistant/components/Hooks.js"
     ]
   },
 
@@ -99,163 +89,38 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   start: function () {
-    this.aliveTimer = null
-    const helperConfig = [
-      "debug", "recipes", "assistantConfig",
-      "responseConfig"
-    ]
-    this.helperConfig = {}
-    this.helperConfig.micConfig = this.micConfig
-    if (this.config.debug) logGA = (...args) => { console.log("[GA]", ...args) }
-
-    for(var i = 0; i < helperConfig.length; i++) {
-      this.helperConfig[helperConfig[i]] = this.config[helperConfig[i]]
-    }
-    this.GAStatus = {
-      actual: "standby",
-      old : "standby"
-    }
-    this.assistantResponse = null
-    this.loadAssistantResponse()
-    this.AssistantSearch = new AssistantSearch(this.helperConfig.assistantConfig)
-    var StopHooks = {
-      transcriptionHooks: {
-        "EXT_Stop": {
-          pattern: this.config.stopCommand,
-          command: "EXT_Stop"
-        }
-      },
-      commands: {
-        "EXT_Stop": {
-          moduleExec: {
-            module: ["MMM-GoogleAssistant"],
-            exec: "__FUNC__(module) => { module.stopCommand() }"
-          },
-          soundExec: {
-            "chime": "close"
-          },
-          displayResponse: false
-        }
-      }
-    }
-    this.parseLoadedRecipe(JSON.stringify(StopHooks))
-  },
-
-  loadAssistantResponse: function () {
-    var callbacks = {
-      assistantActivate: (payload)=>{
-        this.assistantActivate(payload)
-      },
-      postProcess: (response, callback_done, callback_none)=> {
-        this.postProcess(response, callback_done, callback_none)
-      },
-      endResponse: ()=>{
-        this.endResponse()
-      },
-      translate: (text) => {
-        return this.translate(text)
-      },
-      GAStatus: (status) => {
-        this.doPlugin("onStatus", {status: status})
-        this.GAStatus = status
-        this.sendNotification("ASSISTANT_" + this.GAStatus.actual.toUpperCase())
-      },
-      Gateway: (response)=> {
-        return this.SendToGateway(response)
-      },
-      "sendSocketNotification": (noti, params) => {
-        this.sendSocketNotification(noti, params)
-      }
-    }
-
-    this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], callbacks)
-  },
-
-  doPlugin: function(pluginName, args) {
-    if (this.plugins.hasOwnProperty(pluginName)) {
-      var plugins = this.plugins[pluginName]
-      if (Array.isArray(plugins) && plugins.length > 0) {
-        for (var i = 0; i < plugins.length; i++) {
-          var job = plugins[i]
-          this.doCommand(job, args, pluginName)
-        }
-      }
-    }
-  },
-
-  registerPluginsObject: function (obj) {
-    for (var pop in this.plugins) {
-      if (obj.hasOwnProperty(pop)) {
-        var candi = []
-        if (Array.isArray(obj[pop])) {
-          candi = candi.concat(obj[pop])
-        } else {
-          candi.push(obj[pop].toString())
-        }
-        for (var i = 0; i < candi.length; i++) {
-          this.registerPlugin(pop, candi[i])
-        }
-      }
-    }
-  },
-
-  registerPlugin: function (plugin, command) {
-    if (this.plugins.hasOwnProperty(plugin)) {
-      if (Array.isArray(command)) {
-        this.plugins[plugin].concat(command)
-      }
-      this.plugins[plugin].push(command)
-    }
-  },
-
-  registerCommandsObject: function (obj) {
-    this.commands = Object.assign({}, this.commands, obj)
-  },
-
-  registerTranscriptionHooksObject: function (obj) {
-    this.transcriptionHooks = Object.assign({}, this.transcriptionHooks, obj)
-  },
-
-  registerResponseHooksObject: function (obj) {
-    this.responseHooks = Object.assign({}, this.responseHooks, obj)
+    new GAConfig(this)
   },
 
   getDom: function() {
-    /** position not used in v4 **/
     var dom = document.createElement("div")
     dom.style.display = 'none'
     return dom
   },
 
   notificationReceived: function(noti, payload=null, sender=null) {
-    this.doPlugin("onNotificationReceived", {notification:noti, payload:payload})
+    this.Hooks.doPlugin(this, "onNotificationReceived", {notification:noti, payload:payload})
     switch (noti) {
       case "DOM_OBJECTS_CREATED":
         this.assistantResponse.prepareGA()
         this.assistantResponse.prepareBackground ()
+        this.assistantResponse.Loading()
         this.sendSocketNotification("INIT", this.helperConfig)
-        this.Loading()
         break
-      case "GAv4_ACTIVATE":
-        if (payload && payload.type && payload.key) this.assistantActivate(payload)
-        else this.assistantActivate({ type:"MIC" })
+      case "GAv5_ACTIVATE":
+        if (payload && payload.type && payload.key) this.activateProcess.assistantActivate(this, payload)
+        else this.activateProcess.assistantActivate(this, { type:"MIC" })
         break
-      case "GAv4_FORCE_FULLSCREEN":
+      case "GAv5_FORCE_FULLSCREEN":
         if (this.config.responseConfig.useFullscreen) return logGA("Force Fullscreen: Already activated")
         // change configuration and reload AssistantResponse
         this.config.responseConfig.useFullscreen= true
         this.assistantResponse = null
-        this.loadAssistantResponse()
+        this.assistantResponse = new AssistantResponse(that.helperConfig["responseConfig"], this.GAConfig.callbacks)
         logGA("Force Fullscreen: AssistantResponse Reloaded")
         break
-      case "GAv4_STOP":
-        if (this.assistantResponse.response && this.GAStatus.actual == "reply") {
-          logGA("Force end")
-          this.assistantResponse.response = null
-          this.assistantResponse.audioResponse.src = ""
-          this.assistantResponse.playChime("closing")
-          this.assistantResponse.end()
-        }
+      case "GAv5_STOP":
+        if (this.assistantResponse.response && this.GAStatus.actual == "reply") this.assistantResponse.conversationForceEnd()
         break
     }
   },
@@ -263,7 +128,7 @@ Module.register("MMM-GoogleAssistant", {
   socketNotificationReceived: function(noti, payload) {
     switch(noti) {
       case "LOAD_RECIPE":
-        this.parseLoadedRecipe(payload)
+        this.Hooks.parseLoadedRecipe(payload)
         break
       case "NOT_INITIALIZED":
         this.assistantResponse.fullscreen(true)
@@ -288,261 +153,30 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "INITIALIZED":
         logGA("Initialized.")
-        this.Version(payload)
+        this.assistantResponse.Version(payload)
         this.assistantResponse.status("standby")
-        this.doPlugin("onReady")
-        this.sendNotification("GAv4_READY")
+        this.Hooks.doPlugin(this, "onReady")
+        this.sendNotification("GAv5_READY")
         break
       case "ASSISTANT_RESULT":
-        if (payload.volume !== null) {
-          this.sendNotification("EXT_VOLUME-SPEAKER_SET", payload.volume)
-        }
+        if (payload.volume !== null) this.sendNotification("EXT_VOLUME-SPEAKER_SET", payload.volume)
         this.assistantResponse.start(payload)
         break
       case "TUNNEL":
         this.assistantResponse.tunnel(payload)
         break
       case "ASSISTANT_ACTIVATE":
-        this.assistantActivate(payload)
+        this.activateProcess.assistantActivate(this, payload)
         break
       case "GOOGLESEARCH-RESULT":
-        this.sendGoogleResult(payload)
+        this.Gateway.sendGoogleResult(this, payload)
         break
     }
   },
 
-  parseLoadedRecipe: function(payload) {
-    let reviver = (key, value) => {
-      if (typeof value === 'string' && value.indexOf('__FUNC__') === 0) {
-        value = value.slice(8)
-        let functionTemplate = `(${value})`
-        return eval(functionTemplate)
-      }
-      return value
-    }
-    var p = JSON.parse(payload, reviver)
-
-    if (p.hasOwnProperty("commands")) {
-      this.registerCommandsObject(p.commands)
-    }
-    if (p.hasOwnProperty("transcriptionHooks")) {
-      this.registerTranscriptionHooksObject(p.transcriptionHooks)
-    }
-    if (p.hasOwnProperty("responseHooks")) {
-      this.registerResponseHooksObject(p.responseHooks)
-    }
-    if (p.hasOwnProperty("plugins")) {
-      this.registerPluginsObject(p.plugins)
-    }
-  },
-
-  clearAliveTimers() {
-    clearTimeout(this.assistantResponse.aliveTimer)
-    this.assistantResponse.aliveTimer = null
-    clearTimeout(this.aliveTimer)
-    this.aliveTimer = null
-  },
-
-  assistantActivate: function(payload) {
-    if (this.GAStatus.actual != "standby" && !payload.force) return logGA("Assistant is busy.")
-    this.clearAliveTimers()
-    if (this.GAStatus.actual== "continue") this.assistantResponse.showTranscription(this.translate("GAContinue"))
-    else this.assistantResponse.showTranscription(this.translate("GABegin"))
-    this.doPlugin("onActivate")
-    this.assistantResponse.fullscreen(true)
-    this.lastQuery = null
-    var options = {
-      type: "TEXT",
-      key: null,
-      lang: this.config.assistantConfig.lang,
-      status: this.GAStatus.old,
-      chime: true
-    }
-    var options = Object.assign({}, options, payload)
-    this.assistantResponse.status(options.type, (options.chime) ? true : false)
-    this.sendSocketNotification("ACTIVATE_ASSISTANT", options)
-  },
-
-  endResponse: function() {
-    logGA("Conversation End")
-  },
-
-  postProcess: function (response, callback_done=()=>{}, callback_none=()=>{}) {
-    if (response.lastQuery.status == "continue") return callback_none()
-    var foundHook = this.findAllHooks(response)
-    if (foundHook.length > 0) {
-      this.assistantResponse.status("hook")
-      for (var i = 0; i < foundHook.length; i++) {
-        var hook = foundHook[i]
-        this.doCommand(hook.command, hook.params, hook.from)
-      }
-      if (this.forceResponse) {
-        this.forceResponse = false
-        callback_none()
-      } else callback_done()
-    } else {
-      callback_none()
-    }
-  },
-
-  findAllHooks: function (response) {
-    var hooks = []
-    hooks = hooks.concat(this.findTranscriptionHook(response))
-    hooks = hooks.concat(this.findResponseHook(response))
-    this.findNativeAction(response)
-    return hooks
-  },
-
-  findResponseHook: function (response) {
-    var found = []
-    if (response.screen) {
-      var res = []
-      res.links = (response.screen.links) ? response.screen.links : []
-      res.text = (response.screen.text) ? [].push(response.screen.text) : []
-      res.photos = (response.screen.photos) ? response.screen.photos : []
-      for (var k in this.responseHooks) {
-        if (!this.responseHooks.hasOwnProperty(k)) continue
-        var hook = this.responseHooks[k]
-        if (!hook.where || !hook.pattern || !hook.command) continue
-        var pattern = new RegExp(hook.pattern, "ig")
-        var f = pattern.exec(res[hook.where])
-        if (f) {
-          found.push({
-            "from": k,
-            "params":f,
-            "command":hook.command
-          })
-          logGA("ResponseHook matched:", k)
-        }
-      }
-    }
-    return found
-  },
-
-  findTranscriptionHook: function (response) {
-    var foundHook = []
-    var transcription = (response.transcription) ? response.transcription.transcription : ""
-    for (var k in this.transcriptionHooks) {
-      if (!this.transcriptionHooks.hasOwnProperty(k)) continue
-      var hook = this.transcriptionHooks[k]
-      if (hook.pattern && hook.command) {
-        var pattern = new RegExp(hook.pattern, "ig")
-        var found = pattern.exec(transcription)
-        if (found) {
-          foundHook.push({
-            "from":k,
-            "params":found,
-            "command":hook.command
-          })
-          logGA("TranscriptionHook matched:", k)
-        }
-      } else {
-        logGA(`TranscriptionHook:${k} has invalid format`)
-        continue
-      }
-    }
-    return foundHook
-  },
-
-  findNativeAction: function (response) {
-    var action = (response.action) ? response.action : null
-    if (!action || !action.inputs) return
-    action.inputs.forEach(input => {
-      if (input.intent == "action.devices.EXECUTE") {
-        input.payload.commands.forEach(command => {
-          command.execution.forEach(exec => {
-            logGA("Native Action: " + exec.command, exec.params)
-            if (exec.command == "action.devices.commands.SetVolume") {
-              logGA("Volume Control:", exec.params.volumeLevel)
-              this.sendNotification("EXT_VOLUME-SPEAKER_SET", exec.params.volumeLevel)
-            }
-          })
-        })
-      }
-    })
-  },
-
-  doCommand: function (commandId, originalParam, from) {
-    if (this.commands.hasOwnProperty(commandId)) {
-      var command = this.commands[commandId]
-      if (command.displayResponse) this.forceResponse = true
-    } else {
-      logGA(`Command ${commandId} is not found.`)
-      return
-    }
-    var param = (typeof originalParam == "object")
-      ? Object.assign({}, originalParam) : originalParam
-
-    if (command.hasOwnProperty("notificationExec")) {
-      var ne = command.notificationExec
-      if (ne.notification) {
-        var fnen = (typeof ne.notification == "function") ?  ne.notification(param, from) : ne.notification
-        var nep = (ne.payload) ? ((typeof ne.payload == "function") ?  ne.payload(param, from) : ne.payload) : null
-        var fnep = (typeof nep == "object") ? Object.assign({}, nep) : nep
-        logGA(`Command ${commandId} is executed (notificationExec).`)
-        this.sendNotification(fnen, fnep)
-      }
-    }
-
-    if (command.hasOwnProperty("shellExec")) {
-      var se = command.shellExec
-      if (se.exec) {
-        var fs = (typeof se.exec == "function") ? se.exec(param, from) : se.exec
-        var so = (se.options) ? ((typeof se.options == "function") ? se.options(param, from) : se.options) : null
-        var fo = (typeof so == "function") ? so(param, key) : so
-        if (fs) {
-          logGA(`Command ${commandId} is executed (shellExec).`)
-          this.sendSocketNotification("SHELLEXEC", {command:fs, options:fo})
-        }
-      }
-    }
-
-    if (command.hasOwnProperty("moduleExec")) {
-      var me = command.moduleExec
-      var mo = (typeof me.module == 'function') ? me.module(param, from) : me.module
-      var m = (Array.isArray(mo)) ? mo : new Array(mo)
-      if (typeof me.exec == "function") {
-        MM.getModules().enumerate((mdl)=>{
-          if (m.length == 0 || (m.indexOf(mdl.name) >=0)) {
-            logGA(`Command ${commandId} is executed (moduleExec) for :`, mdl.name)
-            me.exec(mdl, param, from)
-          }
-        })
-      }
-    }
-
-    if (command.hasOwnProperty("functionExec")) {
-      var fe = command.functionExec
-      if (typeof fe.exec == "function") {
-        logGA(`Command ${commandId} is executed (functionExec)`)
-        try {
-         fe.exec(param, from)
-        } catch (e) { // prevent crash if function no longer exist ...
-          this.sendNotification("EXT_ALERT", {
-            message: "Function not Found!",
-            type: "warning"
-          })
-        }
-      }
-    }
-
-    if (command.hasOwnProperty("soundExec")) {
-      var snde = command.soundExec
-      if (snde.chime && typeof snde.chime == 'string') {
-        if (snde.chime == "open") this.assistantResponse.playChime("open")
-        if (snde.chime == "close") this.assistantResponse.playChime("close")
-        if (snde.chime == "opening") this.assistantResponse.playChime("opening")
-        if (snde.chime == "closing") this.assistantResponse.playChime("closing")
-      }
-      if (snde.sound && typeof snde.sound == 'string') {
-        this.assistantResponse.playChime(snde.sound, true)
-      }
-    }
-  },
-
-  /****************************/
-  /*** TelegramBot Commands ***/
-  /****************************/
+  /********************************/
+  /*** EXT-TelegramBot Commands ***/
+  /********************************/
   EXT_TELBOTCommands: function(commander) {
     commander.add({
       command: "query",
@@ -559,58 +193,11 @@ Module.register("MMM-GoogleAssistant", {
   tbQuery: function(command, handler) {
     var query = handler.args
     if (!query) handler.reply("TEXT", this.translate("QUERY_HELP"))
-    else this.assistantActivate({ type:"TEXT", key: query })
+    else this.activateProcess.assistantActivate(this, { type:"TEXT", key: query })
   },
 
   tbStopEXT: function(command, handler) {
-    this.stopCommand()
+    this.sendNotification("EXT_STOP")
     handler.reply("TEXT", this.translate("STOP_EXT"))
   },
-
-  Loading: function () {
-    this.assistantResponse.forceStatusImg("standby")
-    this.assistantResponse.showTranscription(this.translate("GALoading") + " MMM-GoogleAssistant")
-    this.assistantResponse.fullscreen(true,null,false)
-  },
-
-  Version: function (version) {
-    this.assistantResponse.showTranscription("MMM-GoogleAssistant v" + version.version + " (" + version.rev + ") [" + this.config.assistantConfig.lang + "] ©bugsounet " + this.translate("GAReady"))
-    this.assistantResponse.fullscreen(true,null,false)
-    this.aliveTimer = setTimeout(() => {
-      this.assistantResponse.end(false)
-      this.assistantResponse.showTranscription("")
-    }, this.config.responseConfig.screenOutputTimer)
-  },
-
-  stopCommand: function() {
-    this.sendNotification("EXT_STOP")
-  },
-
-  /** Send needed part of response to Gateway **/
-  SendToGateway: function(response) {
-    if (response.screen && (response.screen.links.length > 0 || response.screen.photos.length > 0)) {
-      let opt = {
-        "photos": response.screen.photos,
-        "urls": response.screen.links,
-      }
-      logGA("Send response to Gateway:", opt)
-      this.sendNotification("EXT_GATEWAY", opt)
-    } else if (response.text) {
-      if (this.AssistantSearch.GoogleSearch(response.text)) {
-        this.sendSocketNotification("GOOGLESEARCH", response.transcription.transcription)
-      } else if (this.AssistantSearch.YouTubeSearch(response.text)) {
-        logGA("Send response to EXT-YouTube:", response.transcription.transcription)
-        this.sendNotification("EXT_YOUTUBE-SEARCH", response.transcription.transcription)
-      }
-    }
-  },
-
-  sendGoogleResult: function(link) {
-    if (!link) return console.error("[GA] No link to open!")
-    logGA("Send response to Gateway:", link)
-    this.sendNotification("EXT_GATEWAY", {
-      "photos": [],
-      "urls": [ link ]
-    })
-  }
 })

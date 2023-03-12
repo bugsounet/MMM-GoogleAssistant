@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
-  "version": "4.2.4",
-  "rev": "230303",
+  "version": "5.0.0",
+  "rev": "230310",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -11,7 +11,9 @@
     "token": "installer/token.sh",
     "list": "node installer/list.js",
     "delete": "node installer/delete.js",
-    "register": "node installer/register.js"
+    "register": "node installer/register.js",
+    "reset": "git reset --hard",
+    "clean": "rm -rf node_modules package-lock.json"
   },
   "keywords": [
     "magic mirror",
@@ -24,14 +26,23 @@
   "author": "bugsounet",
   "license": "MIT",
   "bugs": {
-    "url": "https://forum.bugsounet.fr/category/137/issues"
+    "url": "https://forum.bugsounet.fr/"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/bugsounet/MMM-GoogleAssistant"
   },
-  "homepage": "https://wiki.bugsounet.fr/en/MMM-GoogleAssistant",
+  "homepage": "https://wiki.bugsounet.fr/MMM-GoogleAssistant",
   "dependencies": {
-    "@bugsounet/secure-ga-v4": "^1.0.2"
+    "@bugsounet/google-assistant": "^1.3.1",
+    "@bugsounet/node-buffertomp3": "^1.0.6",
+    "@bugsounet/node-lpcm16": "^1.0.2",
+    "axios": "^1.3.4",
+    "check-node-version": "^4.2.1",
+    "glob": "^9.2.1",
+    "google-it": "^1.6.4",
+    "html-entities": "^2.3.3",
+    "minify": "^9.2.0",
+    "node-html-parser": "^6.1.5"
   }
 }

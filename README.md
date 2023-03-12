@@ -1,4 +1,4 @@
-# MMM-GoogleAssistant v4.x
+# MMM-GoogleAssistant v5.x
 
 
 `MMM-GoogleAssistant` is an embedded Google assistant on MagicMirror.
