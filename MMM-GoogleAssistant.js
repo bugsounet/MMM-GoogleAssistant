@@ -89,7 +89,7 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   start: function () {
-    new GAConfig(this)
+    this.GAConfig = new GAConfig(this)
   },
 
   getDom: function() {
@@ -113,10 +113,7 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "GAv5_FORCE_FULLSCREEN":
         if (this.config.responseConfig.useFullscreen) return logGA("Force Fullscreen: Already activated")
-        // change configuration and reload AssistantResponse
-        this.config.responseConfig.useFullscreen= true
-        this.assistantResponse = null
-        this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], this.GAConfig.callbacks)
+        this.GAConfig.forceFullScreen(this)
         logGA("Force Fullscreen: AssistantResponse Reloaded")
         break
       case "GAv5_STOP":
