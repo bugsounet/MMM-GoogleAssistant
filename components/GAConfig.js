@@ -77,5 +77,11 @@ class GAConfig {
     that.Hooks.parseLoadedRecipe(JSON.stringify(StopHooks))
     console.log("[GA] GAConfig Ready")
   }
+
+  forceFullScreen(that) {
+    that.config.responseConfig.useFullscreen= true
+    that.assistantResponse = null
+    that.assistantResponse = new AssistantResponse(that.helperConfig["responseConfig"], this.callbacks)
+  }
 }
  
