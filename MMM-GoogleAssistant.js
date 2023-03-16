@@ -116,7 +116,7 @@ Module.register("MMM-GoogleAssistant", {
         // change configuration and reload AssistantResponse
         this.config.responseConfig.useFullscreen= true
         this.assistantResponse = null
-        this.assistantResponse = new AssistantResponse(that.helperConfig["responseConfig"], this.GAConfig.callbacks)
+        this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], this.GAConfig.callbacks)
         logGA("Force Fullscreen: AssistantResponse Reloaded")
         break
       case "GAv5_STOP":
