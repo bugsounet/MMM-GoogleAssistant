@@ -107,16 +107,16 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantResponse.Loading()
         this.sendSocketNotification("INIT", this.helperConfig)
         break
-      case "GAv5_ACTIVATE":
+      case "GA_ACTIVATE":
         if (payload && payload.type && payload.key) this.activateProcess.assistantActivate(this, payload)
         else this.activateProcess.assistantActivate(this, { type:"MIC" })
         break
-      case "GAv5_FORCE_FULLSCREEN":
+      case "GA_FORCE_FULLSCREEN":
         if (this.config.responseConfig.useFullscreen) return logGA("Force Fullscreen: Already activated")
         this.GAConfig.forceFullScreen(this)
         logGA("Force Fullscreen: AssistantResponse Reloaded")
         break
-      case "GAv5_STOP":
+      case "GA_STOP":
         if (this.assistantResponse.response && this.GAStatus.actual == "reply") this.assistantResponse.conversationForceEnd()
         break
     }
@@ -153,7 +153,7 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantResponse.Version(payload)
         this.assistantResponse.status("standby")
         this.Hooks.doPlugin(this, "onReady")
-        this.sendNotification("GAv5_READY")
+        this.sendNotification("GA_READY")
         break
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) this.sendNotification("EXT_VOLUME-SPEAKER_SET", payload.volume)
