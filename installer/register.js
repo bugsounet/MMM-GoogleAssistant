@@ -13,7 +13,7 @@ const config = {
 const debug = process.argv.slice(2) == "dev" ? true : false
 
 console.log("~~~")
-console.log("~MMM-GoogleAssistant v4~ Device Register", debug ? "~~ debug Mode ~~": "")
+console.log("~MMM-GoogleAssistant~ Device Register", debug ? "~~ debug Mode ~~": "")
 console.log("~~~")
 console.log(" ")
 
