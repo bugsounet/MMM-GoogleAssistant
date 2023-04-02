@@ -46,6 +46,13 @@ class Hooks {
     return found
   }
 
+  iDontCare (exp) {
+    var reg = new RegExp("chatgpt|openai", "ig")
+    var value = reg.exec(exp)
+    if (!value) return false
+    return true
+  }
+
   findTranscriptionHook (response) {
     var foundHook = []
     var transcription = (response.transcription) ? response.transcription.transcription : ""
@@ -56,6 +63,10 @@ class Hooks {
         var pattern = new RegExp(hook.pattern, "ig")
         var found = pattern.exec(transcription)
         if (found) {
+          if (this.iDontCare(found)) {
+            logGA(`TranscriptionHook:${k} has invalid expression`)
+            continue
+          }
           foundHook.push({
             "from":k,
             "params":found,
@@ -88,8 +99,11 @@ class Hooks {
         var fnen = (typeof ne.notification == "function") ?  ne.notification(param, from) : ne.notification
         var nep = (ne.payload) ? ((typeof ne.payload == "function") ?  ne.payload(param, from) : ne.payload) : null
         var fnep = (typeof nep == "object") ? Object.assign({}, nep) : nep
-        logGA(`Command ${commandId} is executed (notificationExec).`)
-        that.sendNotification(fnen, fnep)
+        if (this.iDontCare(fnen)) logGA(`Command ${commandId} has invalid notification`)
+        else {
+          logGA(`Command ${commandId} is executed (notificationExec).`)
+          that.sendNotification(fnen, fnep)
+        }
       }
     }
 
