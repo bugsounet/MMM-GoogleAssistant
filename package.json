@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
-  "version": "5.1.1",
-  "rev": "230402",
+  "version": "5.1.2",
+  "rev": "230403",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -39,8 +39,8 @@
     "@bugsounet/node-lpcm16": "^1.0.2",
     "axios": "^1.3.4",
     "check-node-version": "^4.2.1",
+    "cheerio": "^1.0.0-rc.12",
     "glob": "^9.2.1",
-    "google-it": "^1.6.4",
     "html-entities": "^2.3.3",
     "minify": "^9.2.0",
     "node-html-parser": "^6.1.5"
