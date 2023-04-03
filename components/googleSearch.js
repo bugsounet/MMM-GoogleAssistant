@@ -61,7 +61,7 @@ class GoogleSearch {
           const body = response.data
           return resolve({ body, response })
         })
-        .catch((error) => reject(new Error(`Error making web request: ${error}`)))
+        .catch((error) => reject(new Error(`[GA] [GoogleSearch] Error making web request: ${error}`)))
     })
   }
 
@@ -76,7 +76,7 @@ class GoogleSearch {
         })
         const { status } = response
 
-        if (results.length === 0 && status !== 200) reject(new Error(`Error in response: status ${status}.`))
+        if (results.length === 0 && status !== 200) reject(new Error(`[GA] [GoogleSearch] Error in response: status ${status}.`))
 
         return resolve(results)
       }).catch(reject)
