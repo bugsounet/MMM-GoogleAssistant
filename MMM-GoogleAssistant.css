@@ -1,7 +1,7 @@
-/******************
-**   GA css v4   **
-**   @BuGsounet  **
-*******************/
+/*****************
+**   GA css     **
+**   @BuGsounet **
+******************/
 
 /*
  * Google Color code
@@ -59,6 +59,7 @@
   left: 0;
 }
 
+/*
 #GoogleAssistant.in {
   visibility: visible;
   opacity: 1;
@@ -69,6 +70,7 @@
   opacity: 0;
   transition: visibility 0s 0.5s, opacity 0.5s linear;
 }
+*/
 
 #GoogleAssistant.hidden {
   display: none
