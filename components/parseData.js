@@ -49,8 +49,12 @@ async function parse(that) {
   console.log(`[GA] [DATA] Platform: '${platform}'; attempting to use '${recorderType}' to access microphone ...`)
   that.config.micConfig.recorder= recorderType
 
-  that.lib.recipes.load(that, ()=> that.sendSocketNotification("INITIALIZED", Version))
-  console.log("[GA] [DATA] Google Assistant is initialized.")
+  that.searchOnGoogle = new that.lib.googleSearch(that.lib)
+
+  that.lib.recipes.load(that, ()=> {
+    that.sendSocketNotification("INITIALIZED", Version)
+    console.log("[GA] [DATA] Google Assistant is initialized.")
+  })
 }
 
 function error(that, err, error, details = null) {

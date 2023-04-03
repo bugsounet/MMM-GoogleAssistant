@@ -10,10 +10,11 @@ function libraries(that) {
     { "@bugsounet/node-buffertomp3": "BufferToMP3" },
     { "@bugsounet/node-lpcm16": "Recorder" },
     { "@bugsounet/google-assistant": "GoogleAssistant"},
+    { "axios": "axios" },
+    { "cheerio": "cheerio" },
     { "child_process": "childProcess" },
     { "fs": "fs" },
     { "os": "os" },
-    { "google-it" : "googleIt" },
     { "html-entities": "html-entities" },
     { "node-html-parser": "HTMLParser" },
     { "path": "path" },
@@ -23,6 +24,7 @@ function libraries(that) {
     { "../components/shellExec.js": "shellExec" },
     { "../components/configMerge.js": "configMerge" },
     { "../components/googleSearch.js": "googleSearch" },
+    { "../components/searchOnGoogle.js": "searchOnGoogle" },
     { "../components/recipes.js": "recipes" },
     { "../components/activateAssistant.js": "activateAssistant" }
   ]

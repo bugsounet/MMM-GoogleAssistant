@@ -27,7 +27,7 @@ module.exports = NodeHelper.create({
         this.lib.shellExec.exec(this, payload)
         break
       case "GOOGLESEARCH":
-        this.lib.googleSearch.search(this, payload)
+        this.lib.searchOnGoogle.search(this, payload)
         break
     }
   }
