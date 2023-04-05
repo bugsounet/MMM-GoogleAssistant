@@ -80,8 +80,8 @@ class AssistantResponse {
     var newGA = document.createElement("div")
     newGA.id = "GoogleAssistant"
     newGA.style.zoom = this.config.zoom.transcription
-    newGA.className= "hidden out"
-
+    newGA.className= "hidden animate__animated"
+    newGA.style.setProperty('--animate-duration', '1s')
     /** hidden the popup on animation end **/
     newGA.addEventListener('transitionend', (a) => {
       if (a.path[0].className =="out") newGA.classList.add("hidden")
@@ -323,13 +323,22 @@ class AssistantResponse {
     var GAFS = document.getElementById("GA_DOM-FS")
 
     if (active) {
-      GA.className= "in"
+      //GA.className= "in"
+      GA.classList.remove("hidden", "animate__fadeOutDownBig")
+      GA.classList.add('animate__fadeInUp')
       if (this.GAfullscreen && fs) {
         GAFS.classList.remove("hidden")
       }
     } else {
       if (status && status.actual == "standby") { // only on standby mode
-        GA.className= "out"
+        //GA.className= "out"
+        GA.classList.remove("animate__fadeInUp")
+        GA.classList.add('animate__fadeOutDownBig')
+        GA.addEventListener('animationend', (e) => {
+          if (e.animationName == "fadeOutDownBig" && e.path[0].id == "GoogleAssistant") {
+            GA.classList.add("hidden")
+          }
+        }, {once: true})
         if (this.GAfullscreen) {
           GAFS.classList.add("hidden")
         }
