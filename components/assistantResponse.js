@@ -329,9 +329,8 @@ class AssistantResponse {
         GA.classList.remove("animate__fadeInUp")
         GA.classList.add('animate__fadeOutDown')
         GA.addEventListener('animationend', (e) => {
-          if (e.animationName == "fadeOutDown") {
-            GA.classList.add("hidden")
-          }
+          if (e.animationName == "fadeOutDown") GA.classList.add("hidden")
+          e.stopPropagation()
         }, {once: true})
         if (this.GAfullscreen) {
           GAFS.classList.add("hidden")
