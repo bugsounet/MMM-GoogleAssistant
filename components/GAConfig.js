@@ -75,6 +75,10 @@ class GAConfig {
       }
     }
     that.Hooks.parseLoadedRecipe(JSON.stringify(StopHooks))
+    that.assistantResponse.prepareGA()
+    that.assistantResponse.prepareBackground ()
+    that.assistantResponse.Loading()
+    that.sendSocketNotification("INIT", that.helperConfig)
     console.log("[GA] GAConfig Ready")
   }
 

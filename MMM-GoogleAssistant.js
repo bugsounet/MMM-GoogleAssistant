@@ -101,12 +101,6 @@ Module.register("MMM-GoogleAssistant", {
   notificationReceived: function(noti, payload=null, sender=null) {
     this.Hooks.doPlugin(this, "onNotificationReceived", {notification:noti, payload:payload})
     switch (noti) {
-      case "DOM_OBJECTS_CREATED":
-        this.assistantResponse.prepareGA()
-        this.assistantResponse.prepareBackground ()
-        this.assistantResponse.Loading()
-        this.sendSocketNotification("INIT", this.helperConfig)
-        break
       case "GA_ACTIVATE":
         if (payload && payload.type && payload.key) this.activateProcess.assistantActivate(this, payload)
         else this.activateProcess.assistantActivate(this, { type:"MIC" })
