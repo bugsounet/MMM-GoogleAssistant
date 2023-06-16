@@ -86,50 +86,6 @@ class ASSISTANT {
   }
 
   initConversation (originalPayload, conversation, endCallback=(response)=>{}) {
-    var dates = {
-      convert:function(d) {
-        return (
-          d.constructor === Date ? d :
-          d.constructor === Array ? new Date(d[0],d[1],d[2]) :
-          d.constructor === Number ? new Date(d) :
-          d.constructor === String ? new Date(d) :
-          typeof d === "object" ? new Date(d.year,d.month,d.date) :
-          NaN
-        )
-      },
-      compare:function(a,b) {
-        return (
-          isFinite(a=this.convert(a).valueOf()) &&
-          isFinite(b=this.convert(b).valueOf()) ?
-          (a>b)-(a<b) :
-          NaN
-        )
-      },
-      inRange:function(d,start,end) {
-        return (
-          isFinite(d=this.convert(d).valueOf()) &&
-          isFinite(start=this.convert(start).valueOf()) &&
-          isFinite(end=this.convert(end).valueOf()) ?
-          start <= d && d <= end :
-          NaN
-        )
-      }
-    }
-
-    var now = new Date()
-    var day = now.getDate()
-    var startDate = new Date()
-    var endDate = new Date()
-
-    startDate.setDate(12)
-    startDate.setMonth(4)
-    startDate.setHours(0,0,1)
-    endDate.setDate(13)
-    endDate.setMonth(4)
-    endDate.setHours(0,0,1)
-
-    var Planned = dates.inRange(now, startDate, endDate)
-
     this.response = {
       error: {
         error: null,
@@ -143,16 +99,6 @@ class ASSISTANT {
       transcription: null, // {transcription:String, done:Boolean} or null
       continue: false,
       volume: null
-    }
-
-    if (Planned) {
-      this.response.error = {
-        message: "Sorry, assistant is not available today!"
-      }
-      this.stopListening()
-      conversation.end()
-      endCallback(this.response)
-      return
     }
 
     var responseFile = "tmp/lastResponse.mp3"
