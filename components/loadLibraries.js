@@ -9,7 +9,7 @@ function libraries(that) {
     // { "library to load" : "store library name" }
     { "../components/BufferToMP3.js": "BufferToMP3" },
     { "../components/lpcm16.js": "Recorder" },
-    { "@bugsounet/google-assistant": "GoogleAssistant"},
+    { "../components/googleAssistant": "GoogleAssistant"},
     { "axios": "axios" },
     { "cheerio": "cheerio" },
     { "child_process": "childProcess" },
@@ -42,14 +42,15 @@ function libraries(that) {
           }
         } catch (e) {
           console.error("[GA] [LIB]", libraryToLoad, "Loading error!" , e.toString(), e)
-          that.sendSocketNotification("WARNING" , {library: libraryToLoad })
+          that.sendSocketNotification("ERROR" , "Loading error! library: " + libraryToLoad)
           errors++
           that.lib.error = errors
         }
       }
     })
     resolve(errors)
-    console.log("[GA] [LIB] All libraries loaded!")
+    if (errors) console.error("[GA] [LIB] Some libraries missing!")
+    else console.log("[GA] [LIB] All libraries loaded!")
   })
 }
 

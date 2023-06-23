@@ -1,7 +1,7 @@
 /**
- ** Module : MMM-GoogleAssistant v5
+ ** Module : MMM-GoogleAssistant
  ** @bugsounet
- ** ©03-2023
+ ** ©06-2023
  ** support: https://forum.bugsounet.fr
  **/
 
