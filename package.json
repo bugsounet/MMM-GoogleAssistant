@@ -35,8 +35,6 @@
   "homepage": "https://wiki.bugsounet.fr/MMM-GoogleAssistant",
   "dependencies": {
     "@bugsounet/google-assistant": "^1.3.1",
-    "@bugsounet/node-buffertomp3": "^1.0.6",
-    "@bugsounet/node-lpcm16": "^1.0.2",
     "axios": "^1.3.4",
     "check-node-version": "^4.2.1",
     "cheerio": "^1.0.0-rc.12",
