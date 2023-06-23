@@ -7,7 +7,7 @@
 var spawn = require('child_process').spawn
 
 let log = function() {
-    var context = "[DETECTOR] [LPCM16]"
+    var context = "[GA] [LPCM16]"
     return Function.prototype.bind.call(console.log, console, context)
 }()
 
@@ -113,7 +113,7 @@ class LPCM16 {
     this.cp.stderr.on('data', (data) => {
       var dataToString = data.toString()
       if (dataToString.search("WARN" > -1)) {
-        return console.log("[DETECTOR] [LPCM16] WARN: " + data.toString())
+        return console.log("[GA] [LPCM16] WARN: " + data.toString())
       } else {
         this.stream.destroy()
         return this.afterCallback(data.toString())

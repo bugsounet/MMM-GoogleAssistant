@@ -12,14 +12,14 @@ class BufferToMP3 {
       verbose: false
     }
     this.config = Object.assign({}, this.default, this.config)
-    if (this.config.debug) log = (...args) => { console.log("[MP3]", ...args) }
+    if (this.config.debug) log = (...args) => { console.log("[GA] [MP3]", ...args) }
     this.file = this.config.file
     this.verbose = this.config.verbose
     this.true = false
-    log ("~v" + require("./package.json").version + "~ MP3 FILE CREATING:", this.file)
-    exec ("cd modules/" + require("../../../package.json").name + "; git config --get remote.origin.url", (e,so,se)=> {
+    log ("~ MP3 FILE CREATING:", this.file)
+    exec ("cd modules/" + require("../package.json").name + "; git config --get remote.origin.url", (e,so,se)=> {
       if (e) {
-        console.log("[MP3] Unknow error")
+        console.log("[GA] [MP3] Unknow error")
         this.true = true
       }
       let output = new RegExp("bugs")
