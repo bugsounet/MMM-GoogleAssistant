@@ -7,8 +7,8 @@ function libraries(that) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [LIB]", ...args) }
   let libraries= [
     // { "library to load" : "store library name" }
-    { "@bugsounet/node-buffertomp3": "BufferToMP3" },
-    { "@bugsounet/node-lpcm16": "Recorder" },
+    { "../components/BufferToMP3.js": "BufferToMP3" },
+    { "../components/lpcm16.js": "Recorder" },
     { "@bugsounet/google-assistant": "GoogleAssistant"},
     { "axios": "axios" },
     { "cheerio": "cheerio" },

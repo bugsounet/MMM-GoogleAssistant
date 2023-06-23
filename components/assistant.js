@@ -190,9 +190,6 @@ class ASSISTANT {
       console.log("[GA] [ASSISTANT] CONVERSATION_ERROR: " + error)
       this.response.error.error = "CONVERSATION_ERROR"
       this.response.error.message = error.toString()
-      if (error.code == "14") {
-        console.log("[GA] [ASSISTANT] >> This error might happen when improper configuration or invalid Mic setup.")
-      }
       this.stopListening()
       conversation.end()
     })
