@@ -15,6 +15,9 @@
     "reset": "git reset --hard",
     "clean": "rm -rf node_modules package-lock.json"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "keywords": [
     "magic mirror",
     "module",
