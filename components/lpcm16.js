@@ -13,7 +13,6 @@ let log = function() {
 
 class LPCM16 {
   constructor (options, streamOut, afterCallback) {
-    this.cp = null
     var defaults = {
       recorder: 'arecord',
       sampleRate: 16000,
