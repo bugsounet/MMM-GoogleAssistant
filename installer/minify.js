@@ -2,7 +2,6 @@
 /** 2023/02/28 **/
 /** @busgounet **/
 
-const check = require("check-node-version")
 const fs = require('fs')
 const { globSync } = require('glob')
 
