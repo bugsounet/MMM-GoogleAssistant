@@ -7,9 +7,9 @@ function libraries(that) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [LIB]", ...args) }
   let libraries= [
     // { "library to load" : "store library name" }
-    { "@bugsounet/node-buffertomp3": "BufferToMP3" },
-    { "@bugsounet/node-lpcm16": "Recorder" },
-    { "@bugsounet/google-assistant": "GoogleAssistant"},
+    { "../components/BufferToMP3.js": "BufferToMP3" },
+    { "../components/lpcm16.js": "Recorder" },
+    { "../components/googleAssistant": "GoogleAssistant"},
     { "axios": "axios" },
     { "cheerio": "cheerio" },
     { "child_process": "childProcess" },
@@ -42,14 +42,15 @@ function libraries(that) {
           }
         } catch (e) {
           console.error("[GA] [LIB]", libraryToLoad, "Loading error!" , e.toString(), e)
-          that.sendSocketNotification("WARNING" , {library: libraryToLoad })
+          that.sendSocketNotification("ERROR" , "Loading error! library: " + libraryToLoad)
           errors++
           that.lib.error = errors
         }
       }
     })
     resolve(errors)
-    console.log("[GA] [LIB] All libraries loaded!")
+    if (errors) console.error("[GA] [LIB] Some libraries missing!")
+    else console.log("[GA] [LIB] All libraries loaded!")
   })
 }
 

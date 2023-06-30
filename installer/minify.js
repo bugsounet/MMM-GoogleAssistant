@@ -2,7 +2,6 @@
 /** 2023/02/28 **/
 /** @busgounet **/
 
-const check = require("check-node-version")
 const fs = require('fs')
 const { globSync } = require('glob')
 
@@ -47,20 +46,4 @@ async function minifyFiles() {
   })
 }
 
-check(
-  { node: ">= 14.0", },
-  (error, result) => {
-    if (error) {
-      console.error(error)
-      return
-    }
-    if (!result.isSatisfied) {
-      console.error("Warn: Master code optimization error!");
-      console.error("Needed node >= 14.0");
-      console.error("If you want to optimize really, you have use node v14.0 (or more)");
-      console.error("Info: Don't worry, this step is not compulsory!")
-    } else {
-      minifyFiles()
-    }
-  }
-)
+minifyFiles()

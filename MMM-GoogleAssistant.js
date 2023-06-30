@@ -1,14 +1,14 @@
 /**
- ** Module : MMM-GoogleAssistant v5
+ ** Module : MMM-GoogleAssistant
  ** @bugsounet
- ** ©03-2023
+ ** ©06-2023
  ** support: https://forum.bugsounet.fr
  **/
 
 logGA = (...args) => { /* do nothing */ }
 
 Module.register("MMM-GoogleAssistant", {
-  requiresVersion: "2.22.0",
+  requiresVersion: "2.23.0",
   defaults: {
     debug:false,
     stopCommand: "stop",
