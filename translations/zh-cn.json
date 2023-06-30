@@ -1,0 +1,24 @@
+{
+  "NO_RESPONSE" : "对不起，我不理解。",
+  "NO_AUDIO_RESPONSE" : " ",
+  "TOO_SHORT" : "对不起，我不理解。",
+  "CONVERSATION_ERROR" : "会话错误。(麦克风配置错误)",
+  "QUERY_REPLY" : "谷歌助理将被激活",
+  "QUERY_HELP" : "你可以用来命令 `谷歌助理` 的文字。",
+
+  "STOP_HELP": "如果正在运行，则停止扩展显示",
+  "STOP_EXT": "停止扩展显示",
+
+  "DADDY": "爸爸 @bugsounet 说... 不，不，不！！！！",
+
+  "GALoading": "加载...",
+  "GAReady": "准备就绪！",
+  "GABegin": "你好，我能提供什么帮助？",
+  "GAContinue": "我在听你说...",
+  "GAErrorRecipe": "[FATAL] 加载此方法时出现错误： {VALUES}",
+  "GAErrorCredentials": "[FATAL] Assistant: credentials.json 丢失",
+  "GAErrorTokenGA": "[FATAL] Token YouTube: tokenYT.json 丢失",
+
+  "ShellExecError": "ShellExec 返回一些错误",
+  "ShellExecDone": "ShellExec 执行成功"
+}
