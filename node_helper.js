@@ -1,5 +1,5 @@
 //
-// Module : MMM-GoogleAssistant v5
+// Module : MMM-GoogleAssistant
 //
 
 var parseData = require("./components/parseData.js")

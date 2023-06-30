@@ -60,10 +60,6 @@ git reset --hard HEAD
 git pull
 
 echo
-Installer_info "Deleting ALL @bugsounet libraries..."
-rm -rf node_modules/@bugsounet
-
-echo
 Installer_info "Ready for Installing..."
 
 # launch installer
