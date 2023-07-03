@@ -6,7 +6,7 @@ const open = require('open');
 const readline = require('readline');
 const fs = require('fs');
 const path = require('path');
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 const { OAuth2Client } = require('google-auth-library')
 
 function Auth(config) {
