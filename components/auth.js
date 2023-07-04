@@ -2,7 +2,6 @@
 
 const EventEmitter = require('events');
 const util = require('util');
-const open = require('open');
 const readline = require('readline');
 const fs = require('fs');
 const path = require('path');
@@ -54,7 +53,9 @@ function Auth(config) {
       });
   };
 
-  const getTokens = () => {
+  const getTokens = async () => {
+    const open = await loadOpen()
+
     const url = oauthClient.generateAuthUrl({
       access_type: 'offline',
       scope: ['https://www.googleapis.com/auth/assistant-sdk-prototype'],
@@ -118,6 +119,12 @@ function Auth(config) {
   });
 
   return this;
+};
+
+// import Open library and use default function only
+async function loadOpen() {
+  const loaded = await import('open');
+  return loaded.default;
 };
 
 util.inherits(Auth, EventEmitter);
