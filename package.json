@@ -16,7 +16,7 @@
     "clean": "rm -rf node_modules package-lock.json"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=16.14.0"
   },
   "keywords": [
     "magic mirror",
