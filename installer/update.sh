@@ -50,6 +50,8 @@ else
 fi
 
 echo
+# !! to delete on next release !!
+rm -f package-lock.json
 
 Installer_info "Updating..."
 (git reset --hard && git pull) || {
