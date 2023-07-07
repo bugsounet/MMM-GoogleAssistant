@@ -51,13 +51,12 @@ fi
 
 echo
 
-# deleting package.json because npm install add/update package
-rm -f package-lock.json
-
 Installer_info "Updating..."
-
-git reset --hard HEAD
-git pull
+(git reset --hard && git pull) {
+  Installer_error "Update Failed!"
+  exit 255
+}
+Installer_success "Done"
 
 echo
 Installer_info "Ready for Installing..."
