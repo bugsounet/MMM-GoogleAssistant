@@ -50,18 +50,15 @@ else
 fi
 
 echo
-
-# deleting package.json because npm install add/update package
+# !! to delete on next release !!
 rm -f package-lock.json
 
 Installer_info "Updating..."
-
-git reset --hard HEAD
-git pull
-
-echo
-Installer_info "Deleting ALL @bugsounet libraries..."
-rm -rf node_modules/@bugsounet
+(git reset --hard && git pull) || {
+  Installer_error "Update Failed!"
+  exit 255
+}
+Installer_success "Done"
 
 echo
 Installer_info "Ready for Installing..."

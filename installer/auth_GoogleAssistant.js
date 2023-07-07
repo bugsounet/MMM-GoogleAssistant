@@ -1,9 +1,7 @@
-//Original:https://github.com/endoplasmic/google-assistant/blob/master/examples/console-input.js
-
 'use strict';
 
 const path = require('path');
-const GoogleAssistant = require('@bugsounet/google-assistant');
+const GoogleAssistant = require('../components/googleAssistant');
 
 const config = {
   auth: {
