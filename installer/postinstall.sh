@@ -21,7 +21,10 @@ cd "$Installer_dir"
 source utils.sh
 
 Installer_info "Minify Main code"
-node minify.js
+node minify.js || {
+  Installer_error "Minify Failed!"
+  exit 255
+}
 Installer_success "Done"
 echo
 
