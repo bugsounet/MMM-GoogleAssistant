@@ -38,17 +38,6 @@ if [ "$EUID" -eq 0 ]; then
   exit 1
 fi
 
-# Check platform compatibility
-Installer_info "Checking OS..."
-Installer_checkOS
-if  [ "$platform" == "osx" ]; then
-  Installer_error "OS Detected: $OSTYPE ($os_name $os_version $arch)"
-  Installer_error "This module is not compatible with your system"
-  exit 0
-else
-  Installer_success "OS Detected: $OSTYPE ($os_name $os_version $arch)"
-fi
-
 echo
 # !! to delete on next release !!
 rm -f package-lock.json
