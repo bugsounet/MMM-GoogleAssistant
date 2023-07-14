@@ -1,7 +1,6 @@
 const axios = require ("axios")
 const path = require('path')
 const fs = require("fs")
-const open = require('open')
 const readline = require('readline')
 const { OAuth2Client } = require('google-auth-library')
 const config = {
@@ -16,6 +15,12 @@ console.log("~~~")
 console.log("~MMM-GoogleAssistant~ Device Register", debug ? "~~ debug Mode ~~": "")
 console.log("~~~")
 console.log(" ")
+
+// import open
+async function loadOpen() {
+  const loaded = await import('open')
+  return loaded.default
+}
 
 Auth = function(config) {
   return new Promise(async(res, rej) => {
@@ -37,8 +42,9 @@ Auth = function(config) {
       access_type: 'offline',
       scope: ['https://www.googleapis.com/auth/assistant-sdk-prototype'],
     })
-  
+
     // open the URL
+    const open = await loadOpen()
     console.log('[GA] Opening OAuth URL. Return here with your code.\n')
     open(url).catch(() => {
       console.log('[GA] Failed to automatically open the URL\n')
