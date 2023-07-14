@@ -1,13 +1,13 @@
-/** Code minifier v1.2 **/
-/** 2023/02/28 **/
+/** Code minifier **/
 /** @busgounet **/
 
-const fs = require('fs')
 const { globSync } = require('glob')
+const path = require('path')
+const esbuild = require("esbuild")
 
 var files = [
   "../" + require("../package.json").main,
-  "../node_helper.js",
+  "../node_helper.js"
 ]
 
 function searchFiles() {
@@ -16,33 +16,28 @@ function searchFiles() {
   console.log("Found: " + files.length + " files to minify\n")
 }
 
-// import minify
-async function loadMinify() {
-  const loaded = await import('minify')
-  return loaded
-}
-
 // minify files array
 async function minifyFiles() {
-  const {minify} = await loadMinify()
   searchFiles()
-  files.forEach(file => {
-    new Promise(resolve => {
-      minify(file)
-        .then(data => {
-          console.log("Process File:", file)
-          try {
-            fs.writeFileSync(file, data)
-          } catch(err) {
-            console.error("Writing Error: " + err)
-          }
-          resolve()
-        })
-        .catch( error => {
-          console.log("File:", file, " -- Error Detected:", error)
-          resolve() // continue next file
-        })
-    })
+  await Promise.all(files.map(file => { return minify(file) })).catch(() => process.exit(255))
+}
+
+function minify(file) {
+  let pathResolve = path.resolve(__dirname, file)
+  let error = 0
+  console.log("Process File:", file)
+  return new Promise((resolve,reject) => {
+    try {
+      esbuild.buildSync({
+        entryPoints: [pathResolve],
+        allowOverwrite: true,
+        minify: true,
+        outfile: pathResolve
+      })
+      resolve(true)
+    } catch (e) {
+      reject()
+    }
   })
 }
 

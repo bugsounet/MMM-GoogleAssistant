@@ -18,7 +18,7 @@ function libraries(that) {
     { "html-entities": "html-entities" },
     { "node-html-parser": "HTMLParser" },
     { "path": "path" },
-    { "../components/assistant.js": "Assistant" },
+    { "../components/assistantConverse.js": "Assistant" },
     { "../components/screenParser.js" : "ScreenParser" },
     { "../components/platform.js": "platform" },
     { "../components/shellExec.js": "shellExec" },
