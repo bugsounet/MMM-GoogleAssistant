@@ -89,7 +89,6 @@ Installer_info() { Installer_message "$1" "Info" "$_blue" ;}
 # Asks user to press enter to continue
 Installer_press_enter_to_continue () {
   Installer_question "Press [Enter] to continue"
-  Installer_play_beep
   read
 }
 
@@ -105,17 +104,10 @@ Installer_exit () {
   exit
 }
 
-Installer_play_beep () {
-  if $Installer_beep; then
-    play beep_check.wav 2>/dev/null
-  fi
-}
-
 # YesNo prompt from the command line
 Installer_yesno () {
   while true; do
     Installer_question "$1 [Y/n] "
-    Installer_play_beep
     read -n 1 -p "$(echo -e $_cyan"Your choice: "$_reset)"
     echo # new line
     [[ $REPLY =~ [Yy] ]] && return 0
