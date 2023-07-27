@@ -18,6 +18,7 @@ class GAConfig {
 
     that.forceResponse= false
     that.assistantResponse = null
+    that.bardMode = false
 
     that.GAStatus = {
       actual: "standby",
@@ -70,7 +71,8 @@ class GAConfig {
           soundExec: {
             chime: "close"
           },
-          displayResponse: false
+          displayResponse: false,
+          bardMode: false
         }
       }
     }
