@@ -42,7 +42,7 @@
     "cheerio": "^1.0.0-rc.12",
     "esbuild": "^0.18.16",
     "glob": "^10.3.3",
-    "google-auth-library": "^8.9.0",
+    "google-auth-library": "^9.0.0",
     "html-entities": "^2.4.0",
     "mkdirp": "^3.0.1",
     "node-html-parser": "^6.1.5",
