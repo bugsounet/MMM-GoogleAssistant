@@ -59,7 +59,7 @@ class GAConfig {
     var StopHooks = {
       transcriptionHooks: {
         "EXT_Stop": {
-          pattern: that.config.stopCommand,
+          pattern: `^(${that.config.stopCommand})($)`,
           command: "EXT_Stop"
         }
       },
