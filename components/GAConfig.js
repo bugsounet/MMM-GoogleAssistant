@@ -18,6 +18,7 @@ class GAConfig {
 
     that.forceResponse= false
     that.assistantResponse = null
+    that.bardMode = false
 
     that.GAStatus = {
       actual: "standby",
@@ -58,7 +59,7 @@ class GAConfig {
     var StopHooks = {
       transcriptionHooks: {
         "EXT_Stop": {
-          pattern: that.config.stopCommand,
+          pattern: `^(${that.config.stopCommand})($)`,
           command: "EXT_Stop"
         }
       },
@@ -70,7 +71,8 @@ class GAConfig {
           soundExec: {
             chime: "close"
           },
-          displayResponse: false
+          displayResponse: false,
+          bardMode: false
         }
       }
     }
