@@ -114,8 +114,14 @@ Module.register("MMM-GoogleAssistant", {
       case "GA_STOP":
         if (this.assistantResponse.response && this.GAStatus.actual == "reply") this.assistantResponse.conversationForceEnd()
         break
+      case "GA_BARD_MODE-OFF":
       case "EXT_STOP":
         this.bardMode = false
+        logGA("bardMode:",this.bardMode)
+        break
+      case "GA_BARD_MODE-ON":
+        this.bardMode = true
+        logGA("bardMode:",this.bardMode)
         break
     }
   },
