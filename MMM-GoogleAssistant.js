@@ -12,6 +12,7 @@ Module.register("MMM-GoogleAssistant", {
   defaults: {
     debug:false,
     stopCommand: "stop",
+    otherStopCommands: [],
     assistantConfig: {
       lang: "en-US",
       latitude: 51.508530,

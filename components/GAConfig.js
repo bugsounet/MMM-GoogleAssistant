@@ -19,6 +19,11 @@ class GAConfig {
     that.forceResponse= false
     that.assistantResponse = null
     that.bardMode = false
+    that.globalStopCommands = []
+
+    if (Array.isArray(that.config.otherStopCommands)) {
+      that.globalStopCommands = that.config.otherStopCommands
+    }
 
     that.GAStatus = {
       actual: "standby",
@@ -56,13 +61,9 @@ class GAConfig {
     that.activateProcess = new activateProcess()
     that.assistantResponse = new AssistantResponse(that.helperConfig["responseConfig"], this.callbacks)
     that.AssistantSearch = new AssistantSearch(that.helperConfig.assistantConfig)
-    var StopHooks = {
-      transcriptionHooks: {
-        "EXT_Stop": {
-          pattern: `^(${that.config.stopCommand})($)`,
-          command: "EXT_Stop"
-        }
-      },
+
+    // create the main command for "stop" (EXT_STOP)
+    var StopCommand = {
       commands: {
         "EXT_Stop": {
           notificationExec: {
@@ -76,7 +77,32 @@ class GAConfig {
         }
       }
     }
-    that.Hooks.parseLoadedRecipe(JSON.stringify(StopHooks))
+    that.Hooks.parseLoadedRecipe(JSON.stringify(StopCommand))
+    logGA("[HOOK] EXT_Stop Command Added")
+
+    // add default command to globalStopCommand (if needed)
+    if (that.globalStopCommands.indexOf(that.config.stopCommand) == -1) {
+      that.globalStopCommands.push(that.config.stopCommand)
+    }
+
+    // create all transcriptionHooks from globalStopCommands array
+    if (that.globalStopCommands.length) {
+      that.globalStopCommands.forEach((pattern,i) => {
+        var Command = {
+          transcriptionHooks: {}
+        }
+        Command.transcriptionHooks["EXT_Stop"+i] = {
+          pattern: `^(${pattern})($)`,
+          command: "EXT_Stop"
+        }
+        that.Hooks.parseLoadedRecipe(JSON.stringify(Command))
+        logGA(`[HOOK] Add pattern for EXT_Stop command: ${pattern}`)
+      })
+    }
+    else { // should never happen !
+      console.error("[GA] No Stop Commands defined!")
+    }
+
     that.assistantResponse.prepareGA()
     that.assistantResponse.prepareBackground ()
     that.assistantResponse.Loading()
