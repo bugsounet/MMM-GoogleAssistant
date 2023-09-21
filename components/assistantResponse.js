@@ -80,6 +80,7 @@ class AssistantResponse {
     var newGA = document.createElement("div")
     newGA.id = "GoogleAssistant"
     newGA.style.zoom = this.config.zoom.transcription
+    newGA.className = "hidden"
 
     /** Response popup **/
     var scoutpan = document.createElement("div")
@@ -329,6 +330,7 @@ class AssistantResponse {
         addAnimateCSS("GoogleAssistant", "fadeOutDown",1)
         setTimeout(() => {
           GA.classList.add("hidden")
+          removeAnimateCSS("GoogleAssistant", "fadeOutDown")
         }, 1000)
         if (this.GAfullscreen) {
           GAFS.classList.add("hidden")
