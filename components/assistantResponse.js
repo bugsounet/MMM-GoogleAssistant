@@ -80,8 +80,6 @@ class AssistantResponse {
     var newGA = document.createElement("div")
     newGA.id = "GoogleAssistant"
     newGA.style.zoom = this.config.zoom.transcription
-    newGA.className= "hidden animate__animated"
-    newGA.style.setProperty('--animate-duration', '1s')
 
     /** Response popup **/
     var scoutpan = document.createElement("div")
@@ -319,19 +317,19 @@ class AssistantResponse {
     var GAFS = document.getElementById("GA_DOM-FS")
 
     if (active) {
-      GA.classList.remove("hidden", "animate__fadeOutDown")
-      GA.classList.add('animate__fadeInUp')
+      GA.classList.remove("hidden")
+      removeAnimateCSS("GoogleAssistant", "fadeOutDown")
+      addAnimateCSS("GoogleAssistant", "fadeInUp",1)
       if (this.GAfullscreen && fs) {
         GAFS.classList.remove("hidden")
       }
     } else {
       if (status && status.actual == "standby") { // only on standby mode
-        GA.classList.remove("animate__fadeInUp")
-        GA.classList.add('animate__fadeOutDown')
-        GA.addEventListener('animationend', (e) => {
-          if (e.animationName == "fadeOutDown") GA.classList.add("hidden")
-          e.stopPropagation()
-        }, {once: true})
+        removeAnimateCSS("GoogleAssistant", "fadeInUp")
+        addAnimateCSS("GoogleAssistant", "fadeOutDown",1)
+        setTimeout(() => {
+          GA.classList.add("hidden")
+        }, 1000)
         if (this.GAfullscreen) {
           GAFS.classList.add("hidden")
         }
