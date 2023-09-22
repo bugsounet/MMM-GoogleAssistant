@@ -1,0 +1,23 @@
+{
+  "NO_RESPONSE" : "Üzgünüm, anlamıyorum.",
+  "TOO_SHORT" : "Üzgünüm, anlamıyorum.",
+  "CONVERSATION_ERROR" : "Conversation error. (misconfigured microphone)",
+  "QUERY_REPLY" : "Google Asistan etkinleştirilecek.",
+  "QUERY_HELP" : "Bu komutla 'Google Asistan'a metin yoluyla komut verebilirsiniz.",
+
+  "STOP_HELP": "Çalışıyorsa Genişletilmiş Ekranı Durdurun",
+  "STOP_EXT": "Genişletilmiş Gösterimi durduruyorum",
+
+  "DADDY": "babam diyor ki... HAYIR, HAYIR VE HAYIR !!!",
+
+  "GALoading": "Yükleniyor...",
+  "GAReady": "Hazır!",
+  "GABegin": "Merhaba, nasıl yardımcı olabilirim?",
+  "GAContinue": "Dinliyorum ...",
+  "GAErrorRecipe": "[FATAL] Bu tarifi yüklerken hata oluştu: {VALUES}",
+  "GAErrorCredentials": "[FATAL] Asistan: kimlik bilgileri.json eksik",
+  "GAErrorTokenGA": "[FATAL] Token Asistan: tokenGA.json eksik",
+
+  "ShellExecError": "ShellExec bazı Hatalar döndürüyor",
+  "ShellExecDone": "ShellExec başarıyla yürütüldü"
+}

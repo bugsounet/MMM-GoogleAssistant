@@ -76,15 +76,16 @@ Module.register("MMM-GoogleAssistant", {
 
   getTranslations: function() {
     return {
+      de: "translations/de.json",
+      el: "translations/el.json",
       en: "translations/en.json",
+      es: "translations/es.json",
       fr: "translations/fr.json",
       it: "translations/it.json",
-      de: "translations/de.json",
-      es: "translations/es.json",
+      ko: "translations/ko.json",
       nl: "translations/nl.json",
       pt: "translations/pt.json",
-      ko: "translations/ko.json",
-      el: "translations/el.json",
+      tr: "translations/tr.json",
       "zh-cn": "translations/zh-cn.json"
     }
   },
