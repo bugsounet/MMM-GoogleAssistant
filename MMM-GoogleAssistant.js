@@ -76,9 +76,9 @@ Module.register("MMM-GoogleAssistant", {
 
   getTranslations: function() {
     return {
+      en: "translations/en.json",
       de: "translations/de.json",
       el: "translations/el.json",
-      en: "translations/en.json",
       es: "translations/es.json",
       fr: "translations/fr.json",
       it: "translations/it.json",
