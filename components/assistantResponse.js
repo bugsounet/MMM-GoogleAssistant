@@ -37,6 +37,7 @@ class AssistantResponse {
     this.audioChime = new Audio()
     this.audioChime.autoplay = true
     this.GAfullscreen = this.config.useFullscreen
+    this.hideTimer = null
   }
 
   tunnel (payload) {
@@ -194,7 +195,6 @@ class AssistantResponse {
     this.status("standby")
     this.callbacks.endResponse()
     clearTimeout(this.aliveTimer)
-    this.aliveTimer = null
     this.aliveTimer = setTimeout(()=>{
       this.stopResponse(()=>{
         this.fullscreen(false, this.GAStatus)
@@ -213,7 +213,6 @@ class AssistantResponse {
   start (response) {
     this.response = response
     clearTimeout(this.aliveTimer)
-    this.aliveTimer = null
     if (this.showing) this.end()
 
     if (response.error.error) {
@@ -316,6 +315,7 @@ class AssistantResponse {
   fullscreen (active, status, fs = true) {
     var GA = document.getElementById("GoogleAssistant")
     var GAFS = document.getElementById("GA_DOM-FS")
+    clearTimeout(this.hideTimer)
 
     if (active) {
       GA.classList.remove("hidden")
@@ -328,7 +328,7 @@ class AssistantResponse {
       if (status && status.actual == "standby") { // only on standby mode
         removeAnimateCSS("GoogleAssistant", "fadeInUp")
         addAnimateCSS("GoogleAssistant", "fadeOutDown",1)
-        setTimeout(() => {
+        this.hideTimer = setTimeout(() => {
           GA.classList.add("hidden")
           removeAnimateCSS("GoogleAssistant", "fadeOutDown")
         }, 1000)
@@ -361,6 +361,5 @@ class AssistantResponse {
 
   clearAliveTimers() {
     clearTimeout(this.aliveTimer)
-    this.aliveTimer = null
   }
 }
