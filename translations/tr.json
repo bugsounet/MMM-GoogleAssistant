@@ -15,7 +15,7 @@
   "GABegin": "Merhaba, nasıl yardımcı olabilirim?",
   "GAContinue": "Dinliyorum ...",
   "GAErrorRecipe": "[FATAL] Bu tarifi yüklerken hata oluştu: {VALUES}",
-  "GAErrorCredentials": "[FATAL] Asistan: kimlik bilgileri.json eksik",
+  "GAErrorCredentials": "[FATAL] Asistan: kimlik credentials.json eksik",
   "GAErrorTokenGA": "[FATAL] Token Asistan: tokenGA.json eksik",
 
   "ShellExecError": "ShellExec bazı Hatalar döndürüyor",
