@@ -1,6 +1,5 @@
 {
   "NO_RESPONSE" : "Perdonami, non riesco a capire.",
-  "NO_AUDIO_RESPONSE" : " ",
   "TOO_SHORT" : "Perdonami, non riesco a sentire bene.",
   "CONVERSATION_ERROR" : "Faccio fatica a sentire. (Controlla la configurazione del microfono)",
   "QUERY_REPLY" : "Google Assistant si attiva",
@@ -14,10 +13,6 @@
   "GALoading": "Caricamento di Google Assistant...",
   "GAReady": "Google Assistant è Pronto!",
   "GABegin": "Ciao, come posso aiutarti?",
-  "GAContinue": "I'm listening to you...",
-  "GAErrorRecipe": "[FATAL] Error when loading this recipe: {VALUES}",
-  "GAErrorCredentials": "[FATAL] Assistant: credentials.json missing",
-  "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json missing",
 
   "ShellExecError": "ShellExec riporta degli Errori",
   "ShellExecDone": "ShellExec eseguito con successo"

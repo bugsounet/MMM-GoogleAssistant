@@ -1,6 +1,5 @@
 {
   "NO_RESPONSE" : "对不起，我不理解。",
-  "NO_AUDIO_RESPONSE" : " ",
   "TOO_SHORT" : "对不起，我不理解。",
   "CONVERSATION_ERROR" : "会话错误。(麦克风配置错误)",
   "QUERY_REPLY" : "谷歌助理将被激活",

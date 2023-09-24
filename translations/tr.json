@@ -1,6 +1,5 @@
 {
   "NO_RESPONSE" : "Üzgünüm, seni anlamıyorum.",
-  "NO_AUDIO_RESPONSE" : " ",
   "TOO_SHORT" : "Üzgünüm, seni anlamıyorum.",
   "CONVERSATION_ERROR" : "Konuşma hatası. (yanlış yapılandırılmış mikrofon)",
   "QUERY_REPLY" : "Google Asistan etkinleştirilecek",

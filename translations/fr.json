@@ -1,6 +1,5 @@
 {
   "NO_RESPONSE" : "Désolé, je n'ai pas compris.",
-  "NO_AUDIO_RESPONSE" : " ",
   "TOO_SHORT" : "Désolé, je n'ai pas compris.",
   "CONVERSATION_ERROR" : "Erreur de conversation.(Micro mal configuré)",
   "QUERY_REPLY" : "Google Assistant va être activé.",

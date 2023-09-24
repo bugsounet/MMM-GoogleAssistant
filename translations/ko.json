@@ -1,6 +1,5 @@
 {
   "NO_RESPONSE" : "죄송합니다, 이해하지 못했습니다.",
-  "NO_AUDIO_RESPONSE" : " ",
   "TOO_SHORT" : "죄송합니다, 이해하지 못했습니다.",
   "CONVERSATION_ERROR" : "Conversation error. (misconfigured microphone)",
   "QUERY_REPLY" : "구글 어시스턴트가 활성화됩니다.",
