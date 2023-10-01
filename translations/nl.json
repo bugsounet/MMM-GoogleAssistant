@@ -16,8 +16,5 @@
   "GAContinue": "Ik luister naar jou...",
   "GAErrorRecipe": "[FATAL] Fout tijdens het laden van dit recept: {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json niet aanwezig",
-  "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json niet aanwezig",
-
-  "ShellExecError": "ShellExec return some Errors",
-  "ShellExecDone": "ShellExec executed sucessfully"
+  "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json niet aanwezig"
 }

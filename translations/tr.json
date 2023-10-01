@@ -1,0 +1,23 @@
+{
+  "NO_RESPONSE" : "Üzgünüm, seni anlamıyorum.",
+  "TOO_SHORT" : "Üzgünüm, seni anlamıyorum.",
+  "CONVERSATION_ERROR" : "Konuşma hatası. (yanlış yapılandırılmış mikrofon)",
+  "QUERY_REPLY" : "Google Asistan etkinleştirilecek",
+  "QUERY_HELP" : "Bu komut ile 'Google Asistan'a metin yoluyla komut verebilirsiniz.",
+
+  "STOP_HELP": "Çalışıyorsa Genişletilmiş Ekranı Durdurun",
+  "STOP_EXT": "Genişletilmiş Ekranı durduruyorum",
+
+  "DADDY": "baba diyor ki... HAYIR, HAYIR HAYIR!!!",
+
+  "GALoading": "Yükleniyor...",
+  "GAReady": "Hazır!",
+  "GABegin": "Merhaba, nasıl yardımcı olabilirim?",
+  "GAContinue": "Seni dinliyorum...",
+  "GAErrorRecipe": "[HATA] Bu tarifi yüklerken hata oluştu: {VALUES}",
+  "GAErrorCredentials": "[HATA] Asistan: kimlik credentials.json eksik",
+  "GAErrorTokenGA": "[HATA] Token Asistanı: tokenGA.json eksik",
+
+  "ShellExecError": "ShellExec bazı Hatalar döndürüyor",
+  "ShellExecDone": "ShellExec başarıyla yürütüldü"
+}

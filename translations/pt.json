@@ -16,7 +16,6 @@
   "GAContinue": "Estou a ouvir...",
   "GAErrorRecipe": "[FATAL] Erro ao carregar esta receita: {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json em falta",
-  "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json missing",
 
   "ShellExecError": "ShellExec returnou alguns Erros",
   "ShellExecDone": "ShellExec foi executado com sucesso"

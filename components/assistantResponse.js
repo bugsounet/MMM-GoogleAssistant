@@ -37,6 +37,7 @@ class AssistantResponse {
     this.audioChime = new Audio()
     this.audioChime.autoplay = true
     this.GAfullscreen = this.config.useFullscreen
+    this.hideTimer = null
   }
 
   tunnel (payload) {
@@ -80,8 +81,7 @@ class AssistantResponse {
     var newGA = document.createElement("div")
     newGA.id = "GoogleAssistant"
     newGA.style.zoom = this.config.zoom.transcription
-    newGA.className= "hidden animate__animated"
-    newGA.style.setProperty('--animate-duration', '1s')
+    newGA.className = "hidden"
 
     /** Response popup **/
     var scoutpan = document.createElement("div")
@@ -195,7 +195,6 @@ class AssistantResponse {
     this.status("standby")
     this.callbacks.endResponse()
     clearTimeout(this.aliveTimer)
-    this.aliveTimer = null
     this.aliveTimer = setTimeout(()=>{
       this.stopResponse(()=>{
         this.fullscreen(false, this.GAStatus)
@@ -214,7 +213,6 @@ class AssistantResponse {
   start (response) {
     this.response = response
     clearTimeout(this.aliveTimer)
-    this.aliveTimer = null
     if (this.showing) this.end()
 
     if (response.error.error) {
@@ -317,21 +315,23 @@ class AssistantResponse {
   fullscreen (active, status, fs = true) {
     var GA = document.getElementById("GoogleAssistant")
     var GAFS = document.getElementById("GA_DOM-FS")
+    clearTimeout(this.hideTimer)
 
     if (active) {
-      GA.classList.remove("hidden", "animate__fadeOutDown")
-      GA.classList.add('animate__fadeInUp')
+      GA.classList.remove("hidden")
+      removeAnimateCSS("GoogleAssistant", "fadeOutDown")
+      addAnimateCSS("GoogleAssistant", "fadeInUp",1)
       if (this.GAfullscreen && fs) {
         GAFS.classList.remove("hidden")
       }
     } else {
       if (status && status.actual == "standby") { // only on standby mode
-        GA.classList.remove("animate__fadeInUp")
-        GA.classList.add('animate__fadeOutDown')
-        GA.addEventListener('animationend', (e) => {
-          if (e.animationName == "fadeOutDown") GA.classList.add("hidden")
-          e.stopPropagation()
-        }, {once: true})
+        removeAnimateCSS("GoogleAssistant", "fadeInUp")
+        addAnimateCSS("GoogleAssistant", "fadeOutDown",1)
+        this.hideTimer = setTimeout(() => {
+          GA.classList.add("hidden")
+          removeAnimateCSS("GoogleAssistant", "fadeOutDown")
+        }, 1000)
         if (this.GAfullscreen) {
           GAFS.classList.add("hidden")
         }
@@ -361,6 +361,5 @@ class AssistantResponse {
 
   clearAliveTimers() {
     clearTimeout(this.aliveTimer)
-    this.aliveTimer = null
   }
 }

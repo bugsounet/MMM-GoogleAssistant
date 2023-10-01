@@ -1,14 +1,14 @@
 /**
  ** Module : MMM-GoogleAssistant
  ** @bugsounet
- ** ©07-2023
+ ** ©09-2023
  ** support: https://forum.bugsounet.fr
  **/
 
 logGA = (...args) => { /* do nothing */ }
 
 Module.register("MMM-GoogleAssistant", {
-  requiresVersion: "2.24.0",
+  requiresVersion: "2.25.0",
   defaults: {
     debug:false,
     stopCommand: "stop",
@@ -70,22 +70,22 @@ Module.register("MMM-GoogleAssistant", {
 
   getStyles: function () {
     return [
-      "/modules/MMM-GoogleAssistant/MMM-GoogleAssistant.css",
-      "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      "/modules/MMM-GoogleAssistant/MMM-GoogleAssistant.css"
     ]
   },
 
   getTranslations: function() {
     return {
       en: "translations/en.json",
+      de: "translations/de.json",
+      el: "translations/el.json",
+      es: "translations/es.json",
       fr: "translations/fr.json",
       it: "translations/it.json",
-      de: "translations/de.json",
-      es: "translations/es.json",
+      ko: "translations/ko.json",
       nl: "translations/nl.json",
       pt: "translations/pt.json",
-      ko: "translations/ko.json",
-      el: "translations/el.json",
+      tr: "translations/tr.json",
       "zh-cn": "translations/zh-cn.json"
     }
   },
