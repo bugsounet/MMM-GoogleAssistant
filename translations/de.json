@@ -1,5 +1,6 @@
 {
   "NO_RESPONSE" : "Entschuldigung, das habe ich nicht verstanden.",
+  "NO_AUDIO_RESPONSE" : " ",
   "TOO_SHORT" : "Entschuldigung, das habe ich nicht verstanden.",
   "CONVERSATION_ERROR" : "Kommunikationsfehler: Falsche Mikrofonkonfiguration",
   "QUERY_REPLY" : "Google Assistant wird aktiviert.",
