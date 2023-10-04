@@ -44,7 +44,7 @@ const db = [
   "EXT-YouTubeCast"
 ]
 
-console.log("Start Refreshing MMM-GoogleAssistant; Gateway and EXTs\n")
+console.log("Start Refreshing and Updating MMM-GoogleAssistant, Gateway and EXTs\n")
 main()
 
 function getDirectories(source) {
