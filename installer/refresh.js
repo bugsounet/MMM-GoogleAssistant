@@ -60,8 +60,7 @@ function Update(module) {
     const modulePath = resolved + "/" + module
     var command = "npm run clean && npm run update"
 
-    console.log(`Execute command: ${command}`)
-    const spinner = new Spinner(`Update of ${module}...`);
+    const spinner = new Spinner(`Updating: ${module}...`);
     spinner.setSpinnerString(18);
     spinner.start()
     const updateModule = spawn(command, { cwd: modulePath, shell: true })
