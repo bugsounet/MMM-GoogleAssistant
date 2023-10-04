@@ -43,6 +43,11 @@ const db = [
   "EXT-YouTubeCast"
 ];
 
+var skip = 0
+var updated = 0
+var failed = 0
+var total = Directories.length
+
 console.log("Start Refreshing and Updating MMM-GoogleAssistant, Gateway and EXTs\n");
 main();
 
@@ -65,8 +70,10 @@ function Update(module) {
     const updateModule = spawn(command, { cwd: modulePath, shell: true })
 
     updateModule.stdout.on('data', (data) => {
+      /* For debug
       process.stdout.write('\r');
       console.log(data.toString());
+      */
     });
 
     updateModule.stderr.on('data', (data) => {
@@ -81,9 +88,11 @@ function Update(module) {
         let rev = require(modulePath + "/package.json").rev
         console.log(`✅ Update of ${module}: Version: ${version} (${rev})`);
         console.log("---");
+        updated++
         resolve();
       } else {
-        console.error("❌ Error Detected!");
+        console.error("❌ Failed: Error Detected!");
+        failed++
         pressAnyKey("Press any key to continue, or CTRL+C to exit", {
           ctrlC: "reject"
         })
@@ -92,6 +101,7 @@ function Update(module) {
             resolve();
           })
           .catch(() => {
+            Result()
             process.exit();
           })
       }
@@ -105,8 +115,18 @@ async function main () {
       await Update(module);
     }
     else {
-      console.log("✋ Skip:", module);
+      console.log("✋ Skipped:", module);
       console.log("---");
+      skip++
     }
   }
+  Result();
+
+}
+
+function Result () {
+  console.log("\n✌ Result:");
+  console.log(`➤ Updated: ${updated}/${total}`);
+  console.log(`➤ Failed: ${failed}/${total}`);
+  console.log(`➤ Skipped: ${skip}/${total}`);
 }
