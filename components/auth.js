@@ -87,13 +87,16 @@ function Auth(config) {
   };
 
   const processTokens = (oauthCode) => {
-    if (!oauthCode) process.exit(-1);
+    if (!oauthCode) {
+      console.error("\nError: No code given")
+      process.exit(-1);
+    }
 
     // get our tokens to save
     oauthClient.getToken(oauthCode, (error, tkns) => {
       // if we have an error, print it and kill the process
       if (error) {
-        console.error('Error getting tokens:', error);
+        console.error('\nError getting tokens:', error);
         process.exit(-1);
       }
 
