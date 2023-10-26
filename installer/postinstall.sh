@@ -64,7 +64,7 @@ fi
 if  [ "$os_name" == "raspbian" ] && [ "$os_version" -eq 12 ]; then
   check_pulse="$(systemctl --user is-enabled pulseaudio)"
   if [[ "$check_pulse" == "disabled" ]]; then
-    Installer_info "[raspbian 12 -- bookworm] Install pulseaudio by default..."
+    Installer_info "Install pulseaudio by default..."
     sudo raspi-config nonint do_audioconf 1 || exit 255
     Installer_success "pulseaudio activated!"
     echo
