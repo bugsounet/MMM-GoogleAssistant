@@ -68,7 +68,7 @@ if  [ "$os_name" == "raspbian" ] && [ "$os_version" -eq 12 ]; then
     sudo raspi-config nonint do_audioconf 1 || exit 255
     Installer_success "pulseaudio activated!"
     echo
-    Installer_warning "[WARN] Please, don't forget to reboot your OS for apply new configuration!"
+    Installer_warning "[WARN] Please, don't forget to reboot your OS for apply the new configuration!"
     echo
   fi
 fi
