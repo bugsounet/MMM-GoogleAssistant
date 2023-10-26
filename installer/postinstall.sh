@@ -65,7 +65,9 @@ if  [ "$os_name" == "raspbian" ] && [ "$os_version" -eq 12 ]; then
   Installer_info "[raspbian 12 -- bookworm] Install pulseaudio..."
   sudo raspi-config nonint do_audioconf 1 || exit 255
   Installer_success "pulseaudio activated!"
+  echo
   Installer_warning "[WARN] Please, don't forget to reboot your OS for apply new configuration!"
+  echo
 fi
 
 # module name
