@@ -34,6 +34,7 @@ Installer_dir="$(Installer_get_current_dir)"
 # move to installler directory
 cd "$Installer_dir"
 source utils.sh
+Installer_checkOS
 echo
 
 if [[ $minify == 1 ]]; then
@@ -57,6 +58,14 @@ if [[ $rebuild == 1 ]]; then
   }
   Installer_success "Done"
   echo
+fi
+
+# Check bookworm and enable pulseaudio
+if  [ "$os_name" == "raspbian" ] && [ "$os_version" -eq 12 ]; then
+  Installer_info "[raspbian 12 -- bookworm] Install pulseaudio..."
+  sudo raspi-config nonint do_audioconf 1 || exit 255
+  Installer_success "pulseaudio activated!"
+  Installer_warning "[WARN] Please, don't forget to reboot your OS for apply new configuration!"
 fi
 
 # module name
