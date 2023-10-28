@@ -62,8 +62,8 @@ fi
 
 # Check bookworm and enable pulseaudio
 if  [ "$os_name" == "raspbian" ] && [ "$os_version" -eq 12 ]; then
-  check_pulse="$(systemctl --user is-enabled pulseaudio)"
-  if [[ "$check_pulse" == "disabled" ]]; then
+  check_pipewire="$(pgrep wireplumber)"
+  if [[ "$check_pipewire" -gt 0 ]]; then
     Installer_info "Install pulseaudio by default..."
     sudo raspi-config nonint do_audioconf 1 || exit 255
     Installer_success "pulseaudio activated!"
