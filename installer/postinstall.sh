@@ -60,8 +60,8 @@ if [[ $rebuild == 1 ]]; then
   echo
 fi
 
-# Check bookworm and enable pulseaudio
-if  [ "$os_name" == "raspbian" ] && [ "$os_version" -eq 12 ]; then
+# Check bookworm and enable pulseaudio (debian is for x64 raspbian)
+if  [[ "$os_name" == "raspbian" || "$os_name" == "debian" ]] && [ "$os_version" -eq 12 ]; then
   check_pipewire="$(pgrep wireplumber)"
   if [[ "$check_pipewire" -gt 0 ]]; then
     Installer_info "Install pulseaudio by default..."
@@ -72,6 +72,8 @@ if  [ "$os_name" == "raspbian" ] && [ "$os_version" -eq 12 ]; then
     echo
   fi
 fi
+
+
 
 # module name
 Installer_module="$(grep -Eo '\"name\"[^,]*' ./package.json | grep -Eo '[^:]*$' | awk  -F'\"' '{print $2}')"
