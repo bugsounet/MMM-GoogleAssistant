@@ -29,10 +29,8 @@ Installer_module="$(grep -Eo '\"name\"[^,]*' ./package.json | grep -Eo '[^:]*$' 
 Installer_info "Welcome to $Installer_module Token generator!"
 echo
 
+Installer_warning "Note: The choice expects [Y or N] and does not need [Enter] to confirm" &&
 Installer_yesno "Do you want to install/reinstall $Installer_module token?" && (
   rm -f tokenGA.json
   node installer/auth_GoogleAssistant
 )
-
-echo
-Installer_success "Done."

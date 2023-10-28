@@ -34,6 +34,7 @@ Installer_dir="$(Installer_get_current_dir)"
 # move to installler directory
 cd "$Installer_dir"
 source utils.sh
+Installer_checkOS
 echo
 
 if [[ $minify == 1 ]]; then
@@ -58,6 +59,21 @@ if [[ $rebuild == 1 ]]; then
   Installer_success "Done"
   echo
 fi
+
+# Check bookworm and enable pulseaudio (debian is for x64 raspbian)
+if  [[ "$os_name" == "raspbian" || "$os_name" == "debian" ]] && [ "$os_version" -eq 12 ]; then
+  check_pipewire="$(pgrep wireplumber)"
+  if [[ "$check_pipewire" -gt 0 ]]; then
+    Installer_info "Install pulseaudio by default..."
+    sudo raspi-config nonint do_audioconf 1 || exit 255
+    Installer_success "pulseaudio activated!"
+    echo
+    Installer_warning "[WARN] Please, don't forget to reboot your OS for apply the new configuration!"
+    echo
+  fi
+fi
+
+
 
 # module name
 Installer_module="$(grep -Eo '\"name\"[^,]*' ./package.json | grep -Eo '[^:]*$' | awk  -F'\"' '{print $2}')"
