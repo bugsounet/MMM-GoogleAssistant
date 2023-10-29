@@ -94,8 +94,8 @@ if  [ "$os_name" == "raspbian" ] && [ "$arch" == "aarch64" ]; then
         ((change++))
       else
         Installer_info "... arm64bit value is already set to 0"
-        Installer_warning "[WARN] Please, don't forget to reboot your OS for apply the new configuration!"
         echo
+        ((change++))
       fi
     fi
   fi
