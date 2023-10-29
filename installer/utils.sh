@@ -152,3 +152,70 @@ Installer_chk () {
   fi
   Installer_success "Checking $2: $CHKUSER/$CHKGROUP"
 }
+
+# get/set/clear value of /boot/config.txt
+
+# $1:feature
+# $2:value
+# $3:file path
+set_config_var() {
+  lua - "$1" "$2" "$3" <<EOF > "$3.bak"
+local key=assert(arg[1])
+local value=assert(arg[2])
+local fn=assert(arg[3])
+local file=assert(io.open(fn))
+local made_change=false
+for line in file:lines() do
+  if line:match("^#?%s*"..key.."=.*$") then
+    line=key.."="..value
+    made_change=true
+  end
+  print(line)
+end
+
+if not made_change then
+  print(key.."="..value)
+end
+EOF
+mv "$3.bak" "$3"
+}
+
+# $1:feature
+# $2:file path
+clear_config_var() {
+  lua - "$1" "$2" <<EOF > "$2.bak"
+local key=assert(arg[1])
+local fn=assert(arg[2])
+local file=assert(io.open(fn))
+for line in file:lines() do
+  if line:match("^%s*"..key.."=.*$") then
+    line="#"..line
+  end
+  print(line)
+end
+EOF
+mv "$2.bak" "$2"
+}
+
+# $1:feature
+# $3:file path
+# => return value | 0
+get_config_var() {
+  lua - "$1" "$2" <<EOF
+local key=assert(arg[1])
+local fn=assert(arg[2])
+local file=assert(io.open(fn))
+local found=false
+for line in file:lines() do
+  local val = line:match("^%s*"..key.."=(.*)$")
+  if (val ~= nil) then
+    print(val)
+    found=true
+    break
+  end
+end
+if not found then
+   print(0)
+end
+EOF
+}
