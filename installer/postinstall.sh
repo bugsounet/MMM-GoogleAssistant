@@ -76,11 +76,11 @@ fi
 # check kernel x64 with 32bits userspace
 if  [ "$os_name" == "raspbian" ] && [ "$arch" == "aarch64" ]; then
   userspace="$(getconf LONG_BIT)"
-  if [ "$userspace" == "64" ]; then
+  if [ "$userspace" == "32" ]; then
     arm64_search="$(grep -m1 '\arm_64bit' /boot/config.txt)"
     arm64_value=$(get_config_var arm_64bit)
     Installer_info "You have an x64 kernel with an 32bits userspace"
-    Installer_info "For better performance with MMM-GoogleAssistant, let's turn on x32 kernel"
+    Installer_info "For better performance with MMM-GoogleAssistant, let's turn on 32bits kernel"
     if [ "$arm64_search." == "." ]; then
       Installer_info "... set arm64bit=0 into /boot/config.txt"
       set_config_var arm_64bit 0
