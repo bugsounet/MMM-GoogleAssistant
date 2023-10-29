@@ -7,7 +7,6 @@ rebuild=0
 minify=0
 bugsounet=0
 change=0
-config=/boot/config.txt
 
 while getopts ":rmb" option; do
   case $option in
@@ -69,31 +68,34 @@ if  [[ "$os_name" == "raspbian" || "$os_name" == "debian" ]] && [ "$os_version" 
     Installer_info "Install pulseaudio by default..."
     sudo raspi-config nonint do_audioconf 1 || exit 255
     Installer_success "pulseaudio activated!"
+    echo
     ((change++))
   fi
 fi
-echo
 
 # check kernel x64 with 32bits userspace
 if  [ "$os_name" == "raspbian" ] && [ "$arch" == "aarch64" ]; then
-  userspace= "$(getconf LONG_BIT)"
-  if [ "$userspace" == "32" ]; then
-    arm64_search="$(grep -m1 '\arm_64bit' $config)"
-    arm64_value=$(get_config_var arm_64bit $config)
+  userspace="$(getconf LONG_BIT)"
+  if [ "$userspace" == "64" ]; then
+    arm64_search="$(grep -m1 '\arm_64bit' /boot/config.txt)"
+    arm64_value=$(get_config_var arm_64bit)
     Installer_info "You have an x64 kernel with an 32bits userspace"
     Installer_info "For better performance with MMM-GoogleAssistant, let's turn on x32 kernel"
     if [ "$arm64_search." == "." ]; then
-      Installer_info "... set arm64bit=0 into $config"
-      set_config_var arm_64bit 0 $config
+      Installer_info "... set arm64bit=0 into /boot/config.txt"
+      set_config_var arm_64bit 0
+      echo
       ((change++))
     else
       if [ $arm64_value -eq 1 ]; then
         Installer_info "... unset arm64bit=1 and set arm64bit=0 into $config"
-        set_config_var arm_64bit 0 $config
+        set_config_var arm_64bit 0
+        echo
         ((change++))
       else
         Installer_info "... arm64bit value is already set to 0"
         Installer_warning "[WARN] Please, don't forget to reboot your OS for apply the new configuration!"
+        echo
       fi
     fi
   fi
