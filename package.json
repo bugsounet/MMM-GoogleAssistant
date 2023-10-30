@@ -47,7 +47,7 @@
     "google-auth-library": "^9.1.0",
     "html-entities": "^2.4.0",
     "mkdirp": "^3.0.1",
-    "node-html-parser": "^6.1.10",
+    "node-html-parser": "^6.1.11",
     "open": "^9.1.0",
     "press-any-key": "^0.1.1",
     "protobufjs": "^7.2.5",
