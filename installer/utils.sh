@@ -152,3 +152,53 @@ Installer_chk () {
   fi
   Installer_success "Checking $2: $CHKUSER/$CHKGROUP"
 }
+
+# get/set/clear value of /boot/config.txt
+
+# $1:feature
+# $2:value
+set_config_var() {
+  lua - "$1" "$2" "/boot/config.txt" <<EOF > "$HOME/config.txt"
+local key=assert(arg[1])
+local value=assert(arg[2])
+local fn=assert(arg[3])
+local file=assert(io.open(fn))
+local made_change=false
+for line in file:lines() do
+  if line:match("^#?%s*"..key.."=.*$") then
+    line=key.."="..value
+    made_change=true
+  end
+  print(line)
+end
+
+if not made_change then
+  print(key.."="..value)
+end
+EOF
+  sudo chown root "$HOME/config.txt"
+  sudo chgrp root "$HOME/config.txt"
+  sudo mv "$HOME/config.txt" "/boot/config.txt"
+}
+
+# $1:feature
+# => return value | 0
+get_config_var() {
+  lua - "$1" "/boot/config.txt" <<EOF
+local key=assert(arg[1])
+local fn=assert(arg[2])
+local file=assert(io.open(fn))
+local found=false
+for line in file:lines() do
+  local val = line:match("^%s*"..key.."=(.*)$")
+  if (val ~= nil) then
+    print(val)
+    found=true
+    break
+  end
+end
+if not found then
+   print(0)
+end
+EOF
+}
