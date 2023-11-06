@@ -14,7 +14,7 @@
   "GAReady": "Klaar!",
   "GABegin": "He, hoe kan ik je helpen?",
   "GAContinue": "Ik luister naar jou...",
-  "GAErrorRecipe": "[FATAL] Fout tijdens het laden van dit recept: {VALUES}",
+  "GAErrorRecipe": "Fout tijdens het laden van dit recept: {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json niet aanwezig",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json niet aanwezig"
 }

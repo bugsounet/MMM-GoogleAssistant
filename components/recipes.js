@@ -20,7 +20,9 @@ function load(that, callback=()=>{}) {
         console.log("[GA] [RECIPES] LOADED:", recipes[i])
       } catch (e) {
         error = `[FATAL] RECIPE_ERROR (${recipes[i]})`
-        return this.error(that, error, {message: "GAErrorRecipe", values: recipes[i]}, e)
+        console.error("[GA] [RECIPES] LOADING ERROR:", recipes[i])
+        console.error("[GA] [RECIPES] DETAIL:", e.message)
+        that.sendSocketNotification("RECIPE_ERROR", recipes[i])
       }
     }
     callback()
@@ -30,11 +32,4 @@ function load(that, callback=()=>{}) {
   }
 }
 
-function error(that, err, error, details = null) {
-  if (details) console.log("[GA] [RECIPES] [ERROR]" + err, details.message, details)
-  else console.log("[GA] [RECIPES] [ERROR]" + err)
-  return that.sendSocketNotification("NOT_INITIALIZED", { message: error.message, values: error.values })
-}
-
 exports.load = load
-exports.error = error

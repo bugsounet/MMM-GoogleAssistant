@@ -14,7 +14,7 @@
   "GAReady": "Pronto!",
   "GABegin": "Olá, em que posso ajudar?",
   "GAContinue": "Estou a ouvir...",
-  "GAErrorRecipe": "[FATAL] Erro ao carregar esta receita: {VALUES}",
+  "GAErrorRecipe": "Erro ao carregar esta receita: {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json em falta",
 
   "ShellExecError": "ShellExec returnou alguns Erros",

@@ -15,7 +15,7 @@
   "GAReady": "Ready!",
   "GABegin": "Hi, how can i help?",
   "GAContinue": "I'm listening to you...",
-  "GAErrorRecipe": "[FATAL] Error when loading this recipe: {VALUES}",
+  "GAErrorRecipe": "Error when loading this recipe: {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json missing",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json missing",
 
