@@ -1,12 +1,12 @@
 {
   "name": "MMM-GoogleAssistant",
-  "version": "5.4.5",
-  "rev": "231029",
+  "version": "6.0.0",
+  "rev": "240000",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
     "preinstall": "installer/preinstall.sh -d 'pulseaudio'",
-    "postinstall": "installer/postinstall.sh -m -b",
+    "postinstall": "installer/postinstall.sh -b",
     "update": "installer/update.sh",
     "token": "installer/token.sh",
     "list": "node installer/list.js",
