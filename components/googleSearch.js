@@ -37,9 +37,9 @@ class GoogleSearch {
   }
 
   getResponse({ query }) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const params = new URLSearchParams({ q: query, num: this.defaultLimit, start: this.defaultStart })
-      await fetch(`https://www.google.com/search?${params}`,
+      fetch(`https://www.google.com/search?${params}`,
         {
           "headers": {
             'User-Agent': this.defaultUserAgent,
