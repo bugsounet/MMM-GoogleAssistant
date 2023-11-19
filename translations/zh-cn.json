@@ -14,7 +14,7 @@
   "GAReady": "准备就绪！",
   "GABegin": "你好，我能提供什么帮助？",
   "GAContinue": "我在听你说...",
-  "GAErrorRecipe": "[FATAL] 加载此方法时出现错误： {VALUES}",
+  "GAErrorRecipe": "加载此方法时出现错误： {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json 丢失",
   "GAErrorTokenGA": "[FATAL] Token YouTube: tokenYT.json 丢失",
 

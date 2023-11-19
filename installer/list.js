@@ -1,4 +1,3 @@
-const axios = require ("axios")
 const path = require('path')
 const fs = require("fs")
 const readline = require('readline')
@@ -89,26 +88,34 @@ Auth(config).then (() => {
 
 /** list **/
 listDevice = function(config) {
-  return new Promise(async(res, rej) => {
+  return new Promise((res, rej) => {
     try {
       const projectId = config.project_id
       const accesstoken = config.token
       const modelId = projectId+"-bugsounet_GA"
       const deviceId = "MMM-GoogleAssistant"
 
-      let list = await axios({
-        method: 'GET',
-        url: `https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectId}/devices/`,
-        headers: {
-          'Authorization': `Bearer ${accesstoken}`,
-          'Content-Type': 'application/json'
-        }
-      })
-      console.log("[GA] Device instance data:", list.data)
-      if (debug) console.log("[GA] Response status[code]:", list.statusText, "[" + list.status +"]")
-      return res()
+      fetch(`https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectId}/devices/`,
+        {
+          headers: {
+            'Authorization': `Bearer ${accesstoken}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (debug) console.log("[GA] Response status[code]:", response.statusText, "[" + response.status +"]")
+          return response.json()
+        })
+        .then(data=> {
+          console.log("[GA] Device instance data:", data)
+          return res()
+        })
+        .catch(error => {
+          console.error("[GA]", error)
+          return res()
+        })
     } catch (e) {
-      console.error("[GA] " + e)
+      console.error("[GA]", e)
       return res()
     }
   })

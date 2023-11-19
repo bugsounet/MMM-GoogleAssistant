@@ -14,7 +14,7 @@
   "GAReady": "Hazır!",
   "GABegin": "Merhaba, nasıl yardımcı olabilirim?",
   "GAContinue": "Seni dinliyorum...",
-  "GAErrorRecipe": "[HATA] Bu tarifi yüklerken hata oluştu: {VALUES}",
+  "GAErrorRecipe": "Bu tarifi yüklerken hata oluştu: {VALUES}",
   "GAErrorCredentials": "[HATA] Asistan: kimlik credentials.json eksik",
   "GAErrorTokenGA": "[HATA] Token Asistanı: tokenGA.json eksik",
 

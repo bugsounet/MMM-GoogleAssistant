@@ -1,4 +1,3 @@
-const axios = require ("axios")
 const path = require('path')
 const fs = require("fs")
 const readline = require('readline')
@@ -82,13 +81,13 @@ Auth = function(config) {
 
 Auth(config).then (() => {
   if (debug) console.log("[GA] Final config:", config)
-  registerDevice(config).then(() => {
-    process.exit()
-  })
+  registerDeviceModel(config)
+    .then(() => process.exit())
+    .catch(() => process.exit())
 })
 
-/** register **/
-registerDevice = function(config) {
+/** register Device Model **/
+registerDeviceModel = function(config) {
   return new Promise(async(res, rej) => {
     try {
       const projectId = config.project_id
@@ -96,52 +95,100 @@ registerDevice = function(config) {
       const modelId = projectId+"-bugsounet_GA"
       const deviceId = "MMM-GoogleAssistant"
       // define a model
-      let model = await axios({
-        method: 'post',
-        url: `https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectId}/deviceModels/`,
-        headers: {
-          'Authorization': `Bearer ${accesstoken}`,
-          'Content-Type': 'application/json'
+      let dataDeviceModel = {
+        "project_id": projectId,
+        "device_model_id": modelId,
+        "manifest": {
+        "manufacturer": "@bugsounet",
+        "product_name": "MMM-GoogleAssistant",
+        "device_description": "Google Assistant SDK for MagicMirror²"
         },
-        data: {
-          "project_id": projectId,
-          "device_model_id": modelId,
-          "manifest": {
-            "manufacturer": "@bugsounet",
-            "product_name": "MMM-GoogleAssistant",
-            "device_description": "Google Assistant SDK for MagicMirror²"
+        "device_type": "action.devices.types.TV"
+      }
+      fetch(`https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectId}/deviceModels/`,
+        {
+          method: "POST",
+          headers: {
+            'Authorization': `Bearer ${accesstoken}`,
+            'Content-Type': 'application/json'
           },
-          "device_type": "action.devices.types.TV"
-        }
-      })
-      if (debug) {
-        console.log("[GA] Model data:", model.data)
-        console.log("[GA] Status/code: ", model.statusText, "[" + model.status +"]")
-      }
-      console.log("[GA] Model device created: MMM-GoogleAssistant")
-      let instance = await axios({
-        method: 'post',
-        url: `https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectId}/devices/`,
-        headers: {
-          'Authorization': `Bearer ${accesstoken}`,
-          'Content-Type': 'application/json'
-        },
-        data: {
-          "id": deviceId,
-          "model_id": modelId,
-          "nickname": "Jarvis",
-          "client_type": "SDK_SERVICE"
-        }
-      })
-      if (debug) {
-        console.log("[GA] Instance data:", instance.data)
-        console.log("[GA] Status/code: ", instance.statusText, "[" + instance.status +"]")
-      }
-      console.log("Device registered - Please assign Jarvis (MMM-GoogleAssistant) to a home in the Google Home app")
-      return res()
+          body: JSON.stringify(dataDeviceModel)
+        })
+        .then(response => {
+          if (debug) {
+            console.log("[GA] Model data:", dataDeviceModel)
+            console.log("[GA] Status/code: ", response.statusText, "[" + response.status +"]")
+          }
+          return response.json()
+        })
+        .then(async data=> {
+          if (data.error) {
+            console.error("[GA] Error:", data.error)
+            return rej()
+          }
+          console.log("[GA] Model device created: MMM-GoogleAssistant")
+          if (debug) console.log("[GA] DATA:", data)
+          await registerDevice(config)
+          return res()
+        })
+        .catch(error => {
+          console.error("[GA]", error)
+          return rej()
+        })
     } catch (e) {
       console.error("[GA] " + e)
-      return res()
+      return rej()
+    }
+  })
+}
+
+/** register Device Model **/
+registerDevice = function(config) {
+  return new Promise((res, rej) => {
+    try {
+      const projectId = config.project_id
+      const accesstoken = config.token
+      const modelId = projectId+"-bugsounet_GA"
+      const deviceId = "MMM-GoogleAssistant"
+      let dataDevice = {
+        "id": deviceId,
+        "model_id": modelId,
+        "nickname": "Jarvis",
+        "client_type": "SDK_SERVICE"
+      }
+
+      fetch(`https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectId}/devices/`,
+        {
+          method: "POST",
+          headers: {
+            'Authorization': `Bearer ${accesstoken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dataDevice)
+        })
+        .then(response => {
+          if (debug) {
+            console.log("[GA] Model data:", dataDevice)
+            console.log("[GA] Status/code: ", response.statusText, "[" + response.status +"]")
+          }
+          return response.json()
+        })
+        .then(data=> {
+          if (data.error) {
+            console.error("[GA] Error:", data.error)
+            return rej()
+          }
+          if (debug) console.log("[GA] DATA:", data)
+          console.log("Device registered - Please assign Jarvis (MMM-GoogleAssistant) to a home in the Google Home app")
+          return res()
+        })
+        .catch(error => {
+          console.error("[GA]", error)
+          return rej()
+        })
+    } catch (e) {
+      console.error("[GA] " + e)
+      return rej()
     }
   })
 }

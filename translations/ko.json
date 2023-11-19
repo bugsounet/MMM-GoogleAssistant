@@ -14,7 +14,7 @@
   "GAReady": "준비!",
   "GABegin": "반가워요, 무엇을 도와드릴까요?",
   "GAContinue": "듣는중...",
-  "GAErrorRecipe": "[FATAL] 이 recipe를 불러오는 중 오류가 발생함: {VALUES}",
+  "GAErrorRecipe": "이 recipe를 불러오는 중 오류가 발생함: {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json이 없습니다.",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json이 없습니다.",
 
