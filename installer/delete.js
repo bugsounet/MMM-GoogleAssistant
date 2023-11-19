@@ -1,4 +1,3 @@
-const axios = require ("axios")
 const path = require('path')
 const fs = require("fs")
 const readline = require('readline')
@@ -82,9 +81,9 @@ Auth = function(config) {
 
 Auth(config).then (() => {
   if (debug) console.log("[GA] Final config:", config)
-  removeDevice(config).then(() => {
-    process.exit()
-  })
+  removeDevice(config)
+    .then(() => process.exit())
+    .catch(() => process.exit())
 })
 
 /** delete **/
@@ -95,37 +94,66 @@ removeDevice = function(config) {
       const accesstoken = config.token
       const modelId = projectId+"-bugsounet_GA"
       const deviceId = "MMM-GoogleAssistant"
-      let instance = await axios({
-        method: 'delete',
-        url: `https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectId}/devices/${deviceId}`,
-        headers: {
-          'Authorization': `Bearer ${accesstoken}`,
-          'Content-Type': 'application/json'
-        }
-      })
-      if (debug) {
-        console.log("[GA] Instance data:", instance.data)
-        console.log("[GA] Status/code:", instance.statusText, "[" + instance.status +"]")
-      }
-      console.log("[GA] Instance deleted:", deviceId)
 
-      let model = await axios({
-        method: 'delete',
-        url: `https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectId}/deviceModels/${modelId}`,
-        headers: {
-          'Authorization': `Bearer ${accesstoken}`,
-          'Content-Type': 'application/json'
-        }
+      fetch(`https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectId}/devices/${deviceId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${accesstoken}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (debug) console.log("[GA] Status/code: ", response.statusText, "[" + response.status +"]")
+          return response.json()
+        })
+        .then(async data=> {
+          if (data.error) {
+            console.error("[GA] Error:", data.error)
+            return rej()
+          }
+          if (debug) console.log("[GA] Instance data:", data)
+          console.log("[GA] Instance deleted:", deviceId)
+          await deviceDelete(config)
+          return res()
       })
-      if (debug) {
-        console.log("[GA] Model data:", model.data)
-        console.log("[GA] Status/code:", model.statusText, "[" + model.status +"]")
-      }
-      console.log("[GA] Jarvis Device deleted:", modelId, "from", projectId);
-      return res()
     } catch (e) {
       console.error("[GA] " + e)
-      return res()
+      return rej()
+    }
+  })
+}
+
+/** delete Model **/
+deviceDelete = function(config) {
+  return new Promise(async(res, rej) => {
+    try {
+      const projectId = config.project_id
+      const accesstoken = config.token
+      const modelId = projectId+"-bugsounet_GA"
+      fetch( `https://embeddedassistant.googleapis.com/v1alpha2/projects/${projectId}/deviceModels/${modelId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${accesstoken}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (debug) console.log("[GA] Status/code: ", response.statusText, "[" + response.status +"]")
+          return response.json()
+        })
+        .then(data => {
+          if (data.error) {
+            console.error("[GA] Error:", data.error)
+            return rej()
+          }
+          console.log("[GA] Jarvis Device deleted:", modelId, "from", projectId);
+          return res()
+        })
+    } catch (e) {
+      console.error("[GA] " + e)
+      return rej()
     }
   })
 }
