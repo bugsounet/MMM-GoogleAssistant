@@ -14,7 +14,7 @@
   "GAReady": "Έτοιμο!",
   "GABegin": "Γεια, πως μπορώ να βοηθήσω?",
   "GAContinue": "Σε ακούω...",
-  "GAErrorRecipe": "[FATAL] Σφάλμα φόρτωσης της συνταγής: {VALUES}",
+  "GAErrorRecipe": "Σφάλμα φόρτωσης της συνταγής: {VALUES}",
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json λείπει",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json λείπει",
 

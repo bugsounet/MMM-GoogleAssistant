@@ -15,7 +15,7 @@
   "GAReady": "Listos!",
   "GABegin": "Hola, Como puedo ayudar?",
   "GAContinue": "Estoy escuchándote...",
-  "GAErrorRecipe": "[FATAL] Error cargando esta receta: {VALUES}",
+  "GAErrorRecipe": "Error cargando esta receta: {VALUES}",
   "GAErrorCredentials": "[FATAL] Asistente: Falta credentials.json",
   "GAErrorTokenGA": "[FATAL] Asistente: Falta tokenGA.json",
 

@@ -153,6 +153,12 @@ Module.register("MMM-GoogleAssistant", {
           type: "error"
         })
         break
+      case "RECIPE_ERROR":
+        this.sendNotification("EXT_ALERT", {
+          message: this.translate("GAErrorRecipe", { VALUES: payload }),
+          type: "error"
+        })
+        break
       case "INITIALIZED":
         logGA("Initialized.")
         this.assistantResponse.Version(payload)
