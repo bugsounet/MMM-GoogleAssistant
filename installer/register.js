@@ -144,7 +144,7 @@ registerDeviceModel = function(config) {
 
 /** register Device Model **/
 registerDevice = function(config) {
-  return new Promise(async(res, rej) => {
+  return new Promise((res, rej) => {
     try {
       const projectId = config.project_id
       const accesstoken = config.token
