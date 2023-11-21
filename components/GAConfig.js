@@ -1,8 +1,7 @@
 class GAConfig {
   constructor (that) {
     const helperConfig = [
-      "debug", "recipes", "assistantConfig",
-      "responseConfig"
+      "debug", "recipes", "assistantConfig", "responseConfig", "website"
     ]
 
     if (that.config.debug) logGA = (...args) => { console.log("[GA]", ...args) }
@@ -118,11 +117,25 @@ class GAConfig {
     let DB = new EXT_Database()
     that.ExtDB = DB.ExtDB()
     that.EXT = await DB.createDB(that)
-    //that.awaitGATimer = null
+    that.awaitGATimer = null // <--- see to delete
     that.session= {}
     that.sysInfo = new sysInfoPage(that)
+
+    let LoadTranslate = new EXT_Translations()
+    let EXTTranslate = await LoadTranslate.Load_EXT_Translation(that)
+    let EXTDescription = await LoadTranslate.Load_EXT_Description(that)
+    let VALTranslate = await LoadTranslate.Load_EXT_TrSchemaValidation(that)
+    that.sysInfo.prepare(EXTTranslate)
+
     console.log("[GA] GAConfig Ready")
-    that.sendSocketNotification("INIT", that.helperConfig)
+    that.sendSocketNotification("INIT", {
+      config: that.helperConfig,
+      DB: that.ExtDB,
+      Description: EXTDescription,
+      Translate: EXTTranslate,
+      Schema: VALTranslate,
+      EXTStatus: that.EXT
+    })
   }
 
   forceFullScreen(that) {
@@ -131,4 +144,3 @@ class GAConfig {
     that.assistantResponse = new AssistantResponse(that.helperConfig["responseConfig"], this.callbacks)
   }
 }
- 
