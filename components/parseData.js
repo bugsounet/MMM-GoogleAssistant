@@ -11,12 +11,61 @@ async function init(that) {
   that.PLATFORM_RECORDER.set("mac", "sox")
   that.PLATFORM_RECORDER.set("raspberry-pi", "arecord")
   that.PLATFORM_RECORDER.set("windows", "sox")
+
+  that.MMVersion = global.version
+  that.root_path = global.root_path
+  that.EXT = {
+    MMConfig: null, // real config file (config.js)
+    EXT: null, // EXT plugins list
+    EXTDescription: {}, // description of EXT
+    EXTConfigured: [], // configured EXT in config
+    EXTInstalled: [], // installed EXT in MM
+    EXTStatus: {}, // status of EXT
+    user: { _id: 1, username: 'admin', password: 'admin' },
+    initialized: false,
+    app: null,
+    server: null,
+    translation: null,
+    schemaTranslatation: null,
+    language: null,
+    webviewTag: false,
+    GACheck: { find: false, version: 0, configured: false, ready: false },
+    GAConfig: {},
+    HyperWatch: null,
+    radio: null,
+    freeteuse: {},
+    systemInformation: {
+      lib: null,
+      result: {}
+    },
+    activeVersion: {},
+    usePM2: false,
+    PM2Process: 0,
+    homeText: null,
+    errorInit: false
+  }
+  that.SmartHome = {
+    lang: "en",
+    use: false,
+    init: false,
+    last_code: null,
+    last_code_user: null,
+    last_code_time: null,
+    user: { user: "admin", password: "admin", devices: [ "MMM-GoogleAssistant" ] },
+    actions: null,
+    device: {},
+    EXT: {},
+    smarthome: {},
+    oldSmartHome: {},
+    homegraph: null
+  }
 }
 
 async function parse(that) {
   let bugsounet = await _load.libraries(that)
   if (bugsounet) {
     console.error("[GA] [DATA] Warning:", bugsounet, "needed library not loaded !")
+    console.error("[GA] [DATA] Try to solve it with `npm run rebuild` in MMM-GoogleAssistant folder")
     return
   }
   that.lib.configMerge.check(that)

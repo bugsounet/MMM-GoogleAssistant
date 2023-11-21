@@ -1,7 +1,7 @@
 /**
  ** Module : MMM-GoogleAssistant
  ** @bugsounet
- ** ©09-2023
+ ** ©2024
  ** support: https://forum.bugsounet.fr
  **/
 
@@ -54,7 +54,12 @@ Module.register("MMM-GoogleAssistant", {
         responseOutput: "60%"
       }
     },
-    recipes: []
+    recipes: [],
+    website: {
+      username: "admin",
+      password: "admin",
+      CLIENT_ID: null
+    }
   },
 
   getScripts: function() {
@@ -64,7 +69,14 @@ Module.register("MMM-GoogleAssistant", {
       "/modules/MMM-GoogleAssistant/components/assistantResponse.js",
       "/modules/MMM-GoogleAssistant/components/assistantSearch.js",
       "/modules/MMM-GoogleAssistant/components/Gateway.js",
-      "/modules/MMM-GoogleAssistant/components/Hooks.js"
+      "/modules/MMM-GoogleAssistant/components/Hooks.js",
+      "/modules/MMM-GoogleAssistant/components/EXT_Actions.js",
+      "/modules/MMM-GoogleAssistant/components/EXT_Callbacks.js",
+      "/modules/MMM-GoogleAssistant/components/EXT_NotificationsActions.js",
+      "/modules/MMM-GoogleAssistant/components/EXT_OthersRules.js",
+      "/modules/MMM-GoogleAssistant/components/EXT_Database.js",
+      "/modules/MMM-GoogleAssistant/components/EXT_Translations.js",
+      "/modules/MMM-GoogleAssistant/components/sysInfoPage.js"
     ]
   },
 
@@ -102,6 +114,7 @@ Module.register("MMM-GoogleAssistant", {
 
   notificationReceived: function(noti, payload=null, sender=null) {
     this.Hooks.doPlugin(this, "onNotificationReceived", {notification:noti, payload:payload})
+    if (noti.startsWith("EXT_")) return this.EXT_NotificationsActions.Actions(this,noti,payload,sender)
     switch (noti) {
       case "GA_ACTIVATE":
         if (payload && payload.type && payload.key) this.activateProcess.assistantActivate(this, payload)
@@ -164,6 +177,7 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantResponse.Version(payload)
         this.assistantResponse.status("standby")
         this.Hooks.doPlugin(this, "onReady")
+        this.EXT.GA_Ready = true
         this.sendNotification("GA_READY")
         break
       case "ASSISTANT_RESULT":

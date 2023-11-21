@@ -10,7 +10,6 @@ function libraries(that) {
     { "../components/BufferToMP3.js": "BufferToMP3" },
     { "../components/lpcm16.js": "Recorder" },
     { "../components/googleAssistant": "GoogleAssistant"},
-    { "axios": "axios" },
     { "cheerio": "cheerio" },
     { "child_process": "childProcess" },
     { "fs": "fs" },
@@ -26,7 +25,41 @@ function libraries(that) {
     { "../components/googleSearch.js": "googleSearch" },
     { "../components/searchOnGoogle.js": "searchOnGoogle" },
     { "../components/recipes.js": "recipes" },
-    { "../components/activateAssistant.js": "activateAssistant" }
+    { "../components/activateAssistant.js": "activateAssistant" },
+
+    /*
+    { "../components/GWTools.js": "GWTools" },
+    { "../components/SHTools.js": "SHTools" },
+    { "../components/GatewayMiddleware.js": "Gateway"},
+    { "../components/hyperwatch.js": "hyperwatch" },
+    { "../components/SmartHomeMiddleware.js": "SmartHome" },
+    { "../components/actionsOnGoogle.js": "ActionsOnGoogle" },
+    { "../components/DeviceManagement.js": "Device" },
+    { "../components/SHCallbacks.js": "callback" },
+    { "../components/homegraph.js": "homegraph" },
+    { "../components/systemInformation.js": "SystemInformation" },
+    { "../components/wirelessTools.js": "wirelessTools" },
+    { "node-pty": "pty" },
+    { "express": "express" },
+    { "http": "http" },
+    { "semver": "semver" },
+    { "body-parser": "bodyParser" },
+    { "express-session": "session" },
+    { "passport": "passport" },
+    { "passport-local" : "LocalStrategy" },
+    { "socket.io": "Socket" },
+    { "cors": "cors" },
+    { "util": "util" },
+    { "systeminformation": "si" },
+    { "command-exists": "commandExists" },
+    { "readline": "readline" },
+    { "stream": "Stream" },
+    { "actions-on-google": "actions" },
+    { "googleapis": "googleapis" },
+    { "google-auth-library": "GoogleAuthLibrary" },
+    { "lodash": "_" },
+    { "moment": "moment" }
+    */
   ]
   let errors = 0
   return new Promise(resolve => {
@@ -41,7 +74,7 @@ function libraries(that) {
             logGA("Loaded:", libraryToLoad, "->", "this.lib."+libraryName)
           }
         } catch (e) {
-          console.error("[GA] [LIB]", libraryToLoad, "Loading error!" , e.toString(), e)
+          console.error("[GA] [LIB]", libraryToLoad, "Loading error!" , e.message)
           that.sendSocketNotification("ERROR" , "Loading error! library: " + libraryToLoad)
           errors++
           that.lib.error = errors

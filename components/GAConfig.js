@@ -47,6 +47,7 @@ class GAConfig {
         that.Hooks.doPlugin(that, "onStatus", {status: status})
         that.GAStatus = status
         that.sendNotification("ASSISTANT_" + that.GAStatus.actual.toUpperCase())
+        that.EXT_Actions.Actions(that, that.GAStatus.actual.toUpperCase())
       },
       Gateway: (response)=> {
         return that.Gateway.SendToGateway(that, response)
@@ -106,8 +107,22 @@ class GAConfig {
     that.assistantResponse.prepareGA()
     that.assistantResponse.prepareBackground ()
     that.assistantResponse.Loading()
-    that.sendSocketNotification("INIT", that.helperConfig)
+    this.EXT_Config(that)
+  }
+
+  async EXT_Config(that) {
+    that.EXT_Callbacks = new EXT_Callbacks()
+    that.EXT_Actions = new EXT_Actions()
+    that.EXT_NotificationsActions = new EXT_NotificationsActions()
+    that.EXT_OthersRules = new EXT_OthersRules()
+    let DB = new EXT_Database()
+    that.ExtDB = DB.ExtDB()
+    that.EXT = await DB.createDB(that)
+    //that.awaitGATimer = null
+    that.session= {}
+    that.sysInfo = new sysInfoPage(that)
     console.log("[GA] GAConfig Ready")
+    that.sendSocketNotification("INIT", that.helperConfig)
   }
 
   forceFullScreen(that) {
