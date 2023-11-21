@@ -12,7 +12,7 @@ module.exports = NodeHelper.create({
     parseData.init(this)
   },
 
-  socketNotificationReceived: function (noti, payload) {
+  socketNotificationReceived: async function (noti, payload) {
     switch (noti) {
       case "INIT":
         if (this.alreadyInitialized) {
@@ -25,9 +25,9 @@ module.exports = NodeHelper.create({
         this.alreadyInitialized= true
         this.config = payload.config
         console.log("[GA] MMM-GoogleAssistant Version:", require('./package.json').version, "rev:", require('./package.json').rev)
-        //console.log("[GA] Config", payload)
         this.config.assistantConfig["modulePath"] = __dirname
-        parseData.parse(this)
+        console.log(payload)
+        parseData.parse(this, payload)
         break
       case "ACTIVATE_ASSISTANT":
         this.lib.activateAssistant.activate(this, payload)

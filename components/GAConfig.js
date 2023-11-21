@@ -106,8 +106,10 @@ class GAConfig {
     that.assistantResponse.prepareGA()
     that.assistantResponse.prepareBackground ()
     that.assistantResponse.Loading()
-    this.EXT_Config(that)
+    console.log("[GA] GAConfig Ready")
   }
+
+// ---> to review: maybe 2 inits ?
 
   async EXT_Config(that) {
     that.EXT_Callbacks = new EXT_Callbacks()
@@ -127,7 +129,6 @@ class GAConfig {
     let VALTranslate = await LoadTranslate.Load_EXT_TrSchemaValidation(that)
     that.sysInfo.prepare(EXTTranslate)
 
-    console.log("[GA] GAConfig Ready")
     that.sendSocketNotification("INIT", {
       config: that.helperConfig,
       DB: that.ExtDB,

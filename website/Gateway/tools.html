@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Gateway</title>
+    <link rel="icon" type="image/png" sizes="42x42" href="../assets/img/Gateway.png">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora&amp;display=swap">
+    <link rel="stylesheet" href="../assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="../assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="../assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="../assets/css/animate.min.css">
+    <link rel="stylesheet" href="../assets/css/alertify-bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/alertify.min.css">
+    <link rel="stylesheet" href="../assets/css/Article-Clean.css">
+    <link rel="stylesheet" href="../assets/css/bugsounet.css">
+    <link rel="stylesheet" href="../assets/css/Navbar.css">
+    <link rel="stylesheet" href="../assets/css/tools.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion p-0 toggled bg-gradient-left">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0">
+                    <div class="sidebar-brand-icon rotate-n-15"><i class="fab fa-google float-end invisible"></i><svg viewBox="0 0 24 24" class=""><g class=""><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"></path><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"></path><path fill="#FBBC05" d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"></path><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"></path></g></svg></div>
+                    <div class="sidebar-brand-text mx-3"><span>Gateway</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light invisible" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fa fa-home"></i><span id="Home">Home</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/EXT"><i class="fa fa-plug"></i><span id="Plugins">EXT Plugins</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Terminal"><i class="fa fa-terminal"></i><span id="Terminal">Terminal Output</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/MMConfig"><i class="fa fa-code"></i><span id="Configuration">MagicMirror Configuration</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Tools"><i class="fas fa-tools"></i><span id="Tools">Tools</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/System" data-bs-target="/System"><i class="fas fa-microchip"></i><span id="System">System</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Setting"><i class="fa fa-cogs"></i><span id="Setting">Setting</span></a></li>
+                    <li class="nav-item"><a class="nav-link" id="logout" href="/logout"><i class="fa fa-sign-out"></i><span id="Logout">Logout</span></a></li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content" class="bg-google-grey-21">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top bg-gradient-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <div class="container">
+                            <div class="alert alert-success text-center invisible" role="alert" id="alert"><span id="messageText">Message Testing !</span></div>
+                        </div>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <section class="pricing-table" style="padding: 0px;">
+                        <div class="container">
+                            <div class="center">
+                                <h2 class="bounce animated text-google-white" id="title">Loading...</h2>
+                                <p class="lead" id="subtitle">&nbsp;</p>
+                            </div>
+                            <div class="pricing-area text-center">
+                                <div class="row">
+                                    <div class="col-sm-4 plan price red wow col-sm-6" id="Die-Box">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);">MagicMirror</h2><span class="price">Control</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="stop">&nbsp;</span></li>
+                                            <li class="list-group-item plan-action" style="padding: 0;border-style: none;"><a id="Die" class="btn" href="/Die" style="margin-top: 5px;">&nbsp; &nbsp; &nbsp;&nbsp;</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-4 plan price green wow col-sm-6" id="Restart-Box">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);">MagicMirror </h2><span class="price"><strong>Control</strong></span>
+                                            </li>
+                                            <li class="list-group-item"><span id="restart">&nbsp;</span></li>
+                                            <li class="list-group-item plan-action" style="padding: 0;border-style: none;"><a id="Restart" class="btn" href="/Restart" style="margin-top: 5px;">&nbsp; &nbsp; &nbsp;&nbsp;</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3 plan price blue wow col-md-6" id="webview-Box" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);"><strong>webview</strong></h2><span class="price">EXT Plugins</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="webviewHeader">&nbsp;</span></li>
+                                            <li class="list-group-item"><span id="webviewNeeded"></span><span><br>EXT-Browser<br>EXT-Photos<br>EXT-YouTube<br>EXT-YouTubeCast<br></span></li>
+                                            <li class="list-group-item plan-action" style="padding: 0Px;border-style: none;"><a id="webviewbtn-Apply" class="btn">&nbsp; &nbsp; &nbsp;&nbsp;<br></a><a class="flash animated infinite btn" id="webviewbtn-Error" style="display: none;">Error<br></a><a class="tada animated btn" id="webviewbtn-Done" style="display: none;">Done<br></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3 plan price yellow wow col-md-6" id="GoogleAssistant-Box" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);">Google Assistant</h2><span class="price">Request</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="GoogleAssistant-Text">&nbsp; &nbsp;&nbsp;</span></li>
+                                            <li class="list-group-item"><input type="text" id="GoogleAssistant-Query" placeholder="" style="width: 95%;"></li>
+                                            <li class="list-group-item plan-action" style="padding: 0px;border-style: none;"><a id="GoogleAssistant-Send" class="btn disabled"><strong>&nbsp; &nbsp; &nbsp;&nbsp;</strong><br></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-4 plan price green wow col-sm-6" id="Update-Box" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);">Update</h2><span class="price">Control</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="Update-Header">&nbsp; &nbsp;&nbsp;</span></li>
+                                            <li class="list-group-item" id="Update-Modules-Box" style="display: none;"><span id="Update-Text">&nbsp; &nbsp;&nbsp;</span></li>
+                                            <li class="list-group-item plan-action" style="padding: 0;border-style: none;"><a id="Update-Confirm" class="btn" style="margin-top: 5px;">&nbsp; &nbsp; &nbsp;&nbsp;</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3 plan price default wow col-md-6" id="backup-Box" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);">MagicMirror</h2><span class="price">Config Backup</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="backupFound">&nbsp;</span><span>&nbsp;</span><span id="backupFoundText"></span></li>
+                                            <li class="list-group-item"><span id="backupText">&nbsp;</span></li>
+                                            <li class="list-group-item plan-action" style="padding: 0Px;border-style: none;"><a id="backup-Delete" class="btn">&nbsp; &nbsp; &nbsp;&nbsp;<br></a><a class="flash animated infinite btn" id="backup-Error" style="display: none;">Error<br></a><a class="tada animated btn" id="backup-Done" style="display: none;">Done<br></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3 plan price grey wow col-md-6" id="Stop-Box" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);"><strong>Plugins</strong></h2><span class="price">Stop</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="Stop-Text">&nbsp;</span></li>
+                                            <li class="list-group-item plan-action" style="padding: 0Px;border-style: none;"><a id="Stop-Send" class="btn">&nbsp;&nbsp;<br></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3 plan price default wow col-md-6" id="Alert-Box" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);">EXT-Alert</h2><span class="price">Request</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="Alert-Text">&nbsp; &nbsp;&nbsp;</span></li>
+                                            <li class="list-group-item"><input type="text" id="Alert-Query" placeholder="" style="width: 95%;"></li>
+                                            <li class="list-group-item plan-action" style="padding: 0px;border-style: none;"><a id="Alert-Send" class="btn disabled"><strong>&nbsp; &nbsp; &nbsp;&nbsp;</strong><br></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3 plan price default wow col-md-6" id="Screen-Box" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);">EXT-Screen</h2><span class="price">Control</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="Screen-Text">&nbsp; &nbsp;&nbsp;</span></li>
+                                            <li class="list-group-item plan-action" style="padding: 0px;border-style: none;"><a id="Screen-Control" class="btn"><strong>&nbsp; &nbsp; &nbsp;&nbsp;</strong><br></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3 plan price default wow col-md-6" id="Volume-Box" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);">EXT-Volume</h2><span class="price">Speaker Control</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="Volume-Text">&nbsp; &nbsp;&nbsp;</span></li>
+                                            <li class="list-group-item"><span id="Volume-Text2" style="margin-right: 5px;">&nbsp;&nbsp;</span><span id="Volume-Set"></span></li>
+                                            <li class="list-group-item"><span id="Volume-Text3" style="margin-right: 5px;">&nbsp;&nbsp;</span><select id="Volume-Query">
+                                                    <option value="0">0%</option>
+                                                    <option value="10">10%</option>
+                                                    <option value="20">20%</option>
+                                                    <option value="30">30%</option>
+                                                    <option value="40">40%</option>
+                                                    <option value="50" selected="">50%</option>
+                                                    <option value="60">60%</option>
+                                                    <option value="70">70%</option>
+                                                    <option value="80">80%</option>
+                                                    <option value="90">90%</option>
+                                                    <option value="100">100%</option>
+                                                </select></li>
+                                            <li class="list-group-item plan-action" style="padding: 0px;border-style: none;"><a id="Volume-Send" class="btn"><strong>&nbsp; &nbsp; &nbsp;&nbsp;</strong><br></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3 plan price default wow col-md-6" id="Volume-Box-Record" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);">EXT-Volume</h2><span class="price">Mic Control</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="Volume-Text-Record">&nbsp; &nbsp;&nbsp;</span></li>
+                                            <li class="list-group-item"><span id="Volume-Text-Record2" style="margin-right: 5px;">&nbsp;&nbsp;</span><span id="Volume-Set-Record"></span></li>
+                                            <li class="list-group-item"><span id="Volume-Text-Record3" style="margin-right: 5px;">&nbsp;&nbsp;</span><select id="Volume-Query-Record">
+                                                    <option value="0">0%</option>
+                                                    <option value="5">5%</option>
+                                                    <option value="10">10%</option>
+                                                    <option value="15">15%</option>
+                                                    <option value="20">20%</option>
+                                                    <option value="25">25%</option>
+                                                    <option value="30">30%</option>
+                                                    <option value="35">35%</option>
+                                                    <option value="40">40%</option>
+                                                    <option value="45">45%</option>
+                                                    <option value="50" selected="">50%</option>
+                                                    <option value="55">55%</option>
+                                                    <option value="60">60%</option>
+                                                    <option value="65">65%</option>
+                                                    <option value="70">70%</option>
+                                                    <option value="75">75%</option>
+                                                    <option value="80">80%</option>
+                                                    <option value="80">85%</option>
+                                                    <option value="90">90%</option>
+                                                    <option value="95">95%</option>
+                                                    <option value="100">100%</option>
+                                                </select></li>
+                                            <li class="list-group-item plan-action" style="padding: 0px;border-style: none;"><a id="Volume-Send-Record" class="btn"><strong>&nbsp; &nbsp; &nbsp;&nbsp;</strong><br></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3 plan price default wow col-md-6" id="FreeboxTV-Box" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);">EXT-FreeboxTV</h2><span class="price">Request</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="FreeboxTV-Text">&nbsp; Regarder la TV&nbsp;</span></li>
+                                            <li class="list-group-item"><select id="FreeboxTV-Query">
+                                                    <option value="France2">France 2</option>
+                                                    <option value="France3">France 3</option>
+                                                    <option value="France5">France 5</option>
+                                                    <option value="ARTE">Arte</option>
+                                                    <option value="C8">C8</option>
+                                                    <option value="NRJ12">NRJ 12</option>
+                                                    <option value="LCP">LCP</option>
+                                                    <option value="France4">France 4</option>
+                                                    <option value="BFMTV">BFMTV</option>
+                                                    <option value="CNews">CNEWS</option>
+                                                    <option value="CStar">CSTAR</option>
+                                                    <option value="Gulli">Gulli</option>
+                                                    <option value="Equipe">Equipe 21</option>
+                                                    <option value="RMCStory">RMC Story</option>
+                                                    <option value="RMCDecouverte">RMC Découverte</option>
+                                                    <option value="Cherie25">Chérie 25</option>
+                                                    <option value="FranceInfo">France Info</option>
+                                                    <option value="ParisPremiere">Paris Première</option>
+                                                    <option value="RTL9">RTL9</option>
+                                                    <option value="GameOne">Game One</option>
+                                                    <option value="AB1">AB1</option>
+                                                    <option value="TEVA">Teva</option>
+                                                    <option value="M6Music">M6 Music</option>
+                                                    <option value="MCM">MCM</option>
+                                                    <option value="Mangas">Mangas</option>
+                                                    <option value="Equidia">Equidia</option>
+                                                    <option value="Automoto">AutoMoto</option>
+                                                    <option value="RFMTV">RFM TV</option>
+                                                </select></li>
+                                            <li class="list-group-item plan-action" style="padding: 0px;border-style: none;"><a id="FreeboxTV-Send" class="btn"><strong>Zapper</strong><br></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3 plan price default wow col-md-6" id="Radio-Box" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);">EXT-RadioPlayer</h2><span class="price">Request</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="Radio-Text">&nbsp;</span></li>
+                                            <li class="list-group-item"><select id="Radio-Query"></select><span id="Radio-Text2" style="display: none;">&nbsp;</span></li>
+                                            <li class="list-group-item plan-action" style="padding: 0px;border-style: none;"><a id="Radio-Send" class="btn">&nbsp; &nbsp;<br></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3 plan price default wow col-md-6" id="YouTube-Box" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <h2 style="color: var(--bs-light);">EXT-YouTube</h2><span class="price">Request</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="YouTube-Text">&nbsp; &nbsp;&nbsp;</span></li>
+                                            <li class="list-group-item"><input type="text" id="YouTube-Query" placeholder="" style="width: 95%;"></li>
+                                            <li class="list-group-item plan-action" style="padding: 0px;border-style: none;"><a id="YouTube-Send" class="btn disabled"><strong>&nbsp; &nbsp; &nbsp;&nbsp;</strong><br></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3 plan price green wow col-md-6" id="Spotify-Box" style="display: none;">
+                                        <ul class="list-group">
+                                            <li class="list-group-item heading" style="margin-left: 0px;">
+                                                <div class="d-flex d-xl-flex justify-content-center justify-content-xl-center align-items-xl-center"><i class="fa fa-spotify align-self-center" style="padding-right: 5px;font-size: 30px;padding-top: 0px;padding-bottom: 5px;"></i>
+                                                    <h2 class="align-items-center" style="color: var(--bs-light);">Spotify</h2><sup class="align-self-center" style="font-weight: bold;"><strong><span style="color: var(--bs-light);">®</span></strong></sup>
+                                                </div><span class="price">Control</span>
+                                            </li>
+                                            <li class="list-group-item"><span id="Spotify-Text">&nbsp; &nbsp;&nbsp;</span></li>
+                                            <li class="list-group-item">
+                                                <div class="btn-group btn-group-lg d-flex" role="group" style="padding: 0px;padding-right: 3%;padding-left: 3%;margin-right: 0px;"><button class="btn btn-success border rounded border-2 border-dark flex-wrap" id="Spotify-Previous" type="button" style="border-top-style: solid;margin: 0px;margin-right: 5px;"><i class="fa fa-step-backward"></i></button><button class="btn btn-success border rounded border-2 border-dark" id="Spotify-Play" type="button" style="margin-right: 5px;"><i class="fa fa-play"></i></button><button class="btn btn-success border rounded border-2 border-dark" id="Spotify-Stop" type="button" style="margin-right: 5px;display: none;"><i class="fa fa-stop"></i></button><button class="btn btn-success border rounded border-2 border-dark" id="Spotify-Next" type="button"><i class="fa fa-step-forward"></i></button></div>
+                                            </li>
+                                            <li class="list-group-item"><span id="Spotify-Text2">&nbsp; &nbsp;</span></li>
+                                            <li class="list-group-item">
+                                                <div class="d-flex flex-grow-0 flex-shrink-0 flex-wrap justify-content-xl-center">
+                                                    <div class="form-check form-switch form-check-inline"><input class="form-check-input" type="checkbox" id="Spotify-Artist" value="artist"><label class="form-check-label" id="Spotify-Artist-Text" for="Spotify-Artist">&nbsp;&nbsp;</label></div>
+                                                    <div class="form-check form-switch form-check-inline"><input class="form-check-input" type="checkbox" id="Spotify-Track" checked="" value="track"><label class="form-check-label" id="Spotify-Track-Text" for="Spotify-Track">&nbsp;&nbsp;</label></div>
+                                                    <div class="form-check form-switch form-check-inline"><input class="form-check-input" type="checkbox" id="Spotify-Album" value="album"><label class="form-check-label" id="Spotify-Album-Text" for="Spotify-Album">&nbsp;&nbsp;</label></div>
+                                                    <div class="form-check form-switch form-check-inline"><input class="form-check-input" type="checkbox" id="Spotify-Playlist" value="playlist"><label class="form-check-label" id="Spotify-Playlist-Text" for="Spotify-Playlist">&nbsp;&nbsp;</label></div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item"><input type="text" id="Spotify-Query" placeholder="" style="width: 95%;"></li>
+                                            <li class="list-group-item plan-action" style="padding: 0px;border-style: none;"><a id="Spotify-Send" class="btn disabled"><strong>&nbsp; &nbsp; &nbsp;&nbsp;</strong><br></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <footer class="sticky-footer bg-google-grey-21">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © bugsounet.fr 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/bs-init.js"></script>
+    <script src="/EXT_Fetch.js" crossorigin="anonymous"></script>
+    <script src="/EXT_Tools.js" crossorigin="anonymous"></script>
+    <script src="../assets/js/alertify.min.js"></script>
+    <script src="../assets/js/aos.min.js"></script>
+    <script src="../assets/js/pleaserotate.min.js"></script>
+    <script src="../assets/js/theme.js"></script>
+    <script src="../assets/js/tools.js"></script>
+</body>
+
+</html>

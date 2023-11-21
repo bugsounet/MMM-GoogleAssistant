@@ -1,0 +1,28 @@
+<p>Hi, welome to Gateway v3 app!</p>
+<p>This tools wilh help you to configure or manage your Mirror</p>
+<p>What this Tool can really do ?</p>
+<ul>
+  <li>Allows to Install / delete all EXT plugins</li>
+  <li>Allows to configure / modify your EXT with a template</li>
+  <li>Allows to configure MagicMirror</li>
+  <li>Allows you to create a backup of your configuration file at each modification</li>
+  <li>Displaying Magic Mirror Logs in real time</li>
+  <li>Allows you to do now operations with the embedded Terminal</li>
+  <li>Allows you to manually restart or stop MagicMirror</li>
+  <li>Allows you to turn off or turn on your screen</li>
+  <li>...</li>
+</ul>
+<p>Gateway has been translated into a few languages for a better experience (English, French, Spanish, Dutch, German)</p>
+<p>Thanks to translators:</p>
+<ul>
+  <li>@CalcU: for Spanish</li>
+  <li>@lxne: for German</li>
+  <li>@bitass: for Dutch</li>
+  <li>@pitchx: for French review</li>
+  <li>@maxmax: for Spanish</li>
+  <li>@dvbit: for Italian</li>
+  <li>@toantranct: for Vietnamese</li>
+  <li>@toramanderler: for Turkish</li>
+</ul>
+<p>Let's discover it !</p>
+<p>Happy use,<br>@bugsounet</p>

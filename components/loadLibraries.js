@@ -49,19 +49,17 @@ function libraries(that) {
     { "../components/recipes.js": "recipes" },
     { "../components/activateAssistant.js": "activateAssistant" },
 
-    /*
-    { "../components/GWTools.js": "GWTools" },
-    { "../components/SHTools.js": "SHTools" },
-    { "../components/GatewayMiddleware.js": "Gateway"},
+    { "../components/EXT_Tools.js": "EXTTools" },
+    { "../components/SH_Tools.js": "SHTools" },
+    { "../components/Middleware.js": "Middleware"},
     { "../components/hyperwatch.js": "hyperwatch" },
-    { "../components/SmartHomeMiddleware.js": "SmartHome" },
+    { "../components/SH_Middleware.js": "SmartHome" },
     { "../components/actionsOnGoogle.js": "ActionsOnGoogle" },
     { "../components/DeviceManagement.js": "Device" },
-    { "../components/SHCallbacks.js": "callback" },
-    { "../components/homegraph.js": "homegraph" },
+    { "../components/SH_Callbacks.js": "callback" },
+    { "../components/SH_Homegraph.js": "homegraph" },
     { "../components/systemInformation.js": "SystemInformation" },
-    { "../components/wirelessTools.js": "wirelessTools" },
-    */
+    { "../components/wirelessTools.js": "wirelessTools" }
   ]
   let errors = 0
   return new Promise(resolve => {

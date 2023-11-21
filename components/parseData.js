@@ -61,7 +61,7 @@ async function init(that) {
   }
 }
 
-async function parse(that) {
+async function parse(that, data) {
   let bugsounet = await _load.libraries(that)
   if (bugsounet) {
     console.error("[GA] [DATA] Warning:", bugsounet, "needed library not loaded !")
@@ -100,9 +100,58 @@ async function parse(that) {
 
   that.searchOnGoogle = new that.lib.googleSearch(that.lib)
 
-  that.lib.recipes.load(that, ()=> {
-    that.sendSocketNotification("INITIALIZED", Version)
-    console.log("[GA] [DATA] Google Assistant is initialized.")
+  that.EXT.MMConfig = await that.lib.EXTTools.readConfig(that)
+  if (!that.EXT.MMConfig) {
+    that.EXT.errorInit = true
+    console.error("[GA] Error: MagicMirror config.js file not found!")
+    that.sendSocketNotification("ERROR", "MagicMirror config.js file not found!")
+    return
+  }
+  await that.lib.EXTTools.MMConfigAddress(that)
+  if (that.lib.error || that.EXT.errorInit) return
+  
+  that.EXT.language = that.EXT.MMConfig.language
+  that.EXT.webviewTag = that.lib.EXTTools.checkElectronOptions(that.EXT.MMConfig)
+  that.EXT.EXT = data.DB.sort()
+  that.EXT.EXTDescription = data.Description
+  that.EXT.translation = data.Translate
+  that.EXT.schemaTranslatation = data.Schema
+  that.EXT.EXTStatus = data.EXTStatus
+  that.EXT.GACheck.version = that.lib.EXTTools.searchGA(that)
+  that.EXT.GAConfig = that.lib.EXTTools.getGAConfig(that.EXT.MMConfig)
+  that.EXT.homeText = await that.lib.EXTTools.getHomeText(that.lib, that.EXT.language)
+  that.EXT.freeteuse = await that.lib.EXTTools.readFreeteuseTV(that)
+  that.EXT.radio= await that.lib.EXTTools.readRadioRecipe(that)
+  that.EXT.usePM2 = await that.lib.EXTTools.check_PM2_Process(that)
+  that.EXT.systemInformation.lib = new that.lib.SystemInformation(that.lib, that.EXT.translation)
+  that.EXT.systemInformation.result = await that.EXT.systemInformation.lib.initData()
+  if (that.config.website.CLIENT_ID) {
+    that.SmartHome.lang = that.lib.SHTools.SHLanguage(that.EXT.language)
+    that.SmartHome.use = true
+    that.SmartHome.user.user = that.config.website.username
+    that.SmartHome.user.password = that.config.website.password
+    that.lib.homegraph.init(that)
+    that.lib.Device.create(that)
+  } else {
+    console.log("[GA] no CLIENT_ID found in your config!")
+    console.warn("[GA] SmartHome functionality is disabled")
+  }
+
+  that.lib.Middleware.initialize(that)
+  if (that.config.website.CLIENT_ID) that.lib.SmartHome.initialize(that)
+  else that.lib.SmartHome.disable(that)
+
+  that.lib.Middleware.startServer(that, cb => {
+    if (cb) {
+      console.log("[GA] Website Ready!")
+      //this.sendSocketNotification("INITIALIZED")
+      //this.lib.GWTools.setActiveVersion("Gateway", this)
+      that.lib.recipes.load(that, ()=> {
+        console.log("[GA] Recipes loaded!")
+        that.sendSocketNotification("INITIALIZED", Version)
+        console.log("[GA] [DATA] Google Assistant is initialized.")
+      })
+    }
   })
 }
 
