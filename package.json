@@ -44,7 +44,7 @@
     "cheerio": "^1.0.0-rc.12",
     "cli-spinner": "^0.2.10",
     "command-exists": "^1.2.9",
-    "esbuild": "^0.19.6",
+    "esbuild": "^0.19.8",
     "express-session": "^1.17.2",
     "glob": "^10.3.10",
     "google-auth-library": "^9.2.0",
