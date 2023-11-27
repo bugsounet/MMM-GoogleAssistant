@@ -10,7 +10,6 @@ function libraries(that) {
     { "../components/BufferToMP3.js": "BufferToMP3" },
     { "../components/lpcm16.js": "Recorder" },
     { "../components/googleAssistant": "GoogleAssistant"},
-    { "axios": "axios" },
     { "cheerio": "cheerio" },
     { "child_process": "childProcess" },
     { "fs": "fs" },
