@@ -43,7 +43,7 @@
     "cli-spinner": "^0.2.10",
     "esbuild": "^0.19.8",
     "glob": "^10.3.10",
-    "google-auth-library": "^9.2.0",
+    "google-auth-library": "^9.4.1",
     "html-entities": "^2.4.0",
     "mkdirp": "^3.0.1",
     "node-html-parser": "^6.1.11",
