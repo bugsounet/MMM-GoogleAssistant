@@ -714,49 +714,31 @@ function MMConfigAddress (that) {
 function check_PM2_Process(that) {
   console.log("[GA] [PM2] checking PM2 using...")
   return new Promise(resolve => {
-    that.lib.commandExists('pm2')
-      .then (async () => {
-        var PM2_List = await PM2_GetList(that)
-        if (!PM2_List) {
-          console.error("[GA] [PM2] Can't get process List!")
+    that.lib.pm2.connect(err => {
+      if (err) {
+        console.error("[GA] [PM2]", err)
+        resolve(false)
+        return
+      }
+      that.lib.pm2.list((err, list) => {
+        if (err) {
+          console.error("[GA] [PM2] Can't get process List!", err)
           resolve(false)
           return
         }
-        PM2_List.forEach(pm => {
+        list.forEach(pm => {
           if ((pm.pm2_env.version === that.MMVersion) && (pm.pm2_env.status === "online") && (pm.pm2_env.PWD.includes(that.root_path))) {
             that.EXT.PM2Process = pm.name
             console.log("[GA] [PM2] You are using PM2 with", that.EXT.PM2Process)
             resolve(true)
           }
         })
+        that.lib.pm2.disconnect()
         if (!that.EXT.PM2Process) {
           console.log("[GA] [PM2] You don't use PM2")
           resolve(false)
         }
       })
-      .catch (() => {
-        console.log("[GA] [PM2] You don't use PM2")
-        resolve(false)
-      })
-  })
-}
-
-/** Get the list of pm2 process **/
-function PM2_GetList(that) {
-  return new Promise(resolve => {
-    that.lib.childProcess.exec("pm2 jlist", (err,std,sde) => {
-      if (err) {
-        resolve(null)
-        return
-      }
-      try {
-        let result = JSON.parse(std)
-        resolve(result)
-      } catch (e) {
-        console.error("[GA] [PM2] Process list is not an JSON Format!")
-        console.error("[GA] [PM2] Received:", std)
-        resolve(null)
-      }
     })
   })
 }
@@ -765,7 +747,7 @@ function PM2_GetList(that) {
 function restartMM (that) {
   if (that.EXT.usePM2) {
     console.log("[GA] PM2 will restarting MagicMirror...")
-    that.lib.childProcess.exec("pm2 restart " + that.EXT.PM2Process, (err,std,sde) => {
+    that.lib.pm2.restart(that.EXT.PM2Process, (err, proc) => {
       if (err) {
         console.error("[GA] [PM2] Restart:" + err)
       }
@@ -786,7 +768,7 @@ function doRestart (that) {
 function doClose (that) {
   console.log("[GA] Closing MagicMirror...")
   if (that.EXT.usePM2) {
-    that.lib.childProcess.exec("pm2 stop " + that.EXT.PM2Process, (err,std,sde) => {
+    that.lib.pm2.stop(that.EXT.PM2Process, (err, proc) => {
       if (err) {
         console.error("[GA] [PM2] stop: " + err)
       }

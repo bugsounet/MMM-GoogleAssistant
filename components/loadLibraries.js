@@ -35,6 +35,7 @@ function libraries(that) {
     { "google-auth-library": "GoogleAuthLibrary" },
     { "lodash": "_" },
     { "moment": "moment" },
+    { "pm2": "pm2" },
 
     { "../components/BufferToMP3.js": "BufferToMP3" },
     { "../components/lpcm16.js": "Recorder" },
