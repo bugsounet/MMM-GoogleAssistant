@@ -106,6 +106,7 @@ class GAConfig {
     that.assistantResponse.prepareGA()
     that.assistantResponse.prepareBackground ()
     that.assistantResponse.Loading()
+    that.sendSocketNotification("PRE-INIT", that.helperConfig)
     console.log("[GA] GAConfig Ready")
   }
 
@@ -130,7 +131,6 @@ class GAConfig {
     that.sysInfo.prepare(EXTTranslate)
 
     that.sendSocketNotification("INIT", {
-      config: that.helperConfig,
       DB: that.ExtDB,
       Description: EXTDescription,
       Translate: EXTTranslate,

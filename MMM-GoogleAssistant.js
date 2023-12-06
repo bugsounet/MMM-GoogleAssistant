@@ -116,9 +116,6 @@ Module.register("MMM-GoogleAssistant", {
     this.Hooks.doPlugin(this, "onNotificationReceived", {notification:noti, payload:payload})
     if (noti.startsWith("EXT_")) return this.EXT_NotificationsActions.Actions(this,noti,payload,sender)
     switch (noti) {
-      case "DOM_OBJECTS_CREATED":
-        this.GAConfig.EXT_Config(this)
-        break
       case "GA_ACTIVATE":
         if (payload && payload.type && payload.key) this.activateProcess.assistantActivate(this, payload)
         else this.activateProcess.assistantActivate(this, { type:"MIC" })
@@ -174,6 +171,9 @@ Module.register("MMM-GoogleAssistant", {
           message: this.translate("GAErrorRecipe", { VALUES: payload }),
           type: "error"
         })
+        break
+      case "PRE-INIT":
+        this.GAConfig.EXT_Config(this)
         break
       case "INITIALIZED":
         logGA("Initialized.")

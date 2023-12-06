@@ -14,7 +14,7 @@ module.exports = NodeHelper.create({
 
   socketNotificationReceived: async function (noti, payload) {
     switch (noti) {
-      case "INIT":
+      case "PRE-INIT":
         if (this.alreadyInitialized) {
           console.error("[GA] You can't use MMM-GoogleAssistant in server mode")
           this.sendSocketNotification("ERROR", "You can't use MMM-GoogleAssistant in server mode")
@@ -23,11 +23,13 @@ module.exports = NodeHelper.create({
         }
         if (this.EXT.server) return
         this.alreadyInitialized= true
-        this.config = payload.config
+        this.config = payload
         console.log("[GA] MMM-GoogleAssistant Version:", require('./package.json').version, "rev:", require('./package.json').rev)
         this.config.assistantConfig["modulePath"] = __dirname
-        console.log(payload)
-        parseData.parse(this, payload)
+        parseData.parse(this)
+        break
+      case "INIT":
+        parseData.parseMiddleware(this, payload)
         break
       case "ACTIVATE_ASSISTANT":
         this.lib.activateAssistant.activate(this, payload)

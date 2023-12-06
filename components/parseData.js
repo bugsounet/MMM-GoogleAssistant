@@ -61,7 +61,7 @@ async function init(that) {
   }
 }
 
-async function parse(that, data) {
+async function parse(that) {
   let bugsounet = await _load.libraries(that)
   if (bugsounet) {
     console.error("[GA] [DATA] Warning:", bugsounet, "needed library not loaded !")
@@ -70,12 +70,6 @@ async function parse(that, data) {
   }
   that.lib.configMerge.check(that)
   var error = null
-
-  let Version = {
-    version: require('../package.json').version,
-    rev: require('../package.json').rev,
-    lang: that.config.assistantConfig.lang
-  }
 
   if (!that.lib.fs.existsSync(that.config.assistantConfig["modulePath"] + "/credentials.json")) {
     error = "[FATAL] Assistant: credentials.json file not found !"
@@ -100,7 +94,20 @@ async function parse(that, data) {
 
   that.searchOnGoogle = new that.lib.googleSearch(that.lib)
 
+  that.lib.recipes.load(that, ()=> {
+    console.log("[GA] Recipes loaded!")
+    that.sendSocketNotification("PRE-INIT")//, Version)
+    console.log("[GA] [DATA] Google Assistant is pre-initialized.")
+  })
+}
+
+async function parseMiddleware(that, data) {
   that.EXT.MMConfig = await that.lib.EXTTools.readConfig(that)
+  let Version = {
+    version: require('../package.json').version,
+    rev: require('../package.json').rev,
+    lang: that.config.assistantConfig.lang
+  }
   if (!that.EXT.MMConfig) {
     that.EXT.errorInit = true
     console.error("[GA] Error: MagicMirror config.js file not found!")
@@ -144,13 +151,8 @@ async function parse(that, data) {
   that.lib.Middleware.startServer(that, cb => {
     if (cb) {
       console.log("[GA] Website Ready!")
-      //this.sendSocketNotification("INITIALIZED")
+      that.sendSocketNotification("INITIALIZED", Version)
       //this.lib.GWTools.setActiveVersion("Gateway", this)
-      that.lib.recipes.load(that, ()=> {
-        console.log("[GA] Recipes loaded!")
-        that.sendSocketNotification("INITIALIZED", Version)
-        console.log("[GA] [DATA] Google Assistant is initialized.")
-      })
     }
   })
 }
@@ -163,4 +165,5 @@ function error(that, err, error, details = null) {
 
 exports.init = init
 exports.parse = parse
+exports.parseMiddleware = parseMiddleware
 exports.error = error
