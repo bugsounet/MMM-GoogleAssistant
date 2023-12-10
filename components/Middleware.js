@@ -24,16 +24,6 @@ function initialize(that) {
   that.EXT.EXTInstalled= that.lib.EXTTools.searchInstalled(that)
   log("Find", that.EXT.EXTInstalled.length , "installed plugins in MagicMirror")
   log("Find", that.EXT.EXTConfigured.length, "configured plugins in config file")
-  if (that.EXT.GACheck.version && that.lib.semver.gte(that.EXT.GACheck.version, '5.1.0')) {
-    that.EXT.GACheck.find = true
-    log("Find MMM-GoogleAssistant v" + that.EXT.GACheck.version)
-  }
-  else console.warn("[GA] MMM-GoogleAssistant Not Found!")
-  if (Object.keys(that.EXT.GAConfig).length > 0) {
-    log("Find MMM-GoogleAssistant configured in MagicMirror")
-    that.EXT.GACheck.configured = true
-  }
-  else log("MMM-GoogleAssistant is not configured!")
   log("webviewTag Configured:", that.EXT.webviewTag)
   log("Language set", that.EXT.language)
   createGW(that)

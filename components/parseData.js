@@ -96,8 +96,7 @@ async function parse(that) {
 
   that.lib.recipes.load(that, ()=> {
     console.log("[GA] Recipes loaded!")
-    that.sendSocketNotification("PRE-INIT")//, Version)
-    console.log("[GA] [DATA] Google Assistant is pre-initialized.")
+    that.sendSocketNotification("TESTING")
   })
 }
 
