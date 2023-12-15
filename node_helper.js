@@ -40,6 +40,15 @@ module.exports = NodeHelper.create({
       case "GOOGLESEARCH":
         this.lib.searchOnGoogle.search(this, payload)
         break
+      case "HELLO":
+        console.log("HELLO", payload, this.lib.EXTTools)
+        if (!this.lib.EXTTools) {
+          // library is not loaded ... retry
+          setTimeout(() => { this.socketNotificationReceived("HELLO", payload) }, 1000)
+          return
+        }
+        this.lib.EXTTools.setActiveVersion(payload, this)
+        break
     }
   }
 })
