@@ -34,7 +34,7 @@ function activate (that, payload) {
     if (testing) {
       if (response.error.error) {
         console.error("[GA] [ACTIVATE_ASSISTANT] TESTING RESULT:", response.error)
-      } else logGA("TESTING RESULT: Passed!")
+      } else console.log("[GA] [ACTIVATE_ASSISTANT] TESTING RESULT: Passed!")
       that.sendSocketNotification("ASSISTANT_TESTING_RESULT", response)
       return
     }

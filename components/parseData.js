@@ -68,7 +68,7 @@ async function parse(that) {
     console.error("[GA] [DATA] Try to solve it with `npm run rebuild` in MMM-GoogleAssistant folder")
     return
   }
-  that.lib.configMerge.check(that)
+  await that.lib.configMerge.check(that)
   var error = null
 
   if (!that.lib.fs.existsSync(that.config.assistantConfig["modulePath"] + "/credentials.json")) {
