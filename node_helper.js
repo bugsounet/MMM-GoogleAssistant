@@ -41,7 +41,6 @@ module.exports = NodeHelper.create({
         this.lib.searchOnGoogle.search(this, payload)
         break
       case "HELLO":
-        console.log("HELLO", payload, this.lib.EXTTools)
         if (!this.lib.EXTTools) {
           // library is not loaded ... retry
           setTimeout(() => { this.socketNotificationReceived("HELLO", payload) }, 1000)

@@ -27,7 +27,6 @@ function libraries(that) {
     { "cors": "cors" },
     { "util": "util" },
     { "systeminformation": "si" },
-    { "command-exists": "commandExists" },
     { "readline": "readline" },
     { "stream": "Stream" },
     { "actions-on-google": "actions" },
@@ -83,8 +82,10 @@ function libraries(that) {
       }
     })
     resolve(errors)
-    if (errors) console.error("[GA] [LIB] Some libraries missing!")
-    else console.log("[GA] [LIB] All libraries loaded!")
+    if (errors) {
+      console.error("[GA] [LIB] Some libraries missing!")
+      that.sendSocketNotification("NOT_INITIALIZED", { message: "Loading Error!" })
+    } else console.log("[GA] [LIB] All libraries loaded!")
   })
 }
 
