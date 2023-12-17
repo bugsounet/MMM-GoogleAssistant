@@ -84,7 +84,7 @@ function libraries(that) {
     resolve(errors)
     if (errors) {
       console.error("[GA] [LIB] Some libraries missing!")
-      that.sendSocketNotification("NOT_INITIALIZED", { message: "Loading Error!" })
+      that.sendSocketNotification("NOT_INITIALIZED", { message: "Library loading Error!" })
     } else console.log("[GA] [LIB] All libraries loaded!")
   })
 }
