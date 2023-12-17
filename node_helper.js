@@ -48,6 +48,12 @@ module.exports = NodeHelper.create({
         }
         this.lib.EXTTools.setActiveVersion(payload, this)
         break
+      case "RESTART":
+        this.lib.EXTTools.restartMM(this)
+        break
+      case "CLOSE":
+        this.lib.EXTTools.doClose(this)
+        break
     }
   }
 })
