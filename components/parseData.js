@@ -29,7 +29,6 @@ async function init(that) {
     schemaTranslatation: null,
     language: null,
     webviewTag: false,
-    GACheck: { find: false, version: 0, configured: false, ready: false },
     GAConfig: {},
     HyperWatch: null,
     radio: null,
@@ -123,7 +122,6 @@ async function parseMiddleware(that, data) {
   that.EXT.translation = data.Translate
   that.EXT.schemaTranslatation = data.Schema
   that.EXT.EXTStatus = data.EXTStatus
-  that.EXT.GACheck.version = that.lib.EXTTools.searchGA(that)
   that.EXT.GAConfig = that.lib.EXTTools.getGAConfig(that.EXT.MMConfig)
   that.EXT.homeText = await that.lib.EXTTools.getHomeText(that.lib, that.EXT.language)
   that.EXT.freeteuse = await that.lib.EXTTools.readFreeteuseTV(that)

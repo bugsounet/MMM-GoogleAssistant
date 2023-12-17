@@ -12,7 +12,6 @@ var translation= {}
 var InstEXT = []
 var versionGW = {}
 var webviewTag = false
-var versionGA = {}
 var EXTStatus = {}
 var ErrEXTStatus = 0
 
@@ -33,7 +32,6 @@ async function doTools() {
   $(document).prop('title', translation.Tools)
   webviewTag = await checkWebviewTag()
   EXTStatus = await checkEXTStatus()
-  versionGA = await checkGA()
 
   // live stream every secs of EXT for update
   setInterval(async() => {
@@ -73,7 +71,7 @@ async function doTools() {
           }
         })
         .fail(function(err) {
-          alertify.error("[Delete] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+          alertify.error("[Delete] Server return Error " + err.status + " ("+ err.statusText+")")
         })
     }
 
@@ -113,7 +111,7 @@ async function doTools() {
           }
         })
         .fail(function(err) {
-          alertify.error("[WebviewTag] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+          alertify.error("[WebviewTag] Server return Error " + err.status + " ("+ err.statusText+")")
         })
     }
 
@@ -145,7 +143,7 @@ async function doTools() {
             }
           })
           .fail(function(err) {
-            alertify.error("[Screen] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+            alertify.error("[Screen] Server return Error " + err.status + " ("+ err.statusText+")")
           })
       } else {
         $.post( "/EXT-Screen", { data: "ON" })
@@ -157,7 +155,7 @@ async function doTools() {
             }
           })
           .fail(function(err) {
-          alertify.error("[Screen] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+          alertify.error("[Screen] Server return Error " + err.status + " ("+ err.statusText+")")
         })
       }
     }
@@ -189,7 +187,7 @@ async function doTools() {
           }
         })
         .fail(function(err) {
-          alertify.error("[Alert] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+          alertify.error("[Alert] Server return Error " + err.status + " ("+ err.statusText+")")
         })
     }
   }
@@ -215,7 +213,7 @@ async function doTools() {
           }
         })
         .fail(function(err) {
-          alertify.error("[Volume] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+          alertify.error("[Volume] Server return Error " + err.status + " ("+ err.statusText+")")
         })
     }
   }
@@ -241,7 +239,7 @@ async function doTools() {
           }
         })
         .fail(function(err) {
-          alertify.error("[Volume] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+          alertify.error("[Volume] Server return Error " + err.status + " ("+ err.statusText+")")
         })
     }
   }
@@ -280,7 +278,7 @@ async function doTools() {
           }
         })
         .fail(function(err) {
-          alertify.error("[Updates] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+          alertify.error("[Updates] Server return Error " + err.status + " ("+ err.statusText+")")
         })
     }
   }
@@ -332,7 +330,7 @@ async function doTools() {
           }
         })
         .fail(function(err) {
-          alertify.error("[Spotify] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+          alertify.error("[Spotify] Server return Error " + err.status + " ("+ err.statusText+")")
         })
     }
 
@@ -422,34 +420,32 @@ async function doTools() {
   }
 
   // GoogleAssistant Query
-  if (versionGA.find && versionGA.configured && versionGA.ready) {
-    $('#GoogleAssistant-Text').text(translation.Tools_GoogleAssistant_Text)
-    $('#GoogleAssistant-Query').prop('placeholder', translation.Tools_GoogleAssistant_Query)
-    $('#GoogleAssistant-Send').text(translation.Send)
-    $('#GoogleAssistant-Box').css("display", "block")
-    $('#GoogleAssistant-Query').keyup( function () {
-      if($(this).val().length > 5) {
-         $('#GoogleAssistant-Send').removeClass('disabled')
-      } else {
-         $('#GoogleAssistant-Send').addClass('disabled')
-      }
-    })
-
-    document.getElementById('GoogleAssistant-Send').onclick = function () {
-      $('#GoogleAssistant-Send').addClass('disabled')
-      $.post( "/EXT-GAQuery", { data: $('#GoogleAssistant-Query').val() })
-        .done(function( back ) {
-          $('#GoogleAssistant-Query').val('')
-          if (back == "error") {
-            alertify.error(translation.Warn_Error)
-          } else {
-            alertify.success(translation.RequestDone)
-          }
-        })
-        .fail(function(err) {
-          alertify.error("[GoogleAssistant] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
-        })
+  $('#GoogleAssistant-Text').text(translation.Tools_GoogleAssistant_Text)
+  $('#GoogleAssistant-Query').prop('placeholder', translation.Tools_GoogleAssistant_Query)
+  $('#GoogleAssistant-Send').text(translation.Send)
+  $('#GoogleAssistant-Box').css("display", "block")
+  $('#GoogleAssistant-Query').keyup( function () {
+    if($(this).val().length > 5) {
+       $('#GoogleAssistant-Send').removeClass('disabled')
+    } else {
+       $('#GoogleAssistant-Send').addClass('disabled')
     }
+  })
+
+  document.getElementById('GoogleAssistant-Send').onclick = function () {
+    $('#GoogleAssistant-Send').addClass('disabled')
+    $.post( "/EXT-GAQuery", { data: $('#GoogleAssistant-Query').val() })
+      .done(function( back ) {
+        $('#GoogleAssistant-Query').val('')
+        if (back == "error") {
+          alertify.error(translation.Warn_Error)
+        } else {
+          alertify.success(translation.RequestDone)
+        }
+      })
+      .fail(function(err) {
+        alertify.error("[GoogleAssistant] Server return Error " + err.status + " ("+ err.statusText+")")
+      })
   }
 
   // YouTube Query
@@ -477,7 +473,7 @@ async function doTools() {
           }
         })
         .fail(function(err) {
-          alertify.error("[YouTube] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+          alertify.error("[YouTube] Server return Error " + err.status + " ("+ err.statusText+")")
         })
     }
   }
@@ -513,7 +509,7 @@ async function doTools() {
           }
         })
         .fail(function(err) {
-          alertify.error("[RadioPlayer] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+          alertify.error("[RadioPlayer] Server return Error " + err.status + " ("+ err.statusText+")")
         })
     }
   }
@@ -531,7 +527,7 @@ async function doTools() {
           }
         })
         .fail(function(err) {
-          alertify.error("[FreeboxTV] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+          alertify.error("[FreeboxTV] Server return Error " + err.status + " ("+ err.statusText+")")
         })
     }
   }
@@ -549,7 +545,7 @@ async function doTools() {
         }
       })
       .fail(function(err) {
-        alertify.error("[STOP] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+        alertify.error("[STOP] Server return Error " + err.status + " ("+ err.statusText+")")
       })
   }
 

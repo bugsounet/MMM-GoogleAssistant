@@ -93,7 +93,7 @@ function createGW(that) {
     })
 
     .get("/version" , (req,res) => {
-        let remoteFile = "https://raw.githubusercontent.com/bugsounet/Gateway/master/package.json"
+        let remoteFile = "https://raw.githubusercontent.com/bugsounet/MMM-GoogleAssistant/prod/package.json"
         var result = {
           v: require('../package.json').version,
           rev: require('../package.json').rev,
@@ -646,13 +646,7 @@ function createGW(that) {
       if(req.user) {
         let data = req.body.data
         if (!data) return res.send("error")
-        that.sendSocketNotification("SendNoti", {
-          noti: "GA_ACTIVATE",
-          payload: {
-            type: "TEXT",
-            key: data
-          }
-        })
+        that.sendSocketNotification("REMOTE_ACTIVATE_ASSISTANT", { type: "TEXT", key: data })
         res.send("ok")
       }
       else res.send("error")
@@ -909,13 +903,13 @@ async function startServer(that,callback = () => {}) {
         callback(true)
       })
       .on("error", err => {
-        console.error("[GA] Can't start Gateway server!")
+        console.error("[GA] Can't start web server!")
         console.error("[GA] Error:",err.message)
         that.sendSocketNotification("SendNoti", {
           noti: "EXT_ALERT",
           payload: {
             type: "error",
-            message: "Can't start Gateway server!",
+            message: "Can't start web server!",
             timer: 10000
           }
         })

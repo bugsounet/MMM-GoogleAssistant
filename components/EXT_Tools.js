@@ -2,7 +2,6 @@
 
 const mainBranch = {
   "MMM-GoogleAssistant" : "prod",
-  "Gateway" : "master",
   "EXT-Alert" : "master",
   "EXT-Background" : "master",
   "EXT-Bard" : "main",
@@ -117,19 +116,6 @@ function searchInstalled (that) {
     }
   })
   return Installed.sort()
-}
-
-/** search if GA installed **/
-function searchGA (that) {
-  var version = 0
-  if (that.lib.fs.existsSync(that.lib.path.resolve(__dirname + "/../../MMM-GoogleAssistant/package.json"))) {
-    let name = require((that.lib.path.resolve(__dirname + "/../../MMM-GoogleAssistant/package.json"))).name
-    if (name == "MMM-GoogleAssistant") {
-      version = require((that.lib.path.resolve(__dirname + "/../../MMM-GoogleAssistant/package.json"))).version
-    }
-    else console.warn("[GA] Found: MMM-GoogleAssistant but in package.json name is not the same:", name)
-  }
-  return version
 }
 
 /** timeStamp for backup **/
@@ -791,7 +777,6 @@ exports.configMerge = configMerge
 exports.checkElectronOptions = checkElectronOptions
 exports.doClose = doClose
 exports.restartMM = restartMM
-exports.searchGA = searchGA
 exports.getGAConfig = getGAConfig
 exports.setWebviewTag = setWebviewTag
 exports.deleteBackup = deleteBackup

@@ -203,6 +203,9 @@ Module.register("MMM-GoogleAssistant", {
       case "GOOGLESEARCH-RESULT":
         this.Gateway.sendGoogleResult(this, payload)
         break
+      case "REMOTE_ACTIVATE_ASSISTANT":
+        this.notificationReceived("GA_ACTIVATE", payload)
+        break
     }
   },
 
