@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Gateway</title>
+    <link rel="icon" type="image/png" sizes="42x42" href="../assets/img/Gateway.png">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora&amp;display=swap">
+    <link rel="stylesheet" href="../assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="../assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="../assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="../assets/css/animate.min.css">
+    <link rel="stylesheet" href="/jsoneditor/dist/jsoneditor.min.css">
+    <link rel="stylesheet" href="../assets/css/alertify-bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/alertify.min.css">
+    <link rel="stylesheet" href="../assets/css/Article-Clean.css">
+    <link rel="stylesheet" href="../assets/css/bugsounet.css">
+    <link rel="stylesheet" href="../assets/css/jseditor-dark.css">
+    <link rel="stylesheet" href="../assets/css/Navbar.css">
+    <link rel="stylesheet" href="../assets/css/tools.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion p-0 toggled bg-gradient-left">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0">
+                    <div class="sidebar-brand-icon rotate-n-15"><i class="fab fa-google float-end invisible"></i><svg viewBox="0 0 24 24" class=""><g class=""><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"></path><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"></path><path fill="#FBBC05" d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"></path><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"></path></g></svg></div>
+                    <div class="sidebar-brand-text mx-3"><span>Gateway</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light invisible" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fa fa-home"></i><span id="Home">Home</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/EXT"><i class="fa fa-plug"></i><span id="Plugins">EXT Plugins</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Terminal"><i class="fa fa-terminal"></i><span id="Terminal">Terminal Output</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/MMConfig"><i class="fa fa-code"></i><span id="Configuration">MagicMirror Configuration</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Tools"><i class="fas fa-tools"></i><span id="Tools">Tools</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/System" data-bs-target="/System"><i class="fas fa-microchip"></i><span id="System">System</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Setting"><i class="fa fa-cogs"></i><span id="Setting">Setting</span></a></li>
+                    <li class="nav-item"><a class="nav-link" id="logout" href="/logout"><i class="fa fa-sign-out"></i><span id="Logout">Logout</span></a></li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content" class="bg-google-grey-21">
+                <nav class="navbar navbar-light navbar-expand shadow mb-4 topbar static-top bg-gradient-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <div class="container">
+                            <div class="alert alert-success text-center invisible" role="alert" id="alert"><span id="messageText">Message Testing !</span></div>
+                        </div>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <div class="d-flex flex-row justify-content-lg-center align-items-lg-center">
+                        <h3 data-bss-disabled-mobile="true" class="bounce animated mb-4 text-google-white" id="title">Loading</h3>
+                        <h3 data-bss-disabled-mobile="true" class="bounce animated mb-4">&nbsp;</h3>
+                        <h3 data-bss-disabled-mobile="true" class="bounce animated mb-4 text-google-white" id="EXTName">...</h3>
+                    </div>
+                    <div id="jsoneditor" style="height: 65vh;"></div>
+                    <div class="btn-group invisible" role="group" id="buttonGrp" style="padding: 10px 0px;"><button class="btn btn-success bg-google-green" id="confirm" type="button" style="padding: 6px 12px;border-radius: 5.6px;">Confirm</button><button class="btn btn-warning rubberBand animated bg-google-yellow" id="wait" type="button" style="margin: 0px;border-radius: 5.6px;">Please wait...</button><a class="btn btn-success tada animated bg-google-green" role="button" id="done" style="margin: 0px;border-radius: 5.6px;" href="/Tools">Done</a><a class="btn btn-danger flash animated bg-google-red" role="button" id="error" style="margin: 0px;border-radius: 5.6px;" href="/Terminal">Error</a></div>
+                </div>
+            </div>
+            <footer class="sticky-footer bg-google-grey-21">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © bugsounet.fr 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/bs-init.js"></script>
+    <script src="/EXT_Fetch.js" crossorigin="anonymous"></script>
+    <script src="/EXT_Plugins.js" crossorigin="anonymous"></script>
+    <script src="/jsoneditor/dist/jsoneditor.min.js"></script>
+    <script src="../assets/js/alertify.min.js"></script>
+    <script src="../assets/js/aos.min.js"></script>
+    <script src="../assets/js/pleaserotate.min.js"></script>
+    <script src="../assets/js/theme.js"></script>
+</body>
+
+</html>

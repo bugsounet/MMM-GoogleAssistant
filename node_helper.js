@@ -12,13 +12,24 @@ module.exports = NodeHelper.create({
     parseData.init(this)
   },
 
-  socketNotificationReceived: function (noti, payload) {
+  socketNotificationReceived: async function (noti, payload) {
     switch (noti) {
-      case "INIT":
+      case "PRE-INIT":
+        if (this.alreadyInitialized) {
+          console.error("[GA] You can't use MMM-GoogleAssistant in server mode")
+          this.sendSocketNotification("ERROR", "You can't use MMM-GoogleAssistant in server mode")
+          setTimeout(() => process.exit(), 5000)
+          return
+        }
+        if (this.EXT.server) return
+        this.alreadyInitialized= true
         this.config = payload
         console.log("[GA] MMM-GoogleAssistant Version:", require('./package.json').version, "rev:", require('./package.json').rev)
         this.config.assistantConfig["modulePath"] = __dirname
         parseData.parse(this)
+        break
+      case "INIT":
+        parseData.parseMiddleware(this, payload)
         break
       case "ACTIVATE_ASSISTANT":
         this.lib.activateAssistant.activate(this, payload)
@@ -28,6 +39,14 @@ module.exports = NodeHelper.create({
         break
       case "GOOGLESEARCH":
         this.lib.searchOnGoogle.search(this, payload)
+        break
+      case "HELLO":
+        if (!this.lib.EXTTools) {
+          // library is not loaded ... retry
+          setTimeout(() => { this.socketNotificationReceived("HELLO", payload) }, 1000)
+          return
+        }
+        this.lib.EXTTools.setActiveVersion(payload, this)
         break
     }
   }
