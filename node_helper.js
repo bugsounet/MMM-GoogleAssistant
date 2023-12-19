@@ -54,6 +54,17 @@ module.exports = NodeHelper.create({
       case "CLOSE":
         this.lib.EXTTools.doClose(this)
         break
+      case "EXTStatus":
+        if (this.EXT.initialized && payload) {
+          this.EXT.EXTStatus = payload
+          if (this.SmartHome.use) {
+            if (this.SmartHome.init) {
+              this.lib.Device.refreshData(this)
+              this.lib.homegraph.updateGraph(this)
+            }
+          }
+        }
+        break
     }
   }
 })
