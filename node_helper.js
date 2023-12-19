@@ -65,6 +65,15 @@ module.exports = NodeHelper.create({
           }
         }
         break
+      case "TB_SYSINFO":
+        console.log("TB_SYSINFO")
+        let result = await this.EXT.systemInformation.lib.Get()
+        result.sessionId = payload
+        this.sendSocketNotification("TB_SYSINFO-RESULT", result)
+        break
+      case "GET-SYSINFO":
+        this.sendSocketNotification("SYSINFO-RESULT", await this.EXT.systemInformation.lib.Get())
+        break
     }
   }
 })
