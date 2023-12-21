@@ -43,7 +43,7 @@
     "actions-on-google": "^3.0.0",
     "cheerio": "^1.0.0-rc.12",
     "cli-spinner": "^0.2.10",
-    "esbuild": "^0.19.9",
+    "esbuild": "^0.19.10",
     "express-session": "^1.17.2",
     "glob": "^10.3.10",
     "google-auth-library": "^9.4.1",
