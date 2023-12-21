@@ -1,7 +1,7 @@
 var log = (...args) => { /* do nothing */ }
 
 function send(that, name, values) {
-  if (that.config.debug) log = (...args) => { console.log("[GATEWAY] [SMARTHOME] [CALLBACK]", ...args) }
+  if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME] [CALLBACK]", ...args) }
   switch (name) {
     case "screen":
       log("Send screen:", values)

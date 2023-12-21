@@ -4,7 +4,7 @@ var log = (...args) => { /* do nothing */ }
 function initialize(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME]", ...args) }
   let SHWebsiteDir =  that.lib.path.resolve(__dirname + "/../website/SmartHome")
-  let tokensDir = that.lib.path.resolve(__dirname + "/../tokens/")
+  let tokensDir = that.lib.path.resolve(__dirname + "/../website/tokens/")
   that.SmartHome.actions = that.lib.actions.smarthome()
 
   var Path = that.path
@@ -34,7 +34,7 @@ function initialize(that) {
     .post("/smarthome/login/", (req,res) => {
       let form = req.body
       let args = req.query
-      if (form["username"] && form["password"] && args["state"] && args["response_type"] && args["response_type"] == "code" && args["client_id"] == that.config.CLIENT_ID){
+      if (form["username"] && form["password"] && args["state"] && args["response_type"] && args["response_type"] == "code" && args["client_id"] == that.config.website.CLIENT_ID){
         let user = that.lib.SHTools.get_user(that,form["username"], form["password"])
         if (!user) return res.sendFile(SHWebsiteDir+ "/login.html")
         that.SmartHome.last_code = that.lib.SHTools.random_string(8)

@@ -3,19 +3,19 @@
 var log = () => { /* do nothing */ }
 
 function init(that) {
-  if (that.config.debug) log = (...args) => { console.log("[GATEWAY] [SMARTHOME] [HOMEGRAPH]", ...args) }
-  let file = that.lib.path.resolve(__dirname, "../credentials.json")
+  if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME] [HOMEGRAPH]", ...args) }
+  let file = that.lib.path.resolve(__dirname, "../smarthome.json")
   that.lib.fs.readFile(file, 'utf8', (err, data) => {
     let content
     if (!data) {
-      console.error("[GATEWAY] [SMARTHOME] [HOMEGRAPH] credentials.json: file not found!")
+      console.error("[GA] [SMARTHOME] [HOMEGRAPH] credentials.json: file not found!")
       that.lib.callback.send(that, "Alert", "[HOMEGRAPH] Hey! credentials.json: file not found!")
       return
     }
     try {
       content = JSON.parse(data)
     } catch (e) {
-      console.error("[GATEWAY] [SMARTHOME] [HOMEGRAPH] credentials.json: corrupt!")
+      console.error("[GA] [SMARTHOME] [HOMEGRAPH] credentials.json: corrupt!")
       that.lib.callback.send(that, "Alert", "[HOMEGRAPH] credentials.json: corrupt!")
       return
     }
@@ -28,7 +28,7 @@ function init(that) {
         })
       })
     } else {
-      console.error("[GATEWAY] [SMARTHOME] [HOMEGRAPH] credentials.json: bad format!")
+      console.error("[GA] [SMARTHOME] [HOMEGRAPH] credentials.json: bad format!")
       that.lib.callback.send(that, "Alert", "[HOMEGRAPH] credentials.json: bad format!")
     }
   })
@@ -48,10 +48,10 @@ async function requestSync(that) {
     log("[RequestSync] Done.", res.statusText)
   } catch (e) {
     if (e.code) {
-      console.error("[GATEWAY] [SMARTHOME] [HOMEGRAPH] [RequestSync] Error:", e.code , e.errors)
+      console.error("[GA] [SMARTHOME] [HOMEGRAPH] [RequestSync] Error:", e.code , e.errors)
       that.lib.callback.send(that, "Alert", "[requestSync] Error " + e.code + " - " + e.errors[0].message +" ("+ e.errors[0].reason +")")
     } else {
-      console.error("[GATEWAY] [SMARTHOME] [HOMEGRAPH] [RequestSync]", e.toString()) 
+      console.error("[GA] [SMARTHOME] [HOMEGRAPH] [RequestSync]", e.toString())
       that.lib.callback.send(that, "Alert", "[requestSync] " + e.toString())
     }
   }
@@ -61,7 +61,7 @@ async function queryGraph(that) {
   if (!that.SmartHome.homegraph) return
   let query = {
     requestBody: {
-      requestId: "Gateway-"+Date.now(),
+      requestId: "GA-"+Date.now(),
       agentUserId: that.SmartHome.user.user,
       inputs: [
         {
@@ -80,7 +80,7 @@ async function queryGraph(that) {
     const res = await that.SmartHome.homegraph.devices.query(query)
     log("[QueryGraph]", JSON.stringify(res.data))
   } catch (e) { 
-    console.log("[GATEWAY] [SMARTHOME] [HOMEGRAPH] [QueryGraph]", e.code ? e.code : e, e.errors? e.errors : "")
+    console.log("[GA] [SMARTHOME] [HOMEGRAPH] [QueryGraph]", e.code ? e.code : e, e.errors? e.errors : "")
   }
 }
 
@@ -114,7 +114,7 @@ async function updateGraph(that) {
     let body = {
       requestBody: {
         agentUserId: that.SmartHome.user.user,
-        requestId: "Gateway-"+Date.now(),
+        requestId: "GA-"+Date.now(),
         payload: {
           devices: {
             states: {
@@ -128,7 +128,7 @@ async function updateGraph(that) {
       const res = await that.SmartHome.homegraph.devices.reportStateAndNotification(body)
       if (res.status != 200) log("[ReportState]", res.data, state, res.status, res.statusText)
     } catch (e) {
-      console.error("[GATEWAY] [SMARTHOME] [HOMEGRAPH] [ReportState]", e.code ? e.code : e, e.errors? e.errors : "")
+      console.error("[GA] [SMARTHOME] [HOMEGRAPH] [ReportState]", e.code ? e.code : e, e.errors? e.errors : "")
     }
   }
 }

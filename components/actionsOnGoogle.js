@@ -3,13 +3,13 @@
 var log = (...args) => { /* do nothing */ }
 
 function actions (that) {
-  if (that.config.debug) log = (...args) => { console.log("[GATEWAY] [SMARTHOME] [ACTIONS]", ...args) }
+  if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME] [ACTIONS]", ...args) }
 
   that.SmartHome.actions.onSync((body, headers) => {
     log("[SYNC] Request:", JSON.stringify(body))
     let user_id = that.lib.SHTools.check_token(that,headers)
     if (!user_id) {
-      console.error("[GATEWAY] [SMARTHOME] [ACTIONS] [SYNC] Error: user_id not found!")
+      console.error("[GA] [SMARTHOME] [ACTIONS] [SYNC] Error: user_id not found!")
       return {} // maybe return error ??
     }
     var result = {}
@@ -26,7 +26,7 @@ function actions (that) {
     log("[EXECUTE] Request:", JSON.stringify(body))
     let user_id = that.lib.SHTools.check_token(that,headers)
     if (!user_id) {
-      console.error("[SMARTHOME] [ACTIONS] [EXECUTE] Error: user_id not found!")
+      console.error("[GA] [SMARTHOME] [ACTIONS] [EXECUTE] Error: user_id not found!")
       return {} // maybe return error ??
     }
     var result = {}
@@ -47,7 +47,7 @@ function actions (that) {
     log("[QUERY] Request:", JSON.stringify(body))
     let user_id = that.lib.SHTools.check_token(that,headers)
     if (!user_id) {
-      console.error("[SMARTHOME] [ACTIONS] [QUERY] Error: user_id not found!")
+      console.error("[GA] [SMARTHOME] [ACTIONS] [QUERY] Error: user_id not found!")
       return {} // maybe return error ??
     }
     var result = {}
