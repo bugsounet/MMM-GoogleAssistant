@@ -141,6 +141,7 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   socketNotificationReceived: function(noti, payload) {
+    if (noti.startsWith("CB_")) return this.EXT_Callbacks.cb(this,noti,payload)
     switch(noti) {
       case "LOAD_RECIPE":
         this.Hooks.parseLoadedRecipe(payload)
