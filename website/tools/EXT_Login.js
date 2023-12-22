@@ -45,7 +45,7 @@ function doLogin() {
         }
       })
       .fail(function(err) {
-        alertify.error("[Login] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+        alertify.error("[Login] Server return Error " + err.status + " ("+ err.statusText+")")
         console.log(err)
       })
     })
