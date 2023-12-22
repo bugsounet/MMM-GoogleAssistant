@@ -144,9 +144,9 @@ class EXT_OthersRules {
     that.awaitGATimer = null
     if (that.EXT.GA_Ready) {
       let checkTB = await this.checkModulesTB()
-      if (checkTB) return that.socketNotificationReceived("ERROR", "You can't start Gateway with MMM-TelegramBot and EXT-TelegramBot!")
+      if (checkTB) return that.socketNotificationReceived("ERROR", "You can't start MMM-GoogleAssistant with MMM-TelegramBot and EXT-TelegramBot!")
       let checkScreen = await this.checkModulePir()
-      if (checkScreen) return that.socketNotificationReceived("ERROR", "You can't start Gateway with MMM-Pir. Please use EXT-Screen and EXT-Pir")
+      if (checkScreen) return that.socketNotificationReceived("ERROR", "You can't start MMM-GoogleAssistant with MMM-Pir. Please use EXT-Screen and EXT-Pir")
       logGA("[EXT_OthersRules] I'm Ready!")
       that.EXT.GW_Ready = true
       that.sendNotification("GW_READY")

@@ -29,13 +29,13 @@ function initialize(that) {
   createGW(that)
 }
 
-/** Gateway Middleware **/
+/** GA Middleware **/
 function createGW(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA]", ...args) }
 
   var Path = that.path
   var urlencodedParser = that.lib.bodyParser.urlencoded({ extended: true })
-  log("Create Gateway needed routes...")
+  log("Create website needed routes...")
   that.EXT.app.use(that.lib.session({
     secret: 'some-secret',
     saveUninitialized: false,
@@ -406,7 +406,7 @@ function createGW(that) {
     .get("/EXTGetDefaultConfig" , (req,res) => {
       if (req.user) {
         if(!req.query.ext) return res.status(404).sendFile(Path+ "/website/Gateway/404.html")
-        let data = require("../config/"+req.query.ext+"/config.js")
+        let data = require("../website/config/"+req.query.ext+"/config.js")
         res.send(data.default)
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
@@ -415,7 +415,7 @@ function createGW(that) {
     .get("/EXTGetDefaultTemplate" , (req,res) => {
       if (req.user) {
         if(!req.query.ext) return res.status(404).sendFile(Path+ "/website/Gateway/404.html")
-        let data = require("../config/"+req.query.ext+"/config.js")
+        let data = require("../website/config/"+req.query.ext+"/config.js")
         data.schema = that.lib.EXTTools.makeSchemaTranslate(data.schema, that.EXT.schemaTranslatation)
         res.send(data.schema)
       }
@@ -583,7 +583,7 @@ function createGW(that) {
         let data = JSON.parse(req.body.data)
         var NewConfig = await that.lib.EXTTools.configAddOrModify(data, that.EXT.MMConfig)
         var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,NewConfig)
-        console.log("[GA] Write Gateway config result:", resultSaveConfig)
+        console.log("[GA] Write GA config result:", resultSaveConfig)
         res.send(resultSaveConfig)
         if (resultSaveConfig.done) {
           that.EXT.MMConfig = await that.lib.EXTTools.readConfig(that)
@@ -602,7 +602,7 @@ function createGW(that) {
         console.log("[GA] Receiving setWebviewTag demand...")
         let NewConfig = await that.lib.EXTTools.setWebviewTag(that.EXT.MMConfig)
         var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,NewConfig)
-        console.log("[GA] Write Gateway webview config result:", resultSaveConfig)
+        console.log("[GA] Write GA webview config result:", resultSaveConfig)
         res.send(resultSaveConfig)
         if (resultSaveConfig.done) {
           that.EXT.webviewTag = true

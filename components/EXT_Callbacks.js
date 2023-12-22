@@ -51,7 +51,7 @@ class EXT_Callbacks {
         that.sendNotification("EXT_ALERT", {
           message: "Hey, I'm here !",
           type: "information",
-          sound: "modules/Gateway/tools/locator.mp3",
+          sound: "modules/MMM-GoogleAssistant/website/tools/locator.mp3",
           timer: 19000
         })
         break

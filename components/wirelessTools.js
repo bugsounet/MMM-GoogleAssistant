@@ -21,7 +21,7 @@
  *
  */
 
-/** Modified by @bugsounet for Gateway using **/
+/** Modified by @bugsounet for MMM-GoogleAssistant using **/
 
 var child_process = require('child_process');
 
