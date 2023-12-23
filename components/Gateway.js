@@ -1,6 +1,6 @@
 class Gateway {
   constructor () {
-    console.log("[GA] Tools Ready")
+    console.log("[GA] Tools Ready (Gateway)")
   }
 
   /** Send needed part of response to Gateway **/
@@ -11,14 +11,14 @@ class Gateway {
         "urls": response.screen.links,
         "youtube": null
       }
-      logGA("Send response to Gateway:", opt)
-      that.sendNotification("EXT_GATEWAY", opt)
+      logGA("Send response:", opt)
+      that.notificationReceived("EXT_GATEWAY", opt)
     } else if (response.text) {
       if (that.AssistantSearch.GoogleSearch(response.text)) {
         that.sendSocketNotification("GOOGLESEARCH", response.transcription.transcription)
       } else if (that.AssistantSearch.YouTubeSearch(response.text)) {
-        logGA("Send response YouTube to Gateway:", response.transcription.transcription)
-        that.sendNotification("EXT_GATEWAY", {
+        logGA("Send response YouTube:", response.transcription.transcription)
+        that.notificationReceived("EXT_GATEWAY", {
           "photos": [],
           "urls": [],
           "youtube": response.transcription.transcription
@@ -29,8 +29,8 @@ class Gateway {
 
   sendGoogleResult(that, link) {
     if (!link) return console.error("[GA] No link to open!")
-    logGA("Send response to Gateway:", link)
-    that.sendNotification("EXT_GATEWAY", {
+    logGA("Send response:", link)
+    that.notificationReceived("EXT_GATEWAY", {
       "photos": [],
       "urls": [ link ],
       "youtube": null
@@ -38,6 +38,6 @@ class Gateway {
   }
 
   sendBardQuery(that, transcription) {
-    that.sendNotification("EXT_BARD-QUERY", transcription)
+    that.notificationReceived("EXT_BARD-QUERY", transcription)
   }
 }
