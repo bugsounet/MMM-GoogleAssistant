@@ -142,7 +142,7 @@ async function EditMMConfigJSEditor() {
         }
       })
       .fail(function(err) {
-        alertify.error("[loadBackup] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+        alertify.error("[loadBackup] Server return Error " + err.status + " ("+ err.statusText+")")
       })
   }
   document.getElementById('save').onclick = function () {
@@ -166,7 +166,7 @@ async function EditMMConfigJSEditor() {
         }
       })
       .fail(function(err) {
-        alertify.error("[writeConfig] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+        alertify.error("[writeConfig] Server return Error " + err.status + " ("+ err.statusText+")")
       })
   }
   FileReaderJS.setupInput(document.getElementById('fileToLoad'), {
@@ -185,14 +185,14 @@ async function EditMMConfigJSEditor() {
               }
             })
             .fail(function(err) {
-              alertify.error("[readExternalBackup] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+              alertify.error("[readExternalBackup] Server return Error " + err.status + " ("+ err.statusText+")")
             })
         }
       }
     }
   })
   document.getElementById('externalSave').onclick = function () {
-    alertify.prompt( 'Gateway', 'Save config file as:', 'config',
+    alertify.prompt( 'MMM-GoogleAssistant', 'Save config file as:', 'config',
       function(evt, value) {
         let fileName = value
         if (fileName.indexOf(".") === -1) {
@@ -218,7 +218,7 @@ async function EditMMConfigJSEditor() {
               }
             })
             .fail(function(err) {
-              alertify.error("[readExternalBackup] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+              alertify.error("[readExternalBackup] Server return Error " + err.status + " ("+ err.statusText+")")
             })
       },
       function() {

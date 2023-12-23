@@ -40,8 +40,7 @@ function doLogin() {
           $("#Login-submit").addClass('disabled')
         }
         else {
-          alertify.success(translation.Login_Welcome)
-          setTimeout( () => { $(location).attr('href',"/") } , 2000 )
+          $(location).attr('href',"/")
         }
       })
       .fail(function(err) {

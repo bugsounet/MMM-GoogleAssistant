@@ -106,7 +106,7 @@ function doDelete() {
   fitAddonDelete.fit()
 
   socketDelete.on("connect", () => {
-    termDelete.write("\x1B[1;3;31mGateway v" + versionGW.v + " (" + versionGW.rev + "." + versionGW.lang +")\x1B[0m \r\n\n")
+    termDelete.write("\x1B[1;3;31mMMM-GoogleAssistant v" + versionGW.v + " (" + versionGW.rev + "." + versionGW.lang +")\x1B[0m \r\n\n")
   });
 
   socketDelete.on("disconnect", () => {
@@ -137,7 +137,7 @@ function doDelete() {
         setTimeout(() => socketDelete.close(), 500)
       })
       .fail(function(err) {
-        alertify.error("[doDelete] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+        alertify.error("[doDelete] Server return Error " + err.status + " ("+ err.statusText+")")
       })
     })
   }
@@ -155,7 +155,7 @@ function doInstall() {
   fitAddonInstall.fit()
 
   socketInstall.on("connect", () => {
-    termInstall.write("\x1B[1;3;31mGateway v" + versionGW.v + " (" + versionGW.rev + "." + versionGW.lang +")\x1B[0m \r\n\n")
+    termInstall.write("\x1B[1;3;31mMMM-GoogleAssistant v" + versionGW.v + " (" + versionGW.rev + "." + versionGW.lang +")\x1B[0m \r\n\n")
   });
 
   socketInstall.io.on("error", (data) => {
@@ -186,7 +186,7 @@ function doInstall() {
         setTimeout(() => socketInstall.close(), 500)
       })
       .fail(function(err) {
-        alertify.error("[doInstall] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+        alertify.error("[doInstall] Server return Error " + err.status + " ("+ err.statusText+")")
       })
     })
   }
@@ -349,7 +349,7 @@ async function EXTConfigJSEditor() {
         }
       })
       .fail(function(err) {
-        alertify.error("[writeEXT] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+        alertify.error("[writeEXT] Server return Error " + err.status + " ("+ err.statusText+")")
       })
   }
 }
@@ -452,7 +452,7 @@ async function EXTModifyConfigJSEditor() {
         }
       })
       .fail(function(err) {
-        alertify.error("[writeEXT] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+        alertify.error("[writeEXT] Server return Error " + err.status + " ("+ err.statusText+")")
       })
   }
   document.getElementById('loadDefault').onclick = async function () {
@@ -517,7 +517,7 @@ async function EXTDeleteConfigJSEditor() {
         }
       })
       .fail(function(err) {
-        alertify.error("[deleteEXT] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+        alertify.error("[deleteEXT] Server return Error " + err.status + " ("+ err.statusText+")")
       })
   }
 }

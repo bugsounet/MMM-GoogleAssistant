@@ -150,7 +150,7 @@ function GatewaySetting() {
         }
       })
       .fail(function(err) {
-        alertify.error("[saveSetting] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+        alertify.error("[saveSetting] Server return Error " + err.status + " ("+ err.statusText+")")
       })
   })
 }

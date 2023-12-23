@@ -7,7 +7,7 @@ function getGatewaySetting() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[getGatewaySetting] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[getGatewaySetting] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -19,7 +19,7 @@ function getHomeText() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[homeText] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[homeText] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -32,7 +32,7 @@ function getGatewayVersion() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[getGatewayVersion] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[getGatewayVersion] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -45,7 +45,7 @@ function loadPluginCurrentConfig(plugin) {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[loadPluginCurrentConfig] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[loadPluginCurrentConfig] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -57,7 +57,7 @@ function checkSystem() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[systemInformation] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[systemInformation] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -70,7 +70,7 @@ function checkWebviewTag() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[checkWebviewTag] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[checkWebviewTag] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -83,7 +83,7 @@ function checkGA() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[checkGA] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[checkGA] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -116,7 +116,7 @@ function loadTranslation() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[loadTranslation] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[loadTranslation] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -129,7 +129,7 @@ function loadDataAllEXT() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[loadDataAllEXT] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[loadDataAllEXT] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -142,7 +142,7 @@ function loadDataConfiguredEXT() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[loadDataConfiguredEXT] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[loadDataConfiguredEXT] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -155,7 +155,7 @@ function loadDataInstalledEXT() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[loadDataInstalledEXT] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[loadDataInstalledEXT] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -168,7 +168,7 @@ function loadDataDescriptionEXT() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[loadDataDescriptionEXT] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[loadDataDescriptionEXT] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -181,7 +181,7 @@ function loadMMConfig() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[loadMMConfig] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[loadMMConfig] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -194,7 +194,7 @@ function loadPluginConfig(plugin) {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[loadPluginConfig] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[loadPluginConfig] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -207,7 +207,7 @@ function loadPluginTemplate(plugin) {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[loadPluginTemplate] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[loadPluginTemplate] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -220,7 +220,7 @@ function loadBackupConfig(file) {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[loadBackupConfig] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[loadBackupConfig] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -233,7 +233,7 @@ function loadBackupNames() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[loadBackupNames] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[loadBackupNames] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -247,7 +247,7 @@ function loadRadio() {
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
       if (err.status == 404) resolve([])
-      else alertify.warning("[loadRadio] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[loadRadio] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }
@@ -346,7 +346,7 @@ function getActiveVersion() {
     })
     .fail(function(err) {
       if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[getActiveVersion] Gateway Server return Error " + err.status + " ("+ err.statusText+")")
+      else alertify.warning("[getActiveVersion] Server return Error " + err.status + " ("+ err.statusText+")")
     })
   })
 }

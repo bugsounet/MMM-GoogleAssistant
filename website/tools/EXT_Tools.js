@@ -260,7 +260,7 @@ async function doTools() {
         $('#Update-Box').css("display", "block")
         for (const [key, value] of Object.entries(updateModules)) {
           if($("#" + key).length == 0) $("#Update-Modules-Box").append("<br><span id='"+key + "'>" + key + "</span>")
-          if (key.startsWith("EXT-") || key == "Gateway" || key == "MMM-GoogleAssistant") ++needUpdate
+          if (key.startsWith("EXT-") || key == "MMM-GoogleAssistant") ++needUpdate
         }
         $('#Update-Modules-Box').css("display", "block")
       }
