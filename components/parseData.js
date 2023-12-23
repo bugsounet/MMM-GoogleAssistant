@@ -6,12 +6,6 @@ var _load = require("../components/loadLibraries.js")
 async function init(that) {
   that.lib = { error: 0 }
   that.config = {}
-  that.PLATFORM_RECORDER = new Map()
-  that.PLATFORM_RECORDER.set("linux", "arecord")
-  that.PLATFORM_RECORDER.set("mac", "sox")
-  that.PLATFORM_RECORDER.set("raspberry-pi", "arecord")
-  that.PLATFORM_RECORDER.set("windows", "sox")
-
   that.MMVersion = global.version
   that.root_path = global.root_path
   that.EXT = {
@@ -79,17 +73,7 @@ async function parse(that) {
     return this.error(that, error, {message: "GAErrorTokenGA"})
   }
 
-  let platform
-  try {
-    platform = that.lib.platform.getPlatform(that)
-  } catch (error) {
-    console.error("[GA] [DATA] Google Assistant does not support this platform. Supported platforms include macOS (x86_64), Windows (x86_64), Linux (x86_64), and Raspberry Pi")
-    process.exit(1)
-    return
-  }
-  let recorderType = that.PLATFORM_RECORDER.get(platform)
-  console.log(`[GA] [DATA] Platform: '${platform}'; attempting to use '${recorderType}' to access microphone ...`)
-  that.config.micConfig.recorder= recorderType
+  that.config.micConfig.recorder= "arecord"
 
   that.searchOnGoogle = new that.lib.googleSearch(that.lib)
 

@@ -41,7 +41,6 @@ function libraries(that) {
     { "../components/googleAssistant": "GoogleAssistant"},
     { "../components/assistantConverse.js": "Assistant" },
     { "../components/screenParser.js" : "ScreenParser" },
-    { "../components/platform.js": "platform" },
     { "../components/shellExec.js": "shellExec" },
     { "../components/configMerge.js": "configMerge" },
     { "../components/googleSearch.js": "googleSearch" },
