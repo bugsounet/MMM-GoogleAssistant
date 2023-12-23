@@ -78,7 +78,7 @@ function createGW(that) {
     .use('/EXT_MMConfig.js', that.lib.express.static(Path + '/website/tools/EXT_MMConfig.js'))
     .use('/EXT_Tools.js', that.lib.express.static(Path + '/website/tools/EXT_Tools.js'))
     .use('/EXT_System.js', that.lib.express.static(Path + '/website/tools/EXT_System.js'))
-    .use('/EXT_Setting.js', that.lib.express.static(Path + '/website/tools/EXT_Setting.js'))
+    .use('/EXT_About.js', that.lib.express.static(Path + '/website/tools/EXT_About.js'))
     .use('/EXT_Restart.js', that.lib.express.static(Path + '/website/tools/EXT_Restart.js'))
     .use('/EXT_Die.js', that.lib.express.static(Path + '/website/tools/EXT_Die.js'))
     .use('/EXT_Fetch.js', that.lib.express.static(Path + '/website/tools/EXT_Fetch.js'))
@@ -475,8 +475,8 @@ function createGW(that) {
       } else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
     })
 
-    .get("/Setting" , (req,res) => {
-      if (req.user) res.sendFile(Path+ "/website/Gateway/setting.html")
+    .get("/About" , (req,res) => {
+      if (req.user) res.sendFile(Path+ "/website/Gateway/about.html")
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
     })
 
