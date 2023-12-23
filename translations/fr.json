@@ -26,14 +26,14 @@
   "GW_Rotate_Msg": "Veuillez faire pivoter votre appareil",
   "GW_Rotate_Continue": "Pour continuer...",
 
-  "GW_Login_Welcome": "Bienvenue sur Gateway !",
+  "GW_Login_Welcome": "Bienvenue",
   "GW_Login_Username": "Entrez votre nom d'utilisateur...",
   "GW_Login_Password": "Mot de passe",
   "GW_Login_Error": "Erreur: L'identification a échouée.",
   "GW_Login_Login": "Se Connecter",
 
   "GW_Home": "Accueil",
-  "GW_Home_Welcome": "Bienvenue sur l'application Gateway",
+  "GW_Home_Welcome": "Bienvenue sur MMM-GoogleAssistant",
 
   "GW_Plugins": "Gestionnaire de plugins",
   "GW_Plugins_Welcome": "Gestionnaire de plugins EXT",
@@ -69,7 +69,7 @@
 
   "GW_Terminal": "Visionner le Terminal",
   "GW_TerminalOpen": "Ouvrir un Terminal",
-  "GW_TerminalGW": "Gateway Terminal",
+  "GW_TerminalGW": "MMM-GoogleAssistant Terminal",
 
   "GW_Configuration": "Config. de MagicMirror",
   "GW_Configuration_Welcome": "Configuration actuelle de MagicMirror",
@@ -78,15 +78,15 @@
   "GW_Configuration_Edit_AcualConfig": "Configuration Actuelle",
   
   "GW_Tools": "Outils",
-  "GW_Tools_Welcome": "Boite à outils GW",
-  "GW_Tools_subTitle": "Gateway peut vous offrir plus de contrôle ! (Les fonctions disponibles sont uniquement affichées)",
+  "GW_Tools_Welcome": "Boite à outils",
+  "GW_Tools_subTitle": "MMM-GoogleAssisztant peut vous offrir plus de contrôle ! (Les fonctions disponibles sont uniquement affichées)",
   "GW_Tools_Restart": "Redémarrer MagicMirror",
   "GW_Tools_Restart_Text1": "Veuillez patienter...",
   "GW_Tools_Restart_Text2": "Redémarrage",
   "GW_Tools_Die": "Arrêter MagicMirror",
   "GW_Tools_Die_Text1": "À bientôt !",
   "GW_Tools_Die_Text2": "Pour une meilleure utilisation...",
-  "GW_Tools_Die_Text3": "de Gateway et de MagicMirror!",
+  "GW_Tools_Die_Text3": "de MMM-GoogleAssistant et de MagicMirror!",
   "GW_Tools_Webview_Header": "Modifier les options d'électron pour une utilisation correcte avec les plugins EXT",
   "GW_Tools_Webview_Needed": "Nécessaire pour:",
   "GW_Tools_Backup_Found": "sauvegardes trouvées",
@@ -234,7 +234,7 @@
   "EXT-Bard": "Ce plugin permet d'utiliser Google Bard AI",
   "EXT-Bring": "Affiche votre liste de courses actuelle de Bring!",
   "EXT-Browser": "Affiche n'importe quelle page Internet comme un vrai navigateur en plein écran",
-  "EXT-Detector": "Écouteur multi-mots clés pour activer MMM-GoogleAssistant v5",
+  "EXT-Detector": "Écouteur multi-mots clés pour activer MMM-GoogleAssistant",
   "EXT-FreeboxTV": "Lecteur des chaines de TV du fournisseur d'accès Internet français: Free",
   "EXT-GooglePhotos": "Affiche votre répertoire d'albums avec l'API Google photos en arrière-plan ou sur une position defini de MagicMirror",
   "EXT-Governor": "Le gouverneur du processeur permet au système d'exploitation d'augmenter ou de réduire la fréquence du processeur afin d'économiser de l'énergie ou d'améliorer les performances.",
