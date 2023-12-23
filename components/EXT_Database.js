@@ -9,7 +9,7 @@ class EXT_Database {
     let db = [
       "EXT-Alert",
       "EXT-Background",
-      "EXT-Bard",
+      //"EXT-Bard",
       "EXT-Bring",
       "EXT-Browser",
       "EXT-Detector",
