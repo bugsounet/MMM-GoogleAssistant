@@ -320,7 +320,7 @@ function doTranslateNavBar() {
   $('#Terminal').text(translation.Terminal)
   $('#Configuration').text(translation.Configuration)
   $('#Tools').text(translation.Tools)
-  $('#Setting').text(translation.Setting)
+  $('#About').text(translation.About)
   $('#System').text(translation.System)
   $('#Logout').text(translation.Logout)
 
