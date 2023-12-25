@@ -53,7 +53,7 @@
     "lodash": "^4.17.21",
     "magicmirror-rebuild": "^1.0.9",
     "mkdirp": "^3.0.1",
-    "node-html-parser": "^6.1.11",
+    "node-html-parser": "^6.1.12",
     "node-pty": "^1.0.0",
     "open": "^9.1.0",
     "passport": "^0.7.0",
