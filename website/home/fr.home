@@ -1,18 +1,20 @@
-<p>Bonjour, bienvenue sur l'application Gateway v3!</p>
+<p>Bonjour, bienvenue MMM-GoogleAssistant</p>
 <p>Cet outil va aider à configurer ou à gérer votre miroir</p>
 <p>Que peut vraiment faire cet outil ?</p>
 <ul>
-  <li>Permet d'installer / supprimer les plugins EXTs</li>
-  <li>Permet de configurer/modifier votre EXT avec un exemple</li>
-  <li>Permet de configurer MagicMirror</li>
+  <li>Permet d'avoir un contrôle à distance (localement ou internet)</li>
+  <li>Permet d'installer/supprimer les plugins EXTs</li>
+  <li>Permet de configurer/modifier votre EXT avec un exemple de configuration</li>
+  <li>Permet de configurer MagicMirror²</li>
   <li>Permet de créer une sauvegarde de votre fichier de configuration à chaque modification</li>
-  <li>Affichage des journaux Magic Mirror en temps réel</li>
-  <li>Vous permet de vous connecter a votre système grace au terminal intégré</li>
-  <li>Vous permet de redémarrer ou d'arrêter manuellement MagicMirror</li>
-  <li>Vous permet d'éteindre ou d'allumer votre écran</li>
+  <li>Permet d'afficher des journaux MagicMirror² en temps réel</li>
+  <li>Permet de vous connecter à votre système grace au terminal intégré</li>
+  <li>Permet de redémarrer ou d'arrêter manuellement MagicMirror²</li>
+  <li>Permet d'éteindre ou d'allumer votre écran</li>
+  <li>Permet d'afficher divers informations système</li>
   <li>...</li>
 </ul>
-<p>Gateway est en cours de traduction dans plusieures langues pour une meilleure experience d'utilisation</p>
+<br>
 <p>Merci aux traducteurs:</p>
 <ul>
   <li>@CalcU (Espagnol)</li>
