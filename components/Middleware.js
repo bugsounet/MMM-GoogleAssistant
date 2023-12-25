@@ -664,7 +664,7 @@ function createGW(that) {
             sender: req.user ? req.user.username : 'MMM-GoogleAssistant',
             timer: 30 * 1000,
             sound: "modules/MMM-GoogleAssistant/website/tools/message.mp3",
-            icon: "modules/MMM-GoogleAssistant/website/assets/img/gateway.jpg"
+            icon: "modules/MMM-GoogleAssistant/website/assets/img/GA_Small.png"
           }
         })
         res.send("ok")

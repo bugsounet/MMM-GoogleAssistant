@@ -213,6 +213,14 @@ Module.register("MMM-GoogleAssistant", {
       case "SYSINFO-RESULT":
         this.sysInfo.updateSystemData(payload)
         break
+      case "SendNoti":
+        if (payload.payload && payload.noti) this.sendNotification(payload.noti, payload.payload)
+        else this.sendNotification(payload)
+        break
+      case "SendStop":
+        this.bardMode = false
+        this.EXT_NotificationsActions.Actions(this, "EXT_STOP")
+        break
     }
   },
 
