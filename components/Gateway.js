@@ -36,8 +36,4 @@ class Gateway {
       "youtube": null
     })
   }
-
-  sendBardQuery(that, transcription) {
-    that.notificationReceived("EXT_BARD-QUERY", transcription)
-  }
 }

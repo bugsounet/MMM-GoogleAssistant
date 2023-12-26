@@ -17,7 +17,6 @@ class GAConfig {
 
     that.forceResponse= false
     that.assistantResponse = null
-    that.bardMode = false
     that.globalStopCommands = []
 
     if (Array.isArray(that.config.otherStopCommands)) {
@@ -75,8 +74,7 @@ class GAConfig {
           soundExec: {
             chime: "close"
           },
-          displayResponse: false,
-          bardMode: false
+          displayResponse: false
         }
       }
     }

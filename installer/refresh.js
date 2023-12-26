@@ -8,10 +8,8 @@ const Directories = getDirectories(resolved);
 
 const db = [
   "MMM-GoogleAssistant",
-  "Gateway",
   "EXT-Alert",
   "EXT-Background",
-  "EXT-Bard",
   "EXT-Bring",
   "EXT-Browser",
   "EXT-Detector",

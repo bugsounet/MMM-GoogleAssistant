@@ -4,7 +4,6 @@ const mainBranch = {
   "MMM-GoogleAssistant" : "prod",
   "EXT-Alert" : "master",
   "EXT-Background" : "master",
-  //"EXT-Bard" : "main",
   "EXT-Bring" : "main",
   "EXT-Browser" : "master",
   "EXT-Detector" : "main",

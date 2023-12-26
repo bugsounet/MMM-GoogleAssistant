@@ -48,12 +48,7 @@ class activateProcess {
         callback_none()
       } else callback_done()
     } else {
-      if (that.bardMode) {
-        that.Gateway.sendBardQuery(that, response.transcription.transcription)
-        callback_done()
-      } else {
-        callback_none()
-      }
+      callback_none()
     }
   }
 }

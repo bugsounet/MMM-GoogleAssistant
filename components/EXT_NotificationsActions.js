@@ -119,14 +119,6 @@ class EXT_NotificationsActions {
         if (!that.EXT["EXT-Photos"].hello) return console.error("[GA] [EXT_NotificationsActions] Warn Photos don't say to me HELLO!")
         that.EXT_OthersRules.disconnectEXT(that,"EXT-Photos")
         break
-      case "EXT_BARD-CONNECTED":
-        if (!that.EXT["EXT-Bard"].hello) return console.error("[GA] [EXT_NotificationsActions] Warn Bards don't say to me HELLO!")
-        that.EXT_OthersRules.connectEXT(that,"EXT-Bard")
-        break
-      case "EXT_BARD-DISCONNECTED":
-        if (!that.EXT["EXT-Bard"].hello) return console.error("[GA] [EXT_NotificationsActions] Warn Bards don't say to me HELLO!")
-        that.EXT_OthersRules.disconnectEXT(that,"EXT-Bard")
-        break
       case "EXT_INTERNET-DOWN":
         if (!that.EXT["EXT-Internet"].hello) return console.error("[GA] [EXT_NotificationsActions] Warn Internet don't say to me HELLO!")
         if (that.EXT["EXT-Detector"].hello) that.sendNotification("EXT_DETECTOR-STOP")
