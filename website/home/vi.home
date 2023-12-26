@@ -1,18 +1,18 @@
-<p>Xin chào, chào mừng đến với ứng dụng Gateway v3!</p>
+<p>Xin chào, chào mừng đến với ứng dụng MMM-GoogleAssistant</p>
 <p>Công cụ này sẽ giúp bạn cấu hình và quản lý Mirror của mình.</p>
 <p>Công cụ này có thể làm gì thực sự?</p>
 <ul>
   <li>Cho phép bạn cài đặt/xóa tất cả các tiện ích mở rộng (EXT)</li>
   <li>Cho phép bạn cấu hình/sửa đổi EXT của mình với một mẫu</li>
-  <li>Cho phép bạn cấu hình MagicMirror</li>
+  <li>Cho phép bạn cấu hình MagicMirror²</li>
   <li>Cho phép bạn tạo bản sao lưu của tệp cấu hình của bạn sau mỗi thay đổi</li>
-  <li>Hiển thị nhật ký MagicMirror theo thời gian thực</li>
+  <li>Hiển thị nhật ký MagicMirror² theo thời gian thực</li>
   <li>Cho phép bạn thực hiện các thao tác với Terminal tích hợp</li>
   <li>Cho phép bạn khởi động hoặc dừng lại MagicMirror bằng tay</li>
   <li>Cho phép bạn tắt hoặc bật màn hình của bạn</li>
   <li>Và nhiều tính năng khác...</li>
 </ul>
-<p>Gateway đã được dịch sang một số ngôn ngữ để mang lại trải nghiệm tốt hơn, bao gồm tiếng Anh, tiếng Pháp, tiếng Tây Ban Nha, tiếng Hà Lan và tiếng Đức và tiếng Việt Nam.</p>
+<br>
 <p>Cảm ơn các nhà dịch:</p>
 <ul>
   <li>@toantranct: dành cho tiếng Việt Nam</li>

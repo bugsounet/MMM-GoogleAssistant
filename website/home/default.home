@@ -1,18 +1,20 @@
-<p>Hi, welome to Gateway v3 app!</p>
+<p>Hi, welcome to MMM-GoogleAssistant</p>
 <p>This tools wilh help you to configure or manage your Mirror</p>
 <p>What this Tool can really do ?</p>
 <ul>
+  <li>Allows remote control (locally or internet)</li>
   <li>Allows to Install / delete all EXT plugins</li>
   <li>Allows to configure / modify your EXT with a template</li>
-  <li>Allows to configure MagicMirror</li>
+  <li>Allows to configure MagicMirror²</li>
   <li>Allows you to create a backup of your configuration file at each modification</li>
   <li>Displaying Magic Mirror Logs in real time</li>
   <li>Allows you to do now operations with the embedded Terminal</li>
-  <li>Allows you to manually restart or stop MagicMirror</li>
+  <li>Allows you to manually restart or stop MagicMirror²</li>
   <li>Allows you to turn off or turn on your screen</li>
+  <li>Allows you to display various system information</li>
   <li>...</li>
 </ul>
-<p>Gateway has been translated into a few languages for a better experience (English, French, Spanish, Dutch, German)</p>
+<br>
 <p>Thanks to translators:</p>
 <ul>
   <li>@CalcU: for Spanish</li>
