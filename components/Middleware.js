@@ -577,21 +577,6 @@ function createGW(that) {
       } else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
     })
 
-    .post("/saveSetting", urlencodedParser, async (req,res) => {
-      if (req.user) {
-        console.log("[GA] Receiving new Setting")
-        let data = JSON.parse(req.body.data)
-        var NewConfig = await that.lib.EXTTools.configAddOrModify(data, that.EXT.MMConfig)
-        var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,NewConfig)
-        console.log("[GA] Write GA config result:", resultSaveConfig)
-        res.send(resultSaveConfig)
-        if (resultSaveConfig.done) {
-          that.EXT.MMConfig = await that.lib.EXTTools.readConfig(that)
-          console.log("[GA] Reload config")
-        }
-      } else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
-    })
-
     .get("/getWebviewTag", (req,res) => {
       if(req.user) res.send(that.EXT.webviewTag)
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
