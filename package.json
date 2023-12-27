@@ -14,7 +14,10 @@
     "register": "node installer/register.js",
     "reset": "git reset --hard",
     "clean": "rm -rf node_modules package-lock.json",
-    "refresh": "node installer/refresh.js"
+    "refresh": "node installer/refresh.js",
+    "smarthome": "sudo node installer/setup && npm run certbot",
+    "certbot": "sudo installer/certbot.sh",
+    "project": "installer/check_ProjectID.sh"
   },
   "engines": {
     "node": ">=18"
