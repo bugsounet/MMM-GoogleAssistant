@@ -19,5 +19,7 @@
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json λείπει",
 
   "ShellExecError": "Το ShellExec επέστρεψε μερικά σφάλματα",
-  "ShellExecDone": "Επιτυχής εκτέλεση του ShellExec"
+  "ShellExecDone": "Επιτυχής εκτέλεση του ShellExec",
+
+  "EXTStop": "Όλες οι εκτεταμένες διαδικασίες διακόπηκαν"
 }
