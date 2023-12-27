@@ -20,7 +20,7 @@
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json missing",
 
   "ShellExecError": "ShellExec return some Errors",
-  "ShellExecDone": "ShellExec executed sucessfully"
+  "ShellExecDone": "ShellExec executed sucessfully",
 
   "EXTStop": "All Extented Process are now stopped",
 
