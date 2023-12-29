@@ -165,7 +165,7 @@ Module.register("MMM-GoogleAssistant", {
         })
         break
       case "TESTING":
-        this.assistantResponse.showTranscription("Testing: Assistant SDK and Google Server")
+        this.assistantResponse.showTranscription(this.translate("SDK_TESTING"))
         this.activateProcess.assistantActivate(this, { test: true })
         break
       case "PRE-INIT":

@@ -32,9 +32,8 @@ function activate (that, payload) {
     }
     if (response && response.error.audio && !response.error.message) response.error.error = "TOO_SHORT"
     if (testing) {
-      if (response.error.error) {
-        console.error("[GA] [ACTIVATE_ASSISTANT] TESTING RESULT:", response.error)
-      } else console.log("[GA] [ACTIVATE_ASSISTANT] TESTING RESULT: Passed!")
+      if (response.error.error) console.error("[GA] [ACTIVATE_ASSISTANT] TESTING RESULT:", response.error)
+      else console.log("[GA] [ACTIVATE_ASSISTANT] TESTING RESULT: Passed!")
       that.sendSocketNotification("ASSISTANT_TESTING_RESULT", response)
       return
     }
