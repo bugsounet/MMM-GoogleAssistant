@@ -98,7 +98,7 @@ async function parseMiddleware(that, data) {
   }
   await that.lib.EXTTools.MMConfigAddress(that)
   if (that.lib.error || that.EXT.errorInit) return
-  
+
   that.EXT.language = that.EXT.MMConfig.language
   that.EXT.webviewTag = that.lib.EXTTools.checkElectronOptions(that.EXT.MMConfig)
   that.EXT.EXT = data.DB.sort()
@@ -131,9 +131,8 @@ async function parseMiddleware(that, data) {
 
   that.lib.Middleware.startServer(that, cb => {
     if (cb) {
-      console.log("[GA] Website Ready!")
+      console.log("[GA] MMM-GoogleAssistant and Website Ready!")
       that.sendSocketNotification("INITIALIZED", Version)
-      //this.lib.GWTools.setActiveVersion("Gateway", this)
     }
   })
 }

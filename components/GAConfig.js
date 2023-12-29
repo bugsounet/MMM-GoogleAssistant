@@ -111,8 +111,6 @@ class GAConfig {
     console.log("[GA] GAConfig Ready")
   }
 
-// ---> to review: maybe 2 inits ?
-
   async EXT_Config(that) {
     that.EXT_Callbacks = new EXT_Callbacks()
     that.EXT_Actions = new EXT_Actions()
@@ -138,6 +136,7 @@ class GAConfig {
       Schema: VALTranslate,
       EXTStatus: that.EXT
     })
+    that.assistantResponse.showTranscription("Preparing the website...")
   }
 
   forceFullScreen(that) {
