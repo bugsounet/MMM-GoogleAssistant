@@ -8,8 +8,6 @@
   "STOP_HELP": "Çalışıyorsa Genişletilmiş Ekranı Durdurun",
   "STOP_EXT": "Genişletilmiş Ekranı durduruyorum",
 
-  "DADDY": "baba diyor ki... HAYIR, HAYIR HAYIR!!!",
-
   "GALoading": "Yükleniyor...",
   "GAReady": "Hazır!",
   "GABegin": "Merhaba, nasıl yardımcı olabilirim?",
@@ -181,7 +179,6 @@
   "GW_System_ProcessSystem": "İşlem",
   "GW_System_CPU": "CPU:",
   "GW_System_Memory": "Hafıza:",
-  "GW_System_GoogleAssistant": "Google Asistan",
   "GW_System_CurrentlyRunning": "Şu anda Çalışıyor",
   "GW_System_NamePlugin": "İsim",
   "GW_System_VersionPlugin": "Sürüm",

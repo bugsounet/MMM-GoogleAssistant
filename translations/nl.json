@@ -8,8 +8,6 @@
   "STOP_HELP": "Stop uitgebreide weergave indien actief",
   "STOP_EXT": "Ik stop Uitgebreide Weergave",
 
-  "DADDY": "vader @bugsounet zegt... nee,nee en nee !!!",
-
   "GALoading": "Laden...",
   "GAReady": "Klaar!",
   "GABegin": "He, hoe kan ik je helpen?",
@@ -179,7 +177,6 @@
   "GW_System_ProcessSystem": "Process",
   "GW_System_CPU": "cpu:",
   "GW_System_Memory": "geheugen:",
-  "GW_System_GoogleAssistant": "Google Assistant",
   "GW_System_CurrentlyRunning": "Currently Running",
   "GW_System_NamePlugin": "Naam",
   "GW_System_VersionPlugin": "Versie",

@@ -9,7 +9,6 @@
   "STOP_HELP": "Stop Extented Display si besoin",
   "STOP_EXT": "j'arrête Extented Display",
 
-  "DADDY": "Papa @bugsounet a dit... NON,NON ET NON !!!",
   "SDK_TESTING": "Test de Assistant SDK et du Serveur Google...",
   "PREPARE_WEBSITE": "Préparation du site Web MMM-GoogleAssistant...",
 
@@ -187,8 +186,8 @@
   "GW_System_ProcessSystem": "Processus",
   "GW_System_CPU": "processeur:",
   "GW_System_Memory": "mémoire:",
-  "GW_System_GoogleAssistant": "Assistant Google",
   "GW_System_CurrentlyRunning": "En cours d'exécution",
+  "GW_System_NoPlugins": "Aucun plugin installé",
   "GW_System_NamePlugin": "Nom",
   "GW_System_VersionPlugin": "Version",
   "GW_System_RevPlugin": "Révision",

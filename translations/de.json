@@ -9,8 +9,6 @@
   "STOP_HELP": "Beendet eventuelle Aktivität der erweiterten Anzeige.",
   "STOP_EXT": "Beende erweiterte Anzeige.",
 
-  "DADDY": "Papa @bugsounet sagt… Nein, nein und nochmals nein!!!",
-
   "GALoading": "Lade...",
   "GAReady": "Bereit!",
   "GABegin": "Hallo, wie kann ich helfen?",
@@ -183,7 +181,6 @@
   "GW_System_ProcessSystem": "Prozess",
   "GW_System_CPU": "CPU:",
   "GW_System_Memory": "Speicher:",
-  "GW_System_GoogleAssistant": "Google Assistant",
   "GW_System_CurrentlyRunning": "Laufende Prozesse",
   "GW_System_NamePlugin": "Name",
   "GW_System_VersionPlugin": "Version",

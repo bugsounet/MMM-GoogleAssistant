@@ -158,36 +158,40 @@ async function doSystem(cb= null) {
     $("#LoadText").addClass("text-google-red")
   }
 
-  Object.entries(activeVersion).forEach(([key, value]) => {
-    if (!$("#Plugins-"+key).html()) {
-      var plugin = document.createElement("tr")
-      plugin.id = "Plugins-" + key
+  if (Object.entries(activeVersion).length) {
+    $("#CurrentlyRunning").text(translation.System_CurrentlyRunning)
+    $("#Plugins-Table").removeClass("visually-hidden")
+    Object.entries(activeVersion).forEach(([key, value]) => {
+      if (!$("#Plugins-"+key).html()) {
+        var plugin = document.createElement("tr")
+        plugin.id = "Plugins-" + key
 
-      var name = document.createElement("td")
-      name.textContent = key
-      if (value.beta) name.classList.add("text-google-yellow")
+        var name = document.createElement("td")
+        name.textContent = key
+        if (value.beta) name.classList.add("text-google-yellow")
 
-      var version = document.createElement("td")
-      version.textContent = value.version
-      version.className = "text-center"
-      if (value.update) {
-        version.classList.remove("text-google-green")
-        version.classList.add("text-google-red")
-      } else {
-        version.classList.remove("text-google-red")
-        version.classList.add("text-google-green")
+        var version = document.createElement("td")
+        version.textContent = value.version
+        version.className = "text-center"
+        if (value.update) {
+          version.classList.remove("text-google-green")
+          version.classList.add("text-google-red")
+        } else {
+          version.classList.remove("text-google-red")
+          version.classList.add("text-google-green")
+        }
+
+        var rev = document.createElement("td")
+        rev.textContent = value.rev
+        rev.className = "text-center"
+
+        plugin.appendChild(name)
+        plugin.appendChild(version)
+        plugin.appendChild(rev)
+        $("#PluginsTable").append(plugin)
       }
-
-      var rev = document.createElement("td")
-      rev.textContent = value.rev
-      rev.className = "text-center"
-
-      plugin.appendChild(name)
-      plugin.appendChild(version)
-      plugin.appendChild(rev)
-      $("#PluginsTable").append(plugin)
-    }
-  })
+    })
+  }
 
   // try to create proper storage
   system.STORAGE.forEach((partition, id) => {
@@ -538,11 +542,10 @@ function doStatic() {
   $("#PM2CPUProcess").text(translation.System_CPU)
   $("#PM2MemoryProcess").text(translation.System_Memory)
 
-  $("#GoogleAssistant").text(translation.System_GoogleAssistant)
-  $("#CurrentlyRunning").text(translation.System_CurrentlyRunning)
   $("#NamePlugin").text(translation.System_NamePlugin)
   $("#VersionPlugin").text(translation.System_VersionPlugin)
   $("#RevPlugin").text(translation.System_RevPlugin)
-
+  if (Object.entries(activeVersion).length) $("#CurrentlyRunning").text(translation.System_CurrentlyRunning)
+  else $("#CurrentlyRunning").text(translation.System_NoPlugins)
   $("#SystemDisplayer").removeClass("visually-hidden")
 }
