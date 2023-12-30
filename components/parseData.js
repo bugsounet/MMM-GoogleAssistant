@@ -8,6 +8,7 @@ async function init(that) {
   that.config = {}
   that.MMVersion = global.version
   that.root_path = global.root_path
+  that.alreadyInitialized = false
   that.EXT = {
     MMConfig: null, // real config file (config.js)
     EXT: null, // EXT plugins list
