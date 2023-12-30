@@ -17,7 +17,8 @@
     "refresh": "node installer/refresh.js",
     "smarthome": "sudo node installer/setup && npm run certbot",
     "certbot": "sudo installer/certbot.sh",
-    "project": "installer/check_ProjectID.sh"
+    "project": "installer/check_ProjectID.sh",
+    "migrate": "node installer/migrate.js"
   },
   "engines": {
     "node": ">=18"
