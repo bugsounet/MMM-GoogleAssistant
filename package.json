@@ -8,6 +8,7 @@
     "preinstall": "installer/preinstall.sh -d 'pulseaudio nginx certbot python3 python-is-python3 python3-certbot-nginx make build-essential'",
     "postinstall": "installer/postinstall.sh -r -b",
     "update": "installer/update.sh",
+    "rebuild": "installer/rebuild.sh",
     "token": "installer/token.sh",
     "list": "node installer/list.js",
     "delete": "node installer/delete.js",
