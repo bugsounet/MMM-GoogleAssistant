@@ -138,7 +138,7 @@ function saveConfig(that,MMConfig) {
   return new Promise(resolve => {
     var configPath = that.lib.path.resolve(__dirname, "../../../config/config.js")
     var configPathTMP = that.lib.path.resolve(__dirname, "../../../config/configTMP.js")
-    let backupPath = that.lib.path.resolve(__dirname, "../backup/config.js.GW." + timeStamp())
+    let backupPath = that.lib.path.resolve(__dirname, "../backup/config.js.GA." + timeStamp())
     var source = that.lib.fs.createReadStream(configPath)
     var destination = that.lib.fs.createWriteStream(backupPath)
 
@@ -319,7 +319,7 @@ function configDelete(EXT, MMConfig) {
 /** list of all backups **/
 function loadBackupNames(that) {
   return new Promise(resolve => {
-    const regex = "config.js.GW"
+    const regex = "config.js.GA"
     var List = []
     var FileList = that.lib.fs.readdirSync(that.lib.path.resolve(__dirname, "../backup/"))
     FileList.forEach((file) => {
@@ -335,7 +335,7 @@ function loadBackupNames(that) {
 /** delete all backups **/
 function deleteBackup(that) {
   return new Promise(resolve => {
-    const regex = "config.js.GW"
+    const regex = "config.js.GA"
     var FileList = that.lib.fs.readdirSync(that.lib.path.resolve(__dirname, "../backup/"))
     FileList.forEach((file) => {
       const testFile = file.match(regex)
