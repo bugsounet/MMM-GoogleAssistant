@@ -119,7 +119,6 @@ class GAConfig {
     let DB = new EXT_Database()
     that.ExtDB = DB.ExtDB()
     that.EXT = await DB.createDB(that)
-    that.awaitGATimer = null // <--- see to delete
     that.session= {}
     that.sysInfo = new sysInfoPage(that)
 

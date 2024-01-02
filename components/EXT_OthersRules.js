@@ -139,23 +139,6 @@ class EXT_OthersRules {
     return false
   }
 
-  async awaitGATimer(that) {
-    clearInterval(that.awaitGATimer)
-    that.awaitGATimer = null
-    if (that.EXT.GA_Ready) {
-      let checkTB = await this.checkModulesTB()
-      if (checkTB) return that.socketNotificationReceived("ERROR", "You can't start MMM-GoogleAssistant with MMM-TelegramBot and EXT-TelegramBot!")
-      let checkScreen = await this.checkModulePir()
-      if (checkScreen) return that.socketNotificationReceived("ERROR", "You can't start MMM-GoogleAssistant with MMM-Pir. Please use EXT-Screen and EXT-Pir")
-      logGA("[EXT_OthersRules] I'm Ready!")
-      that.EXT.GW_Ready = true
-      that.sendNotification("GW_READY")
-    } else {
-      console.log("[GA] [EXT_OthersRules] Waiting GA response")
-      that.awaitGATimer = setInterval(() => {this.awaitGATimer(that)}, 1000)
-    }
-  }
-
   checkModulesTB() {
     return new Promise(resolve => {
       var nb=0
