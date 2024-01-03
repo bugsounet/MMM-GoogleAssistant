@@ -1,12 +1,12 @@
 {
   "name": "MMM-GoogleAssistant",
   "version": "6.0.0",
-  "rev": "240000",
+  "rev": "240103",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
     "preinstall": "installer/preinstall.sh -d 'pulseaudio nginx certbot python3 python-is-python3 python3-certbot-nginx make build-essential'",
-    "postinstall": "installer/postinstall.sh -r -b",
+    "postinstall": "installer/postinstall.sh -r -b -m",
     "update": "installer/update.sh",
     "rebuild": "installer/rebuild.sh",
     "token": "installer/token.sh",
