@@ -6,10 +6,13 @@ function activate (that, payload) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [ACTIVATE_ASSISTANT]", ...args) }
   logGA("QUERY:", payload)
   var assistantConfig = Object.assign({}, that.config.assistantConfig)
+  let testing = payload.status === "testing"
   assistantConfig.debug = that.config.debug
   assistantConfig.lang = payload.lang
   assistantConfig.micConfig = that.config.micConfig
-  that.assistant = new that.lib.Assistant(that.lib, assistantConfig, (obj)=>{that.sendSocketNotification("TUNNEL", obj)})
+  that.assistant = new that.lib.Assistant(that.lib, assistantConfig, (obj)=>{
+    if (!testing) that.sendSocketNotification("TUNNEL", obj)
+  })
 
   var parserConfig = {
     responseOutputCSS: that.config.responseConfig.responseOutputCSS,
@@ -28,6 +31,12 @@ function activate (that, payload) {
       }
     }
     if (response && response.error.audio && !response.error.message) response.error.error = "TOO_SHORT"
+    if (testing) {
+      if (response.error.error) console.error("[GA] [ACTIVATE_ASSISTANT] TESTING RESULT:", response.error)
+      else console.log("[GA] [ACTIVATE_ASSISTANT] TESTING RESULT: Passed!")
+      that.sendSocketNotification("ASSISTANT_TESTING_RESULT", response)
+      return
+    }
     if (response.screen) {
       parser.parse(response, (result)=>{
         delete result.screen.originalContent

@@ -1,7 +1,7 @@
 /**
  ** Module : MMM-GoogleAssistant
  ** @bugsounet
- ** ©09-2023
+ ** ©2024
  ** support: https://forum.bugsounet.fr
  **/
 
@@ -54,7 +54,12 @@ Module.register("MMM-GoogleAssistant", {
         responseOutput: "60%"
       }
     },
-    recipes: []
+    recipes: [],
+    website: {
+      username: "admin",
+      password: "admin",
+      CLIENT_ID: null
+    }
   },
 
   getScripts: function() {
@@ -64,7 +69,14 @@ Module.register("MMM-GoogleAssistant", {
       "/modules/MMM-GoogleAssistant/components/assistantResponse.js",
       "/modules/MMM-GoogleAssistant/components/assistantSearch.js",
       "/modules/MMM-GoogleAssistant/components/Gateway.js",
-      "/modules/MMM-GoogleAssistant/components/Hooks.js"
+      "/modules/MMM-GoogleAssistant/components/Hooks.js",
+      "/modules/MMM-GoogleAssistant/components/EXT_Actions.js",
+      "/modules/MMM-GoogleAssistant/components/EXT_Callbacks.js",
+      "/modules/MMM-GoogleAssistant/components/EXT_NotificationsActions.js",
+      "/modules/MMM-GoogleAssistant/components/EXT_OthersRules.js",
+      "/modules/MMM-GoogleAssistant/components/EXT_Database.js",
+      "/modules/MMM-GoogleAssistant/components/EXT_Translations.js",
+      "/modules/MMM-GoogleAssistant/components/sysInfoPage.js"
     ]
   },
 
@@ -102,6 +114,7 @@ Module.register("MMM-GoogleAssistant", {
 
   notificationReceived: function(noti, payload=null, sender=null) {
     this.Hooks.doPlugin(this, "onNotificationReceived", {notification:noti, payload:payload})
+    if (noti.startsWith("EXT_")) return this.EXT_NotificationsActions.Actions(this,noti,payload,sender)
     switch (noti) {
       case "GA_ACTIVATE":
         if (payload && payload.type && payload.key) this.activateProcess.assistantActivate(this, payload)
@@ -115,19 +128,11 @@ Module.register("MMM-GoogleAssistant", {
       case "GA_STOP":
         if (this.assistantResponse.response && this.GAStatus.actual == "reply") this.assistantResponse.conversationForceEnd()
         break
-      case "GA_BARD_MODE-OFF":
-      case "EXT_STOP":
-        this.bardMode = false
-        logGA("bardMode:",this.bardMode)
-        break
-      case "GA_BARD_MODE-ON":
-        this.bardMode = true
-        logGA("bardMode:",this.bardMode)
-        break
     }
   },
 
   socketNotificationReceived: function(noti, payload) {
+    if (noti.startsWith("CB_")) return this.EXT_Callbacks.cb(this,noti,payload)
     switch(noti) {
       case "LOAD_RECIPE":
         this.Hooks.parseLoadedRecipe(payload)
@@ -159,16 +164,27 @@ Module.register("MMM-GoogleAssistant", {
           type: "error"
         })
         break
+      case "TESTING":
+        this.assistantResponse.showTranscription(this.translate("SDK_TESTING"))
+        this.activateProcess.assistantActivate(this, { test: true })
+        break
+      case "PRE-INIT":
+        this.GAConfig.EXT_Config(this)
+        break
       case "INITIALIZED":
         logGA("Initialized.")
         this.assistantResponse.Version(payload)
         this.assistantResponse.status("standby")
         this.Hooks.doPlugin(this, "onReady")
+        this.EXT.GA_Ready = true
         this.sendNotification("GA_READY")
         break
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) this.sendNotification("EXT_VOLUME-SPEAKER_SET", payload.volume)
         this.assistantResponse.start(payload)
+        break
+      case "ASSISTANT_TESTING_RESULT":
+        this.assistantResponse.testing(payload)
         break
       case "TUNNEL":
         this.assistantResponse.tunnel(payload)
@@ -178,6 +194,22 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "GOOGLESEARCH-RESULT":
         this.Gateway.sendGoogleResult(this, payload)
+        break
+      case "REMOTE_ACTIVATE_ASSISTANT":
+        this.notificationReceived("GA_ACTIVATE", payload)
+        break
+      case "TB_SYSINFO-RESULT":
+        this.show_sysinfo(payload)
+        break
+      case "SYSINFO-RESULT":
+        this.sysInfo.updateSystemData(payload)
+        break
+      case "SendNoti":
+        if (payload.payload && payload.noti) this.sendNotification(payload.noti, payload.payload)
+        else this.sendNotification(payload)
+        break
+      case "SendStop":
+        this.EXT_NotificationsActions.Actions(this, "EXT_STOP")
         break
     }
   },
@@ -196,6 +228,11 @@ Module.register("MMM-GoogleAssistant", {
       description: this.translate("STOP_HELP"),
       callback: "tbStopEXT"
     })
+    commander.add({
+      command: 'sysinfo',
+      description: this.translate("TB_SYSINFO_DESCRIPTION"),
+      callback: 'cmd_sysinfo'
+    })
   },
 
   tbQuery: function(command, handler) {
@@ -208,4 +245,89 @@ Module.register("MMM-GoogleAssistant", {
     this.sendNotification("EXT_STOP")
     handler.reply("TEXT", this.translate("STOP_EXT"))
   },
+
+  cmd_sysinfo: function(command,handler) {
+    if (handler.args) {
+      var args = handler.args.toLowerCase().split(" ")
+      var params = handler.args.split(" ")
+      if (args[0] == "show") {
+        this.sysInfo.show()
+        handler.reply("TEXT", "ok.")
+        return
+      }
+      if (args[0] == "hide") {
+        this.sysInfo.hide()
+        handler.reply("TEXT", "ok.")
+        return
+      }
+    }
+    /** try to manage session ... **/
+    let chatId = handler.message.chat.id
+    let userId = handler.message.from.id
+    let messageId = handler.message.message_id
+    let sessionId = messageId + ":" + userId + ":" + chatId
+    this.session[sessionId] = handler
+    this.sendSocketNotification("TB_SYSINFO", sessionId)
+  },
+
+  show_sysinfo: function(result) {
+    let session = result.sessionId
+    let handler = this.session[session]
+    if (!handler || !session) return console.error("[Gateway] TB session not found!", handler, session)
+    var text = ""
+    text += "*" + result['HOSTNAME'] + "*\n\n"
+    // version
+    text += "*-- " + this.translate("GW_System_Box_Version") + " --*\n"
+    text += "*" + "MagicMirror²:* `" + result['VERSION']['MagicMirror'] + "`\n"
+    text += "*" + "Electron:* `" + result['VERSION']['ELECTRON'] + "`\n"
+    text += "*" + "MagicMirror² " + this.translate("GW_System_NodeVersion") + "* `" + result['VERSION']['NODEMM'] + "`\n"
+    text += "*" + this.translate("GW_System_NodeVersion") + "* `" + result['VERSION']['NODECORE'] + "`\n"
+    text += "*" + this.translate("GW_System_NPMVersion") + "* `" + result['VERSION']['NPM'] + "`\n"
+    text += "*" + this.translate("GW_System_OSVersion") + "* `" + result['VERSION']['OS'] + "`\n"
+    text += "*" + this.translate("GW_System_KernelVersion") + "* `" + result['VERSION']['KERNEL'] + "`\n"
+    // CPU
+    text += "*-- " + this.translate("GW_System_CPUSystem") + " --*\n"
+    text += "*" + this.translate("GW_System_TypeCPU") + "* `" + result['CPU']['type'] + "`\n"
+    text += "*" + this.translate("GW_System_SpeedCPU") + "* `" + result['CPU']['speed'] + "`\n"
+    text += "*" + this.translate("GW_System_CurrentLoadCPU") + "* `" + result['CPU']['usage'] + "%`\n"
+    text += "*" + this.translate("GW_System_GovernorCPU") + "* `" + result['CPU']['governor'] + "`\n"
+    text += "*" + this.translate("GW_System_TempCPU") + "* `" + (config.units == "metric" ? result['CPU']['temp']["C"] : result['CPU']['temp']["F"]) + "°`\n"
+    // memory
+    text += "*-- " + this.translate("GW_System_MemorySystem") + " --*\n"
+    text += "*" + this.translate("GW_System_TypeMemory") + "* `" + result['MEMORY']['used'] + " / " + result['MEMORY']['total'] + " (" + result['MEMORY']['percent'] + "%)`\n"
+    text += "*" + this.translate("GW_System_SwapMemory") + "* `" + result['MEMORY']['swapUsed'] + " / " + result['MEMORY']['swapTotal'] + " (" + result['MEMORY']['swapPercent'] + "%)`\n"
+    // network
+    text += "*-- " + this.translate("GW_System_NetworkSystem") + " --*\n"
+    text += "*" + this.translate("GW_System_IPNetwork") + "* `" + result['NETWORK']['ip'] + "`\n"
+    text += "*" + this.translate("GW_System_InterfaceNetwork") + "* `" + result['NETWORK']['name'] + " (" + (result['NETWORK']['type'] == "wired" ? this.translate("TB_SYSINFO_ETHERNET") : this.translate("TB_SYSINFO_WLAN")) + ")`\n"
+    if (result['NETWORK']['type'] == "wired") {
+      text += "*" + this.translate("GW_System_SpeedNetwork") + "* `" + result['NETWORK']['speed'] + " Mbit/s`\n"
+      text += "*" + this.translate("GW_System_DuplexNetwork") + "* `" + result['NETWORK']['duplex'] + "`\n"
+    } else {
+      text += "*" + this.translate("GW_System_WirelessInfo") + ":*\n"
+      text += "*  " + this.translate("GW_System_SSIDNetwork") + "* `" + result['NETWORK']['ssid'] + "`\n"
+      text += "*  " + this.translate("GW_System_FrequencyNetwork") + "* `" + result['NETWORK']['frequency'] + " GHz`\n"
+      text += "*  " + this.translate("GW_System_RateNetwork") + "* `" + result['NETWORK']['rate'] + " Mb/s`\n"
+      text += "*  " + this.translate("GW_System_QualityNetwork") + "* `" + result['NETWORK']['quality'] + "`\n"
+      text += "*  " + this.translate("GW_System_SignalNetwork") + "* `" + result['NETWORK']['signalLevel'] + " dBm (" + result['NETWORK']['barLevel'] + ")`\n"
+    }
+    // storage
+    text += "*-- " + this.translate("GW_System_StorageSystem") + " --*\n"
+    result['STORAGE'].forEach(partition => {
+      for (let [name, values] of Object.entries(partition)) {
+        text += "*" + this.translate("GW_System_MountStorage") + " " + name + ":* `" + values.used + " / " + values.size + " (" + values.use + "%)`\n"
+      }
+    })
+    // uptimes
+    text += "*-- " + this.translate("GW_System_UptimeSystem") + " --*\n"
+    text += "*" + this.translate("GW_System_CurrentUptime") + ":*\n"
+    text += "*  " + this.translate("GW_System_System") + "* `" + result['UPTIME']['currentDHM'] + "`\n"
+    text += "*  MagicMirror²:* `" + result['UPTIME']['MMDHM'] + "`\n"
+    text += "*" + this.translate("GW_System_RecordUptime") + ":*\n"
+    text += "*  " + this.translate("GW_System_System") + "* `" + result['UPTIME']['recordCurrentDHM'] + "`\n"
+    text += "*  MagicMirror²:* `" + result['UPTIME']['recordMMDHM'] + "`\n"
+
+    handler.reply("TEXT", text, {parse_mode:'Markdown'})
+    delete this.session[session]
+  }
 })

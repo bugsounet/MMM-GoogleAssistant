@@ -1,8 +1,7 @@
 class GAConfig {
   constructor (that) {
     const helperConfig = [
-      "debug", "recipes", "assistantConfig",
-      "responseConfig"
+      "debug", "recipes", "assistantConfig", "responseConfig", "website"
     ]
 
     if (that.config.debug) logGA = (...args) => { console.log("[GA]", ...args) }
@@ -18,7 +17,6 @@ class GAConfig {
 
     that.forceResponse= false
     that.assistantResponse = null
-    that.bardMode = false
     that.globalStopCommands = []
 
     if (Array.isArray(that.config.otherStopCommands)) {
@@ -47,12 +45,16 @@ class GAConfig {
         that.Hooks.doPlugin(that, "onStatus", {status: status})
         that.GAStatus = status
         that.sendNotification("ASSISTANT_" + that.GAStatus.actual.toUpperCase())
+        that.EXT_Actions.Actions(that, that.GAStatus.actual.toUpperCase())
       },
       Gateway: (response)=> {
         return that.Gateway.SendToGateway(that, response)
       },
       "sendSocketNotification": (noti, params) => {
         that.sendSocketNotification(noti, params)
+      },
+      testingOK: () => {
+        that.GAConfig.EXT_Config(that)
       }
     }
 
@@ -72,8 +74,7 @@ class GAConfig {
           soundExec: {
             chime: "close"
           },
-          displayResponse: false,
-          bardMode: false
+          displayResponse: false
         }
       }
     }
@@ -106,8 +107,35 @@ class GAConfig {
     that.assistantResponse.prepareGA()
     that.assistantResponse.prepareBackground ()
     that.assistantResponse.Loading()
-    that.sendSocketNotification("INIT", that.helperConfig)
+    that.sendSocketNotification("PRE-INIT", that.helperConfig)
     console.log("[GA] GAConfig Ready")
+  }
+
+  async EXT_Config(that) {
+    that.EXT_Callbacks = new EXT_Callbacks()
+    that.EXT_Actions = new EXT_Actions()
+    that.EXT_NotificationsActions = new EXT_NotificationsActions()
+    that.EXT_OthersRules = new EXT_OthersRules()
+    let DB = new EXT_Database()
+    that.ExtDB = DB.ExtDB()
+    that.EXT = await DB.createDB(that)
+    that.session= {}
+    that.sysInfo = new sysInfoPage(that)
+
+    let LoadTranslate = new EXT_Translations()
+    let EXTTranslate = await LoadTranslate.Load_EXT_Translation(that)
+    let EXTDescription = await LoadTranslate.Load_EXT_Description(that)
+    let VALTranslate = await LoadTranslate.Load_EXT_TrSchemaValidation(that)
+    that.sysInfo.prepare(EXTTranslate)
+
+    that.sendSocketNotification("INIT", {
+      DB: that.ExtDB,
+      Description: EXTDescription,
+      Translate: EXTTranslate,
+      Schema: VALTranslate,
+      EXTStatus: that.EXT
+    })
+    that.assistantResponse.showTranscription(that.translate("PREPARE_WEBSITE"))
   }
 
   forceFullScreen(that) {
@@ -116,4 +144,3 @@ class GAConfig {
     that.assistantResponse = new AssistantResponse(that.helperConfig["responseConfig"], this.callbacks)
   }
 }
- 

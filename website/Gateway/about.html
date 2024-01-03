@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>MMM-GoogleAssistant</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/FavIcon.png">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora&amp;display=swap">
+    <link rel="stylesheet" href="../assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="../assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="../assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="../assets/css/animate.min.css">
+    <link rel="stylesheet" href="../assets/css/alertify-bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/alertify.min.css">
+    <link rel="stylesheet" href="../assets/css/Article-Clean.css">
+    <link rel="stylesheet" href="../assets/css/bugsounet.css">
+    <link rel="stylesheet" href="../assets/css/Navbar.css">
+    <link rel="stylesheet" href="../assets/css/setting.css">
+    <link rel="stylesheet" href="../assets/css/tools.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion p-0 toggled bg-gradient-left">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0"><img class="mw-100" src="../assets/img/GA.gif"></a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light invisible" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fa fa-home"></i><span id="Home">Home</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/EXT"><i class="fa fa-plug"></i><span id="Plugins">EXT Plugins</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Terminal"><i class="fa fa-terminal"></i><span id="Terminal">Terminal Output</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/MMConfig"><i class="fa fa-code"></i><span id="Configuration">MagicMirror Configuration</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Tools"><i class="fas fa-tools"></i><span id="Tools">Tools</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/System" data-bs-target="/System"><i class="fas fa-microchip"></i><span id="System">System</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/About"><i class="fa fa-info-circle"></i><span id="About">About</span></a></li>
+                    <li class="nav-item"><a class="nav-link" id="logout" href="/logout"><i class="fa fa-sign-out"></i><span id="Logout">Logout</span></a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content" class="bg-google-grey-21">
+                <nav class="navbar navbar-light navbar-expand shadow mb-4 topbar static-top bg-gradient-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <div class="container">
+                            <div class="alert alert-success text-center invisible" role="alert" id="alert"><span id="messageText">Message Testing !</span></div>
+                        </div>
+                    </div>
+                </nav>
+                <div class="container">
+                    <h3 class="text-center bounce animated text-google-white" id="about_title">Loading...</h3>
+                    <div class="row gutters">
+                        <div class="col-md-12 col-sm-12 col-12">
+                            <div class="card h-100 bg-google-grey-19-needed">
+                                <div class="card-body">
+                                    <div class="account-settings">
+                                        <div class="user-profile">
+                                            <div>
+                                                <h5 class="user-name">MMM-GoogleAssistant</h5>
+                                                <h6 id="byHeader" class="user-email"><strong>by @bugsounet</strong></h6><img src="../assets/img/GA_Small.png" style="width: 200px;">
+                                            </div>
+                                            <div class="about">
+                                                <h5 id="SupportHeader" class="text-google-blue-needed">&nbsp;</h5><a class="text-nowrap fs-6 fw-light text-google-green-needed" href="https://forum.bugsounet.fr" target="_blank">forum.bugsounet.fr</a>
+                                            </div>
+                                            <div class="about">
+                                                <h5 id="DonateHeader" class="text-google-blue-needed">&nbsp;</h5><a class="text-nowrap fs-6 fw-light text-google-red-needed" id="DonateText" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=TTHRH94Y4KL36&amp;source=url" target="_blank">&nbsp;</a>
+                                            </div>
+                                            <div class="about">
+                                                <h5 id="VersionHeader" class="text-google-blue-needed">&nbsp;</h5>
+                                            </div><span>Version:&nbsp;</span><span id="version">6</span>
+                                            <header></header><span>Code Revision:&nbsp;</span><span id="rev">&nbsp;</span>
+                                            <header></header><span>Language Database:&nbsp;</span><span id="language">&nbsp;</span>
+                                            <header></header>
+                                            <div class="d-flex flex-column" id="translatorsBox" style="display: none !important;"><span id="Translators">Translators:&nbsp;</span><span id="translator-1"></span><span id="translator-2"></span><span id="translator-3"></span><span id="translator-4"></span><span id="translator-5"></span><span id="translator-6"></span><span id="translator-7"></span><span id="translator-8"></span><span id="translator-9"></span><span id="translator-10"></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="sticky-footer bg-google-grey-21">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © bugsounet.fr 2024</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/bs-init.js"></script>
+    <script src="/EXT_About.js" crossorigin="anonymous"></script>
+    <script src="/EXT_Fetch.js" crossorigin="anonymous"></script>
+    <script src="../assets/js/alertify.min.js"></script>
+    <script src="../assets/js/aos.min.js"></script>
+    <script src="../assets/js/pleaserotate.min.js"></script>
+    <script src="../assets/js/theme.js"></script>
+</body>
+
+</html>

@@ -7,9 +7,6 @@ function libraries(that) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [LIB]", ...args) }
   let libraries= [
     // { "library to load" : "store library name" }
-    { "../components/BufferToMP3.js": "BufferToMP3" },
-    { "../components/lpcm16.js": "Recorder" },
-    { "../components/googleAssistant": "GoogleAssistant"},
     { "cheerio": "cheerio" },
     { "child_process": "childProcess" },
     { "fs": "fs" },
@@ -17,15 +14,51 @@ function libraries(that) {
     { "html-entities": "html-entities" },
     { "node-html-parser": "HTMLParser" },
     { "path": "path" },
+
+    { "node-pty": "pty" },
+    { "express": "express" },
+    { "http": "http" },
+    { "semver": "semver" },
+    { "body-parser": "bodyParser" },
+    { "express-session": "session" },
+    { "passport": "passport" },
+    { "passport-local" : "LocalStrategy" },
+    { "socket.io": "Socket" },
+    { "cors": "cors" },
+    { "util": "util" },
+    { "systeminformation": "si" },
+    { "readline": "readline" },
+    { "stream": "Stream" },
+    { "actions-on-google": "actions" },
+    { "googleapis": "googleapis" },
+    { "google-auth-library": "GoogleAuthLibrary" },
+    { "lodash": "_" },
+    { "moment": "moment" },
+    { "pm2": "pm2" },
+
+    { "../components/BufferToMP3.js": "BufferToMP3" },
+    { "../components/lpcm16.js": "Recorder" },
+    { "../components/googleAssistant": "GoogleAssistant"},
     { "../components/assistantConverse.js": "Assistant" },
     { "../components/screenParser.js" : "ScreenParser" },
-    { "../components/platform.js": "platform" },
     { "../components/shellExec.js": "shellExec" },
     { "../components/configMerge.js": "configMerge" },
     { "../components/googleSearch.js": "googleSearch" },
     { "../components/searchOnGoogle.js": "searchOnGoogle" },
     { "../components/recipes.js": "recipes" },
-    { "../components/activateAssistant.js": "activateAssistant" }
+    { "../components/activateAssistant.js": "activateAssistant" },
+
+    { "../components/EXT_Tools.js": "EXTTools" },
+    { "../components/SH_Tools.js": "SHTools" },
+    { "../components/Middleware.js": "Middleware"},
+    { "../components/hyperwatch.js": "hyperwatch" },
+    { "../components/SH_Middleware.js": "SmartHome" },
+    { "../components/actionsOnGoogle.js": "ActionsOnGoogle" },
+    { "../components/DeviceManagement.js": "Device" },
+    { "../components/SH_Callbacks.js": "callback" },
+    { "../components/SH_Homegraph.js": "homegraph" },
+    { "../components/systemInformation.js": "SystemInformation" },
+    { "../components/wirelessTools.js": "wirelessTools" }
   ]
   let errors = 0
   return new Promise(resolve => {
@@ -40,7 +73,7 @@ function libraries(that) {
             logGA("Loaded:", libraryToLoad, "->", "this.lib."+libraryName)
           }
         } catch (e) {
-          console.error("[GA] [LIB]", libraryToLoad, "Loading error!" , e.toString(), e)
+          console.error("[GA] [LIB]", libraryToLoad, "Loading error!" , e.message)
           that.sendSocketNotification("ERROR" , "Loading error! library: " + libraryToLoad)
           errors++
           that.lib.error = errors
@@ -48,8 +81,10 @@ function libraries(that) {
       }
     })
     resolve(errors)
-    if (errors) console.error("[GA] [LIB] Some libraries missing!")
-    else console.log("[GA] [LIB] All libraries loaded!")
+    if (errors) {
+      console.error("[GA] [LIB] Some libraries missing!")
+      that.sendSocketNotification("NOT_INITIALIZED", { message: "Library loading Error!" })
+    } else console.log("[GA] [LIB] All libraries loaded!")
   })
 }
 

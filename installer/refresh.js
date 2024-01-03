@@ -8,10 +8,8 @@ const Directories = getDirectories(resolved);
 
 const db = [
   "MMM-GoogleAssistant",
-  "Gateway",
   "EXT-Alert",
   "EXT-Background",
-  "EXT-Bard",
   "EXT-Bring",
   "EXT-Browser",
   "EXT-Detector",
@@ -48,7 +46,7 @@ var updated = 0
 var failed = 0
 var total = Directories.length
 
-console.log("Start Refreshing and Updating MMM-GoogleAssistant, Gateway and EXTs\n");
+console.log("Start Refreshing and Updating MMM-GoogleAssistant and EXTs\n");
 main();
 
 function getDirectories(source) {
@@ -79,7 +77,7 @@ function Update(module) {
     updateModule.stderr.on('data', (data) => {
       console.error("\n❗ " + data.toString());
     });
-    
+
     updateModule.on('exit', (code) => {
       spinner.stop();
       process.stdout.write('\r');

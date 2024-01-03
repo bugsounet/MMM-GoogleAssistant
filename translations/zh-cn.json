@@ -8,8 +8,6 @@
   "STOP_HELP": "如果正在运行，则停止扩展显示",
   "STOP_EXT": "停止扩展显示",
 
-  "DADDY": "爸爸 @bugsounet 说... 不，不，不！！！！",
-
   "GALoading": "加载...",
   "GAReady": "准备就绪！",
   "GABegin": "你好，我能提供什么帮助？",
@@ -20,4 +18,15 @@
 
   "ShellExecError": "ShellExec 返回一些错误",
   "ShellExecDone": "ShellExec 执行成功"
+ 
+  "EXTStop": "现在所有扩展进程都已停止",
+
+  "GW_About_Info_Translator1": "@fuyechun",
+
+  "GW_System_DAY" : "天",
+  "GW_System_DAYS" : "天",
+  "GW_System_HOUR" : "小时",
+  "GW_System_HOURS" : "小时",
+  "GW_System_MINUTE" : "分钟",
+  "GW_System_MINUTES" : "分钟"
 }

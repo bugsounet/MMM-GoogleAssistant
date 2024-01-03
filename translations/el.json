@@ -8,8 +8,6 @@
   "STOP_HELP": "Τερματισμός Extented Display αν τρέχει",
   "STOP_EXT": "Τερματισμός Extented Display",
 
-  "DADDY": "μπαμπάς @bugsounet λέει... ΌΧΙ,ΌΧΙ ΚΑΙ ΌΧΙ !!!",
-
   "GALoading": "Φόρτωση...",
   "GAReady": "Έτοιμο!",
   "GABegin": "Γεια, πως μπορώ να βοηθήσω?",
@@ -19,5 +17,7 @@
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json λείπει",
 
   "ShellExecError": "Το ShellExec επέστρεψε μερικά σφάλματα",
-  "ShellExecDone": "Επιτυχής εκτέλεση του ShellExec"
+  "ShellExecDone": "Επιτυχής εκτέλεση του ShellExec",
+
+  "EXTStop": "Όλες οι εκτεταμένες διαδικασίες διακόπηκαν"
 }

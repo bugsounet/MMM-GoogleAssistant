@@ -1,0 +1,61 @@
+:root {
+  --wireless-icon-width: auto;
+  --wireless-icon-height: 30px;
+  --wireless-icon-padding: 4px;
+  --wireless-bar-width: 6px;
+  --wireless-bar-spacing: 2px;
+  --wireless-bar-radius: 2px;
+  --wireless-bar-color: #00cc00;
+  --wireless-bar-start-opacity: 0.2;
+}
+
+.icon__signal-strength {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: var(--wireless-icon-width);
+  height: var(--wireless-icon-height);
+  padding: var(--wireless-icon-padding);
+}
+
+.icon__signal-strength span {
+  display: inline-block;
+  width: var(--wireless-bar-width);
+  margin-left: var(--wireless-bar-spacing);
+  transform-origin: 100% 100%;
+  background-color: var(--wireless-bar-color);
+  border-radius: var(--wireless-bar-radius);
+}
+
+.icon__signal-strength .bar-1 {
+  height: 25%;
+}
+
+.icon__signal-strength .bar-2 {
+  height: 50%;
+}
+
+.icon__signal-strength .bar-3 {
+  height: 75%;
+}
+
+.icon__signal-strength .bar-4 {
+  height: 100%;
+}
+
+.signal-0 .bar-1, .signal-0 .bar-2, .signal-0 .bar-3, .signal-0 .bar-4 {
+  opacity: var(--wireless-bar-start-opacity);
+}
+
+.signal-1 .bar-2, .signal-1 .bar-3, .signal-1 .bar-4 {
+  opacity: var(--wireless-bar-start-opacity);
+}
+
+.signal-2 .bar-3, .signal-2 .bar-4 {
+  opacity: var(--wireless-bar-start-opacity);
+}
+
+.signal-3 .bar-4 {
+  opacity: var(--wireless-bar-start-opacity);
+}
+

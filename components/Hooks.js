@@ -146,18 +146,6 @@ class Hooks {
         that.assistantResponse.playChime(snde.sound, true)
       }
     }
-
-    if (command.hasOwnProperty("bardMode")) {
-      var bard = command.bardMode
-      if (bard === true) {
-        that.bardMode = true
-        logGA("Bard Mode ON")
-      }
-      if (bard === false) {
-        that.bardMode = false
-        logGA("Bard Mode OFF")
-      }
-    }
   }
 
   parseLoadedRecipe(payload) {

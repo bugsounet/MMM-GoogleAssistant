@@ -4,6 +4,17 @@ class activateProcess {
   }
 
   assistantActivate(that, payload) {
+    if (payload.test) {
+      var testing = {
+        type: "TEXT",
+        key: "What time is it?",
+        lang: that.config.assistantConfig.lang,
+        status: "testing",
+        chime: false
+      }
+      that.sendSocketNotification("ACTIVATE_ASSISTANT", testing)
+      return
+    }
     if (that.GAStatus.actual != "standby" && !payload.force) return logGA("Assistant is busy.")
     that.assistantResponse.clearAliveTimers()
     if (that.GAStatus.actual== "continue") that.assistantResponse.showTranscription(that.translate("GAContinue"))
@@ -37,12 +48,7 @@ class activateProcess {
         callback_none()
       } else callback_done()
     } else {
-      if (that.bardMode) {
-        that.Gateway.sendBardQuery(that, response.transcription.transcription)
-        callback_done()
-      } else {
-        callback_none()
-      }
+      callback_none()
     }
   }
 }
