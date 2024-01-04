@@ -5,6 +5,7 @@
 // define all vars
 var translation= {}
 var versionGW = {}
+var locationGW = window.location.origin
 
 // Load rules
 window.addEventListener("load", async event => {
@@ -20,18 +21,16 @@ function doRestart() {
   $('#text1').text(translation.Tools_Restart_Text1)
   $('#text2').text(translation.Tools_Restart_Text2)
 
-  function handle200 (response) {
+  function handle200 () {
     window.location.href = "/"
   }
 
   function checkPage(callback) {
-    const xhr = new XMLHttpRequest()
-    xhr.open("GET", "/", true)
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState !== XMLHttpRequest.DONE) return
-      if (xhr.status === 200) return callback(xhr.status)
-    }
-    xhr.send()
+    fetch(locationGW)
+      .then(response => {
+        if (response.status == 200) return callback()
+      })
+      .catch(err => {})
   }
 
   setInterval(() => {

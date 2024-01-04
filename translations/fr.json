@@ -304,7 +304,7 @@
   "VAL_EXT-Internet_Delay": "Défini l'intervalle de vérification Internet (en ms",
   "VAL_EXT-Internet_Scan": "Nom ou adresse du point de contrôle Ping",
   "VAL_EXT-Internet_Alert": "Affiche ou non l'alerte de perte de connexion Internet (EXT-Alert nécessaire)",
-  "VAL_EXT-Internet_Restart": "Redémarre Magic Mirror",
+  "VAL_EXT-Internet_Restart": "Redémarre MagicMirror²",
   "VAL_EXT-Keyboard_keyFinder": "Afficher le code de la touche avec EXT-Alert lorsqu'elle est enfoncée",
   "VAL_EXT-Keyboard_keys": "Définissez vos règles de touches",
   "VAL_EXT-Keyboard_keycode": "Numéro de code de la touche",

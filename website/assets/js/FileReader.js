@@ -260,7 +260,7 @@ See http://github.com/bgrins/filereader.js for documentation.
         var group = {
             groupID: getGroupID(),
             files: files,
-            started: new Date()
+            started: new Date(Date.now())
         };
 
         function groupEnd() {

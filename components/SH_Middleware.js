@@ -39,7 +39,7 @@ function initialize(that) {
         if (!user) return res.sendFile(SHWebsiteDir+ "/login.html")
         that.SmartHome.last_code = that.lib.SHTools.random_string(8)
         that.SmartHome.last_code_user = form["username"]
-        that.SmartHome.last_code_time = (new Date()).getTime() / 1000
+        that.SmartHome.last_code_time = (new Date(Date.now())).getTime() / 1000
         let params = {
           'state': args["state"],
           'code': that.SmartHome.last_code,
@@ -55,7 +55,7 @@ function initialize(that) {
     .post("/smarthome/token/", (req,res) => {
       let form = req.body
       if (form["grant_type"] && form["grant_type"] == "authorization_code" && form["code"] && form["code"] == that.SmartHome.last_code) {
-        let time = (new Date()).getTime() / 1000
+        let time = (new Date(Date.now())).getTime() / 1000
         if (time - that.SmartHome.last_code_time > 10) {
           log("[TOKEN] Invalid code (timeout)")
           res.status(403).sendFile(SHWebsiteDir+ "/403.html")

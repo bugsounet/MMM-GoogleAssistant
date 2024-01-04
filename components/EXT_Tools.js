@@ -119,7 +119,7 @@ function searchInstalled (that) {
 
 /** timeStamp for backup **/
 function timeStamp() {
-  var now = new Date()
+  var now = new Date(Date.now())
   var date = [ now.getFullYear(), now.getMonth() + 1, now.getDate() ]
   var time = [ now.getHours(), now.getMinutes(), now.getSeconds() ]
   for (var i = 0; i < 3; i++ ) {

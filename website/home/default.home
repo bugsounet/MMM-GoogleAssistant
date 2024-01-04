@@ -7,7 +7,7 @@
   <li>Allows to configure / modify your EXT with a template</li>
   <li>Allows to configure MagicMirror²</li>
   <li>Allows you to create a backup of your configuration file at each modification</li>
-  <li>Displaying Magic Mirror Logs in real time</li>
+  <li>Displaying MagicMirror² Logs in real time</li>
   <li>Allows you to do now operations with the embedded Terminal</li>
   <li>Allows you to manually restart or stop MagicMirror²</li>
   <li>Allows you to turn off or turn on your screen</li>

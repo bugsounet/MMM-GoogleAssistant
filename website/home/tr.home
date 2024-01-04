@@ -4,9 +4,9 @@
 <ul>
   <li>Tüm EXT eklentilerinin kurulmasına / silinmesine izin verir</li>
   <li>EXT'nizi bir şablonla yapılandırmanıza / değiştirmenize olanak tanır</li>
-  <li>MagicMirror'ı yapılandırmaya izin verir</li>
+  <li>MagicMirror²'ı yapılandırmaya izin verir</li>
   <li>Her değişiklikte konfigürasyon dosyanızın bir yedeğini oluşturmanıza olanak sağlar</li>
-  <li>Magic Mirror Günlüklerini gerçek zamanlı olarak görüntüleme</li>
+  <li>MagicMirror² Günlüklerini gerçek zamanlı olarak görüntüleme</li>
   <li>Gömülü Terminal ile artık işlem yapmanızı sağlar</li>
   <li>Sihirli Ayna'yı manuel olarak yeniden başlatmanıza veya durdurmanıza olanak tanır</li>
   <li>Ekranınızı kapatmanıza veya açmanıza olanak tanır</li>
