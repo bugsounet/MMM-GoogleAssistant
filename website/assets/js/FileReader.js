@@ -264,7 +264,7 @@ See http://github.com/bgrins/filereader.js for documentation.
         };
 
         function groupEnd() {
-            group.ended = new Date();
+            group.ended = new Date(Date.now());
             opts.on.groupend(group);
         }
 
@@ -300,7 +300,7 @@ See http://github.com/bgrins/filereader.js for documentation.
                     file.extra = e.data.extra;
                 }
 
-                file.extra.ended = new Date();
+                file.extra.ended = new Date(Date.now());
 
                 // Call error or load event depending on success of the read from the worker.
                 opts.on[result === "error" ? "error" : "load"]({ target: { result: result } }, file);
@@ -310,7 +310,7 @@ See http://github.com/bgrins/filereader.js for documentation.
 
         Array.prototype.forEach.call(files, function(file) {
 
-            file.extra.started = new Date();
+            file.extra.started = new Date(Date.now());
 
             if (opts.accept && !file.type.match(new RegExp(opts.accept))) {
                 opts.on.skip(file);
@@ -341,7 +341,7 @@ See http://github.com/bgrins/filereader.js for documentation.
                 fileReaderEvents.forEach(function(eventName) {
                     reader['on' + eventName] = function(e) {
                         if (eventName == 'load' || eventName == 'error') {
-                            file.extra.ended = new Date();
+                            file.extra.ended = new Date(Date.now());
                         }
                         opts.on[eventName](e, file);
                         if (eventName == 'loadend') {
