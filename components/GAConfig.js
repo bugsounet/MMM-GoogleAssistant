@@ -150,7 +150,7 @@ class GAConfig {
   preinit(that) {
     if (that.calendarLoading) {
       setTimeout(() => {
-        that.assistantResponse.showTranscription("Waiting Calendar...")
+        that.assistantResponse.showTranscription(that.translate("WAITING_CALENDAR"))
       },2000)
       setTimeout(() => {
         this.preinit(that)

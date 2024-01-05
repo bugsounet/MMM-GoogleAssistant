@@ -9,6 +9,7 @@
   "STOP_HELP": "Stop Extented Display si besoin",
   "STOP_EXT": "j'arrête Extented Display",
 
+  "WAITING_CALENDAR": "Chargement du module calendar...",
   "SDK_TESTING": "Test de Assistant SDK et du Serveur Google...",
   "PREPARE_WEBSITE": "Préparation du site Web MMM-GoogleAssistant...",
 
