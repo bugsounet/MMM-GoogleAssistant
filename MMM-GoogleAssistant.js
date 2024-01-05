@@ -11,7 +11,7 @@ Module.register("MMM-GoogleAssistant", {
   requiresVersion: "2.25.0",
   defaults: {
     debug:false,
-    awaitCalendar: false,
+    awaitCalendar: true,
     stopCommand: "stop",
     otherStopCommands: [],
     assistantConfig: {
