@@ -58,11 +58,17 @@ class GAConfig {
       }
     }
 
+    that.calendarLoading = that.config.awaitCalendar
+
     that.Gateway = new Gateway(that)
     that.Hooks = new Hooks()
     that.activateProcess = new activateProcess()
     that.assistantResponse = new AssistantResponse(that.helperConfig["responseConfig"], this.callbacks)
     that.AssistantSearch = new AssistantSearch(that.helperConfig.assistantConfig)
+
+    that.assistantResponse.prepareGA()
+    that.assistantResponse.prepareBackground ()
+    that.assistantResponse.Loading()
 
     // create the main command for "stop" (EXT_STOP)
     var StopCommand = {
@@ -104,10 +110,7 @@ class GAConfig {
       console.error("[GA] No Stop Commands defined!")
     }
 
-    that.assistantResponse.prepareGA()
-    that.assistantResponse.prepareBackground ()
-    that.assistantResponse.Loading()
-    that.sendSocketNotification("PRE-INIT", that.helperConfig)
+    this.preinit(that)
     console.log("[GA] GAConfig Ready")
   }
 
@@ -142,5 +145,18 @@ class GAConfig {
     that.config.responseConfig.useFullscreen= true
     that.assistantResponse = null
     that.assistantResponse = new AssistantResponse(that.helperConfig["responseConfig"], this.callbacks)
+  }
+
+  preinit(that) {
+    if (that.calendarLoading) {
+      setTimeout(() => {
+        that.assistantResponse.showTranscription("Waiting Calendar...")
+      },2000)
+      setTimeout(() => {
+        this.preinit(that)
+      },5000)
+    } else {
+      that.sendSocketNotification("PRE-INIT", that.helperConfig)
+    }
   }
 }
