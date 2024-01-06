@@ -82,6 +82,7 @@ function createGW(that) {
     .use('/EXT_Restart.js', that.lib.express.static(Path + '/website/tools/EXT_Restart.js'))
     .use('/EXT_Die.js', that.lib.express.static(Path + '/website/tools/EXT_Die.js'))
     .use('/EXT_Fetch.js', that.lib.express.static(Path + '/website/tools/EXT_Fetch.js'))
+    .use('/3rdParty.js', that.lib.express.static(Path + '/website/tools/3rdParty.js'))
     .use('/assets', that.lib.express.static(Path + '/website/assets', options))
     .use("/jsoneditor" , that.lib.express.static(Path + '/node_modules/jsoneditor'))
     .use("/xterm" , that.lib.express.static(Path + '/node_modules/xterm'))
@@ -480,6 +481,11 @@ function createGW(that) {
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
     })
 
+    .get("/3rdpartymodules", (req,res) => {
+      if (req.user) res.sendFile(Path+ "/website/Gateway/3rdpartymodules.html")
+      else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
+    })
+
     .get("/getSetting", (req,res) => {
       if (req.user) res.send(that.config)
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
@@ -851,11 +857,6 @@ function createGW(that) {
 
     .get("/activeVersion", (req,res) => {
       if (req.user) res.send(that.EXT.activeVersion)
-      else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
-    })
-
-    .get("/3rdpartymodules", (req,res) => {
-      if (req.user) res.sendFile(Path+ "/website/Gateway/3rdpartymodules.html")
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
     })
 
