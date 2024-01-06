@@ -854,6 +854,11 @@ function createGW(that) {
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
     })
 
+    .get("/3rdpartymodules", (req,res) => {
+      if (req.user) res.sendFile(Path+ "/website/Gateway/3rdpartymodules.html")
+      else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
+    })
+
     .get("/download/*", (req,res) => {
       healthDownloader(req, res)
     })

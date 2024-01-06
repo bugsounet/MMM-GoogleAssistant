@@ -13,13 +13,14 @@
     <link rel="stylesheet" href="../assets/fonts/fontawesome-all.min.css">
     <link rel="stylesheet" href="../assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" href="../assets/fonts/fontawesome5-overrides.min.css">
-    <link rel="stylesheet" href="../assets/css/animate.min.css">
     <link rel="stylesheet" href="/jsoneditor/dist/jsoneditor.min.css">
     <link rel="stylesheet" href="../assets/css/alertify-bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/alertify.min.css">
+    <link rel="stylesheet" href="../assets/css/Animated-Type-Heading.css">
     <link rel="stylesheet" href="../assets/css/Article-Clean.css">
     <link rel="stylesheet" href="../assets/css/bugsounet.css">
-    <link rel="stylesheet" href="../assets/css/jseditor-dark.css">
+    <link rel="stylesheet" href="../assets/css/Datatable.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/css/theme.bootstrap_4.min.css">
     <link rel="stylesheet" href="../assets/css/Navbar.css">
     <link rel="stylesheet" href="../assets/css/tools.css">
 </head>
@@ -51,34 +52,29 @@
                         </div>
                     </div>
                 </nav>
-                <div class="container-fluid">
-                    <h3 data-bss-disabled-mobile="true" class="bounce animated mb-4 text-google-white" id="MMConfigHeader">Loading...</h3>
-                    <div class="text-truncate"><select id="backup" style="margin-bottom: 10px;" onchange="location = &quot;/EditMMConfig?config=&quot;+this.value;">
-                            <option value="default" selected="">Loading</option>
-                        </select><label class="form-label" for="fileToLoad"><input type="file" id="fileToLoad" style="display: none;" accept=".js" onchange="processSelectedFiles(this)"><a class="btn btn-outline-link btn-lg text-truncate" role="button" id="externalLoad" style="padding: 8px 10px;"><i class="fas fa-folder-open text-google-yellow"></i></a></label><a class="btn btn-link btn-lg" role="button" id="externalSave" style="padding: 8px 10px;"><i class="fas fa-save text-google-green"></i></a></div>
-                    <div id="jsoneditor" style="height: 65vh;"></div>
-                    <div class="btn-group invisible" role="group" id="buttonGrp" style="padding: 10px 0px;"><button class="btn btn-success bg-google-green" id="save" type="button" style="padding: 6px 12px;border-radius: 5.6px;">Save</button><button class="btn btn-warning rubberBand animated bg-google-yellow" id="wait" type="button" style="margin: 0px;border-radius: 5.6px;">Please wait...</button><a class="btn btn-success tada animated bg-google-green" role="button" id="done" style="margin: 0px;border-radius: 5.6px;" href="/Tools">Done</a><a class="btn btn-danger flash animated bg-google-red" role="button" id="error" style="margin: 0px;border-radius: 5.6px;" href="/Terminal">Error</a><a class="btn btn-danger flash animated infinite bg-google-red" role="button" id="errorConfig" style="margin: 0px;border-radius: 5.6px;">Error</a><button class="btn btn-success bg-google-green" id="load" type="button" style="padding: 6px 12px;border-radius: 5.6px;">Load</button></div>
+                <div style="width: 100%;height: 85%;">
+                    <div class="ratio ratio-16x9 ratio-del" style="width: -webkit-fill-available;height: -webkit-fill-available;"><iframe src="https://kristjanesperanto.github.io/MagicMirror-3rd-Party-Modules/"></iframe></div>
                 </div>
             </div>
-            <footer class="sticky-footer bg-google-grey-21">
-                <div class="container my-auto">
-                    <div class="text-center my-auto copyright"><span>Copyright © bugsounet.fr 2024</span></div>
-                </div>
-            </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
     <script src="../assets/js/jquery.min.js"></script>
     <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="../assets/js/bs-init.js"></script>
+    <script src="/EXT_About.js" crossorigin="anonymous"></script>
     <script src="/EXT_Fetch.js" crossorigin="anonymous"></script>
-    <script src="/EXT_MMConfig.js" crossorigin="anonymous"></script>
-    <script src="/jsoneditor/dist/jsoneditor.min.js"></script>
     <script src="../assets/js/alertify.min.js"></script>
+    <script src="../assets/js/Animated-Type-Heading.js"></script>
     <script src="../assets/js/aos.min.js"></script>
-    <script src="../assets/js/FileReader.js"></script>
-    <script src="../assets/js/FileSaver.js"></script>
+    <script src="https://cdn.datatables.net/v/bs4/dt-1.12.1/datatables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/widgets/widget-filter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/widgets/widget-storage.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/pleaserotate.min.js"></script>
     <script src="../assets/js/theme.js"></script>
+    <script src="../assets/js/tools.js"></script>
 </body>
 
 </html>
