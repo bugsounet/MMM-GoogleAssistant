@@ -479,6 +479,7 @@ function doStatic() {
   $('#CPU').text(system.CPU.type)
   $('#MMVersion').text(system.VERSION.MagicMirror)
   $('#ElectronVersion').text(system.VERSION.ELECTRON)
+  $('#GPU').text(system.GPU ? translation.System_GPUAcceleration_Enabled : translation.System_GPUAcceleration_Disabled)
   $('#NODEMM').text(system.VERSION.NODEMM)
   $('#NODECORE').text(system.VERSION.NODECORE)
   $('#NPM').text(system.VERSION.NPM)
@@ -547,5 +548,10 @@ function doStatic() {
   $("#RevPlugin").text(translation.System_RevPlugin)
   if (Object.entries(activeVersion).length) $("#CurrentlyRunning").text(translation.System_CurrentlyRunning)
   else $("#CurrentlyRunning").text(translation.System_NoPlugins)
+  if (system.GPU) {
+    $('#GPU').removeClass("animated")
+    $('#GPU').removeClass("text-google-red")
+    $('#GPU').addClass("text-google-green")
+  }
   $("#SystemDisplayer").removeClass("visually-hidden")
 }

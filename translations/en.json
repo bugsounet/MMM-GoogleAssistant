@@ -155,6 +155,8 @@
   "GW_System_CurrentLoadCPU": "Current Load:",
   "GW_System_GovernorCPU": "Governor:",
   "GW_System_TempCPU": "Temperature:",
+  "GW_System_GPUAcceleration_Disabled": "GPU Accelerated rendering disabled",
+  "GW_System_GPUAcceleration_Enabled": "GPU Accelerated rendering enabled",
   "GW_System_MemorySystem": "Memory",
   "GW_System_TypeMemory": "Active:",
   "GW_System_SwapMemory": "Swap:",

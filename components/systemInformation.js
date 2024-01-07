@@ -27,7 +27,6 @@ class systemInfo {
         rate: undefined,
         quality: undefined
       },
-
       MEMORY: {
         total: 0,
         used: 0,
@@ -47,6 +46,7 @@ class systemInfo {
         speed: "unknow",
         governor: "unknow"
       },
+      GPU: process.env.ELECTRON_ENABLE_GPU !== "1" ? false : true,
       UPTIME: {
         current: 0,
         currentDHM: "unknow",

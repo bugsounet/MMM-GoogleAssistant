@@ -126,6 +126,8 @@ class EXT_Translations {
       Tr.System_Box_Restart = that.translate("GW_System_Box_Restart")
       Tr.System_Restart = that.translate("GW_System_Restart")
       Tr.System_Box_Version = that.translate("GW_System_Box_Version")
+      Tr.System_GPUAcceleration_Disabled = that.translate("GW_System_GPUAcceleration_Disabled")
+      Tr.System_GPUAcceleration_Enabled = that.translate("GW_System_GPUAcceleration_Enabled")
       Tr.System_NodeVersion = that.translate("GW_System_NodeVersion")
       Tr.System_NPMVersion = that.translate("GW_System_NPMVersion")
       Tr.System_OSVersion = that.translate("GW_System_OSVersion")

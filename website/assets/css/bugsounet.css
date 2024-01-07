@@ -88,3 +88,9 @@ tbody#PluginsTable tr:nth-child(even) {
   background-color: #212121;
 }
 
+.ratio-del::before {
+  padding-top: var(--bs-aspect-ratio);
+  content: "";
+  display: none;
+}
+
