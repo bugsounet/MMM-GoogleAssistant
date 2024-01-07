@@ -155,6 +155,8 @@
   "GW_System_CurrentLoadCPU": "Charge:",
   "GW_System_GovernorCPU": "Gouverneur:",
   "GW_System_TempCPU": "Température:",
+  "GW_System_GPUAcceleration_Disabled": "Rendu accéléré par GPU désactivé",
+  "GW_System_GPUAcceleration_Enabled": "Rendu accéléré par GPU activé",
   "GW_System_MemorySystem": "Mémoire",
   "GW_System_TypeMemory": "Active:",
   "GW_System_SwapMemory": "Swap:",
