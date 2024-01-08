@@ -289,6 +289,10 @@ Module.register("MMM-GoogleAssistant", {
     text += "*" + this.translate("GW_System_NPMVersion") + "* `" + result['VERSION']['NPM'] + "`\n"
     text += "*" + this.translate("GW_System_OSVersion") + "* `" + result['VERSION']['OS'] + "`\n"
     text += "*" + this.translate("GW_System_KernelVersion") + "* `" + result['VERSION']['KERNEL'] + "`\n"
+    // GPU
+    text += "*-- GPU --*\n"
+    let GPU_INFO = result.GPU ? this.translate("GW_System_GPUAcceleration_Enabled") : ("WARN: " + this.translate("GW_System_GPUAcceleration_Disabled"))
+    text += "*" + GPU_INFO + "*\n"
     // CPU
     text += "*-- " + this.translate("GW_System_CPUSystem") + " --*\n"
     text += "*" + this.translate("GW_System_TypeCPU") + "* `" + result['CPU']['type'] + "`\n"
