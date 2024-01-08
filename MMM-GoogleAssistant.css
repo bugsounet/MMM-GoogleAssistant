@@ -176,11 +176,20 @@
   padding: 0.5rem;
 }
 
+#GA-GPU_CONTAINER,
 #GA-HOSTNAME_CONTAINER {
   font-size: x-large;
   margin-bottom: 20px;
   margin-top: 0px;
   text-align: center;
+}
+
+#GA-GPU_VALUE.red {
+  color: #db3236;
+}
+
+#GA-GPU_VALUE.green {
+  color: #3cba54;
 }
 
 #GA-SYSINFO_CONTAINER {

@@ -107,6 +107,15 @@ class sysInfoPage {
           Hostname_value.textContent = this.translate("LOADING")
           Hostname_container.appendChild(Hostname_value)
 
+        var GPU_container = document.createElement("div")
+        GPU_container.id = "GA-GPU_CONTAINER"
+        content_wrapper.appendChild(GPU_container)
+
+          var GPU_value = document.createElement("div")
+          GPU_value.id = "GA-GPU_VALUE"
+          GPU_value.textContent = "GPU..."
+          GPU_container.appendChild(GPU_value)
+
         var Sysinfo_container = document.createElement("div")
         Sysinfo_container.id = "GA-SYSINFO_CONTAINER"
         content_wrapper.appendChild(Sysinfo_container)
@@ -636,6 +645,19 @@ class sysInfoPage {
     var Hostname_value = document.getElementById("GA-HOSTNAME_VALUE")
     Hostname_value.textContent = this.System.HOSTNAME
 
+    /* GPU */
+    var GPU_value = document.getElementById("GA-GPU_VALUE")
+    let animateGPUWarn = ["animate__animated", "animate__flash", "animate__infinite"]
+    GPU_value.textContent = this.System.GPU ? this.translate("GW_System_GPUAcceleration_Enabled") : this.translate("GW_System_GPUAcceleration_Disabled")
+    if (this.System.GPU) {
+      GPU_value.classList.remove(...animateGPUWarn)
+      GPU_value.classList.remove("red")
+      GPU_value.classList.add("green")
+    } else {
+      GPU_value.classList.add(...animateGPUWarn)
+      GPU_value.classList.remove("green")
+      GPU_value.classList.add("red")
+    }
     /* Version */
     var MM_Value = document.getElementById("GA-SYSINFO_VERSION-MM-VALUE")
     MM_Value.textContent = this.System.VERSION.MagicMirror
