@@ -58,8 +58,6 @@ class GAConfig {
       }
     }
 
-    that.calendarLoading = that.config.awaitCalendar
-
     that.Gateway = new Gateway(that)
     that.Hooks = new Hooks()
     that.activateProcess = new activateProcess()
@@ -110,7 +108,7 @@ class GAConfig {
       console.error("[GA] No Stop Commands defined!")
     }
 
-    this.preinit(that)
+    this.sendSocketNotification("PRE-INIT", that.helperConfig)
     console.log("[GA] GAConfig Ready")
   }
 
@@ -145,18 +143,5 @@ class GAConfig {
     that.config.responseConfig.useFullscreen= true
     that.assistantResponse = null
     that.assistantResponse = new AssistantResponse(that.helperConfig["responseConfig"], this.callbacks)
-  }
-
-  preinit(that) {
-    if (that.calendarLoading) {
-      setTimeout(() => {
-        that.assistantResponse.showTranscription(that.translate("WAITING_CALENDAR"))
-      },2000)
-      setTimeout(() => {
-        this.preinit(that)
-      },5000)
-    } else {
-      that.sendSocketNotification("PRE-INIT", that.helperConfig)
-    }
   }
 }

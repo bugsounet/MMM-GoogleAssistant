@@ -11,7 +11,6 @@ Module.register("MMM-GoogleAssistant", {
   requiresVersion: "2.25.0",
   defaults: {
     debug:false,
-    awaitCalendar: false,
     stopCommand: "stop",
     otherStopCommands: [],
     assistantConfig: {
@@ -128,9 +127,6 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "GA_STOP":
         if (this.assistantResponse.response && this.GAStatus.actual == "reply") this.assistantResponse.conversationForceEnd()
-        break
-      case "CALENDAR_EVENTS":
-        if (this.config.awaitCalendar) this.calendarLoading = false
         break
     }
   },
