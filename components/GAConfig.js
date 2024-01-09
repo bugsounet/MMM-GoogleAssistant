@@ -108,7 +108,7 @@ class GAConfig {
       console.error("[GA] No Stop Commands defined!")
     }
 
-    this.sendSocketNotification("PRE-INIT", that.helperConfig)
+    that.sendSocketNotification("PRE-INIT", that.helperConfig)
     console.log("[GA] GAConfig Ready")
   }
 
