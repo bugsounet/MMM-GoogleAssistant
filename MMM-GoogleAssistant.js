@@ -278,6 +278,7 @@ Module.register("MMM-GoogleAssistant", {
     text += "*" + result['HOSTNAME'] + "*\n\n"
     // version
     text += "*-- " + this.translate("GW_System_Box_Version") + " --*\n"
+    text += "*" + "MMM-GoogleAssistant:* `" + result['VERSION']['GA'] + "`\n"
     text += "*" + "MagicMirror²:* `" + result['VERSION']['MagicMirror'] + "`\n"
     text += "*" + "Electron:* `" + result['VERSION']['ELECTRON'] + "`\n"
     text += "*" + "MagicMirror² " + this.translate("GW_System_NodeVersion") + "* `" + result['VERSION']['NODEMM'] + "`\n"
