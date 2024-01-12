@@ -4,6 +4,7 @@ class systemInfo {
     this.translate = translate
     this.System = {
       VERSION: {
+        GA: require('../package.json').version + " (" + require('../package.json').rev + ")",
         MagicMirror: require('../../../package.json').version,
         ELECTRON: "unknow",
         NODEMM: "unknow",
@@ -27,7 +28,6 @@ class systemInfo {
         rate: undefined,
         quality: undefined
       },
-
       MEMORY: {
         total: 0,
         used: 0,
@@ -47,6 +47,7 @@ class systemInfo {
         speed: "unknow",
         governor: "unknow"
       },
+      GPU: process.env.ELECTRON_ENABLE_GPU !== "1" ? false : true,
       UPTIME: {
         current: 0,
         currentDHM: "unknow",

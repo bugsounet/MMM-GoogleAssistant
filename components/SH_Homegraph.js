@@ -45,7 +45,7 @@ async function requestSync(that) {
   }
   try {
     const res = await that.SmartHome.homegraph.devices.requestSync(body)
-    log("[RequestSync] Done.", res.statusText)
+    console.log("[GA] [SMARTHOME] Ready!")
   } catch (e) {
     if (e.code) {
       console.error("[GA] [SMARTHOME] [HOMEGRAPH] [RequestSync] Error:", e.code , e.errors)

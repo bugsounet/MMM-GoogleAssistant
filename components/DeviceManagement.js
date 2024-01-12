@@ -48,10 +48,11 @@ function create(that) {
 
   setTimeout(() => {
     if (that.EXT.initialized) {
+      console.log("[GA] [SMARTHOME] Configuration...")
       log("Collecting all EXTs installed...")
       init(that)
     }
-  }, 1000*10 )
+  }, 1000*30 )
 }
 
 function init(that) {

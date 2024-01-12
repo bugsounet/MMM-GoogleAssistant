@@ -11,6 +11,7 @@ class sysInfoPage {
     this.timerHide = null
     this.System = {
       VERSION:{
+        GA:"unknow",
         MagicMirror:"unknow",
         ELECTRON:"unknow",
         NODEMM:"unknow",
@@ -53,6 +54,7 @@ class sysInfoPage {
         speed:"unknow",
         governor:"unknow"
       },
+      GPU: "unknow",
       UPTIME:{
         current:0,
         currentDHM:"unknow",
@@ -107,6 +109,15 @@ class sysInfoPage {
           Hostname_value.textContent = this.translate("LOADING")
           Hostname_container.appendChild(Hostname_value)
 
+        var GPU_container = document.createElement("div")
+        GPU_container.id = "GA-GPU_CONTAINER"
+        content_wrapper.appendChild(GPU_container)
+
+          var GPU_value = document.createElement("div")
+          GPU_value.id = "GA-GPU_VALUE"
+          GPU_value.textContent = "GPU..."
+          GPU_container.appendChild(GPU_value)
+
         var Sysinfo_container = document.createElement("div")
         Sysinfo_container.id = "GA-SYSINFO_CONTAINER"
         content_wrapper.appendChild(Sysinfo_container)
@@ -136,6 +147,15 @@ class sysInfoPage {
                 var Sysinfo_version_list = document.createElement("div")
                 Sysinfo_version_list.id = "GA-SYSINFO_VERSION_LIST"
                 Sysinfo_version_group.appendChild(Sysinfo_version_list)
+
+              var GAVersion = document.createElement("div")
+              GAVersion.id = "GA-SYSINFO_VERSION-GA"
+              GAVersion.textContent = "MMM-GoogleAssistant:"
+              Sysinfo_version_list.appendChild(GAVersion)
+                var GAVersion_Value = document.createElement("div")
+                GAVersion_Value.id = "GA-SYSINFO_VERSION-GA-VALUE"
+                GAVersion_Value.textContent= this.System.VERSION.GA
+                GAVersion.appendChild(GAVersion_Value)
 
               var MM = document.createElement("div")
               MM.id = "GA-SYSINFO_VERSION-MM"
@@ -636,7 +656,22 @@ class sysInfoPage {
     var Hostname_value = document.getElementById("GA-HOSTNAME_VALUE")
     Hostname_value.textContent = this.System.HOSTNAME
 
+    /* GPU */
+    var GPU_value = document.getElementById("GA-GPU_VALUE")
+    let animateGPUWarn = ["animate__animated", "animate__flash", "animate__infinite"]
+    GPU_value.textContent = this.System.GPU ? this.translate("GW_System_GPUAcceleration_Enabled") : this.translate("GW_System_GPUAcceleration_Disabled")
+    if (this.System.GPU) {
+      GPU_value.classList.remove(...animateGPUWarn)
+      GPU_value.classList.remove("red")
+      GPU_value.classList.add("green")
+    } else {
+      GPU_value.classList.add(...animateGPUWarn)
+      GPU_value.classList.remove("green")
+      GPU_value.classList.add("red")
+    }
     /* Version */
+    var GA_Value = document.getElementById("GA-SYSINFO_VERSION-GA-VALUE")
+    GA_Value.textContent = this.System.VERSION.GA
     var MM_Value = document.getElementById("GA-SYSINFO_VERSION-MM-VALUE")
     MM_Value.textContent = this.System.VERSION.MagicMirror
     var ELECTRON_Value = document.getElementById("GA-SYSINFO_VERSION-ELECTRON-VALUE")

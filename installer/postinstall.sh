@@ -77,23 +77,31 @@ fi
 if  [ "$os_name" == "raspbian" ] && [ "$arch" == "aarch64" ]; then
   userspace="$(getconf LONG_BIT)"
   if [ "$userspace" == "32" ]; then
-    arm64_search="$(grep -m1 '\arm_64bit' /boot/config.txt)"
-    arm64_value=$(get_config_var arm_64bit)
-    Installer_info "You have an x64 kernel with an 32bits userspace"
+    if [ "$os_version" -eq 12 ]; then
+      configFile="/boot/firmware/config.txt"
+      if [ ! -f $configFile ]; then
+        configFile="/boot/config.txt"
+      fi
+    else
+      configFile="/boot/config.txt"
+    fi
+    arm64_search="$(grep -m1 '\arm_64bit' $configFile)"
+    arm64_value=$(get_config_var $configFile arm_64bit)
+    Installer_info "$os_name $os_version: You have an x64 kernel with an 32bits userspace"
     Installer_info "For better performance with MMM-GoogleAssistant, let's turn on 32bits kernel"
     if [ "$arm64_search." == "." ]; then
-      Installer_info "... set arm64bit=0 into /boot/config.txt"
-      set_config_var arm_64bit 0
+      Installer_info "... set arm64bit=0 into $configFile"
+      set_config_var $configFile arm_64bit 0
       echo
       ((change++))
     else
       if [ $arm64_value -eq 1 ]; then
-        Installer_info "... unset arm64bit=1 and set arm64bit=0 into $config"
-        set_config_var arm_64bit 0
+        Installer_info "... unset arm64bit=1 and set arm64bit=0 into $configFile"
+        set_config_var $configFile arm_64bit 0
         echo
         ((change++))
       else
-        Installer_info "... arm64bit value is already set to 0"
+        Installer_info "... arm64bit value is already set to 0 in $configFile"
         echo
         ((change++))
       fi

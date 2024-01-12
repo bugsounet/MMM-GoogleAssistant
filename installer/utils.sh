@@ -153,12 +153,13 @@ Installer_chk () {
   Installer_success "Checking $2: $CHKUSER/$CHKGROUP"
 }
 
-# get/set/clear value of /boot/config.txt
+# get/set value of config.txt
 
-# $1:feature
-# $2:value
+# $1:path of config.txt
+# $2:feature
+# $3:value
 set_config_var() {
-  lua - "$1" "$2" "/boot/config.txt" <<EOF > "$HOME/config.txt"
+  lua - "$2" "$3" "$1" <<EOF > "$HOME/config.txt"
 local key=assert(arg[1])
 local value=assert(arg[2])
 local fn=assert(arg[3])
@@ -178,13 +179,14 @@ end
 EOF
   sudo chown root "$HOME/config.txt"
   sudo chgrp root "$HOME/config.txt"
-  sudo mv "$HOME/config.txt" "/boot/config.txt"
+  sudo mv "$HOME/config.txt" "$1"
 }
 
-# $1:feature
+# $1:path of config.txt
+# $2:feature
 # => return value | 0
 get_config_var() {
-  lua - "$1" "/boot/config.txt" <<EOF
+  lua - "$2" "$1" <<EOF
 local key=assert(arg[1])
 local fn=assert(arg[2])
 local file=assert(io.open(fn))

@@ -176,11 +176,20 @@
   padding: 0.5rem;
 }
 
+#GA-GPU_CONTAINER,
 #GA-HOSTNAME_CONTAINER {
   font-size: x-large;
   margin-bottom: 20px;
   margin-top: 0px;
   text-align: center;
+}
+
+#GA-GPU_VALUE.red {
+  color: #db3236;
+}
+
+#GA-GPU_VALUE.green {
+  color: #3cba54;
 }
 
 #GA-SYSINFO_CONTAINER {
@@ -259,6 +268,7 @@
 #GA-SYSINFO_VERSION-NPM,
 #GA-SYSINFO_VERSION-OS,
 #GA-SYSINFO_VERSION-KERNEL,
+#GA-SYSINFO_VERSION-GA,
 #GA-SYSINFO_VERSION-MM {
   display: inline-flex;
 }
@@ -296,6 +306,7 @@
 #GA-SYSINFO_VERSION-NPM-VALUE,
 #GA-SYSINFO_VERSION-OS-VALUE,
 #GA-SYSINFO_VERSION-KERNEL-VALUE,
+#GA-SYSINFO_VERSION-GA-VALUE,
 #GA-SYSINFO_VERSION-MM-VALUE {
   margin-left: 5px;
 }

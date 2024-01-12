@@ -64,6 +64,10 @@ class GAConfig {
     that.assistantResponse = new AssistantResponse(that.helperConfig["responseConfig"], this.callbacks)
     that.AssistantSearch = new AssistantSearch(that.helperConfig.assistantConfig)
 
+    that.assistantResponse.prepareGA()
+    that.assistantResponse.prepareBackground ()
+    that.assistantResponse.Loading()
+
     // create the main command for "stop" (EXT_STOP)
     var StopCommand = {
       commands: {
@@ -104,9 +108,6 @@ class GAConfig {
       console.error("[GA] No Stop Commands defined!")
     }
 
-    that.assistantResponse.prepareGA()
-    that.assistantResponse.prepareBackground ()
-    that.assistantResponse.Loading()
     that.sendSocketNotification("PRE-INIT", that.helperConfig)
     console.log("[GA] GAConfig Ready")
   }
