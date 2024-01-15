@@ -53,9 +53,6 @@ class GAConfig {
       "sendSocketNotification": (noti, params) => {
         that.sendSocketNotification(noti, params)
       },
-      testingOK: () => {
-        that.GAConfig.EXT_Config(that)
-      }
     }
 
     that.Gateway = new Gateway(that)

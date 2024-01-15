@@ -80,7 +80,7 @@ async function parse(that) {
 
   that.lib.recipes.load(that, ()=> {
     console.log("[GA] Recipes loaded!")
-    that.sendSocketNotification("TESTING")
+    that.sendSocketNotification("PRE-INIT")
   })
 }
 
