@@ -1,3 +1,8 @@
+const { exec } = require("child_process")
+const fs = require("fs")
+const path = require("path")
+const si = require("systeminformation")
+
 class systemInfo {
   constructor(lib,translate) {
     this.lib = lib
@@ -85,7 +90,7 @@ class systemInfo {
 
   async initData() {
     this.System["VERSION"].NODECORE = await new Promise(res => {
-      this.lib.childProcess.exec ("node -v", (err, stdout, stderr)=>{
+      exec ("node -v", (err, stdout, stderr)=>{
         if (err) res("unknow")
         else {
           let version = stdout.trim()
@@ -115,7 +120,7 @@ class systemInfo {
     }
 
     return new Promise(resolve => {
-      this.lib.si.get(valueObject)
+      si.get(valueObject)
         .then(data => {
           if (data.osInfo) {
             this.System["VERSION"].OS = data.osInfo.distro.split(' ')[0] + " " + data.osInfo.release + " (" + data.osInfo.codename + " " + data.osInfo.arch + ")"
@@ -151,7 +156,7 @@ class systemInfo {
       processLoad: "(nginx, electron, librespot, pm2) proc,pid,cpu,mem"
     }
     return new Promise((resolve) => {
-      this.lib.si.get(valueObject)
+      si.get(valueObject)
         .then(async data => {
           this.System['CPU'].usage= data.currentLoad.currentLoad.toFixed(0)
           this.System['CPU'].speed= data.cpu.speed + " Ghz"
@@ -276,7 +281,7 @@ class systemInfo {
 
   uptimed() {
     return new Promise(resolve => {
-      this.lib.si.get( { time: "uptime" } )
+      si.get( { time: "uptime" } )
         .then(async data => {
           if (data.time) {
             this.System["UPTIME"].current = data.time.uptime
@@ -294,9 +299,9 @@ class systemInfo {
 
   getUptimeRecord() {
     return new Promise((resolve) => {
-      var uptimeFilePath = this.lib.path.resolve(__dirname, "../website/tools/.uptimed")
-        if (this.lib.fs.existsSync(uptimeFilePath)) {
-          var readFile = this.lib.fs.readFile(uptimeFilePath, 'utf8',  (error, data) => {
+      var uptimeFilePath = path.resolve(__dirname, "../website/tools/.uptimed")
+        if (fs.existsSync(uptimeFilePath)) {
+          var readFile = fs.readFile(uptimeFilePath, 'utf8',  (error, data) => {
             if (error) {
               console.error("[GA] [SYSTEMINFO] readFile uptimed error!", error)
               return resolve()
@@ -319,7 +324,7 @@ class systemInfo {
             system: 1,
             MM: 1
           }
-          var recordFile = this.lib.fs.writeFile(uptimeFilePath, JSON.stringify(uptime), error => {
+          var recordFile = fs.writeFile(uptimeFilePath, JSON.stringify(uptime), error => {
             if (error) console.error("[GA] [SYSTEMINFO] recordFile creation error!", error)
             else console.log("[GA] [SYSTEMINFO] Create Uptimed")
             resolve()
@@ -330,7 +335,7 @@ class systemInfo {
 
   writeUptimeRecord() {
     return new Promise(resolve => {
-      var uptimeFilePath = this.lib.path.resolve(__dirname, "../website/tools/.uptimed")
+      var uptimeFilePath = path.resolve(__dirname, "../website/tools/.uptimed")
       if (this.System["UPTIME"].current > this.System["UPTIME"].recordCurrent) {
         this.System["UPTIME"].recordCurrent = this.System["UPTIME"].current
         this.System["UPTIME"].recordCurrentDHM = this.getDHM(this.System["UPTIME"].recordCurrent)
@@ -345,7 +350,7 @@ class systemInfo {
         system: this.System["UPTIME"].recordCurrent,
         MM: this.System["UPTIME"].recordMM
       }
-      this.lib.fs.writeFile(uptimeFilePath, JSON.stringify(uptime), error => {
+      fs.writeFile(uptimeFilePath, JSON.stringify(uptime), error => {
         if (error) console.error("[GA] [SYSTEMINFO] recordFile writing error!", error)
         resolve()
       })

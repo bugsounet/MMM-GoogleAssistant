@@ -7,40 +7,8 @@ function libraries(that) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [LIB]", ...args) }
   let libraries= [
     // { "library to load" : "store library name" }
-    { "cheerio": "cheerio" },
-    { "child_process": "childProcess" },
-    { "fs": "fs" },
-    { "os": "os" },
-    { "html-entities": "html-entities" },
-    { "node-html-parser": "HTMLParser" },
-    { "path": "path" },
-
     { "node-pty": "pty" },
-    { "express": "express" },
-    { "http": "http" },
-    { "semver": "semver" },
-    { "body-parser": "bodyParser" },
-    { "express-session": "session" },
-    { "passport": "passport" },
-    { "passport-local" : "LocalStrategy" },
-    { "socket.io": "Socket" },
-    { "cors": "cors" },
-    { "util": "util" },
-    { "systeminformation": "si" },
-    { "readline": "readline" },
-    { "stream": "Stream" },
-    { "actions-on-google": "actions" },
-    { "googleapis": "googleapis" },
-    { "google-auth-library": "GoogleAuthLibrary" },
-    { "lodash": "_" },
-    { "moment": "moment" },
-    { "pm2": "pm2" },
 
-    { "../components/BufferToMP3.js": "BufferToMP3" },
-    { "../components/lpcm16.js": "Recorder" },
-    { "../components/googleAssistant": "GoogleAssistant"},
-    { "../components/assistantConverse.js": "Assistant" },
-    { "../components/screenParser.js" : "ScreenParser" },
     { "../components/shellExec.js": "shellExec" },
     { "../components/configMerge.js": "configMerge" },
     { "../components/googleSearch.js": "googleSearch" },
@@ -57,8 +25,7 @@ function libraries(that) {
     { "../components/DeviceManagement.js": "Device" },
     { "../components/SH_Callbacks.js": "callback" },
     { "../components/SH_Homegraph.js": "homegraph" },
-    { "../components/systemInformation.js": "SystemInformation" },
-    { "../components/wirelessTools.js": "wirelessTools" }
+    { "../components/systemInformation.js": "SystemInformation" }
   ]
   let errors = 0
   return new Promise(resolve => {

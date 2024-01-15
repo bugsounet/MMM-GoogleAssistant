@@ -1,13 +1,16 @@
 /** SmartHome Middleware **/
 var log = (...args) => { /* do nothing */ }
+const fs = require("fs")
+const path = require("path")
+const express = require("express")
+const actions = require("actions-on-google")
 
 function initialize(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME]", ...args) }
-  let SHWebsiteDir =  that.lib.path.resolve(__dirname + "/../website/SmartHome")
-  let tokensDir = that.lib.path.resolve(__dirname + "/../website/tokens/")
-  that.SmartHome.actions = that.lib.actions.smarthome()
+  let SHWebsiteDir =  path.resolve(__dirname + "/../website/SmartHome")
+  let tokensDir = path.resolve(__dirname + "/../website/tokens/")
+  that.SmartHome.actions = actions.smarthome()
 
-  var Path = that.path
   var options = {
     dotfiles: 'ignore',
     etag: false,
@@ -15,7 +18,7 @@ function initialize(that) {
     index: false,
     maxAge: '1d',
     redirect: false,
-    setHeaders: function (res, path, stat) {
+    setHeaders: function (res) {
       res.set('x-timestamp', Date.now())
     }
   }
@@ -25,7 +28,7 @@ function initialize(that) {
   that.lib.ActionsOnGoogle.actions(that)
   that.EXT.app
     /** OAuth2 Server **/
-    .use('/smarthome/assets', that.lib.express.static(that.path + '/website/assets', options))
+    .use('/smarthome/assets', express.static(that.path + '/website/assets', options))
     .get("/smarthome/login/", (req,res) => {
       if (that.SmartHome.init) res.sendFile(SHWebsiteDir+ "/login.html")
       else res.sendFile(SHWebsiteDir+ "/disabled.html")
@@ -61,7 +64,7 @@ function initialize(that) {
           res.status(403).sendFile(SHWebsiteDir+ "/403.html")
         } else {
           let access_token = that.lib.SHTools.random_string(32)
-          that.lib.fs.writeFileSync(tokensDir + "/" + access_token, that.SmartHome.last_code_user, { encoding: "utf8"} )
+          fs.writeFileSync(tokensDir + "/" + access_token, that.SmartHome.last_code_user, { encoding: "utf8"} )
           log("|TOKEN] Send Token:", access_token)
           res.json({"access_token": access_token})
         }
@@ -87,7 +90,7 @@ function initialize(that) {
 
 function disable(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME]", ...args) }
-  let SHWebsiteDir =  that.lib.path.resolve(__dirname + "/../website/SmartHome")
+  let SHWebsiteDir =  path.resolve(__dirname + "/../website/SmartHome")
 
   that.EXT.app
     .get("/smarthome/login/", (req,res) => {

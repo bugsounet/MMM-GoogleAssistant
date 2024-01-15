@@ -1,13 +1,14 @@
 "use strict"
 
 var logGA = (...args) => { /* do nothing */ }
+const CP_exec = require("child_process").exec
 
 function exec (that, payload) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [SHELL_EXEC]", ...args) }
   var command = payload.command
   if (!command) return console.error("[GA] [SHELLEXEC] no command to execute!")
   command += (payload.options) ? (" " + payload.options) : ""
-  that.lib.childProcess.exec (command, (e,so,se)=> {
+  CP_exec(command, (e,so,se)=> {
     logGA("command:", command)
     if (e) {
       console.log("[GA] [SHELL_EXEC] Error:" + e)

@@ -4,6 +4,8 @@
  * @bugsounet 04/2023
 **/
 
+const cheerio = require("cheerio")
+
 class GoogleSearch {
   constructor(lib) {
     this.lib = lib
@@ -24,7 +26,7 @@ class GoogleSearch {
   }
 
   getResults({ data }) {
-    const $ = this.lib.cheerio.load(data)
+    const $ = cheerio.load(data)
     let results = []
 
     $(this.linkSelector).map((index, elem) => {

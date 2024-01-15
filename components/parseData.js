@@ -2,6 +2,8 @@
 
 /** parse data from MagicMirror **/
 var _load = require("../components/loadLibraries.js")
+const fs = require("fs")
+const SystemInformation = require("../components/systemInformation.js")
 
 async function init(that) {
   that.lib = { error: 0 }
@@ -65,11 +67,11 @@ async function parse(that) {
   await that.lib.configMerge.check(that)
   var error = null
 
-  if (!that.lib.fs.existsSync(that.config.assistantConfig["modulePath"] + "/credentials.json")) {
+  if (!fs.existsSync(that.config.assistantConfig["modulePath"] + "/credentials.json")) {
     error = "[FATAL] Assistant: credentials.json file not found !"
     return this.error(that, error, {message: "GAErrorCredentials"})
   }
-  else if (!that.lib.fs.existsSync(that.config.assistantConfig["modulePath"] + "/tokenGA.json")) {
+  else if (!fs.existsSync(that.config.assistantConfig["modulePath"] + "/tokenGA.json")) {
     error = "[FATAL] Assistant: tokenGA.json file not found !"
     return this.error(that, error, {message: "GAErrorTokenGA"})
   }
@@ -112,7 +114,7 @@ async function parseMiddleware(that, data) {
   that.EXT.freeteuse = await that.lib.EXTTools.readFreeteuseTV(that)
   that.EXT.radio= await that.lib.EXTTools.readRadioRecipe(that)
   that.EXT.usePM2 = await that.lib.EXTTools.check_PM2_Process(that)
-  that.EXT.systemInformation.lib = new that.lib.SystemInformation(that.lib, that.EXT.translation)
+  that.EXT.systemInformation.lib = new SystemInformation(that.lib, that.EXT.translation)
   that.EXT.systemInformation.result = await that.EXT.systemInformation.lib.initData()
   if (that.config.website.CLIENT_ID) {
     that.SmartHome.lang = that.lib.SHTools.SHLanguage(that.EXT.language)

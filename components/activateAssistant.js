@@ -1,6 +1,8 @@
 "use strict"
 
 var logGA = (...args) => { /* do nothing */ }
+const Assistant = require("../components/assistantConverse.js")
+const ScreenParser = require("../components/screenParser.js")
 
 function activate (that, payload) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [ACTIVATE_ASSISTANT]", ...args) }
@@ -9,7 +11,7 @@ function activate (that, payload) {
   assistantConfig.debug = that.config.debug
   assistantConfig.lang = payload.lang
   assistantConfig.micConfig = that.config.micConfig
-  that.assistant = new that.lib.Assistant(that.lib, assistantConfig, (obj)=>{
+  that.assistant = new Assistant(that.lib, assistantConfig, (obj)=>{
     that.sendSocketNotification("TUNNEL", obj)
   })
 
@@ -18,7 +20,7 @@ function activate (that, payload) {
     responseOutputURI: "tmp/responseOutput.html",
     responseOutputZoom: that.config.responseConfig.zoom.responseOutput
   }
-  var parser = new that.lib.ScreenParser(that.lib, parserConfig, that.config.debug)
+  var parser = new ScreenParser(that.lib, parserConfig, that.config.debug)
   var result = null
   that.assistant.activate(payload, (response)=> {
     response.lastQuery = payload

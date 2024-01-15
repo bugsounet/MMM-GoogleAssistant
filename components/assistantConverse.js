@@ -1,6 +1,11 @@
 "use strict"
 
 var logGA = (...args) => { /* do nothing */ }
+const fs = require("fs")
+const path = require("path")
+const BufferToMP3 = require("../components/BufferToMP3.js")
+const Recorder = require("../components/lpcm16.js")
+const GoogleAssistant = require("../components/googleAssistant")
 
 class ASSISTANT {
   constructor(lib, config, tunnel = ()=>{}) {
@@ -11,8 +16,8 @@ class ASSISTANT {
     this.micConfig = config.micConfig
     this.assistantConfig = {
       auth:{
-        keyFilePath : this.lib.path.resolve(config.modulePath, "credentials.json"),
-        savedTokensPath : this.lib.path.resolve(config.modulePath, "tokenGA.json")
+        keyFilePath : path.resolve(config.modulePath, "credentials.json"),
+        savedTokensPath : path.resolve(config.modulePath, "tokenGA.json")
       },
       conversationConfig : {
         audio : {
@@ -74,7 +79,7 @@ class ASSISTANT {
   }
 
   start (conversation) {
-    this.assistant = new this.lib.GoogleAssistant(this.assistantConfig.auth)
+    this.assistant = new GoogleAssistant(this.assistantConfig.auth)
     this.assistant
     .on('ready', () => {
       this.assistant.start(this.assistantConfig.conversationConfig)
@@ -102,9 +107,9 @@ class ASSISTANT {
     }
 
     var responseFile = "tmp/lastResponse.mp3"
-    var filePath = this.lib.path.resolve(this.modulePath, responseFile)
+    var filePath = path.resolve(this.modulePath, responseFile)
 
-    var b2m = new this.lib.BufferToMP3 ({debug:this.debug, file:filePath})
+    var b2m = new BufferToMP3 ({debug:this.debug, file:filePath})
     this.mic = null
     if (this.micMode) {
       var defaultOption = {
@@ -116,7 +121,7 @@ class ASSISTANT {
         debug: this.debug
       }
 
-      this.mic = new this.lib.Recorder(Object.assign({}, defaultOption, this.micConfig),conversation, (err)=>{ this.afterListening(err) })
+      this.mic = new Recorder(Object.assign({}, defaultOption, this.micConfig),conversation, (err)=>{ this.afterListening(err) })
       logGA("MIC:RECORDING START.")
       this.mic.start()
     }
@@ -194,7 +199,7 @@ class ASSISTANT {
       conversation.end()
     })
     if (originalPayload.key && originalPayload.type == "WAVEFILE") {
-      var s = this.lib.fs.createReadStream(originalPayload.key, {highWaterMark:4096}).pipe(conversation)
+      var s = fs.createReadStream(originalPayload.key, {highWaterMark:4096}).pipe(conversation)
     }
     if (originalPayload.type == "TEXT") {
       this.tunnel({type: "TRANSCRIPTION", payload:{transcription:originalPayload.key, done:true}})
