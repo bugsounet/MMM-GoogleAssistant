@@ -8,16 +8,7 @@ function libraries(that) {
   let libraries= [
     // { "library to load" : "store library name" }
     { "node-pty": "pty" },
-
-    { "../components/shellExec.js": "shellExec" },
-    { "../components/configMerge.js": "configMerge" },
-    { "../components/googleSearch.js": "googleSearch" },
-    { "../components/searchOnGoogle.js": "searchOnGoogle" },
-    { "../components/recipes.js": "recipes" },
-    { "../components/activateAssistant.js": "activateAssistant" },
-
-    { "../components/EXT_Tools.js": "EXTTools" },
-    { "../components/SH_Tools.js": "SHTools" },
+    
     { "../components/Middleware.js": "Middleware"},
     { "../components/hyperwatch.js": "hyperwatch" },
     { "../components/SH_Middleware.js": "SmartHome" },
@@ -25,7 +16,6 @@ function libraries(that) {
     { "../components/DeviceManagement.js": "Device" },
     { "../components/SH_Callbacks.js": "callback" },
     { "../components/SH_Homegraph.js": "homegraph" },
-    { "../components/systemInformation.js": "SystemInformation" }
   ]
   let errors = 0
   return new Promise(resolve => {

@@ -10,6 +10,7 @@ const passport = require("passport")
 const LocalStrategy = require("passport-local")
 const Socket = require("socket.io")
 const bodyParser = require("body-parser")
+const EXTTools = require("../components/EXT_Tools.js")
 
 /** init function **/
 function initialize(that) {
@@ -31,8 +32,8 @@ function initialize(that) {
 
   that.EXT.app = express()
   that.EXT.server = http.createServer(that.EXT.app)
-  that.EXT.EXTConfigured= that.lib.EXTTools.searchConfigured(that.EXT.MMConfig, that.EXT.EXT)
-  that.EXT.EXTInstalled= that.lib.EXTTools.searchInstalled(that)
+  that.EXT.EXTConfigured= EXTTools.searchConfigured(that.EXT.MMConfig, that.EXT.EXT)
+  that.EXT.EXTInstalled= EXTTools.searchInstalled(that)
   log("Find", that.EXT.EXTInstalled.length , "installed plugins in MagicMirror")
   log("Find", that.EXT.EXTConfigured.length, "configured plugins in config file")
   log("webviewTag Configured:", that.EXT.webviewTag)
@@ -216,7 +217,7 @@ function createGW(that) {
           socket.on('disconnect', (err) => {
             log('[' + ip + '] Disconnected from Terminal Logs:', req.user.username, "[" + err + "]")
           })
-          var pastLogs = await that.lib.EXTTools.readAllMMLogs(that.EXT.HyperWatch.logs())
+          var pastLogs = await EXTTools.readAllMMLogs(that.EXT.HyperWatch.logs())
           io.emit("terminal.logs", pastLogs)
           that.EXT.HyperWatch.stream().on('stdData', (data) => {
             if (typeof data == "string") io.to(socket.id).emit("terminal.logs", data.replace(/\r?\n/g, "\r\n"))
@@ -294,7 +295,7 @@ function createGW(that) {
               result.error = true
               console.error(`[GA][FATAL] exec error: ${error}`)
             } else {
-              that.EXT.EXTInstalled= that.lib.EXTTools.searchInstalled(that)
+              that.EXT.EXTInstalled= EXTTools.searchInstalled(that)
               console.log("[GA][DONE]", req.query.EXT)
             }
             res.json(result)
@@ -342,7 +343,7 @@ function createGW(that) {
               result.error = true
               console.error(`[GA][FATAL] exec error: ${error}`)
             } else {
-              that.EXT.EXTInstalled= that.lib.EXTTools.searchInstalled(that)
+              that.EXT.EXTInstalled= EXTTools.searchInstalled(that)
               console.log("[GA][DONE]", req.query.EXT)
             }
             res.json(result)
@@ -428,7 +429,7 @@ function createGW(that) {
       if (req.user) {
         if(!req.query.ext) return res.status(404).sendFile(Path+ "/website/Gateway/404.html")
         let data = require("../website/config/"+req.query.ext+"/config.js")
-        data.schema = that.lib.EXTTools.makeSchemaTranslate(data.schema, that.EXT.schemaTranslatation)
+        data.schema = EXTTools.makeSchemaTranslate(data.schema, that.EXT.schemaTranslatation)
         res.send(data.schema)
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
@@ -447,13 +448,13 @@ function createGW(that) {
       if (req.user) {
         console.log("[GA] Receiving EXT data ...")
         let data = JSON.parse(req.body.data)
-        var NewConfig = await that.lib.EXTTools.configAddOrModify(data, that.EXT.MMConfig)
-        var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,NewConfig)
+        var NewConfig = await EXTTools.configAddOrModify(data, that.EXT.MMConfig)
+        var resultSaveConfig = await EXTTools.saveConfig(that,NewConfig)
         console.log("[GA] Write config result:", resultSaveConfig)
         res.send(resultSaveConfig)
         if (resultSaveConfig.done) {
-          that.EXT.MMConfig = await that.lib.EXTTools.readConfig(that)
-          that.EXT.EXTConfigured= that.lib.EXTTools.searchConfigured(that.EXT.MMConfig, that.EXT.EXT)
+          that.EXT.MMConfig = await EXTTools.readConfig(that)
+          that.EXT.EXTConfigured= EXTTools.searchConfigured(that.EXT.MMConfig, that.EXT.EXT)
           console.log("[GA] Reload config")
         }
       } else res.status(403).sendFile(Path+ "/website/Gateway/403.html") 
@@ -464,13 +465,13 @@ function createGW(that) {
         console.log("[GA] Receiving EXT data ...", req.body)
         console.log("user", req.user)
         let EXTName = req.body.data
-        var NewConfig = await that.lib.EXTTools.configDelete(EXTName, that.EXT.MMConfig)
-        var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,NewConfig)
+        var NewConfig = await EXTTools.configDelete(EXTName, that.EXT.MMConfig)
+        var resultSaveConfig = await EXTTools.saveConfig(that,NewConfig)
         console.log("[GA] Write config result:", resultSaveConfig)
         res.send(resultSaveConfig)
         if (resultSaveConfig.done) {
-          that.EXT.MMConfig = await that.lib.EXTTools.readConfig(that)
-          that.EXT.EXTConfigured= that.lib.EXTTools.searchConfigured(that.EXT.MMConfig, that.EXT.EXT)
+          that.EXT.MMConfig = await EXTTools.readConfig(that)
+          that.EXT.EXTConfigured= EXTTools.searchConfigured(that.EXT.MMConfig, that.EXT.EXT)
           console.log("[GA] Reload config")
         }
       } else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
@@ -505,7 +506,7 @@ function createGW(that) {
     .get("/Restart" , (req,res) => {
       if (req.user) {
         res.sendFile(Path+ "/website/Gateway/restarting.html")
-        setTimeout(() => that.lib.EXTTools.restartMM(that) , 1000)
+        setTimeout(() => EXTTools.restartMM(that) , 1000)
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
     })
@@ -513,7 +514,7 @@ function createGW(that) {
     .get("/Die" , (req,res) => {
       if (req.user) {
         res.sendFile(Path+ "/website/Gateway/die.html")
-        setTimeout(() => that.lib.EXTTools.doClose(that), 3000)
+        setTimeout(() => EXTTools.doClose(that), 3000)
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
     })
@@ -521,7 +522,7 @@ function createGW(that) {
     .get("/SystemRestart" , (req,res) => {
       if (req.user) {
         res.sendFile(Path+ "/website/Gateway/restarting.html")
-        setTimeout(() => that.lib.EXTTools.SystemRestart(that) , 1000)
+        setTimeout(() => EXTTools.SystemRestart(that) , 1000)
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
     })
@@ -529,7 +530,7 @@ function createGW(that) {
     .get("/SystemDie" , (req,res) => {
       if (req.user) {
         res.sendFile(Path+ "/website/Gateway/die.html")
-        setTimeout(() => that.lib.EXTTools.SystemDie(that), 3000)
+        setTimeout(() => EXTTools.SystemDie(that), 3000)
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
     })
@@ -541,7 +542,7 @@ function createGW(that) {
 
     .get("/GetBackupName" , async (req,res) => {
       if (req.user) {
-        var names = await that.lib.EXTTools.loadBackupNames(that)
+        var names = await EXTTools.loadBackupNames(that)
         res.send(names)
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
@@ -550,7 +551,7 @@ function createGW(that) {
     .get("/GetBackupFile" , async (req,res) => {
       if (req.user) {
         let data = req.query.config
-        var file = await that.lib.EXTTools.loadBackupFile(that,data)
+        var file = await EXTTools.loadBackupFile(that,data)
         res.send(file)
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
@@ -569,12 +570,12 @@ function createGW(that) {
       if (req.user) {
         console.log("[GA] Receiving backup data ...")
         let file = req.body.data
-        var loadFile = await that.lib.EXTTools.loadBackupFile(that,file)
-        var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,loadFile)
+        var loadFile = await EXTTools.loadBackupFile(that,file)
+        var resultSaveConfig = await EXTTools.saveConfig(that,loadFile)
         console.log("[GA] Write config result:", resultSaveConfig)
         res.send(resultSaveConfig)
         if (resultSaveConfig.done) {
-          that.EXT.MMConfig = await that.lib.EXTTools.readConfig(that)
+          that.EXT.MMConfig = await EXTTools.readConfig(that)
           console.log("[GA] Reload config")
         }
       } else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
@@ -584,11 +585,11 @@ function createGW(that) {
       if (req.user) {
         console.log("[GA] Receiving config data ...")
         let data = JSON.parse(req.body.data)
-        var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,data)
+        var resultSaveConfig = await EXTTools.saveConfig(that,data)
         console.log("[GA] Write config result:", resultSaveConfig)
         res.send(resultSaveConfig)
         if (resultSaveConfig.done) {
-          that.EXT.MMConfig = await that.lib.EXTTools.readConfig(that)
+          that.EXT.MMConfig = await EXTTools.readConfig(that)
           console.log("[GA] Reload config")
         }
       } else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
@@ -602,13 +603,13 @@ function createGW(that) {
     .post("/setWebviewTag", async (req,res) => {
       if(!that.EXT.webviewTag && req.user) {
         console.log("[GA] Receiving setWebviewTag demand...")
-        let NewConfig = await that.lib.EXTTools.setWebviewTag(that.EXT.MMConfig)
-        var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,NewConfig)
+        let NewConfig = await EXTTools.setWebviewTag(that.EXT.MMConfig)
+        var resultSaveConfig = await EXTTools.saveConfig(that,NewConfig)
         console.log("[GA] Write GA webview config result:", resultSaveConfig)
         res.send(resultSaveConfig)
         if (resultSaveConfig.done) {
           that.EXT.webviewTag = true
-          that.EXT.MMConfig = await that.lib.EXTTools.readConfig(that)
+          that.EXT.MMConfig = await EXTTools.readConfig(that)
           console.log("[GA] Reload config")
         }
       }
@@ -821,7 +822,7 @@ function createGW(that) {
     .post("/deleteBackup", async (req,res) => {
       if(req.user) {
         console.log("[GA] Receiving delete backup demand...")
-        var deleteBackup = await that.lib.EXTTools.deleteBackup(that)
+        var deleteBackup = await EXTTools.deleteBackup(that)
         console.log("[GA] Delete backup result:", deleteBackup)
         res.send(deleteBackup)
       }
@@ -833,7 +834,7 @@ function createGW(that) {
         let data = req.body.data
         if (!data) return res.send({error: "error"})
         console.log("[GA] Receiving External backup...")
-        var transformExternalBackup = await that.lib.EXTTools.transformExternalBackup(that,data)
+        var transformExternalBackup = await EXTTools.transformExternalBackup(that,data)
         res.send({ data: transformExternalBackup })
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
@@ -844,7 +845,7 @@ function createGW(that) {
         let data = req.body.data
         if (!data) return res.send({error: "error"})
         console.log("[GA] Receiving External backup...")
-        var linkExternalBackup = await that.lib.EXTTools.saveExternalConfig(that,data)
+        var linkExternalBackup = await EXTTools.saveExternalConfig(that,data)
         if (linkExternalBackup.data) {
           console.log("[GA] Generate link number:", linkExternalBackup.data)
           healthDownloader = (req_, res_) => {
@@ -854,7 +855,7 @@ function createGW(that) {
                 res_.redirect('/')
               }
               setTimeout(() => {
-                that.lib.EXTTools.deleteDownload(that,linkExternalBackup.data)
+                EXTTools.deleteDownload(that,linkExternalBackup.data)
               }, 1000 * 10)
             } else {
               res_.redirect('/')
@@ -895,7 +896,7 @@ async function startServer(that,callback = () => {}) {
     })
 
   /** Create Server **/
-  that.config.listening = await that.lib.EXTTools.purposeIP(that)
+  that.config.listening = await EXTTools.purposeIP(that)
   that.EXT.HyperWatch = that.lib.hyperwatch(
     that.EXT.server
       .listen(8081, "0.0.0.0", () => {

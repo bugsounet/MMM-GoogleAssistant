@@ -4,6 +4,7 @@ const fs = require("fs")
 const path = require("path")
 const express = require("express")
 const actions = require("actions-on-google")
+const SHTools = require("../components/SH_Tools.js")
 
 function initialize(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME]", ...args) }
@@ -38,9 +39,9 @@ function initialize(that) {
       let form = req.body
       let args = req.query
       if (form["username"] && form["password"] && args["state"] && args["response_type"] && args["response_type"] == "code" && args["client_id"] == that.config.website.CLIENT_ID){
-        let user = that.lib.SHTools.get_user(that,form["username"], form["password"])
+        let user = SHTools.get_user(that,form["username"], form["password"])
         if (!user) return res.sendFile(SHWebsiteDir+ "/login.html")
-        that.SmartHome.last_code = that.lib.SHTools.random_string(8)
+        that.SmartHome.last_code = SHTools.random_string(8)
         that.SmartHome.last_code_user = form["username"]
         that.SmartHome.last_code_time = (new Date(Date.now())).getTime() / 1000
         let params = {
@@ -49,7 +50,7 @@ function initialize(that) {
           'client_id': that.config.CLIENT_ID
         }
         log("[AUTH] Generate Code:", that.SmartHome.last_code)
-        res.status(301).redirect(args["redirect_uri"] + that.lib.SHTools.serialize(params))
+        res.status(301).redirect(args["redirect_uri"] + SHTools.serialize(params))
       } else {
         res.status(400).sendFile(SHWebsiteDir+ "/400.html")
       }
@@ -63,7 +64,7 @@ function initialize(that) {
           log("[TOKEN] Invalid code (timeout)")
           res.status(403).sendFile(SHWebsiteDir+ "/403.html")
         } else {
-          let access_token = that.lib.SHTools.random_string(32)
+          let access_token = SHTools.random_string(32)
           fs.writeFileSync(tokensDir + "/" + access_token, that.SmartHome.last_code_user, { encoding: "utf8"} )
           log("|TOKEN] Send Token:", access_token)
           res.json({"access_token": access_token})

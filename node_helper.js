@@ -32,13 +32,13 @@ module.exports = NodeHelper.create({
         parseData.parseMiddleware(this, payload)
         break
       case "ACTIVATE_ASSISTANT":
-        this.lib.activateAssistant.activate(this, payload)
+        this.activateAssistant.activate(this, payload)
         break
       case "SHELLEXEC":
-        this.lib.shellExec.exec(this, payload)
+        this.shellExec.exec(this, payload)
         break
       case "GOOGLESEARCH":
-        this.lib.searchOnGoogle.search(this, payload)
+        this.searchOnGoogle.search(this, payload)
         break
       case "HELLO":
         if (!this.lib.EXTTools) {

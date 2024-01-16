@@ -4,6 +4,13 @@
 var _load = require("../components/loadLibraries.js")
 const fs = require("fs")
 const SystemInformation = require("../components/systemInformation.js")
+const googleSearch = require("../components/googleSearch.js")
+const activateAssistant = require("../components/activateAssistant.js")
+const recipes = require("../components/recipes.js")
+const configMerge = require( "../components/configMerge.js")
+const shellExec = require("../components/shellExec.js")
+const EXTTools = require("../components/EXT_Tools.js")
+const SHTools = require("../components/SH_Tools.js")
 
 async function init(that) {
   that.lib = { error: 0 }
@@ -64,7 +71,7 @@ async function parse(that) {
     console.error("[GA] [DATA] Try to solve it with `npm run rebuild` in MMM-GoogleAssistant folder")
     return
   }
-  await that.lib.configMerge.check(that)
+  await configMerge.check(that)
   var error = null
 
   if (!fs.existsSync(that.config.assistantConfig["modulePath"] + "/credentials.json")) {
@@ -77,17 +84,18 @@ async function parse(that) {
   }
 
   that.config.micConfig.recorder= "arecord"
+  that.activateAssistant = activateAssistant
+  that.shellExec = shellExec
+  that.searchOnGoogle = new googleSearch()
 
-  that.searchOnGoogle = new that.lib.googleSearch(that.lib)
-
-  that.lib.recipes.load(that, ()=> {
+  recipes.load(that, ()=> {
     console.log("[GA] Recipes loaded!")
     that.sendSocketNotification("PRE-INIT")
   })
 }
 
 async function parseMiddleware(that, data) {
-  that.EXT.MMConfig = await that.lib.EXTTools.readConfig(that)
+  that.EXT.MMConfig = await EXTTools.readConfig(that)
   let Version = {
     version: require('../package.json').version,
     rev: require('../package.json').rev,
@@ -99,25 +107,25 @@ async function parseMiddleware(that, data) {
     that.sendSocketNotification("ERROR", "MagicMirror config.js file not found!")
     return
   }
-  await that.lib.EXTTools.MMConfigAddress(that)
+  await EXTTools.MMConfigAddress(that)
   if (that.lib.error || that.EXT.errorInit) return
 
   that.EXT.language = that.EXT.MMConfig.language
-  that.EXT.webviewTag = that.lib.EXTTools.checkElectronOptions(that.EXT.MMConfig)
+  that.EXT.webviewTag = EXTTools.checkElectronOptions(that.EXT.MMConfig)
   that.EXT.EXT = data.DB.sort()
   that.EXT.EXTDescription = data.Description
   that.EXT.translation = data.Translate
   that.EXT.schemaTranslatation = data.Schema
   that.EXT.EXTStatus = data.EXTStatus
-  that.EXT.GAConfig = that.lib.EXTTools.getGAConfig(that.EXT.MMConfig)
-  that.EXT.homeText = await that.lib.EXTTools.getHomeText(that.lib, that.EXT.language)
-  that.EXT.freeteuse = await that.lib.EXTTools.readFreeteuseTV(that)
-  that.EXT.radio= await that.lib.EXTTools.readRadioRecipe(that)
-  that.EXT.usePM2 = await that.lib.EXTTools.check_PM2_Process(that)
+  that.EXT.GAConfig = EXTTools.getGAConfig(that.EXT.MMConfig)
+  that.EXT.homeText = await EXTTools.getHomeText(that.lib, that.EXT.language)
+  that.EXT.freeteuse = await EXTTools.readFreeteuseTV(that)
+  that.EXT.radio= await EXTTools.readRadioRecipe(that)
+  that.EXT.usePM2 = await EXTTools.check_PM2_Process(that)
   that.EXT.systemInformation.lib = new SystemInformation(that.lib, that.EXT.translation)
   that.EXT.systemInformation.result = await that.EXT.systemInformation.lib.initData()
   if (that.config.website.CLIENT_ID) {
-    that.SmartHome.lang = that.lib.SHTools.SHLanguage(that.EXT.language)
+    that.SmartHome.lang = SHTools.SHLanguage(that.EXT.language)
     that.SmartHome.use = true
     that.SmartHome.user.user = that.config.website.username
     that.SmartHome.user.password = that.config.website.password
