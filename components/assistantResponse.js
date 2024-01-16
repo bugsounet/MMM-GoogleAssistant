@@ -362,14 +362,4 @@ class AssistantResponse {
   clearAliveTimers() {
     clearTimeout(this.aliveTimer)
   }
-
-  testing(response) {
-    if (response.error.error) {
-      this.forceStatusImg("userError")
-      this.showTranscription(response.error.message ? response.error.message : this.callbacks.translate(response.error.error), "error")
-      this.playChime("error")
-    } else {
-      this.callbacks.testingOK()
-    }
-  }
 }
