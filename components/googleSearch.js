@@ -4,9 +4,11 @@
  * @bugsounet 04/2023
 **/
 
+const cheerio = require( "cheerio")
+
 class GoogleSearch {
-  constructor(lib) {
-    this.lib = lib
+  constructor() {
+    var logGA = (...args) => { /* do nothing */ }
     this.defaultUserAgent = "Mozilla/5.0 (Linux x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36 MMM-GoogleAssistant/"+require('../package.json').version;
 
     this.defaultLimit = 5
@@ -24,7 +26,7 @@ class GoogleSearch {
   }
 
   getResults({ data }) {
-    const $ = this.lib.cheerio.load(data)
+    const $ = cheerio.load(data)
     let results = []
 
     $(this.linkSelector).map((index, elem) => {
@@ -62,6 +64,36 @@ class GoogleSearch {
         return resolve(results)
       }).catch(reject)
     })
+  }
+
+  search (that, text) {
+    if (!text) return
+    if (that.config.debug) logGA = (...args) => { console.log("[GA] [GoogleSearch]", ...args) }
+    var finalResult = []
+    this.googleIt({ query: text })
+      .then(results => {
+        if (results && results.length) {
+          results.forEach(link => {
+            logGA("Link:", link.link)
+            finalResult.push(link.link)
+          })
+
+          if (finalResult.length) {
+            logGA("Results:",finalResult)
+            that.sendSocketNotification("GOOGLESEARCH-RESULT", finalResult[0])
+          } else {
+            logGA("No Results found!")
+            that.sendSocketNotification("ERROR", "[GoogleSearch] No Results found!")
+          }
+        } else {
+          logGA("No Results found!")
+          that.sendSocketNotification("ERROR", "[GoogleSearch] No Results found!")
+        }
+      })
+      .catch(e => {
+        console.error("[GA] [GOOGLE_SEARCH] [ERROR] " + e)
+        that.sendSocketNotification("ERROR", "[GoogleSearch] Sorry, an error occurred!")
+      })
   }
 };
 
