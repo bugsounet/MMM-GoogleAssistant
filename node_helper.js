@@ -49,10 +49,10 @@ module.exports = NodeHelper.create({
         this.EXTTools.setActiveVersion(payload, this)
         break
       case "RESTART":
-        this.lib.EXTTools.restartMM(this)
+        this.EXTTools.restartMM(this)
         break
       case "CLOSE":
-        this.lib.EXTTools.doClose(this)
+        this.EXTTools.doClose(this)
         break
       case "EXTStatus":
         if (this.EXT.initialized && payload) {
