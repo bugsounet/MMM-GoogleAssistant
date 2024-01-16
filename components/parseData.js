@@ -87,6 +87,7 @@ async function parse(that) {
   that.activateAssistant = activateAssistant
   that.shellExec = shellExec
   that.searchOnGoogle = new googleSearch()
+  that.EXTTools = EXTTools
 
   recipes.load(that, ()=> {
     console.log("[GA] Recipes loaded!")

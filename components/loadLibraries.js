@@ -10,7 +10,6 @@ function libraries(that) {
     { "node-pty": "pty" },
     
     { "../components/Middleware.js": "Middleware"},
-    { "../components/hyperwatch.js": "hyperwatch" },
     { "../components/SH_Middleware.js": "SmartHome" },
     { "../components/actionsOnGoogle.js": "ActionsOnGoogle" },
     { "../components/DeviceManagement.js": "Device" },

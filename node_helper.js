@@ -41,12 +41,12 @@ module.exports = NodeHelper.create({
         this.searchOnGoogle.search(this, payload)
         break
       case "HELLO":
-        if (!this.lib.EXTTools) {
-          // library is not loaded ... retry
+        if (!this.EXT.initialized) {
+          // not init... retry
           setTimeout(() => { this.socketNotificationReceived("HELLO", payload) }, 1000)
           return
         }
-        this.lib.EXTTools.setActiveVersion(payload, this)
+        this.EXTTools.setActiveVersion(payload, this)
         break
       case "RESTART":
         this.lib.EXTTools.restartMM(this)

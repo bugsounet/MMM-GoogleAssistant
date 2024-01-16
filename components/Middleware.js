@@ -11,6 +11,7 @@ const LocalStrategy = require("passport-local")
 const Socket = require("socket.io")
 const bodyParser = require("body-parser")
 const EXTTools = require("../components/EXT_Tools.js")
+const hyperwatch = require( "../components/hyperwatch.js")
 
 /** init function **/
 function initialize(that) {
@@ -897,7 +898,7 @@ async function startServer(that,callback = () => {}) {
 
   /** Create Server **/
   that.config.listening = await EXTTools.purposeIP(that)
-  that.EXT.HyperWatch = that.lib.hyperwatch(
+  that.EXT.HyperWatch = hyperwatch(
     that.EXT.server
       .listen(8081, "0.0.0.0", () => {
         console.log("[GA] Start listening on port 8081")
