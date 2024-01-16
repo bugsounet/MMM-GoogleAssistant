@@ -5,6 +5,8 @@ const path = require("path")
 const express = require("express")
 const actions = require("actions-on-google")
 const SHTools = require("../components/SH_Tools.js")
+const ActionsOnGoogle = require("../components/actionsOnGoogle.js")
+const homegraph = require("../components/SH_Homegraph.js")
 
 function initialize(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME]", ...args) }
@@ -26,7 +28,7 @@ function initialize(that) {
 
   log("Create SmartHome needed routes...")
 
-  that.lib.ActionsOnGoogle.actions(that)
+  ActionsOnGoogle.actions(that)
   that.EXT.app
     /** OAuth2 Server **/
     .use('/smarthome/assets', express.static(that.path + '/website/assets', options))
@@ -84,7 +86,7 @@ function initialize(that) {
 
     /** Display current google graph in console **/
     .get("/smarthome/graph",(req,res) => {
-      if (that.SmartHome.homegraph) that.lib.homegraph.queryGraph(that)
+      if (that.SmartHome.homegraph) homegraph.queryGraph(that)
       res.status(404).sendFile(SHWebsiteDir+ "/404.html")
     })
 }

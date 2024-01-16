@@ -5,6 +5,7 @@ const path = require("path")
 const _ = require("lodash")
 const googleapis = require("googleapis")
 const GoogleAuthLibrary = require("google-auth-library")
+const callback = require("../components/SH_Callbacks.js")
 
 function init(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME] [HOMEGRAPH]", ...args) }
@@ -13,14 +14,14 @@ function init(that) {
     let content
     if (!data) {
       console.error("[GA] [SMARTHOME] [HOMEGRAPH] credentials.json: file not found!")
-      that.lib.callback.send(that, "Alert", "[HOMEGRAPH] Hey! credentials.json: file not found!")
+      callback.send(that, "Alert", "[HOMEGRAPH] Hey! credentials.json: file not found!")
       return
     }
     try {
       content = JSON.parse(data)
     } catch (e) {
       console.error("[GA] [SMARTHOME] [HOMEGRAPH] credentials.json: corrupt!")
-      that.lib.callback.send(that, "Alert", "[HOMEGRAPH] credentials.json: corrupt!")
+      callback.send(that, "Alert", "[HOMEGRAPH] credentials.json: corrupt!")
       return
     }
     if (content.type && content.type == "service_account") {
@@ -33,7 +34,7 @@ function init(that) {
       })
     } else {
       console.error("[GA] [SMARTHOME] [HOMEGRAPH] credentials.json: bad format!")
-      that.lib.callback.send(that, "Alert", "[HOMEGRAPH] credentials.json: bad format!")
+      callback.send(that, "Alert", "[HOMEGRAPH] credentials.json: bad format!")
     }
   })
 }
@@ -53,10 +54,10 @@ async function requestSync(that) {
   } catch (e) {
     if (e.code) {
       console.error("[GA] [SMARTHOME] [HOMEGRAPH] [RequestSync] Error:", e.code , e.errors)
-      that.lib.callback.send(that, "Alert", "[requestSync] Error " + e.code + " - " + e.errors[0].message +" ("+ e.errors[0].reason +")")
+      callback.send(that, "Alert", "[requestSync] Error " + e.code + " - " + e.errors[0].message +" ("+ e.errors[0].reason +")")
     } else {
       console.error("[GA] [SMARTHOME] [HOMEGRAPH] [RequestSync]", e.toString())
-      that.lib.callback.send(that, "Alert", "[requestSync] " + e.toString())
+      callback.send(that, "Alert", "[requestSync] " + e.toString())
     }
   }
 }

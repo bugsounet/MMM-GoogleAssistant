@@ -59,8 +59,8 @@ module.exports = NodeHelper.create({
           this.EXT.EXTStatus = payload
           if (this.SmartHome.use) {
             if (this.SmartHome.init) {
-              this.lib.Device.refreshData(this)
-              this.lib.homegraph.updateGraph(this)
+              this.Device.refreshData(this)
+              this.homegraph.updateGraph(this)
             }
           }
         }

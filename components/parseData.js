@@ -11,6 +11,9 @@ const configMerge = require( "../components/configMerge.js")
 const shellExec = require("../components/shellExec.js")
 const EXTTools = require("../components/EXT_Tools.js")
 const SHTools = require("../components/SH_Tools.js")
+const Device = require("../components/DeviceManagement.js")
+const homegraph = require("../components/SH_Homegraph.js")
+const SmartHome = require("../components/SH_Middleware.js")
 
 async function init(that) {
   that.lib = { error: 0 }
@@ -88,6 +91,8 @@ async function parse(that) {
   that.shellExec = shellExec
   that.searchOnGoogle = new googleSearch()
   that.EXTTools = EXTTools
+  that.Device = Device
+  that.homegraph = homegraph
 
   recipes.load(that, ()=> {
     console.log("[GA] Recipes loaded!")
@@ -130,16 +135,16 @@ async function parseMiddleware(that, data) {
     that.SmartHome.use = true
     that.SmartHome.user.user = that.config.website.username
     that.SmartHome.user.password = that.config.website.password
-    that.lib.homegraph.init(that)
-    that.lib.Device.create(that)
+    homegraph.init(that)
+    that.Device.create(that)
   } else {
     console.log("[GA] no CLIENT_ID found in your config!")
     console.warn("[GA] SmartHome functionality is disabled")
   }
 
   that.lib.Middleware.initialize(that)
-  if (that.config.website.CLIENT_ID) that.lib.SmartHome.initialize(that)
-  else that.lib.SmartHome.disable(that)
+  if (that.config.website.CLIENT_ID) SmartHome.initialize(that)
+  else SmartHome.disable(that)
 
   that.lib.Middleware.startServer(that, cb => {
     if (cb) {

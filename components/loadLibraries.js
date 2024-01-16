@@ -8,13 +8,7 @@ function libraries(that) {
   let libraries= [
     // { "library to load" : "store library name" }
     { "node-pty": "pty" },
-    
-    { "../components/Middleware.js": "Middleware"},
-    { "../components/SH_Middleware.js": "SmartHome" },
-    { "../components/actionsOnGoogle.js": "ActionsOnGoogle" },
-    { "../components/DeviceManagement.js": "Device" },
-    { "../components/SH_Callbacks.js": "callback" },
-    { "../components/SH_Homegraph.js": "homegraph" },
+    { "../components/Middleware.js": "Middleware"}
   ]
   let errors = 0
   return new Promise(resolve => {

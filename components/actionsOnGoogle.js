@@ -2,6 +2,7 @@
 
 var log = (...args) => { /* do nothing */ }
 const SHTools = require("../components/SH_Tools.js")
+const callback = require("../components/SH_Callbacks.js")
 
 function actions (that) {
   if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME] [ACTIONS]", ...args) }
@@ -105,8 +106,8 @@ function execute(that, command, params) {
   let data = that.SmartHome.smarthome
   switch (command) {
     case "action.devices.commands.OnOff":
-      if (params['on']) that.lib.callback.send(that, "screen", "ON")
-      else that.lib.callback.send(that, "screen", "OFF")
+      if (params['on']) callback.send(that, "screen", "ON")
+      else callback.send(that, "screen", "OFF")
       return {"status": "SUCCESS", "states": {"on": params['on'], "online": true}}
       break
     case "action.devices.commands.volumeRelative":
@@ -114,92 +115,92 @@ function execute(that, command, params) {
       if (params.volumeRelativeLevel > 0) {
         level = data.Volume +5
         if (level > 100) level = 100
-        that.lib.callback.send(that, "volumeUp")
+        callback.send(that, "volumeUp")
       } else {
         level = data.Volume -5
         if (level < 0) level = 0
-        that.lib.callback.send(that, "volumeDown")
+        callback.send(that, "volumeDown")
       }
       return {"status": "SUCCESS", "states": {"online": true, "currentVolume": level, "isMuted": data.VolumeIsMuted}}
       break
     case "action.devices.commands.setVolume":
-      that.lib.callback.send(that, "volume" ,params.volumeLevel)
+      callback.send(that, "volume" ,params.volumeLevel)
       return {"status": "SUCCESS", "states": {"online": true, "currentVolume": params.volumeLevel, "isMuted": data.VolumeIsMuted}}
       break
     case "action.devices.commands.mute":
-      that.lib.callback.send(that, "volumeMute", params.mute)
+      callback.send(that, "volumeMute", params.mute)
       return {"status": "SUCCESS", "states": { "online": true, "isMuted": params.mute, "currentVolume": data.Volume}}
       break
     case "action.devices.commands.SetInput":
       log("SetInput", params)
       let input = params.newInput.split(" ")
       if (input == "Stop") {
-        that.lib.callback.send(that, "Stop")
+        callback.send(that, "Stop")
         params.newInput = "page " + data.Page
       } else if (input == "EXT-FreeboxTV") {
-        that.lib.callback.send(that, "TVPlay")
+        callback.send(that, "TVPlay")
         params.newInput = input
       } else if (input == "EXT-SpotifyCanvasLyrics") {
-        if (!data.LyricsIsForced && !data.Lyrics) that.lib.callback.send(that, "SpotifyLyricsOn")
+        if (!data.LyricsIsForced && !data.Lyrics) callback.send(that, "SpotifyLyricsOn")
         else if (data.LyricsIsForced) {
-          that.lib.callback.send(that, "SpotifyLyricsOff")
+          callback.send(that, "SpotifyLyricsOff")
         }
-        if (!data.SpotifyIsPlaying) that.lib.callback.send(that, "SpotifyPlay")
+        if (!data.SpotifyIsPlaying) callback.send(that, "SpotifyPlay")
         params.newInput = input
       } else {
-        that.lib.callback.send(that,"setPage",input[1])
+        callback.send(that,"setPage",input[1])
       }
       return {"status": "SUCCESS", "states": { "online": true , "currentInput": params.newInput}}
       break
     case "action.devices.commands.NextInput":
-      that.lib.callback.send(that, "setNextPage")
+      callback.send(that, "setNextPage")
       return {"status": "SUCCESS", "states": { "online": true }}
       break
     case "action.devices.commands.PreviousInput":
-      that.lib.callback.send(that, "setPreviousPage")
+      callback.send(that, "setPreviousPage")
       return {"status": "SUCCESS", "states": { "online": true }}
       break
     case "action.devices.commands.Reboot":
-      that.lib.callback.send(that, "Reboot")
+      callback.send(that, "Reboot")
       return {}
       break
     case "action.devices.commands.Locate":
-      that.lib.callback.send(that, "Locate")
+      callback.send(that, "Locate")
       return {"status": "SUCCESS"}
       break
     case "action.devices.commands.mediaStop":
-      that.lib.callback.send(that, "Stop")
+      callback.send(that, "Stop")
       return {}
       break
     case "action.devices.commands.mediaNext":
-      that.lib.callback.send(that, "SpotifyNext")
+      callback.send(that, "SpotifyNext")
       return {}
       break
     case "action.devices.commands.mediaPrevious":
-      that.lib.callback.send(that, "SpotifyPrevious")
+      callback.send(that, "SpotifyPrevious")
       return {}
       break
     case "action.devices.commands.mediaPause":
-      if (data.SpotifyIsPlaying) that.lib.callback.send(that, "SpotifyPause")
+      if (data.SpotifyIsPlaying) callback.send(that, "SpotifyPause")
       return {}
       break
     case "action.devices.commands.mediaResume":
-      if (!data.SpotifyIsPlaying) that.lib.callback.send(that, "SpotifyPlay")
+      if (!data.SpotifyIsPlaying) callback.send(that, "SpotifyPlay")
       return {}
       break
     case "action.devices.commands.appSelect":
       if (params.newApplication == "spotify") {
         if (!data.SpotifyIsConnected && !data.SpotifyIsPlaying) {
-          that.lib.callback.send(that,"SpotifyPlay")
+          callback.send(that,"SpotifyPlay")
         }
       }
       return { "status": "SUCCESS", "states": { "online": true, "currentApplication": params.newApplication }}
       break
     case "action.devices.commands.relativeChannel":
       if (params.relativeChannelChange > 0) {
-        that.lib.callback.send(that, "TVNext")
+        callback.send(that, "TVNext")
       } else {
-        that.lib.callback.send(that, "TVPrevious")
+        callback.send(that, "TVPrevious")
       }
       return {"status": "SUCCESS" }
       break

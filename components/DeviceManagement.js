@@ -1,4 +1,5 @@
 var log = (...args) => { /* do nothing */ }
+const homegraph = require("../components/SH_Homegraph.js")
 
 function create(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME] [DEVICE]", ...args) }
@@ -179,7 +180,7 @@ function init(that) {
   }
   if (that.config.dev) log("Your device is now:", that.SmartHome.device)
   if (that.SmartHome.homegraph) {
-    that.lib.homegraph.requestSync(that)
+    homegraph.requestSync(that)
   } else {
     console.log("[GA] [SMARTHOME] [DEVICE] HomeGraph is disabled.")
   }
