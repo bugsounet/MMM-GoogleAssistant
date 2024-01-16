@@ -45,7 +45,7 @@ function send(that, name, values) {
       break
     case "Reboot":
       log("Send Reboot")
-      setTimeout(() => that.lib.GWTools.restartMM(that) , 8000)
+      setTimeout(() => that.EXTTools.restartMM(that) , 8000)
       break
     case "Locate":
       log("Send Locate")
