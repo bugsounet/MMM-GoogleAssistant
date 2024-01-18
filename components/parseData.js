@@ -76,7 +76,7 @@ async function parse(that) {
 
   that.config.micConfig.recorder= "arecord"
 
-  that.searchOnGoogle = new that.lib.googleSearch(that.lib)
+  that.searchOnGoogle = new that.lib.googleSearch()
 
   that.lib.recipes.load(that, ()=> {
     console.log("[GA] Recipes loaded!")

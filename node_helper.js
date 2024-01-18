@@ -38,7 +38,7 @@ module.exports = NodeHelper.create({
         this.lib.shellExec.exec(this, payload)
         break
       case "GOOGLESEARCH":
-        this.lib.searchOnGoogle.search(this, payload)
+        this.searchOnGoogle.search(this, payload)
         break
       case "HELLO":
         if (!this.lib.EXTTools) {
@@ -57,11 +57,9 @@ module.exports = NodeHelper.create({
       case "EXTStatus":
         if (this.EXT.initialized && payload) {
           this.EXT.EXTStatus = payload
-          if (this.SmartHome.use) {
-            if (this.SmartHome.init) {
+          if (this.SmartHome.use && this.SmartHome.init) {
               this.lib.Device.refreshData(this)
               this.lib.homegraph.updateGraph(this)
-            }
           }
         }
         break

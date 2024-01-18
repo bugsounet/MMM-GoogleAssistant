@@ -7,12 +7,9 @@ function libraries(that) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [LIB]", ...args) }
   let libraries= [
     // { "library to load" : "store library name" }
-    { "cheerio": "cheerio" },
     { "child_process": "childProcess" },
     { "fs": "fs" },
     { "os": "os" },
-    { "html-entities": "html-entities" },
-    { "node-html-parser": "HTMLParser" },
     { "path": "path" },
 
     { "node-pty": "pty" },
@@ -33,18 +30,13 @@ function libraries(that) {
     { "googleapis": "googleapis" },
     { "google-auth-library": "GoogleAuthLibrary" },
     { "lodash": "_" },
-    { "moment": "moment" },
     { "pm2": "pm2" },
 
-    { "../components/BufferToMP3.js": "BufferToMP3" },
-    { "../components/lpcm16.js": "Recorder" },
-    { "../components/googleAssistant": "GoogleAssistant"},
     { "../components/assistantConverse.js": "Assistant" },
     { "../components/screenParser.js" : "ScreenParser" },
     { "../components/shellExec.js": "shellExec" },
     { "../components/configMerge.js": "configMerge" },
     { "../components/googleSearch.js": "googleSearch" },
-    { "../components/searchOnGoogle.js": "searchOnGoogle" },
     { "../components/recipes.js": "recipes" },
     { "../components/activateAssistant.js": "activateAssistant" },
 
