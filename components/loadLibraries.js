@@ -13,11 +13,6 @@ function libraries(that) {
     { "semver": "semver" },
     { "body-parser": "bodyParser" },
     { "express-session": "session" },
-    { "passport": "passport" },
-    { "passport-local" : "LocalStrategy" },
-    { "socket.io": "Socket" },
-    { "cors": "cors" },
-    { "util": "util" },
 
     { "../components/assistantConverse.js": "Assistant" },
     { "../components/screenParser.js" : "ScreenParser" },

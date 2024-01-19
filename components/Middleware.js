@@ -1,6 +1,10 @@
 var log = (...args) => { /* do nothing */ }
 const { exec } = require("child_process")
 const path = require("path")
+const cors = require("cors")
+const Socket = require("socket.io")
+const LocalStrategy = require("passport-local")
+const passport = require("passport")
 
 /** init function **/
 function initialize(that) {
@@ -49,8 +53,8 @@ function createGW(that) {
   that.EXT.app.use(that.lib.bodyParser.urlencoded({ extended: true }))
 
   // Tells app to use password session
-  that.EXT.app.use(that.lib.passport.initialize())
-  that.EXT.app.use(that.lib.passport.session())
+  that.EXT.app.use(passport.initialize())
+  that.EXT.app.use(passport.session())
 
   var options = {
     dotfiles: 'ignore',
@@ -68,11 +72,11 @@ function createGW(that) {
     res.redirect('/')
   }
 
-  var io = new that.lib.Socket.Server(that.EXT.server)
+  var io = new Socket.Server(that.EXT.server)
 
   that.EXT.app
     .use(logRequest)
-    .use(that.lib.cors({ origin: '*' }))
+    .use(cors({ origin: '*' }))
     .use('/EXT_Login.js', that.lib.express.static(Path + '/website/tools/EXT_Login.js'))
     .use('/EXT_Home.js', that.lib.express.static(Path + '/website/tools/EXT_Home.js'))
     .use('/EXT_Plugins.js', that.lib.express.static(Path + '/website/tools/EXT_Plugins.js'))
@@ -145,7 +149,7 @@ function createGW(that) {
 
     .post('/auth', (req, res, next) => {
       var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-      that.lib.passport.authenticate('login', (err, user, info) => {
+      passport.authenticate('login', (err, user, info) => {
         if (err) {
           console.log("[GA] [" + ip + "] Error", err)
           return next(err)
@@ -914,7 +918,7 @@ async function startServer(that,callback = () => {}) {
 
 /** passport local strategy with username/password defined on config **/
 function passportConfig(that) {
-  that.lib.passport.use('login', new that.lib.LocalStrategy.Strategy(
+  passport.use('login', new LocalStrategy.Strategy(
     (username, password, done) => {
       if (username === that.EXT.user.username && password === that.EXT.user.password) {
         return done(null, that.EXT.user)
@@ -923,11 +927,11 @@ function passportConfig(that) {
     }
   ))
 
-  that.lib.passport.serializeUser((user, done) => {
+  passport.serializeUser((user, done) => {
     done(null, user._id)
   })
 
-  that.lib.passport.deserializeUser((id, done) => {
+  passport.deserializeUser((id, done) => {
     done(null, that.EXT.user)
   })
 }
