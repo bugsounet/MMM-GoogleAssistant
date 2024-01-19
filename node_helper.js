@@ -30,6 +30,13 @@ module.exports = NodeHelper.create({
         parseData.parse(this)
         break
       case "INIT":
+        let Version = {
+          version: require('./package.json').version,
+          rev: require('./package.json').rev,
+          lang: this.config.assistantConfig.lang
+        }
+        this.sendSocketNotification("INITIALIZED", Version)
+        console.log("[GA] MMM-GoogleAssistant Ready!")
         parseData.parseMiddleware(this, payload)
         break
       case "ACTIVATE_ASSISTANT":

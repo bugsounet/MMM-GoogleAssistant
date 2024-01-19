@@ -79,17 +79,12 @@ async function parse(that) {
     console.log("[GA] Recipes loaded!")
     that.config.micConfig.recorder= "arecord"
     that.searchOnGoogle = new that.lib.googleSearch()
-    that.sendSocketNotification("PRE-INIT")
+    that.sendSocketNotification("INIT-WEBSITE")
   })
 }
 
 async function parseMiddleware(that, data) {
   that.EXT.MMConfig = await that.lib.EXTTools.readConfig(that)
-  let Version = {
-    version: require('../package.json').version,
-    rev: require('../package.json').rev,
-    lang: that.config.assistantConfig.lang
-  }
   if (!that.EXT.MMConfig) {
     that.EXT.errorInit = true
     console.error("[GA] Error: MagicMirror config.js file not found!")
@@ -131,8 +126,7 @@ async function parseMiddleware(that, data) {
 
   that.lib.Middleware.startServer(that, cb => {
     if (cb) {
-      console.log("[GA] MMM-GoogleAssistant and Website Ready!")
-      that.sendSocketNotification("INITIALIZED", Version)
+      console.log("[GA] Website Ready!")
     }
   })
 }
