@@ -2,7 +2,7 @@
 var logGA = (...args) => { /* do nothing */ }
 const GoogleAssistant = require("./googleAssistant")
 const BufferToMP3 = require("./BufferToMP3")
-const Recorder = require("../components/lpcm16.js")
+const Recorder = require("./lpcm16")
 const path = require("path")
 const fs = require("fs")
 

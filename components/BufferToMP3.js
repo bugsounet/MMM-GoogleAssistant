@@ -1,5 +1,5 @@
 const fs = require("fs")
-const exec = require("child_process").exec
+const { exec } = require("child_process")
 
 log = (...args) => { /* do nothing */ }
 

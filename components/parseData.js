@@ -56,6 +56,7 @@ async function init(that) {
 }
 
 async function parse(that) {
+  const fs = require("fs")
   let bugsounet = await _load.libraries(that)
   if (bugsounet) {
     console.error("[GA] [DATA] Warning:", bugsounet, "needed library not loaded !")
@@ -65,11 +66,11 @@ async function parse(that) {
   await that.lib.configMerge.check(that)
   var error = null
 
-  if (!that.lib.fs.existsSync(that.config.assistantConfig["modulePath"] + "/credentials.json")) {
+  if (!fs.existsSync(that.config.assistantConfig["modulePath"] + "/credentials.json")) {
     error = "[FATAL] Assistant: credentials.json file not found !"
     return this.error(that, error, {message: "GAErrorCredentials"})
   }
-  else if (!that.lib.fs.existsSync(that.config.assistantConfig["modulePath"] + "/tokenGA.json")) {
+  else if (!fs.existsSync(that.config.assistantConfig["modulePath"] + "/tokenGA.json")) {
     error = "[FATAL] Assistant: tokenGA.json file not found !"
     return this.error(that, error, {message: "GAErrorTokenGA"})
   }

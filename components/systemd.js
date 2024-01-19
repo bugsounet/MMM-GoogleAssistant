@@ -25,7 +25,7 @@ class Systemd {
     const { stdout, stderr } = await exec(command)
     return GetStdOutResponse(stdout,this.service)
   }
-  
+
   async restart() {
     if (!this.init) return { error: "not initialized" }
     const command = `sudo systemctl restart ${this.service}`

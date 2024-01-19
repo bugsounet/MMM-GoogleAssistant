@@ -1,11 +1,16 @@
 /** homegraph **/
 
 var log = () => { /* do nothing */ }
+const fs = require("fs")
+const path = require("path")
+const googleapis = require("googleapis")
+const GoogleAuthLibrary = require("google-auth-library")
+const _ = require("lodash")
 
 function init(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME] [HOMEGRAPH]", ...args) }
-  let file = that.lib.path.resolve(__dirname, "../smarthome.json")
-  that.lib.fs.readFile(file, 'utf8', (err, data) => {
+  let file = path.resolve(__dirname, "../smarthome.json")
+  fs.readFile(file, 'utf8', (err, data) => {
     let content
     if (!data) {
       console.error("[GA] [SMARTHOME] [HOMEGRAPH] credentials.json: file not found!")
@@ -20,9 +25,9 @@ function init(that) {
       return
     }
     if (content.type && content.type == "service_account") {
-      that.SmartHome.homegraph = that.lib.googleapis.google.homegraph({
+      that.SmartHome.homegraph = googleapis.google.homegraph({
         version: 'v1',
-        auth: new that.lib.GoogleAuthLibrary.GoogleAuth({
+        auth: new GoogleAuthLibrary.GoogleAuth({
           keyFile: file,
           scopes: ['https://www.googleapis.com/auth/homegraph']
         })
@@ -90,7 +95,7 @@ async function updateGraph(that) {
   let current = that.SmartHome.smarthome
   let old = that.SmartHome.oldSmartHome
 
-  if (!that.lib._.isEqual(current, old)) {
+  if (!_.isEqual(current, old)) {
     let state = {
       online: true
     }

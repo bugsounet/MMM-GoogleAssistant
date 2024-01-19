@@ -4,7 +4,7 @@
 
 'use strict'
 
-var spawn = require('child_process').spawn
+var { spawn } = require('child_process')
 
 let log = function() {
     var context = "[GA] [LPCM16]"

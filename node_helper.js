@@ -3,7 +3,8 @@
 //
 
 var parseData = require("./components/parseData.js")
-logGA = (...args) => { /* do nothing */ }
+var logGA = (...args) => { /* do nothing */ }
+const { exec } = require("child_process")
 
 var NodeHelper = require("node_helper")
 
@@ -35,7 +36,25 @@ module.exports = NodeHelper.create({
         this.lib.activateAssistant.activate(this, payload)
         break
       case "SHELLEXEC":
-        this.lib.shellExec.exec(this, payload)
+        if (this.config.debug) logGA = (...args) => { console.log("[GA] [SHELL_EXEC]", ...args) }
+        var command = payload.command
+        if (!command) return console.error("[GA] [SHELLEXEC] no command to execute!")
+        command += (payload.options) ? (" " + payload.options) : ""
+        exec (command, (e,so,se)=> {
+          logGA("command:", command)
+          if (e) {
+            console.log("[GA] [SHELL_EXEC] Error:" + e)
+            this.sendSocketNotification("WARNING", { message: "ShellExecError"} )
+          }
+          logGA("RESULT", {
+            executed: payload,
+            result: {
+              error: e,
+              stdOut: so,
+              stdErr: se,
+            }
+          })
+        })
         break
       case "GOOGLESEARCH":
         this.searchOnGoogle.search(this, payload)

@@ -7,11 +7,6 @@ function libraries(that) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [LIB]", ...args) }
   let libraries= [
     // { "library to load" : "store library name" }
-    { "child_process": "childProcess" },
-    { "fs": "fs" },
-    { "os": "os" },
-    { "path": "path" },
-
     { "node-pty": "pty" },
     { "express": "express" },
     { "http": "http" },
@@ -23,18 +18,9 @@ function libraries(that) {
     { "socket.io": "Socket" },
     { "cors": "cors" },
     { "util": "util" },
-    { "systeminformation": "si" },
-    { "readline": "readline" },
-    { "stream": "Stream" },
-    { "actions-on-google": "actions" },
-    { "googleapis": "googleapis" },
-    { "google-auth-library": "GoogleAuthLibrary" },
-    { "lodash": "_" },
-    { "pm2": "pm2" },
 
     { "../components/assistantConverse.js": "Assistant" },
     { "../components/screenParser.js" : "ScreenParser" },
-    { "../components/shellExec.js": "shellExec" },
     { "../components/configMerge.js": "configMerge" },
     { "../components/googleSearch.js": "googleSearch" },
     { "../components/recipes.js": "recipes" },

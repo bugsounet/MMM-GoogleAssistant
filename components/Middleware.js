@@ -1,4 +1,6 @@
 var log = (...args) => { /* do nothing */ }
+const { exec } = require("child_process")
+const path = require("path")
 
 /** init function **/
 function initialize(that) {
@@ -275,10 +277,10 @@ function createGW(that) {
           var result = {
             error: false
           }
-          var modulePath = that.lib.path.normalize(Path + "/../")
+          var modulePath = path.normalize(Path + "/../")
           var Command= 'cd ' + modulePath + ' && git clone https://github.com/bugsounet/' + req.query.EXT + ' && cd ' + req.query.EXT + ' && npm install'
 
-          var child = that.lib.childProcess.exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
+          var child = exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
             if (error) {
               result.error = true
               console.error(`[GA][FATAL] exec error: ${error}`)
@@ -324,9 +326,9 @@ function createGW(that) {
           var result = {
             error: false
           }
-          var modulePath = that.lib.path.normalize(Path + "/../")
+          var modulePath = path.normalize(Path + "/../")
           var Command= 'cd ' + modulePath + ' && rm -rfv ' + req.query.EXT
-          var child = that.lib.childProcess.exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
+          var child = exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
             if (error) {
               result.error = true
               console.error(`[GA][FATAL] exec error: ${error}`)
