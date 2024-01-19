@@ -27,7 +27,7 @@ function initialize(that) {
 
   log("Create SmartHome needed routes...")
 
-  that.lib.ActionsOnGoogle.actions(that)
+  ActionsOnGoogle.actions(that)
   that.EXT.app
     /** OAuth2 Server **/
     .use('/smarthome/assets', express.static(that.path + '/website/assets', options))
