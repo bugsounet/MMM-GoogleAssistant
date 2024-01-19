@@ -4,6 +4,7 @@ const fs = require("fs")
 const path = require("path")
 const actions = require("actions-on-google")
 const express = require("express")
+const ActionsOnGoogle = require("./actionsOnGoogle")
 
 function initialize(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME]", ...args) }

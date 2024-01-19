@@ -2,6 +2,7 @@ const { exec } = require("child_process")
 const fs = require("fs")
 const path = require("path")
 const si = require("systeminformation")
+const wirelessTools = require("../components/wirelessTools")
 
 class systemInfo {
   constructor(lib,translate) {
@@ -227,7 +228,7 @@ class systemInfo {
           }
 
           if (this.System["NETWORK"].type == "wireless") {
-            await this.lib.wirelessTools.status(this.System["NETWORK"].name, (err, status) => {
+            await wirelessTools.status(this.System["NETWORK"].name, (err, status) => {
               if (err) {
                 console.error("[GA] [SYSTEMINFO] WirelessTools Error", err.message)
                 resolve()

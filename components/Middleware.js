@@ -11,6 +11,7 @@ const session = require("express-session")
 const semver = require("semver")
 const bodyParser = require("body-parser")
 const pty = require("node-pty")
+const hyperwatch = require("./hyperwatch")
 
 /** init function **/
 function initialize(that) {
@@ -897,7 +898,7 @@ async function startServer(that,callback = () => {}) {
 
   /** Create Server **/
   that.config.listening = await that.lib.EXTTools.purposeIP(that)
-  that.EXT.HyperWatch = that.lib.hyperwatch(
+  that.EXT.HyperWatch = hyperwatch(
     that.EXT.server
       .listen(8081, "0.0.0.0", () => {
         console.log("[GA] Start listening on port 8081")

@@ -1,8 +1,8 @@
-var log = (...args) => { /* do nothing */ }
+var logGA = (...args) => { /* do nothing */ }
 
 function create(that) {
-  if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME] [DEVICE]", ...args) }
-  log("Create device...")
+  if (that.config.debug) logGA = (...args) => { console.log("[GA] [SMARTHOME] [DEVICE]", ...args) }
+  logGA("Create device...")
   that.SmartHome.device = {
     "type": "action.devices.types.TV",
     "traits": [
@@ -49,16 +49,16 @@ function create(that) {
   setTimeout(() => {
     if (that.EXT.initialized) {
       console.log("[GA] [SMARTHOME] Configuration...")
-      log("Collecting all EXTs installed...")
+      logGA("Collecting all EXTs installed...")
       init(that)
     }
   }, 1000*30 )
 }
 
 function init(that) {
-  if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME] [DEVICE]", ...args) }
+  if (that.config.debug) logGA = (...args) => { console.log("[GA] [SMARTHOME] [DEVICE]", ...args) }
   let GW = that.EXT.EXTStatus
-  if (that.config.dev) log("Received first GW status", GW)
+  if (that.config.dev) logGA("Received first GW status", GW)
   that.SmartHome.EXT = {
     "EXT-Screen": GW["EXT-Screen"].hello,
     "EXT-Volume": GW["EXT-Volume"].hello,
@@ -82,11 +82,11 @@ function init(that) {
   that.SmartHome.smarthome.LyricsIsForced = GW["EXT-SpotifyCanvasLyrics"].forced
 
   if (that.SmartHome.EXT["EXT-Screen"]) {
-    log("Found: EXT-Screen (action.devices.traits.OnOff)")
+    logGA("Found: EXT-Screen (action.devices.traits.OnOff)")
     that.SmartHome.device.traits.push("action.devices.traits.OnOff")
   }
   if (that.SmartHome.EXT["EXT-Volume"]) {
-    log("Found: EXT-Volume (action.devices.traits.Volume)")
+    logGA("Found: EXT-Volume (action.devices.traits.Volume)")
     that.SmartHome.device.traits.push("action.devices.traits.Volume")
     that.SmartHome.device.attributes.volumeMaxLevel = 100
     that.SmartHome.device.attributes.volumeCanMuteAndUnmute = true
@@ -94,9 +94,9 @@ function init(that) {
     that.SmartHome.device.attributes.levelStepSize = 5
   }
   if (that.SmartHome.EXT["EXT-Pages"]) {
-    log("Found: EXT-Pages (action.devices.traits.InputSelector)")
+    logGA("Found: EXT-Pages (action.devices.traits.InputSelector)")
     for (let i = 0; i < that.SmartHome.smarthome.MaxPages; i++) {
-      log("Set: pages",i)
+      logGA("Set: pages",i)
       let input = {}
       input.key = "page " + i
       input.names = []
@@ -108,11 +108,11 @@ function init(that) {
     }
   }
   if (that.SmartHome.EXT["EXT-Alert"]) {
-    log("Found: EXT-Alert (action.devices.traits.Locator)")
+    logGA("Found: EXT-Alert (action.devices.traits.Locator)")
     that.SmartHome.device.traits.push("action.devices.traits.Locator")
   }
   if (that.SmartHome.EXT["EXT-Spotify"]) {
-    log("Found: EXT-Spotify (action.devices.traits.AppSelector, action.devices.traits.TransportControl)")
+    logGA("Found: EXT-Spotify (action.devices.traits.AppSelector, action.devices.traits.TransportControl)")
     that.SmartHome.device.traits.push("action.devices.traits.AppSelector")
     that.SmartHome.device.attributes.availableApplications = []
     let home = {
@@ -150,7 +150,7 @@ function init(that) {
   }
 
   if (that.SmartHome.EXT["EXT-FreeboxTV"]) {
-    log("Found: EXT-FreeboxTV (action.devices.traits.Channel)")
+    logGA("Found: EXT-FreeboxTV (action.devices.traits.Channel)")
     that.SmartHome.device.traits.push("action.devices.traits.Channel")
     let FBTV= {
       key: "EXT-FreeboxTV",
@@ -164,7 +164,7 @@ function init(that) {
     that.SmartHome.device.attributes.availableInputs.push(FBTV)
   }
   if (that.SmartHome.EXT["EXT-SpotifyCanvasLyrics"]) {
-    log("Found: EXT-SpotifyCanvasLyrics (action.devices.traits.Channel)")
+    logGA("Found: EXT-SpotifyCanvasLyrics (action.devices.traits.Channel)")
     that.SmartHome.device.traits.push("action.devices.traits.Channel")
     let SCL= {
       key: "EXT-SpotifyCanvasLyrics",
@@ -177,7 +177,7 @@ function init(that) {
     }
     that.SmartHome.device.attributes.availableInputs.push(SCL)
   }
-  if (that.config.dev) log("Your device is now:", that.SmartHome.device)
+  if (that.config.dev) logGA("Your device is now:", that.SmartHome.device)
   if (that.SmartHome.homegraph) {
     that.lib.homegraph.requestSync(that)
   } else {

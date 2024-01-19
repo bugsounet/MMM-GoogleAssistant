@@ -7,24 +7,18 @@ function libraries(that) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [LIB]", ...args) }
   let libraries= [
     // { "library to load" : "store library name" }
-    { "../components/assistantConverse.js": "Assistant" },
-    { "../components/screenParser.js" : "ScreenParser" },
-    { "../components/configMerge.js": "configMerge" },
+    { "../components/GA_Tools.js": "GATools" },
     { "../components/googleSearch.js": "googleSearch" },
-    { "../components/recipes.js": "recipes" },
     { "../components/activateAssistant.js": "activateAssistant" },
 
     { "../components/EXT_Tools.js": "EXTTools" },
     { "../components/SH_Tools.js": "SHTools" },
     { "../components/Middleware.js": "Middleware"},
-    { "../components/hyperwatch.js": "hyperwatch" },
     { "../components/SH_Middleware.js": "SmartHome" },
-    { "../components/actionsOnGoogle.js": "ActionsOnGoogle" },
     { "../components/DeviceManagement.js": "Device" },
     { "../components/SH_Callbacks.js": "callback" },
     { "../components/SH_Homegraph.js": "homegraph" },
-    { "../components/systemInformation.js": "SystemInformation" },
-    { "../components/wirelessTools.js": "wirelessTools" }
+    { "../components/systemInformation.js": "SystemInformation" }
   ]
   let errors = 0
   return new Promise(resolve => {
