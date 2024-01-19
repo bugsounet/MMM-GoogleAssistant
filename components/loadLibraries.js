@@ -7,13 +7,6 @@ function libraries(that) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [LIB]", ...args) }
   let libraries= [
     // { "library to load" : "store library name" }
-    { "node-pty": "pty" },
-    { "express": "express" },
-    { "http": "http" },
-    { "semver": "semver" },
-    { "body-parser": "bodyParser" },
-    { "express-session": "session" },
-
     { "../components/assistantConverse.js": "Assistant" },
     { "../components/screenParser.js" : "ScreenParser" },
     { "../components/configMerge.js": "configMerge" },

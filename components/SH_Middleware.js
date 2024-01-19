@@ -3,6 +3,7 @@ var log = (...args) => { /* do nothing */ }
 const fs = require("fs")
 const path = require("path")
 const actions = require("actions-on-google")
+const express = require("express")
 
 function initialize(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME]", ...args) }
@@ -28,7 +29,7 @@ function initialize(that) {
   that.lib.ActionsOnGoogle.actions(that)
   that.EXT.app
     /** OAuth2 Server **/
-    .use('/smarthome/assets', that.lib.express.static(that.path + '/website/assets', options))
+    .use('/smarthome/assets', express.static(that.path + '/website/assets', options))
     .get("/smarthome/login/", (req,res) => {
       if (that.SmartHome.init) res.sendFile(SHWebsiteDir+ "/login.html")
       else res.sendFile(SHWebsiteDir+ "/disabled.html")

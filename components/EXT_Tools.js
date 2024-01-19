@@ -8,6 +8,7 @@ const Stream = require("stream")
 const readline = require("readline")
 const si = require("systeminformation")
 const util = require("util")
+const semver = require("semver")
 
 const mainBranch = {
   "MMM-GoogleAssistant" : "prod",
@@ -631,8 +632,8 @@ function checkUpdate(module, version, that) {
       .then(response => response.json())
       .then(data => {
         result.last = data.version
-        if (that.lib.semver.gt(result.last, version)) result.update = true
-        else if (that.lib.semver.gt(version, result.last)) result.beta = true
+        if (semver.gt(result.last, version)) result.update = true
+        else if (semver.gt(version, result.last)) result.beta = true
         resolve(result)
       })
       .catch(async e => {

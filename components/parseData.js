@@ -123,7 +123,7 @@ async function parseMiddleware(that, data) {
     that.lib.homegraph.init(that)
     that.lib.Device.create(that)
   } else {
-    console.log("[GA] no CLIENT_ID found in your config!")
+    console.warn("[GA] no CLIENT_ID found in your config!")
     console.warn("[GA] SmartHome functionality is disabled")
   }
 

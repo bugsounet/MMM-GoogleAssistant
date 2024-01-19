@@ -3,8 +3,14 @@ const { exec } = require("child_process")
 const path = require("path")
 const cors = require("cors")
 const Socket = require("socket.io")
+const express = require("express")
+const http = require("http")
 const LocalStrategy = require("passport-local")
 const passport = require("passport")
+const session = require("express-session")
+const semver = require("semver")
+const bodyParser = require("body-parser")
+const pty = require("node-pty")
 
 /** init function **/
 function initialize(that) {
@@ -24,8 +30,8 @@ function initialize(that) {
   }
   passportConfig(that)
 
-  that.EXT.app = that.lib.express()
-  that.EXT.server = that.lib.http.createServer(that.EXT.app)
+  that.EXT.app = express()
+  that.EXT.server = http.createServer(that.EXT.app)
   that.EXT.EXTConfigured= that.lib.EXTTools.searchConfigured(that.EXT.MMConfig, that.EXT.EXT)
   that.EXT.EXTInstalled= that.lib.EXTTools.searchInstalled(that)
   log("Find", that.EXT.EXTInstalled.length , "installed plugins in MagicMirror")
@@ -40,17 +46,17 @@ function createGW(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA]", ...args) }
 
   var Path = that.path
-  var urlencodedParser = that.lib.bodyParser.urlencoded({ extended: true })
+  var urlencodedParser = bodyParser.urlencoded({ extended: true })
   log("Create website needed routes...")
-  that.EXT.app.use(that.lib.session({
+  that.EXT.app.use(session({
     secret: 'some-secret',
     saveUninitialized: false,
     resave: true
   }))
 
   // For parsing post request's data/body
-  that.EXT.app.use(that.lib.bodyParser.json())
-  that.EXT.app.use(that.lib.bodyParser.urlencoded({ extended: true }))
+  that.EXT.app.use(bodyParser.json())
+  that.EXT.app.use(bodyParser.urlencoded({ extended: true }))
 
   // Tells app to use password session
   that.EXT.app.use(passport.initialize())
@@ -77,22 +83,22 @@ function createGW(that) {
   that.EXT.app
     .use(logRequest)
     .use(cors({ origin: '*' }))
-    .use('/EXT_Login.js', that.lib.express.static(Path + '/website/tools/EXT_Login.js'))
-    .use('/EXT_Home.js', that.lib.express.static(Path + '/website/tools/EXT_Home.js'))
-    .use('/EXT_Plugins.js', that.lib.express.static(Path + '/website/tools/EXT_Plugins.js'))
-    .use('/EXT_Terminal.js', that.lib.express.static(Path + '/website/tools/EXT_Terminal.js'))
-    .use('/EXT_MMConfig.js', that.lib.express.static(Path + '/website/tools/EXT_MMConfig.js'))
-    .use('/EXT_Tools.js', that.lib.express.static(Path + '/website/tools/EXT_Tools.js'))
-    .use('/EXT_System.js', that.lib.express.static(Path + '/website/tools/EXT_System.js'))
-    .use('/EXT_About.js', that.lib.express.static(Path + '/website/tools/EXT_About.js'))
-    .use('/EXT_Restart.js', that.lib.express.static(Path + '/website/tools/EXT_Restart.js'))
-    .use('/EXT_Die.js', that.lib.express.static(Path + '/website/tools/EXT_Die.js'))
-    .use('/EXT_Fetch.js', that.lib.express.static(Path + '/website/tools/EXT_Fetch.js'))
-    .use('/3rdParty.js', that.lib.express.static(Path + '/website/tools/3rdParty.js'))
-    .use('/assets', that.lib.express.static(Path + '/website/assets', options))
-    .use("/jsoneditor" , that.lib.express.static(Path + '/node_modules/jsoneditor'))
-    .use("/xterm" , that.lib.express.static(Path + '/node_modules/xterm'))
-    .use("/xterm-addon-fit" , that.lib.express.static(Path + '/node_modules/xterm-addon-fit'))
+    .use('/EXT_Login.js', express.static(Path + '/website/tools/EXT_Login.js'))
+    .use('/EXT_Home.js', express.static(Path + '/website/tools/EXT_Home.js'))
+    .use('/EXT_Plugins.js', express.static(Path + '/website/tools/EXT_Plugins.js'))
+    .use('/EXT_Terminal.js', express.static(Path + '/website/tools/EXT_Terminal.js'))
+    .use('/EXT_MMConfig.js', express.static(Path + '/website/tools/EXT_MMConfig.js'))
+    .use('/EXT_Tools.js', express.static(Path + '/website/tools/EXT_Tools.js'))
+    .use('/EXT_System.js', express.static(Path + '/website/tools/EXT_System.js'))
+    .use('/EXT_About.js', express.static(Path + '/website/tools/EXT_About.js'))
+    .use('/EXT_Restart.js', express.static(Path + '/website/tools/EXT_Restart.js'))
+    .use('/EXT_Die.js', express.static(Path + '/website/tools/EXT_Die.js'))
+    .use('/EXT_Fetch.js', express.static(Path + '/website/tools/EXT_Fetch.js'))
+    .use('/3rdParty.js', express.static(Path + '/website/tools/3rdParty.js'))
+    .use('/assets', express.static(Path + '/website/assets', options))
+    .use("/jsoneditor" , express.static(Path + '/node_modules/jsoneditor'))
+    .use("/xterm" , express.static(Path + '/node_modules/xterm'))
+    .use("/xterm-addon-fit" , express.static(Path + '/node_modules/xterm-addon-fit'))
 
     .get('/', (req, res) => {
       if(req.user) res.sendFile(Path+ "/website/Gateway/index.html")
@@ -113,7 +119,7 @@ function createGW(that) {
           .then(response => response.json())
           .then(data => {
             result.last = data.version
-            if (that.lib.semver.gt(result.last, result.v)) result.needUpdate = true
+            if (semver.gt(result.last, result.v)) result.needUpdate = true
             res.send(result)
           })
           .catch(e => {
@@ -232,7 +238,7 @@ function createGW(that) {
           })
           var cols = 80
           var rows = 24
-          var ptyProcess = that.lib.pty.spawn("bash", [], {
+          var ptyProcess = pty.spawn("bash", [], {
             name: "xterm-color",
             cols: cols,
             rows: rows,
