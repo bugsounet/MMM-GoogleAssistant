@@ -3,3 +3,7 @@
 /tmp/lastResponse.mp3
 /tmp/responseOutput.html
 /tokenGA.json
+/smarthome.json
+/backup/config.js.GA.*
+/website/tools/.uptimed
+/website/tokens/*
