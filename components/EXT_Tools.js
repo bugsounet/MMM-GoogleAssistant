@@ -712,7 +712,7 @@ function check_PM2_Process(that) {
           return
         }
         list.forEach(pm => {
-          if ((pm.pm2_env.version === that.MMVersion) && (pm.pm2_env.status === "online") && (pm.pm2_env.PWD.includes(that.root_path))) {
+          if ((pm.pm2_env.version === that.MMVersion) && (pm.pm2_env.status === "online") && (pm.pm2_env.pm_cwd.includes(that.root_path))) {
             that.EXT.PM2Process = pm.name
             console.log("[GA] [PM2] You are using PM2 with", that.EXT.PM2Process)
             resolve(true)
