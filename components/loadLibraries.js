@@ -9,7 +9,6 @@ function libraries(that) {
     // { "library to load" : "store library name" }
     { "child_process": "childProcess" },
     { "fs": "fs" },
-    { "os": "os" },
     { "path": "path" },
 
     { "node-pty": "pty" },
