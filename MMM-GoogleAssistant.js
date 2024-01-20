@@ -164,10 +164,6 @@ Module.register("MMM-GoogleAssistant", {
           type: "error"
         })
         break
-      case "TESTING":
-        this.assistantResponse.showTranscription(this.translate("SDK_TESTING"))
-        this.activateProcess.assistantActivate(this, { test: true })
-        break
       case "PRE-INIT":
         this.GAConfig.EXT_Config(this)
         break
@@ -182,9 +178,6 @@ Module.register("MMM-GoogleAssistant", {
       case "ASSISTANT_RESULT":
         if (payload.volume !== null) this.sendNotification("EXT_VOLUME-SPEAKER_SET", payload.volume)
         this.assistantResponse.start(payload)
-        break
-      case "ASSISTANT_TESTING_RESULT":
-        this.assistantResponse.testing(payload)
         break
       case "TUNNEL":
         this.assistantResponse.tunnel(payload)

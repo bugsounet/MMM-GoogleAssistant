@@ -4,17 +4,6 @@ class activateProcess {
   }
 
   assistantActivate(that, payload) {
-    if (payload.test) {
-      var testing = {
-        type: "TEXT",
-        key: "What time is it?",
-        lang: that.config.assistantConfig.lang,
-        status: "testing",
-        chime: false
-      }
-      that.sendSocketNotification("ACTIVATE_ASSISTANT", testing)
-      return
-    }
     if (that.GAStatus.actual != "standby" && !payload.force) return logGA("Assistant is busy.")
     that.assistantResponse.clearAliveTimers()
     if (that.GAStatus.actual== "continue") that.assistantResponse.showTranscription(that.translate("GAContinue"))
