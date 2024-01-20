@@ -7,7 +7,7 @@ function actions (that) {
 
   that.SmartHome.actions.onSync((body, headers) => {
     log("[SYNC] Request:", JSON.stringify(body))
-    let user_id = that.lib.SHTools.check_token(that,headers)
+    let user_id = that.lib.SHTools.check_token(headers)
     if (!user_id) {
       console.error("[GA] [SMARTHOME] [ACTIONS] [SYNC] Error: user_id not found!")
       return {} // maybe return error ??
@@ -24,7 +24,7 @@ function actions (that) {
 
   that.SmartHome.actions.onExecute((body, headers) => {
     log("[EXECUTE] Request:", JSON.stringify(body))
-    let user_id = that.lib.SHTools.check_token(that,headers)
+    let user_id = that.lib.SHTools.check_token(headers)
     if (!user_id) {
       console.error("[GA] [SMARTHOME] [ACTIONS] [EXECUTE] Error: user_id not found!")
       return {} // maybe return error ??
@@ -45,7 +45,7 @@ function actions (that) {
 
   that.SmartHome.actions.onQuery((body, headers) => {
     log("[QUERY] Request:", JSON.stringify(body))
-    let user_id = that.lib.SHTools.check_token(that,headers)
+    let user_id = that.lib.SHTools.check_token(headers)
     if (!user_id) {
       console.error("[GA] [SMARTHOME] [ACTIONS] [QUERY] Error: user_id not found!")
       return {} // maybe return error ??
@@ -63,7 +63,7 @@ function actions (that) {
 
   that.SmartHome.actions.onDisconnect((body, headers) => {
     log("[Disconnect]")
-    that.lib.SHTools.delete_token(that, that.lib.SHTools.get_token(headers))
+    that.lib.SHTools.delete_token(that.lib.SHTools.get_token(headers))
     return {}
   })
 }
