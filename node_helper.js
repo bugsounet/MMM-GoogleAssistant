@@ -35,7 +35,7 @@ module.exports = NodeHelper.create({
         this.lib.activateAssistant.activate(this, payload)
         break
       case "SHELLEXEC":
-        this.lib.shellExec.exec(this, payload)
+        this.lib.GATools.shellExec(this, payload)
         break
       case "GOOGLESEARCH":
         this.searchOnGoogle.search(this, payload)

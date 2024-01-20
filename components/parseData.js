@@ -62,7 +62,7 @@ async function parse(that) {
     console.error("[GA] [DATA] Try to solve it with `npm run rebuild` in MMM-GoogleAssistant folder")
     return
   }
-  await that.lib.configMerge.check(that)
+  await that.lib.GATools.check(that)
   var error = null
 
   if (!that.lib.fs.existsSync(that.config.assistantConfig["modulePath"] + "/credentials.json")) {
@@ -78,7 +78,7 @@ async function parse(that) {
 
   that.searchOnGoogle = new that.lib.googleSearch()
 
-  that.lib.recipes.load(that, ()=> {
+  that.lib.GATools.loadRecipes(that, ()=> {
     console.log("[GA] Recipes loaded!")
     that.sendSocketNotification("PRE-INIT")
   })

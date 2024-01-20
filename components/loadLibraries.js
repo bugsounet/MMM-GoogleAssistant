@@ -33,10 +33,8 @@ function libraries(that) {
 
     { "../components/assistantConverse.js": "Assistant" },
     { "../components/screenParser.js" : "ScreenParser" },
-    { "../components/shellExec.js": "shellExec" },
-    { "../components/configMerge.js": "configMerge" },
+    { "../components/GA_Tools.js": "GATools" },
     { "../components/googleSearch.js": "googleSearch" },
-    { "../components/recipes.js": "recipes" },
     { "../components/activateAssistant.js": "activateAssistant" },
 
     { "../components/EXT_Tools.js": "EXTTools" },
