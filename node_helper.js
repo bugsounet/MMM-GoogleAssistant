@@ -3,8 +3,6 @@
 //
 
 var parseData = require("./components/parseData.js")
-logGA = (...args) => { /* do nothing */ }
-
 var NodeHelper = require("node_helper")
 
 module.exports = NodeHelper.create({
@@ -21,15 +19,15 @@ module.exports = NodeHelper.create({
           setTimeout(() => process.exit(), 5000)
           return
         }
-        if (this.EXT.server) return
-        this.alreadyInitialized= true
+        if (this.website) return
+        this.alreadyInitialized = true
         this.config = payload
         console.log("[GA] MMM-GoogleAssistant Version:", require('./package.json').version, "rev:", require('./package.json').rev)
         this.config.assistantConfig["modulePath"] = __dirname
         parseData.parse(this)
         break
       case "INIT":
-        parseData.parseMiddleware(this, payload)
+        this.website.init(payload)
         break
       case "ACTIVATE_ASSISTANT":
         this.lib.activateAssistant.activate(this, payload)
@@ -41,35 +39,29 @@ module.exports = NodeHelper.create({
         this.searchOnGoogle.search(this, payload)
         break
       case "HELLO":
-        if (!this.lib.EXTTools) {
+        if (!this.website) {
           // library is not loaded ... retry
           setTimeout(() => { this.socketNotificationReceived("HELLO", payload) }, 1000)
           return
         }
-        this.lib.EXTTools.setActiveVersion(payload, this)
+        this.website.setActiveVersion(payload)
         break
       case "RESTART":
-        this.lib.EXTTools.restartMM(this)
+        this.website.restartMM()
         break
       case "CLOSE":
-        this.lib.EXTTools.doClose(this)
+        this.website.doClose()
         break
       case "EXTStatus":
-        if (this.EXT.initialized && payload) {
-          this.EXT.EXTStatus = payload
-          if (this.SmartHome.use && this.SmartHome.init) {
-              this.lib.Device.refreshData(this)
-              this.lib.homegraph.updateGraph(this)
-          }
-        }
+        this.website.setEXTStatus(payload)
         break
       case "TB_SYSINFO":
-        let result = await this.EXT.systemInformation.lib.Get()
+        let result = await this.website.website.systemInformation.lib.Get()
         result.sessionId = payload
         this.sendSocketNotification("TB_SYSINFO-RESULT", result)
         break
       case "GET-SYSINFO":
-        this.sendSocketNotification("SYSINFO-RESULT", await this.EXT.systemInformation.lib.Get())
+        this.sendSocketNotification("SYSINFO-RESULT", await this.website.website.systemInformation.lib.Get())
         break
     }
   }

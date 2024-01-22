@@ -1,17 +1,4 @@
 /** fetch datas **/
-function getGatewaySetting() {
-  return new Promise(resolve => {
-    $.getJSON("/getSetting" , (confGW) => {
-      //console.log("SettingGW", confGW)
-      resolve(confGW)
-    })
-    .fail(function(err) {
-      if (!err.status) alertify.error("Connexion Lost!")
-      else alertify.warning("[getGatewaySetting] Server return Error " + err.status + " ("+ err.statusText+")")
-    })
-  })
-}
-
 function getHomeText() {
   return new Promise(resolve => {
     $.getJSON("/homeText" , (homeText) => {
