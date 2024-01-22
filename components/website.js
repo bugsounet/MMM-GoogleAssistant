@@ -10,7 +10,7 @@ const Stream = require("stream")
 const pm2 = require("pm2")
 const semver = require("semver")
 const passport = require("passport")
-const LocalStrategy = require("passport-local") 
+const LocalStrategy = require("passport-local")
 const express = require("express")
 const session = require("express-session")
 const http = require("http")
@@ -59,6 +59,7 @@ class website {
   constructor(config, cb = ()=> {}) {
     this.lib = config.lib
     this.config = config.config
+    this.assistantLang = config.assistantLang
     this.sendSocketNotification = (...args) => cb(...args)
 
     if (config.debug) logGA = (...args) => { console.log("[GA] [WEBSITE]", ...args) }
@@ -78,7 +79,7 @@ class website {
       schemaTranslatation: null,
       language: null,
       webviewTag: false,
-      GAConfig: {},
+      GAConfig: {}, // see to be deleted !?
       HyperWatch: null,
       radio: null,
       freeteuse: {},
@@ -103,7 +104,7 @@ class website {
     let Version = {
       version: require('../package.json').version,
       rev: require('../package.json').rev,
-      lang: this.config.assistantLang
+      lang: this.assistantLang
     }
     if (!this.website.MMConfig) {
       this.website.errorInit = true
@@ -113,7 +114,7 @@ class website {
     }
     await this.MMConfigAddress()
     if (this.lib.error || this.website.errorInit) return
-  
+
     this.website.language = this.website.MMConfig.language
     this.website.webviewTag = this.checkElectronOptions()
     this.website.EXT = data.DB.sort()
@@ -121,8 +122,8 @@ class website {
     this.website.translation = data.Translate
     this.website.schemaTranslatation = data.Schema
     this.website.EXTStatus = data.EXTStatus
-    this.website.GAConfig = this.getGAConfig(this.website.MMConfig)
-    this.website.homeText = await this.getHomeText(this.website.language) // to see
+    this.website.GAConfig = this.getGAConfig()
+    this.website.homeText = await this.getHomeText()
     this.website.freeteuse = await this.readFreeteuseTV()
     this.website.radio= await this.readRadioRecipe()
     this.website.usePM2 = await this.check_PM2_Process()
@@ -142,7 +143,7 @@ class website {
       console.warn("[GA] SmartHome functionality is disabled")
     }
     */
-    
+
     if (!this.config.username && !this.config.password) {
       console.error("[GA] Your have not defined user/password in config!")
       console.error("[GA] Using default credentials")
@@ -187,16 +188,15 @@ class website {
         else done(null, false, { message: this.website.translation["Login_Error"] })
       }
     ))
-  
+
     passport.serializeUser((user, done) => {
       done(null, user._id)
     })
-  
+
     passport.deserializeUser((id, done) => {
       done(null, this.website.user)
     })
   }
-
 
   /** GA Middleware **/
   createWebsite() {
@@ -211,15 +211,15 @@ class website {
       saveUninitialized: false,
       resave: true
     }))
-  
+
     // For parsing post request's data/body
     this.website.app.use(bodyParser.json())
     this.website.app.use(bodyParser.urlencoded({ extended: true }))
-  
+
     // Tells app to use password session
     this.website.app.use(passport.initialize())
     this.website.app.use(passport.session())
-  
+
     var options = {
       dotfiles: 'ignore',
       etag: false,
@@ -231,13 +231,13 @@ class website {
         res.set('x-timestamp', Date.now())
       }
     }
-  
+
     var healthDownloader = function(req, res) {
       res.redirect('/')
     }
-  
+
     var io = new Socket.Server(this.website.server)
-  
+
     this.website.app
       .use(this.logRequest)
       .use(cors({ origin: '*' }))
@@ -257,12 +257,12 @@ class website {
       .use("/jsoneditor" , express.static(`${this.GAPath}/node_modules/jsoneditor`))
       .use("/xterm" , express.static(`${this.GAPath}/node_modules/xterm`))
       .use("/xterm-addon-fit" , express.static(`${this.GAPath}/node_modules/xterm-addon-fit`))
-  
+
       .get('/', (req, res) => {
         if(req.user) res.sendFile(`${this.WebsitePath}/Gateway/index.html`)
         else res.redirect('/login')
       })
-  
+
       .get("/version" , (req,res) => {
           let remoteFile = "https://raw.githubusercontent.com/bugsounet/MMM-GoogleAssistant/prod/package.json"
           var result = {
@@ -285,32 +285,32 @@ class website {
               res.send(result)
             })
       })
-  
+
       .get("/systemInformation" , async (req, res) => {
         if (req.user) {
           this.website.systemInformation.result = await this.website.systemInformation.lib.Get()
           res.send(this.website.systemInformation.result)
         } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/translation" , (req,res) => {
         res.send(this.website.translation)
       })
-  
+
       .get("/homeText", (req,res) => {
         res.send({text: this.website.homeText})
       })
-  
+
       .get('/EXT', (req, res) => {
         if(req.user) res.sendFile(`${this.WebsitePath}/Gateway/EXT.html`)
         else res.redirect('/login')
       })
-  
+
       .get('/login', (req, res) => {
         if (req.user) res.redirect('/')
         res.sendFile(`${this.WebsitePath}/Gateway/login.html`)
       })
-  
+
       .post('/auth', (req, res, next) => {
         var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
         passport.authenticate('login', (err, user, info) => {
@@ -332,44 +332,44 @@ class website {
           })
         })(req, res, next)
       })
-  
+
       .get('/logout', (req, res) => {
         req.logout(err => {
           if (err) { return console.error("[GA] [WEBSITE] Logout:", err) }
           res.redirect('/')
         })
       })
-  
+
       .get('/AllEXT', (req, res) => {
         if (req.user) res.send(this.website.EXT)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get('/DescriptionEXT', (req, res) => {
         if (req.user) res.send(this.website.EXTDescription)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get('/InstalledEXT', (req, res) => {
         if (req.user) res.send(this.website.EXTInstalled)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get('/ConfiguredEXT', (req, res) => {
         if (req.user) res.send(this.website.EXTConfigured)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get('/GetMMConfig', (req, res) => {
         if (req.user) res.send(this.website.MMConfig)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/Terminal" , (req,res) => {
         if (req.user) {
           var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
           res.sendFile(`${this.WebsitePath}/Gateway/terminal.html`)
-  
+
           io.once('connection', async (socket) => {
             logGA('[' + ip + '] Connected to Terminal Logs:', req.user.username)
             socket.on('disconnect', (err) => {
@@ -416,7 +416,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/install" , (req,res) => {
         if (req.user) {
           var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
@@ -436,7 +436,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/EXTInstall" , (req,res) => {
         if (req.user) {
           var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
@@ -447,7 +447,7 @@ class website {
             }
             var modulePath = `${this.root_path}/modules/`
             var Command= 'cd ' + modulePath + ' && git clone https://github.com/bugsounet/' + req.query.EXT + ' && cd ' + req.query.EXT + ' && npm install'
-  
+
             var child = exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
               if (error) {
                 result.error = true
@@ -465,7 +465,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/delete" , (req,res) => {
         if (req.user) {
           var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
@@ -485,7 +485,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/EXTDelete" , (req,res) => {
         if (req.user) {
           var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
@@ -513,12 +513,12 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/MMConfig" , (req,res) => {
         if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/mmconfig.html`)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/EXTCreateConfig" , (req,res) => {
         if (req.user) {
           if (req.query.ext &&
@@ -532,7 +532,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/EXTModifyConfig" , (req,res) => {
         if (req.user) {
           if (req.query.ext &&
@@ -546,7 +546,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/EXTDeleteConfig" , (req,res) => {
         if (req.user) {
           if (req.query.ext &&
@@ -560,7 +560,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/EXTGetCurrentConfig" , (req,res) => {
         if (req.user) {
           if(!req.query.ext) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
@@ -573,7 +573,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/EXTGetDefaultConfig" , (req,res) => {
         if (req.user) {
           if(!req.query.ext) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
@@ -582,7 +582,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/EXTGetDefaultTemplate" , (req,res) => {
         if (req.user) {
           if(!req.query.ext) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
@@ -592,7 +592,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/EXTSaveConfig" , (req,res) => {
         if (req.user) {
           if(!req.query.config) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
@@ -601,7 +601,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .post("/writeEXT", async (req,res) => {
         if (req.user) {
           console.log("[GA] [WEBSITE] Receiving EXT data ...")
@@ -615,9 +615,9 @@ class website {
             this.website.EXTConfigured= this.searchConfigured()
             console.log("[GA] [WEBSITE] Reload config")
           }
-        } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`) 
+        } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .post("/deleteEXT", async (req,res) => {
         if (req.user) {
           console.log("[GA] [WEBSITE] Receiving EXT data ...", req.body)
@@ -633,23 +633,23 @@ class website {
           }
         } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/Tools" , (req,res) => {
         if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/tools.html`)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/System" , (req,res) => {
         if (req.user) {
           res.sendFile(`${this.WebsitePath}/Gateway/system.html`)
         } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/About" , (req,res) => {
         if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/about.html`)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/3rdpartymodules", (req,res) => {
         if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/3rdpartymodules.html`)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
@@ -662,7 +662,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/Die" , (req,res) => {
         if (req.user) {
           res.sendFile(`${this.WebsitePath}/Gateway/die.html`)
@@ -670,7 +670,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/SystemRestart" , (req,res) => {
         if (req.user) {
           res.sendFile(`${this.WebsitePath}/Gateway/restarting.html`)
@@ -678,7 +678,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/SystemDie" , (req,res) => {
         if (req.user) {
           res.sendFile(`${this.WebsitePath}/Gateway/die.html`)
@@ -686,7 +686,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/EditMMConfig" , (req,res) => {
         if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/EditMMConfig.html`)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
@@ -699,7 +699,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/GetBackupFile" , async (req,res) => {
         if (req.user) {
           let data = req.query.config
@@ -708,7 +708,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/GetRadioStations", (req,res) => {
         if (req.user) {
           if (!this.website.radio) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
@@ -717,7 +717,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .post("/loadBackup", async (req,res) => {
         if (req.user) {
           console.log("[GA] [WEBSITE] Receiving backup data ...")
@@ -732,7 +732,7 @@ class website {
           }
         } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .post("/writeConfig", async (req,res) => {
         if (req.user) {
           console.log("[GA] [WEBSITE] Receiving config data ...")
@@ -746,12 +746,12 @@ class website {
           }
         } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/getWebviewTag", (req,res) => {
         if(req.user) res.send(this.website.webviewTag)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .post("/setWebviewTag", async (req,res) => {
         if(!this.website.webviewTag && req.user) {
           console.log("[GA] [WEBSITE] Receiving setWebviewTag demand...")
@@ -767,7 +767,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/getGAVersion", (req,res) => {
         if (req.user) {
           if (this.website.EXTStatus.GA_Ready) this.website.GACheck.ready = true
@@ -775,12 +775,12 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/getEXTStatus", (req,res) => {
         if (req.user) res.send(this.website.EXTStatus)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .post("/EXT-Screen", (req, res) => {
         if(req.user) {
           let data = req.body.data
@@ -796,7 +796,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-GAQuery", (req, res) => {
         if(req.user) {
           let data = req.body.data
@@ -806,7 +806,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-AlertQuery", (req, res) => {
         if(req.user) {
           let data = req.body.data
@@ -826,7 +826,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-VolumeSendSpeaker", (req, res) => {
         if(req.user) {
           let data = req.body.data
@@ -839,7 +839,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-VolumeSendRecorder", (req, res) => {
         if(req.user) {
           let data = req.body.data
@@ -852,7 +852,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-SpotifyQuery", (req, res) => {
         if(req.user) {
           let result = req.body.data
@@ -873,7 +873,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-SpotifyPlay", (req, res) => {
         if(req.user) {
           this.sendSocketNotification("SendNoti", "EXT_SPOTIFY-PLAY")
@@ -881,7 +881,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-SpotifyStop", (req, res) => {
         if(req.user) {
           this.sendSocketNotification("SendNoti", "EXT_SPOTIFY-STOP")
@@ -889,7 +889,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-SpotifyNext", (req, res) => {
         if(req.user) {
           this.sendSocketNotification("SendNoti", "EXT_SPOTIFY-NEXT")
@@ -897,7 +897,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-SpotifyPrevious", (req, res) => {
         if(req.user) {
           this.sendSocketNotification("SendNoti", "EXT_SPOTIFY-PREVIOUS")
@@ -905,7 +905,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-Updates", (req, res) => {
         if(req.user) {
           this.sendSocketNotification("SendNoti", "EXT_UPDATES-UPDATE")
@@ -913,7 +913,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-YouTubeQuery", (req, res) => {
         if(req.user) {
           let data = req.body.data
@@ -930,7 +930,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-FreeboxTVQuery", (req, res) => {
         if(this.website.freeteuse && req.user) {
           let data = req.body.data
@@ -943,7 +943,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-RadioQuery", (req, res) => {
         if(req.user) {
           let data = req.body.data
@@ -961,7 +961,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/EXT-StopQuery", (req, res) => {
         if(req.user) {
           this.sendSocketNotification("SendStop")
@@ -970,7 +970,7 @@ class website {
         }
         else res.send("error")
       })
-  
+
       .post("/deleteBackup", async (req,res) => {
         if(req.user) {
           console.log("[GA] [WEBSITE] Receiving delete backup demand...")
@@ -980,7 +980,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .post("/readExternalBackup", async (req,res) => {
         if(req.user) {
           let data = req.body.data
@@ -991,7 +991,7 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .post("/saveExternalBackup", async (req,res) => {
         if(req.user) {
           let data = req.body.data
@@ -1018,16 +1018,16 @@ class website {
         }
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/activeVersion", (req,res) => {
         if (req.user) res.send(this.website.activeVersion)
         else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
       })
-  
+
       .get("/download/*", (req,res) => {
         healthDownloader(req, res)
       })
-  
+
       .get("/robots.txt", (req,res) => {
         res.sendFile(`${this.WebsitePath}/Gateway/robots.txt`)
       })
@@ -1052,23 +1052,23 @@ class website {
       })
     this.website.app
       .get("/*", (req, res) => {
-        console.warn("[GA]  [WEBSITE] Don't find:", req.url)
+        console.warn("[GA] [WEBSITE] Don't find:", req.url)
         res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
       })
-  
+
     /** Create Server **/
     this.config.listening = await this.purposeIP()
     this.website.HyperWatch = this.lib.hyperwatch(
       this.website.server
         .listen(8081, "0.0.0.0", () => {
-          console.log("[GA] [WEBSITE] Start listening on port 8081")
-          console.log(`[GA] [WEBSITE] Available locally at http://${this.config.listening}:8081`)
+          console.log("[GA] [WEBSITE] [SERVER] Start listening on port 8081")
+          console.log(`[GA] [WEBSITE] [SERVER] Available locally at http://${this.config.listening}:8081`)
           this.website.initialized= true
           callback(true)
         })
         .on("error", err => {
-          console.error("[GA] [WEBSITE] Can't start web server!")
-          console.error("[GA] [WEBSITE] Error:",err.message)
+          console.error("[GA] [WEBSITE] [SERVER] Can't start web server!")
+          console.error("[GA] [WEBSITE] [SERVER] Error:",err.message)
           this.sendSocketNotification("SendNoti", {
             noti: "EXT_ALERT",
             payload: {
@@ -1097,7 +1097,7 @@ class website {
       resolve(MMConfig)
     })
   }
-  
+
   readTMPBackupConfig(file) {
     return new Promise(resolve => {
       var TMPConfig = undefined
@@ -1106,8 +1106,8 @@ class website {
         TMPConfig = this.configStartMerge(TMPConfig)
         fs.unlink(file, (err) => {
           if (err) {
-            //resolve({error: "Error when deleting file" })
-            return console.error("[GA] error", err)
+            resolve({error: "Error when deleting file" })
+            return console.error("[GA] [WEBSITE] [DELETE] error", err)
           }
         })
         resolve(TMPConfig)
@@ -1124,7 +1124,7 @@ class website {
       resolve(streamsConfig)
     })
   }
-  
+
   readRadioRecipe() {
     return new Promise(resolve => {
       var RadioResult = undefined
@@ -1134,12 +1134,12 @@ class website {
         if (fs.existsSync(file)) RadioResult = require(file).recipe.commands
       } catch (e) {
         resolve(RadioResult)
-        console.error("[GA] [Radio] error when loading file", file)
+        console.error("[GA] [WEBSITE] [Radio] error when loading file", file)
       }
       resolve(RadioResult)
     })
   }
-  
+
   /** search installed EXT from DB**/
   searchConfigured () {
     try {
@@ -1149,11 +1149,11 @@ class website {
       })
       return Configured.sort()
     } catch (e) {
-      console.log("[GA] Error! " + e)
+      console.log("[GA] [WEBSITE] Error! " + e)
       return Configured.sort()
     }
   }
-  
+
   /** search installed EXT **/
   searchInstalled () {
     var Installed = []
@@ -1162,12 +1162,12 @@ class website {
       if (fs.existsSync(`${this.root_path}/modules/${m}/package.json`)) {
         let name = require(`${this.root_path}/modules/${m}/package.json`).name
         if (name == m) Installed.push(m)
-        else console.warn("[GA] [WEBSITE] Found:", m, "but in package.json name is not the same:", name)
+        else console.warn(`[GA] [WEBSITE] Found: ${m} but in package.json name is not the same: ${name}`)
       }
     })
     return Installed.sort()
   }
-  
+
   /** timeStamp for backup **/
   timeStamp() {
     var now = new Date(Date.now())
@@ -1183,7 +1183,7 @@ class website {
     }
     return date.join("") + "-" +time.join(":")
   }
-  
+
   /** Save MagicMirror config with backup **/
   saveConfig(MMConfig) {
     return new Promise(resolve => {
@@ -1192,12 +1192,12 @@ class website {
       let backupPath = `${this.GAPath}/backup/config.js.GA.${this.timeStamp()}`
       var source = fs.createReadStream(configPath)
       var destination = fs.createWriteStream(backupPath)
-  
+
       source.pipe(destination, { end: false })
       source.on("end", () => {
         var header = "/*** GENERATED BY @bugsounet MMM-GoogleAssistant v" + require("../package.json").version + " ***/\n/*** https://forum.bugsounet.fr **/\n\nvar config = "
         var footer = "\n\n/*************** DO NOT EDIT THE LINE BELOW ***************/\nif (typeof module !== 'undefined') {module.exports = config;}\n"
-  
+
         fs.writeFile(configPathTMP, header + util.inspect(MMConfig, {
             showHidden: false,
             depth: null,
@@ -1207,7 +1207,7 @@ class website {
           (error) => {
             if (error) {
               resolve({error: "Error when writing file" })
-              return console.error("[GA] error", error)
+              return console.error("[GA] [WEBSITE] [WRITE] error", error)
             }
             console.log("[GA] Saved TMP configuration!")
             console.log("[GA] Backup saved in", backupPath)
@@ -1217,20 +1217,20 @@ class website {
               fs.unlink(outputFile, (err) => {
                 if (err) {
                   resolve({error: "Error when deleting file" })
-                  return console.error("[GA] error", err)
+                  return console.error("[GA] [WEBSITE] [DELETE] error", err)
                 }
               })
               var instream = fs.createReadStream(inputFile)
               var outstream = new Stream()
               outstream.readable = true
               outstream.writable = true
-  
+
               var rl = readline.createInterface({
                 input: instream,
                 output: outstream,
                 terminal: false
               })
-  
+
               rl.on('line', (line) => {
                 var Search = FunctionSearch.exec(line)
                 if (Search) {
@@ -1244,7 +1244,7 @@ class website {
                 fs.unlink(inputFile, (err) => {
                   if (err) {
                     resolve({error: "Error when deleting file" })
-                    return console.error("[GA] error", err)
+                    return console.error("[GA] [WEBSITE] [DELETE] error", err)
                   }
                   resolve({done: "ok" }) // !! ALL is ok !!
                 })
@@ -1256,20 +1256,20 @@ class website {
       })
       destination.on("error", (error) => {
         resolve({error: "Error when writing file" })
-        console.log("[GA]", error)
+        console.log("[GA] [WEBSITE] [WRITE]", error)
       })
     })
   }
-  
+
   saveExternalConfig(Config) {
     return new Promise(resolve => {
       var time = Date.now()
       var configPathTMP = `${this.GAPath}/tmp/configTMP.js`
       var configPathOut = `${this.GAPath}/download/${time}.js`
-  
+
       var header = "/*** GENERATED BY @bugsounet MMM-GoogleAssistant v" + require("../package.json").version + " ***/\n/*** https://forum.bugsounet.fr **/\n\nvar config = "
       var footer = "\n\n/*************** DO NOT EDIT THE LINE BELOW ***************/\nif (typeof module !== 'undefined') {module.exports = config;}\n"
-  
+
       fs.writeFile(configPathTMP, header + util.inspect(Config, {
           showHidden: false,
           depth: null,
@@ -1279,22 +1279,22 @@ class website {
         (error) => {
           if (error) {
             resolve({error: "Error when writing file" })
-            return console.error("[GA] error", error)
+            return console.error("[GA] [WEBSITE] [WRITE] error", error)
           }
-  
+
           var FunctionSearch = new RegExp(/(.*)(`|')\[FUNCTION\](.*)(`|')/, "g")
           function readFileLineByLine(inputFile, outputFile) {
             var instream = fs.createReadStream(inputFile)
             var outstream = new Stream()
             outstream.readable = true
             outstream.writable = true
-  
+
             var rl = readline.createInterface({
               input: instream,
               output: outstream,
               terminal: false
             })
-  
+
             rl.on('line', (line) => {
               var Search = FunctionSearch.exec(line)
               if (Search) {
@@ -1305,11 +1305,11 @@ class website {
               fs.appendFileSync(outputFile, line + '\n')
             })
             instream.on("end", () => {
-              console.log("[GA] Saved new backup configuration for downloading !")
+              console.log("[GA] [WEBSITE] Saved new backup configuration for downloading !")
               fs.unlink(inputFile, (err) => {
                 if (err) {
                   resolve({error: "Error when deleting file" })
-                  return console.error("[GA] error", err)
+                  return console.error("[GA] [WEBSITE] [DELETE] error", err)
                 }
                 resolve({ data: time })
               })
@@ -1320,23 +1320,23 @@ class website {
       )
     })
   }
-  
+
   deleteDownload(file) {
     var inputFile = `${this.GAPath}/download/${file}.js`
     fs.unlink(inputFile, (err) => {
       if (err) {
         return console.error("[GA] error", err)
       }
-      console.log('[GA] Successfully deleted:', inputFile)
+      console.log('[GA] [WEBSITE] Successfully deleted:', inputFile)
     })
   }
-  
+
   transformExternalBackup(backup) {
     return new Promise(resolve => {
       var tmpFile = `${this.GAPath}/tmp/config.tmp${this.timeStamp()}`
       fs.writeFile(tmpFile, backup, async (err) => {
         if (err) {
-          console.log("[GA][externalBackup]", err)
+          console.log("[GA] [WEBSITE] [externalBackup]", err)
           resolve({error: "Error when writing external tmp backup file" })
         } else {
           result = await this.readTMPBackupConfig(tmpFile)
@@ -1345,7 +1345,7 @@ class website {
       })
     })
   }
-  
+
   /** insert or modify plugins config to MagicMirror config **/
   configAddOrModify(EXTConfig) {
     return new Promise(resolve => {
@@ -1355,7 +1355,7 @@ class website {
       resolve(this.website.MMConfig)
     })
   }
-  
+
   /** delete plugins config **/
   configDelete(EXT) {
     return new Promise(resolve => {
@@ -1364,7 +1364,7 @@ class website {
       resolve(this.website.MMConfig)
     })
   }
-  
+
   /** list of all backups **/
   loadBackupNames() {
     return new Promise(resolve => {
@@ -1380,7 +1380,7 @@ class website {
       resolve(List)
     })
   }
-  
+
   /** delete all backups **/
   deleteBackup() {
     return new Promise(resolve => {
@@ -1392,16 +1392,16 @@ class website {
           let pathFile= `${this.GAPath}/backup/${file}`
           try {
             fs.unlinkSync(pathFile)
-            //console.log("[GA] Removed:", file)
+            logGA("Removed:", file)
           } catch (e) {
-            console.error("[GA] Error occurred while trying to remove this file:", file)
+            console.error("[GA] [WEBSITE] Error occurred while trying to remove this file:", file)
           }
         }
       })
       resolve({done: "ok"})
     })
   }
-  
+
   /** read and send bakcup **/
   loadBackupFile(file) {
     return new Promise(resolve => {
@@ -1414,7 +1414,7 @@ class website {
       resolve(BackupConfig)
     })
   }
-  
+
   /** get default ip address **/
   getIP () {
     return new Promise((resolve) => {
@@ -1470,7 +1470,7 @@ class website {
       if (!found) resolve("127.0.0.1")
     })
   }
-  
+
   /** config merge **/
   configStartMerge(result) {
     var stack = Array.prototype.slice.call(arguments, 0)
@@ -1487,7 +1487,7 @@ class website {
               result[key] = item[key]
             }
           } else {
-  
+
             if (Object.prototype.toString.call(result[key]) == "[object Array]") {
               result[key] = this.configStartMerge([], result[key], item[key])
             } else if (Object.prototype.toString.call(result[key]) == "[object Object]") {
@@ -1506,7 +1506,7 @@ class website {
     }
     return result
   }
-  
+
   configMerge(result) {
     var stack = Array.prototype.slice.call(arguments, 1)
     var item
@@ -1527,7 +1527,7 @@ class website {
     }
     return result
   }
-  
+
   /** check electron Options for find webviewTag **/
   checkElectronOptions() {
     let config = this.website.MMConfig
@@ -1537,7 +1537,7 @@ class website {
     ) return true
     else return false
   }
-  
+
   /** enable webview tag **/
   setWebviewTag() {
     return new Promise(resolve => {
@@ -1552,7 +1552,7 @@ class website {
       resolve(MMConfig)
     })
   }
-  
+
   /** Restart or Die the Pi **/
   SystemRestart () {
     console.log("[GA] Restarting OS...")
@@ -1560,31 +1560,31 @@ class website {
       if (err) console.error("[GA] Error when restarting OS!", err)
     })
   }
-  
+
   SystemDie () {
     console.log("[GA] Shutdown OS...")
     exec("sudo shutdown now", (err,stdout,stderr) => {
       if (err) console.error("[GA] Error when Shutdown OS!", err)
     })
   }
-  
+
   /** read and search GA config **/
   getGAConfig (config) {
-    var index = config.modules.map(e => { return e.module }).indexOf("MMM-GoogleAssistant")
-    if (index > -1) return config.modules[index]
+    var index = this.website.MMConfig.modules.map(e => { return e.module }).indexOf("MMM-GoogleAssistant")
+    if (index > -1) return this.website.MMConfig.modules[index]
     else return {}
   }
-  
+
   /** create schema Validation with template and translation **/
   makeSchemaTranslate(schema, translation) {
     /* replace {template} by translation */
     function translate(template) {
       return template.replace(new RegExp("{([^}]+)}", "g"), function (_unused, varName) {
-        if (varName in translation === false) console.warn("[GA][Translator] Missing:", template)
+        if (varName in translation === false) console.warn("[GA] [WEBSITE] [Translator] Missing:", template)
         return varName in translation ? translation[varName] : "{" + varName + "}"
       })
     }
-  
+
     /* read object in deep an search what translate */
     function makeTranslate(result) {
       var stack = Array.prototype.slice.call(arguments, 0)
@@ -1613,7 +1613,7 @@ class website {
     }
     return makeTranslate(schema)
   }
-  
+
   /** create logs file from array **/
   readAllMMLogs(logs) {
     return new Promise(resolve => {
@@ -1624,7 +1624,7 @@ class website {
       resolve(result)
     })
   }
-  
+
   /** set plugin as used and search version/rev **/
   async setActiveVersion(module) {
     if (this.website.activeVersion[module] != undefined) {
@@ -1637,12 +1637,12 @@ class website {
       version: require("../../" + module + "/package.json").version,
       rev: require("../../" + module + "/package.json").rev
     }
-  
+
     let scanUpdate = await this.checkUpdate(module, this.website.activeVersion[module].version)
     this.website.activeVersion[module].last = scanUpdate.last
     this.website.activeVersion[module].update = scanUpdate.update
     this.website.activeVersion[module].beta = scanUpdate.beta
-  
+
     // scan every 60secs or every 15secs with GA app
     // I'm afraid about lag time...
     // maybe 60 secs is better
@@ -1650,7 +1650,7 @@ class website {
       this.checkUpdateInterval(module, this.website.activeVersion[module].version)
     }, 1000 * 60)
   }
-  
+
   async checkUpdateInterval(module,version) {
     let scanUpdate = await this.checkUpdate(module,version)
     this.website.activeVersion[module].last = scanUpdate.last
@@ -1681,7 +1681,7 @@ class website {
         })
     })
   }
-  
+
   // Function() in config ?
   replacer(key, value) {
     if (typeof value == "function") {
@@ -1689,7 +1689,7 @@ class website {
     }
     return value
   }
-  
+
   reviver(value) {
     // value[1] = feature
     // value[3] = function()
@@ -1700,35 +1700,36 @@ class website {
     //console.log("[GA][FUNCTION] Reviver line:\n", result)
     return result
   }
-  
-  getHomeText (lang) {
+
+  getHomeText () {
     return new Promise (async resolve => {
       var Home = null
+      let lang = this.website.language 
       let langHome = `${this.WebsitePath}/home/${lang}.home`
       let defaultHome = `${this.WebsitePath}/home/default.home`
       if (fs.existsSync(langHome)) {
-        console.log(`[GA] [TRANSLATION] [HOME] Use: ${lang}.home`)
+        console.log(`[GA] [WEBSITE] [TRANSLATION] [HOME] Use: ${lang}.home`)
         Home = await this.readThisFile(langHome)
       } else  {
-        console.log("[GA] [TRANSLATION] [HOME] Use: default.home")
+        console.log("[GA] [WEBSITE] [TRANSLATION] [HOME] Use: default.home")
         Home = await this.readThisFile(defaultHome)
       }
       resolve(Home)
     })
   }
-  
+
   readThisFile (file) {
     return new Promise (resolve => {
       fs.readFile(file, (err, input) => {
         if (err) {
-          console.log("[GA] [TRANSLATION] [HOME] Error", err)
+          console.log("[GA] [WEBSITE] [TRANSLATION] [HOME] Error", err)
           resolve()
         }
         resolve(input.toString())
       })
     })
   }
-  
+
   MMConfigAddress () {
     return new Promise (resolve => {
       if (this.website.MMConfig.address == "0.0.0.0") {
@@ -1737,13 +1738,10 @@ class website {
         this.sendSocketNotification("ERROR", "You can't use '0.0.0.0' in MagicMirror address config")
         setTimeout(() => process.exit(), 5000)
         resolve(true)
-      } else {
-        console.log("[GA] MagicMirror address:", this.website.MMConfig.address)
-        resolve(false)
-      }
+      } else resolve(false)
     })
   }
-  
+
   /** Check using pm2 **/
   check_PM2_Process() {
     console.log("[GA] [WEBSITE] [PM2] checking PM2 using...")
@@ -1776,7 +1774,7 @@ class website {
       })
     })
   }
-  
+
   /** MagicMirror restart and stop **/
   restartMM () {
     if (this.website.usePM2) {
@@ -1789,7 +1787,7 @@ class website {
     }
     else this.doRestart()
   }
-  
+
   doRestart () {
     console.log("[GA] [WEBSITE] Restarting MagicMirror...")
     const out = process.stdout
@@ -1798,7 +1796,7 @@ class website {
     subprocess.unref()
     process.exit()
   }
-  
+
   doClose () {
     console.log("[GA] [WEBSITE] Closing MagicMirror...")
     if (this.website.usePM2) {
@@ -1810,7 +1808,7 @@ class website {
     }
     else process.exit()
   }
-  
+
   setEXTStatus(EXTs) {
     if (this.website.initialized && EXTs) {
       this.website.EXTStatus = EXTs

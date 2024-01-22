@@ -7,8 +7,6 @@ const fs = require("fs")
 async function init(that) {
   that.lib = { error: 0 }
   that.config = {}
-  that.MMVersion = global.version
-  that.root_path = global.root_path
   that.alreadyInitialized = false
   that.SmartHome = {
     lang: "en",
@@ -49,7 +47,7 @@ async function parse(that) {
   that.config.micConfig.recorder= "arecord"
 
   that.searchOnGoogle = new that.lib.googleSearch()
-  
+
   let WebsiteHelperConfig = {
     config: that.config.website,
     debug:that.config.debug,

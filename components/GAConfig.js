@@ -133,7 +133,7 @@ class GAConfig {
       Schema: VALTranslate,
       EXTStatus: that.EXT
     })
-    that.assistantResponse.showTranscription(that.translate("PREPARE_WEBSITE"))
+    //that.assistantResponse.showTranscription(that.translate("PREPARE_WEBSITE"))
   }
 
   forceFullScreen(that) {
