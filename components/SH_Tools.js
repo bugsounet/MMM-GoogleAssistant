@@ -1,4 +1,5 @@
-var log = (...args) => { /* do nothing */ }
+const fs = require("fs")
+const path = require("path")
 
 function get_user(that, username, password) {
   if ((username == that.SmartHome.user.user) && (password == that.SmartHome.user.password)) {
@@ -27,15 +28,15 @@ function get_device(device_id, device) {
 }
 
 /** token rules **/
-function check_token(that,headers) {
+function check_token(headers) {
   let access_token = get_token(headers)
-  let tokensDir = that.lib.path.resolve(__dirname + "/../website/tokens/")
+  let tokensDir = path.resolve(__dirname + "/../website/tokens/")
   if (!access_token) {
     console.error("[GA] [SMARTHOME] [TOOLS] No token found in headers")
     return null
   }
-  if (that.lib.fs.existsSync(tokensDir + "/" + access_token)) {
-    let user = that.lib.fs.readFileSync(tokensDir + "/" +access_token, 'utf8')
+  if (fs.existsSync(tokensDir + "/" + access_token)) {
+    let user = fs.readFileSync(tokensDir + "/" +access_token, 'utf8')
     return user
   } else {
     console.error("[GA] [SMARTHOME] [TOOLS] Token not found in database", access_token)
@@ -54,14 +55,12 @@ function get_token(headers) {
   }
 }
 
-function delete_token(that, access_token) {
-  if (that.config.debug) log = (...args) => { console.log("[GA] [SMARTHOME]", ...args) }
-  let tokensDir = that.lib.path.resolve(__dirname + "/../website/tokens/")
-  if (that.lib.fs.existsSync(tokensDir + "/" + access_token)) {
-    that.lib.fs.unlinkSync(tokensDir + "/" + access_token)
-    log("[TOKEN] Deleted:", access_token)
+function delete_token(access_token) {
+  let tokensDir = path.resolve(__dirname + "/../website/tokens/")
+  if (fs.existsSync(tokensDir + "/" + access_token)) {
+    fs.unlinkSync(tokensDir + "/" + access_token)
   } else {
-    log("[TOKEN] Delete Failed", access_token)
+    console.error("[GA] [SMARTHOME] [TOKEN] Delete Failed", access_token)
   }
 }
 

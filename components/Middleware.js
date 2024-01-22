@@ -1,4 +1,16 @@
 var log = (...args) => { /* do nothing */ }
+const path = require("path")
+const { exec } = require("child_process")
+const pty = require("node-pty")
+const express = require("express")
+const http = require("http")
+const session = require("express-session")
+const passport = require("passport")
+const LocalStrategy = require("passport-local") 
+const semver = require("semver")
+const bodyParser = require("body-parser")
+const Socket = require("socket.io")
+const cors = require("cors")
 
 /** init function **/
 function initialize(that) {
@@ -18,8 +30,8 @@ function initialize(that) {
   }
   passportConfig(that)
 
-  that.EXT.app = that.lib.express()
-  that.EXT.server = that.lib.http.createServer(that.EXT.app)
+  that.EXT.app = express()
+  that.EXT.server = http.createServer(that.EXT.app)
   that.EXT.EXTConfigured= that.lib.EXTTools.searchConfigured(that.EXT.MMConfig, that.EXT.EXT)
   that.EXT.EXTInstalled= that.lib.EXTTools.searchInstalled(that)
   log("Find", that.EXT.EXTInstalled.length , "installed plugins in MagicMirror")
@@ -34,21 +46,21 @@ function createGW(that) {
   if (that.config.debug) log = (...args) => { console.log("[GA]", ...args) }
 
   var Path = that.path
-  var urlencodedParser = that.lib.bodyParser.urlencoded({ extended: true })
+  var urlencodedParser = bodyParser.urlencoded({ extended: true })
   log("Create website needed routes...")
-  that.EXT.app.use(that.lib.session({
+  that.EXT.app.use(session({
     secret: 'some-secret',
     saveUninitialized: false,
     resave: true
   }))
 
   // For parsing post request's data/body
-  that.EXT.app.use(that.lib.bodyParser.json())
-  that.EXT.app.use(that.lib.bodyParser.urlencoded({ extended: true }))
+  that.EXT.app.use(bodyParser.json())
+  that.EXT.app.use(bodyParser.urlencoded({ extended: true }))
 
   // Tells app to use password session
-  that.EXT.app.use(that.lib.passport.initialize())
-  that.EXT.app.use(that.lib.passport.session())
+  that.EXT.app.use(passport.initialize())
+  that.EXT.app.use(passport.session())
 
   var options = {
     dotfiles: 'ignore',
@@ -57,7 +69,7 @@ function createGW(that) {
     index: false,
     maxAge: '1d',
     redirect: false,
-    setHeaders: function (res, path, stat) {
+    setHeaders: function (res) {
       res.set('x-timestamp', Date.now())
     }
   }
@@ -66,27 +78,27 @@ function createGW(that) {
     res.redirect('/')
   }
 
-  var io = new that.lib.Socket.Server(that.EXT.server)
+  var io = new Socket.Server(that.EXT.server)
 
   that.EXT.app
     .use(logRequest)
-    .use(that.lib.cors({ origin: '*' }))
-    .use('/EXT_Login.js', that.lib.express.static(Path + '/website/tools/EXT_Login.js'))
-    .use('/EXT_Home.js', that.lib.express.static(Path + '/website/tools/EXT_Home.js'))
-    .use('/EXT_Plugins.js', that.lib.express.static(Path + '/website/tools/EXT_Plugins.js'))
-    .use('/EXT_Terminal.js', that.lib.express.static(Path + '/website/tools/EXT_Terminal.js'))
-    .use('/EXT_MMConfig.js', that.lib.express.static(Path + '/website/tools/EXT_MMConfig.js'))
-    .use('/EXT_Tools.js', that.lib.express.static(Path + '/website/tools/EXT_Tools.js'))
-    .use('/EXT_System.js', that.lib.express.static(Path + '/website/tools/EXT_System.js'))
-    .use('/EXT_About.js', that.lib.express.static(Path + '/website/tools/EXT_About.js'))
-    .use('/EXT_Restart.js', that.lib.express.static(Path + '/website/tools/EXT_Restart.js'))
-    .use('/EXT_Die.js', that.lib.express.static(Path + '/website/tools/EXT_Die.js'))
-    .use('/EXT_Fetch.js', that.lib.express.static(Path + '/website/tools/EXT_Fetch.js'))
-    .use('/3rdParty.js', that.lib.express.static(Path + '/website/tools/3rdParty.js'))
-    .use('/assets', that.lib.express.static(Path + '/website/assets', options))
-    .use("/jsoneditor" , that.lib.express.static(Path + '/node_modules/jsoneditor'))
-    .use("/xterm" , that.lib.express.static(Path + '/node_modules/xterm'))
-    .use("/xterm-addon-fit" , that.lib.express.static(Path + '/node_modules/xterm-addon-fit'))
+    .use(cors({ origin: '*' }))
+    .use('/EXT_Login.js', express.static(Path + '/website/tools/EXT_Login.js'))
+    .use('/EXT_Home.js', express.static(Path + '/website/tools/EXT_Home.js'))
+    .use('/EXT_Plugins.js', express.static(Path + '/website/tools/EXT_Plugins.js'))
+    .use('/EXT_Terminal.js', express.static(Path + '/website/tools/EXT_Terminal.js'))
+    .use('/EXT_MMConfig.js', express.static(Path + '/website/tools/EXT_MMConfig.js'))
+    .use('/EXT_Tools.js', express.static(Path + '/website/tools/EXT_Tools.js'))
+    .use('/EXT_System.js', express.static(Path + '/website/tools/EXT_System.js'))
+    .use('/EXT_About.js', express.static(Path + '/website/tools/EXT_About.js'))
+    .use('/EXT_Restart.js', express.static(Path + '/website/tools/EXT_Restart.js'))
+    .use('/EXT_Die.js', express.static(Path + '/website/tools/EXT_Die.js'))
+    .use('/EXT_Fetch.js', express.static(Path + '/website/tools/EXT_Fetch.js'))
+    .use('/3rdParty.js', express.static(Path + '/website/tools/3rdParty.js'))
+    .use('/assets', express.static(Path + '/website/assets', options))
+    .use("/jsoneditor" , express.static(Path + '/node_modules/jsoneditor'))
+    .use("/xterm" , express.static(Path + '/node_modules/xterm'))
+    .use("/xterm-addon-fit" , express.static(Path + '/node_modules/xterm-addon-fit'))
 
     .get('/', (req, res) => {
       if(req.user) res.sendFile(Path+ "/website/Gateway/index.html")
@@ -107,7 +119,7 @@ function createGW(that) {
           .then(response => response.json())
           .then(data => {
             result.last = data.version
-            if (that.lib.semver.gt(result.last, result.v)) result.needUpdate = true
+            if (semver.gt(result.last, result.v)) result.needUpdate = true
             res.send(result)
           })
           .catch(e => {
@@ -143,7 +155,7 @@ function createGW(that) {
 
     .post('/auth', (req, res, next) => {
       var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-      that.lib.passport.authenticate('login', (err, user, info) => {
+      passport.authenticate('login', (err, user, info) => {
         if (err) {
           console.log("[GA] [" + ip + "] Error", err)
           return next(err)
@@ -226,7 +238,7 @@ function createGW(that) {
           })
           var cols = 80
           var rows = 24
-          var ptyProcess = that.lib.pty.spawn("bash", [], {
+          var ptyProcess = pty.spawn("bash", [], {
             name: "xterm-color",
             cols: cols,
             rows: rows,
@@ -275,10 +287,10 @@ function createGW(that) {
           var result = {
             error: false
           }
-          var modulePath = that.lib.path.normalize(Path + "/../")
+          var modulePath = path.normalize(Path + "/../")
           var Command= 'cd ' + modulePath + ' && git clone https://github.com/bugsounet/' + req.query.EXT + ' && cd ' + req.query.EXT + ' && npm install'
 
-          var child = that.lib.childProcess.exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
+          var child = exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
             if (error) {
               result.error = true
               console.error(`[GA][FATAL] exec error: ${error}`)
@@ -324,9 +336,9 @@ function createGW(that) {
           var result = {
             error: false
           }
-          var modulePath = that.lib.path.normalize(Path + "/../")
+          var modulePath = path.normalize(Path + "/../")
           var Command= 'cd ' + modulePath + ' && rm -rfv ' + req.query.EXT
-          var child = that.lib.childProcess.exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
+          var child = exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
             if (error) {
               result.error = true
               console.error(`[GA][FATAL] exec error: ${error}`)
@@ -437,7 +449,7 @@ function createGW(that) {
         console.log("[GA] Receiving EXT data ...")
         let data = JSON.parse(req.body.data)
         var NewConfig = await that.lib.EXTTools.configAddOrModify(data, that.EXT.MMConfig)
-        var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,NewConfig)
+        var resultSaveConfig = await that.lib.EXTTools.saveConfig(NewConfig)
         console.log("[GA] Write config result:", resultSaveConfig)
         res.send(resultSaveConfig)
         if (resultSaveConfig.done) {
@@ -454,7 +466,7 @@ function createGW(that) {
         console.log("user", req.user)
         let EXTName = req.body.data
         var NewConfig = await that.lib.EXTTools.configDelete(EXTName, that.EXT.MMConfig)
-        var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,NewConfig)
+        var resultSaveConfig = await that.lib.EXTTools.saveConfig(NewConfig)
         console.log("[GA] Write config result:", resultSaveConfig)
         res.send(resultSaveConfig)
         if (resultSaveConfig.done) {
@@ -510,7 +522,7 @@ function createGW(that) {
     .get("/SystemRestart" , (req,res) => {
       if (req.user) {
         res.sendFile(Path+ "/website/Gateway/restarting.html")
-        setTimeout(() => that.lib.EXTTools.SystemRestart(that) , 1000)
+        setTimeout(() => that.lib.EXTTools.SystemRestart() , 1000)
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
     })
@@ -518,7 +530,7 @@ function createGW(that) {
     .get("/SystemDie" , (req,res) => {
       if (req.user) {
         res.sendFile(Path+ "/website/Gateway/die.html")
-        setTimeout(() => that.lib.EXTTools.SystemDie(that), 3000)
+        setTimeout(() => that.lib.EXTTools.SystemDie(), 3000)
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
     })
@@ -530,7 +542,7 @@ function createGW(that) {
 
     .get("/GetBackupName" , async (req,res) => {
       if (req.user) {
-        var names = await that.lib.EXTTools.loadBackupNames(that)
+        var names = await that.lib.EXTTools.loadBackupNames()
         res.send(names)
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
@@ -539,7 +551,7 @@ function createGW(that) {
     .get("/GetBackupFile" , async (req,res) => {
       if (req.user) {
         let data = req.query.config
-        var file = await that.lib.EXTTools.loadBackupFile(that,data)
+        var file = await that.lib.EXTTools.loadBackupFile(data)
         res.send(file)
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
@@ -559,7 +571,7 @@ function createGW(that) {
         console.log("[GA] Receiving backup data ...")
         let file = req.body.data
         var loadFile = await that.lib.EXTTools.loadBackupFile(that,file)
-        var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,loadFile)
+        var resultSaveConfig = await that.lib.EXTTools.saveConfig(loadFile)
         console.log("[GA] Write config result:", resultSaveConfig)
         res.send(resultSaveConfig)
         if (resultSaveConfig.done) {
@@ -573,7 +585,7 @@ function createGW(that) {
       if (req.user) {
         console.log("[GA] Receiving config data ...")
         let data = JSON.parse(req.body.data)
-        var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,data)
+        var resultSaveConfig = await that.lib.EXTTools.saveConfig(data)
         console.log("[GA] Write config result:", resultSaveConfig)
         res.send(resultSaveConfig)
         if (resultSaveConfig.done) {
@@ -592,7 +604,7 @@ function createGW(that) {
       if(!that.EXT.webviewTag && req.user) {
         console.log("[GA] Receiving setWebviewTag demand...")
         let NewConfig = await that.lib.EXTTools.setWebviewTag(that.EXT.MMConfig)
-        var resultSaveConfig = await that.lib.EXTTools.saveConfig(that,NewConfig)
+        var resultSaveConfig = await that.lib.EXTTools.saveConfig(NewConfig)
         console.log("[GA] Write GA webview config result:", resultSaveConfig)
         res.send(resultSaveConfig)
         if (resultSaveConfig.done) {
@@ -810,7 +822,7 @@ function createGW(that) {
     .post("/deleteBackup", async (req,res) => {
       if(req.user) {
         console.log("[GA] Receiving delete backup demand...")
-        var deleteBackup = await that.lib.EXTTools.deleteBackup(that)
+        var deleteBackup = await that.lib.EXTTools.deleteBackup()
         console.log("[GA] Delete backup result:", deleteBackup)
         res.send(deleteBackup)
       }
@@ -822,7 +834,7 @@ function createGW(that) {
         let data = req.body.data
         if (!data) return res.send({error: "error"})
         console.log("[GA] Receiving External backup...")
-        var transformExternalBackup = await that.lib.EXTTools.transformExternalBackup(that,data)
+        var transformExternalBackup = await that.lib.EXTTools.transformExternalBackup(data)
         res.send({ data: transformExternalBackup })
       }
       else res.status(403).sendFile(Path+ "/website/Gateway/403.html")
@@ -833,7 +845,7 @@ function createGW(that) {
         let data = req.body.data
         if (!data) return res.send({error: "error"})
         console.log("[GA] Receiving External backup...")
-        var linkExternalBackup = await that.lib.EXTTools.saveExternalConfig(that,data)
+        var linkExternalBackup = await that.lib.EXTTools.saveExternalConfig(data)
         if (linkExternalBackup.data) {
           console.log("[GA] Generate link number:", linkExternalBackup.data)
           healthDownloader = (req_, res_) => {
@@ -843,8 +855,8 @@ function createGW(that) {
                 res_.redirect('/')
               }
               setTimeout(() => {
-                that.lib.EXTTools.deleteDownload(that,linkExternalBackup.data)
-              }, 1000 * 10)
+                that.lib.EXTTools.deleteDownload(linkExternalBackup.data)
+              }, 1000 * 60)
             } else {
               res_.redirect('/')
             }
@@ -884,7 +896,7 @@ async function startServer(that,callback = () => {}) {
     })
 
   /** Create Server **/
-  that.config.listening = await that.lib.EXTTools.purposeIP(that)
+  that.config.listening = await that.lib.EXTTools.purposeIP()
   that.EXT.HyperWatch = that.lib.hyperwatch(
     that.EXT.server
       .listen(8081, "0.0.0.0", () => {
@@ -912,7 +924,7 @@ async function startServer(that,callback = () => {}) {
 
 /** passport local strategy with username/password defined on config **/
 function passportConfig(that) {
-  that.lib.passport.use('login', new that.lib.LocalStrategy.Strategy(
+  passport.use('login', new LocalStrategy.Strategy(
     (username, password, done) => {
       if (username === that.EXT.user.username && password === that.EXT.user.password) {
         return done(null, that.EXT.user)
@@ -921,11 +933,11 @@ function passportConfig(that) {
     }
   ))
 
-  that.lib.passport.serializeUser((user, done) => {
+  passport.serializeUser((user, done) => {
     done(null, user._id)
   })
 
-  that.lib.passport.deserializeUser((id, done) => {
+  passport.deserializeUser((id, done) => {
     done(null, that.EXT.user)
   })
 }
