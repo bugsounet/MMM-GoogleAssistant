@@ -17,6 +17,7 @@ const http = require("http")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const Socket = require("socket.io")
+const hyperwatch = require("./hyperwatch")
 
 var logGA = (...args) => { /* do nothing */ }
 
@@ -1058,7 +1059,7 @@ class website {
 
     /** Create Server **/
     this.config.listening = await this.purposeIP()
-    this.website.HyperWatch = this.lib.hyperwatch(
+    this.website.HyperWatch = hyperwatch(
       this.website.server
         .listen(8081, "0.0.0.0", () => {
           console.log("[GA] [WEBSITE] [SERVER] Start listening on port 8081")

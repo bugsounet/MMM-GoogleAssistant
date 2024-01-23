@@ -28,6 +28,7 @@ module.exports = NodeHelper.create({
         break
       case "INIT":
         this.website.init(payload)
+        //this.smarthome.init(payload)
         break
       case "ACTIVATE_ASSISTANT":
         this.lib.activateAssistant.activate(this, payload)

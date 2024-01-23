@@ -4,6 +4,8 @@ const { exec } = require("child_process")
 const si = require("systeminformation")
 const wirelessTools = require("./wirelessTools")
 
+// see to add fetch from website ?
+
 class systemInfo {
   constructor(translate) {
     this.translate = translate

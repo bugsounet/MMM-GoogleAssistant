@@ -13,16 +13,17 @@ function libraries(that) {
     { "./googleSearch.js": "googleSearch" },
     { "./activateAssistant.js": "activateAssistant" },
 
-    { "./website.js" : "website" },
-    { "./SH_Tools.js": "SHTools" },
-    { "./hyperwatch.js": "hyperwatch" },
-    { "./SH_Middleware.js": "SmartHome" },
-    { "./actionsOnGoogle.js": "ActionsOnGoogle" },
-    { "./DeviceManagement.js": "Device" },
-    { "./SH_Callbacks.js": "callback" },
-    { "./SH_Homegraph.js": "homegraph" },
     { "./systemInformation.js": "SystemInformation" },
-    { "./wirelessTools.js": "wirelessTools" }
+
+    { "./website.js" : "website" },
+
+    //{ "./SH_Tools.js": "SHTools" },
+    //{ "./SH_Middleware.js": "SmartHome" },
+    //{ "./actionsOnGoogle.js": "ActionsOnGoogle" },
+    //{ "./DeviceManagement.js": "Device" },
+    //{ "./SH_Callbacks.js": "callback" },
+    //{ "./SH_Homegraph.js": "homegraph" }
+
   ]
   let errors = 0
   return new Promise(resolve => {

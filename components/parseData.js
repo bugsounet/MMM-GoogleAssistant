@@ -8,21 +8,6 @@ async function init(that) {
   that.lib = { error: 0 }
   that.config = {}
   that.alreadyInitialized = false
-  that.SmartHome = {
-    lang: "en",
-    use: false,
-    init: false,
-    last_code: null,
-    last_code_user: null,
-    last_code_time: null,
-    user: { user: "admin", password: "admin", devices: [ "MMM-GoogleAssistant" ] },
-    actions: null,
-    device: {},
-    EXT: {},
-    smarthome: {},
-    oldSmartHome: {},
-    homegraph: null
-  }
 }
 
 async function parse(that) {
@@ -55,6 +40,7 @@ async function parse(that) {
     lib: that.lib
   }
   that.website = new that.lib.website(WebsiteHelperConfig, (...args) => that.sendSocketNotification(...args))
+  //that.smarthome = new that.lib.smarhome(WebsiteHelperConfig, (...args) => that.sendSocketNotification(...args))
 
   that.lib.GATools.loadRecipes(that, ()=> {
     console.log("[GA] Recipes loaded!")
