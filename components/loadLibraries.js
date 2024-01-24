@@ -3,19 +3,26 @@
 /** Load sensible library without black screen **/
 var logGA = (...args) => { /* do nothing */ }
 
-function libraries(that) {
+function libraries(that,type) {
   if (that.config.debug) logGA = (...args) => { console.log("[GA] [LIB]", ...args) }
-  let libraries= [
+  let Libraries = []
+  let GA= [
     // { "library to load" : "store library name" }
     { "./assistantConverse.js": "Assistant" },
     { "./screenParser.js" : "ScreenParser" },
     { "./GA_Tools.js": "GATools" },
     { "./googleSearch.js": "googleSearch" },
-    { "./activateAssistant.js": "activateAssistant" },
-
+    { "./activateAssistant.js": "activateAssistant" }
+  ]
+ 
+  let website= [
     { "./systemInformation.js": "SystemInformation" },
+    { "./website.js" : "website" }
+  ]
 
-    { "./website.js" : "website" },
+  let smarhome= [
+    // { "library to load" : "store library name" }
+    { "./smarthome.js" : "smarthome" },
 
     //{ "./SH_Tools.js": "SHTools" },
     //{ "./SH_Middleware.js": "SmartHome" },
@@ -26,8 +33,28 @@ function libraries(that) {
 
   ]
   let errors = 0
+
+  switch(type) {
+    case "GA":
+      logGA("Loading GA Libraies...")
+      Libraries = GA
+      break
+    case "website":
+      logGA("Loading website Libraies...")
+      Libraries = website
+      break
+    case "smarthome":
+      logGA("Loading smarhome Libraies...")
+      Libraries = smarthome
+      break
+    default:
+      console.log(`${type}: Unknow library database...`)
+      return
+      break
+  }
+
   return new Promise(resolve => {
-    libraries.forEach(library => {
+    Libraries.forEach(library => {
       for (const [name, configValues] of Object.entries(library)) {
         let libraryToLoad = name
         let libraryName = configValues
@@ -49,7 +76,7 @@ function libraries(that) {
     if (errors) {
       console.error("[GA] [LIB] Some libraries missing!")
       that.sendSocketNotification("NOT_INITIALIZED", { message: "Library loading Error!" })
-    } else console.log("[GA] [LIB] All libraries loaded!")
+    } else console.log(`[GA] [LIB] All ${type} libraries loaded!`)
   })
 }
 

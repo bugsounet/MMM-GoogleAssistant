@@ -101,13 +101,14 @@ class website {
   }
 
   async init(data) {
+    console.log("[GA] Loading Website...")
     this.website.MMConfig = await this.readConfig()
     let Version = {
       version: require('../package.json').version,
       rev: require('../package.json').rev,
       lang: this.assistantLang
     }
-    if (!this.website.MMConfig) {
+    if (!this.website.MMConfig) { // should not happen ! ;)
       this.website.errorInit = true
       console.error("[GA] [WEBSITE] Error: MagicMirror config.js file not found!")
       this.sendSocketNotification("ERROR", "MagicMirror config.js file not found!")
@@ -170,11 +171,11 @@ class website {
 /*
     if (this.config.CLIENT_ID) this.lib.SmartHome.initialize(that)
     else this.lib.SmartHome.disable(that)
-  */
+*/
     this.startServer(cb => {
       if (cb) {
-        console.log("[GA] MMM-GoogleAssistant and Website Ready!")
-        this.sendSocketNotification("INITIALIZED", Version)
+        console.log("[GA] Website Ready!")
+        //this.sendSocketNotification("INITIALIZED", Version)
       }
     })
   }

@@ -27,8 +27,14 @@ module.exports = NodeHelper.create({
         parseData.parse(this)
         break
       case "INIT":
+        let Version = {
+          version: require('./package.json').version,
+          rev: require('./package.json').rev,
+          lang: this.config.assistantConfig.lang
+        }
+        this.sendSocketNotification("INITIALIZED", Version)
+        console.log("[GA] Assistant Ready!")
         this.website.init(payload)
-        //this.smarthome.init(payload)
         break
       case "ACTIVATE_ASSISTANT":
         this.lib.activateAssistant.activate(this, payload)
@@ -41,7 +47,7 @@ module.exports = NodeHelper.create({
         break
       case "HELLO":
         if (!this.website) {
-          // library is not loaded ... retry
+          // library is not loaded ... retry (not needed but...)
           setTimeout(() => { this.socketNotificationReceived("HELLO", payload) }, 1000)
           return
         }
@@ -54,6 +60,11 @@ module.exports = NodeHelper.create({
         this.website.doClose()
         break
       case "EXTStatus":
+        if (!this.website) {
+          // library is not loaded ... retry (not needed but...)
+          setTimeout(() => { this.socketNotificationReceived("EXTStatus", payload) }, 1000)
+          return
+        }
         this.website.setEXTStatus(payload)
         break
       case "TB_SYSINFO":

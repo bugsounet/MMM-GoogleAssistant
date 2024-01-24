@@ -164,7 +164,7 @@ Module.register("MMM-GoogleAssistant", {
           type: "error"
         })
         break
-      case "PRE-INIT":
+      case "GA-INIT":
         this.GAConfig.EXT_Config(this)
         break
       case "INITIALIZED":
