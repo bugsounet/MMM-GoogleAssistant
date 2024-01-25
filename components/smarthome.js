@@ -17,7 +17,9 @@ class smarthome {
     }
   }
 
-
+  init(data) {
+    
+  }
 }
 
 module.exports=smarthome

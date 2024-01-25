@@ -126,7 +126,7 @@ class GAConfig {
     let VALTranslate = await LoadTranslate.Load_EXT_TrSchemaValidation(that)
     that.sysInfo.prepare(EXTTranslate)
 
-    that.sendSocketNotification("INIT", {
+    that.sendSocketNotification("WEBSITE-INIT", {
       DB: that.ExtDB,
       Description: EXTDescription,
       Translate: EXTTranslate,

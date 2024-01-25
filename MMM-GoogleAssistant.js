@@ -167,6 +167,9 @@ Module.register("MMM-GoogleAssistant", {
       case "GA-INIT":
         this.GAConfig.EXT_Config(this)
         break
+      case "WEBSITE-INIT":
+        this.sendSocketNotification("SMARTHOME-INIT")
+        break
       case "INITIALIZED":
         logGA("Initialized.")
         this.assistantResponse.Version(payload)

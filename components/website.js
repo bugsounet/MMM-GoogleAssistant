@@ -167,15 +167,19 @@ class website {
     logGA("webviewTag Configured:", this.website.webviewTag)
     logGA("Language set", this.website.language)
 
-    this.createWebsite()
+    await this.createWebsite()
+    console.log("[GA] Website Ready")
+    this.sendSocketNotification("WEBSITE-INIT")
 /*
     if (this.config.CLIENT_ID) this.lib.SmartHome.initialize(that)
     else this.lib.SmartHome.disable(that)
 */
+  }
+
+  server() {
     this.startServer(cb => {
       if (cb) {
-        console.log("[GA] Website Ready!")
-        //this.sendSocketNotification("INITIALIZED", Version)
+        console.log("[GA] Server Ready!")
       }
     })
   }
@@ -202,837 +206,841 @@ class website {
 
   /** GA Middleware **/
   createWebsite() {
-    this.passportConfig()
-    this.website.app = express()
-    this.website.server = http.createServer(this.website.app)
-
-    var urlencodedParser = bodyParser.urlencoded({ extended: true })
-    logGA("Create website needed routes...")
-    this.website.app.use(session({
-      secret: 'some-secret',
-      saveUninitialized: false,
-      resave: true
-    }))
-
-    // For parsing post request's data/body
-    this.website.app.use(bodyParser.json())
-    this.website.app.use(bodyParser.urlencoded({ extended: true }))
-
-    // Tells app to use password session
-    this.website.app.use(passport.initialize())
-    this.website.app.use(passport.session())
-
-    var options = {
-      dotfiles: 'ignore',
-      etag: false,
-      extensions: ["css", "js"],
-      index: false,
-      maxAge: '1d',
-      redirect: false,
-      setHeaders: function (res) {
-        res.set('x-timestamp', Date.now())
+    return new Promise(resolve => {
+      this.passportConfig()
+      this.website.app = express()
+      this.website.server = http.createServer(this.website.app)
+  
+      var urlencodedParser = bodyParser.urlencoded({ extended: true })
+      logGA("Create website needed routes...")
+      this.website.app.use(session({
+        secret: 'some-secret',
+        saveUninitialized: false,
+        resave: true
+      }))
+  
+      // For parsing post request's data/body
+      this.website.app.use(bodyParser.json())
+      this.website.app.use(bodyParser.urlencoded({ extended: true }))
+  
+      // Tells app to use password session
+      this.website.app.use(passport.initialize())
+      this.website.app.use(passport.session())
+  
+      var options = {
+        dotfiles: 'ignore',
+        etag: false,
+        extensions: ["css", "js"],
+        index: false,
+        maxAge: '1d',
+        redirect: false,
+        setHeaders: function (res) {
+          res.set('x-timestamp', Date.now())
+        }
       }
-    }
-
-    var healthDownloader = function(req, res) {
-      res.redirect('/')
-    }
-
-    var io = new Socket.Server(this.website.server)
-
-    this.website.app
-      .use(this.logRequest)
-      .use(cors({ origin: '*' }))
-      .use('/EXT_Login.js', express.static(`${this.WebsitePath}/tools/EXT_Login.js`))
-      .use('/EXT_Home.js', express.static(`${this.WebsitePath}/tools/EXT_Home.js`))
-      .use('/EXT_Plugins.js', express.static(`${this.WebsitePath}/tools/EXT_Plugins.js`))
-      .use('/EXT_Terminal.js', express.static(`${this.WebsitePath}/tools/EXT_Terminal.js`))
-      .use('/EXT_MMConfig.js', express.static(`${this.WebsitePath}/tools/EXT_MMConfig.js`))
-      .use('/EXT_Tools.js', express.static(`${this.WebsitePath}/tools/EXT_Tools.js`))
-      .use('/EXT_System.js', express.static(`${this.WebsitePath}/tools/EXT_System.js`))
-      .use('/EXT_About.js', express.static(`${this.WebsitePath}/tools/EXT_About.js`))
-      .use('/EXT_Restart.js', express.static(`${this.WebsitePath}/tools/EXT_Restart.js`))
-      .use('/EXT_Die.js', express.static(`${this.WebsitePath}/tools/EXT_Die.js`))
-      .use('/EXT_Fetch.js', express.static(`${this.WebsitePath}/tools/EXT_Fetch.js`))
-      .use('/3rdParty.js', express.static(`${this.WebsitePath}/tools/3rdParty.js`))
-      .use('/assets', express.static(`${this.WebsitePath}/assets`, options))
-      .use("/jsoneditor" , express.static(`${this.GAPath}/node_modules/jsoneditor`))
-      .use("/xterm" , express.static(`${this.GAPath}/node_modules/xterm`))
-      .use("/xterm-addon-fit" , express.static(`${this.GAPath}/node_modules/xterm-addon-fit`))
-
-      .get('/', (req, res) => {
-        if(req.user) res.sendFile(`${this.WebsitePath}/Gateway/index.html`)
-        else res.redirect('/login')
-      })
-
-      .get("/version" , (req,res) => {
-          let remoteFile = "https://raw.githubusercontent.com/bugsounet/MMM-GoogleAssistant/prod/package.json"
-          var result = {
-            v: require('../package.json').version,
-            rev: require('../package.json').rev,
-            lang: this.website.language,
-            last: 0,
-            imperial: (this.website.MMConfig.units == "imperial") ? true : false,
-            needUpdate: false
-          }
-          fetch(remoteFile)
-            .then(response => response.json())
-            .then(data => {
-              result.last = data.version
-              if (semver.gt(result.last, result.v)) result.needUpdate = true
-              res.send(result)
-            })
-            .catch(e => {
-              console.error("[GA] [WEBSITE] Error on fetch last version number")
-              res.send(result)
-            })
-      })
-
-      .get("/systemInformation" , async (req, res) => {
-        if (req.user) {
-          this.website.systemInformation.result = await this.website.systemInformation.lib.Get()
-          res.send(this.website.systemInformation.result)
-        } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/translation" , (req,res) => {
-        res.send(this.website.translation)
-      })
-
-      .get("/homeText", (req,res) => {
-        res.send({text: this.website.homeText})
-      })
-
-      .get('/EXT', (req, res) => {
-        if(req.user) res.sendFile(`${this.WebsitePath}/Gateway/EXT.html`)
-        else res.redirect('/login')
-      })
-
-      .get('/login', (req, res) => {
-        if (req.user) res.redirect('/')
-        res.sendFile(`${this.WebsitePath}/Gateway/login.html`)
-      })
-
-      .post('/auth', (req, res, next) => {
-        var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-        passport.authenticate('login', (err, user, info) => {
-          if (err) {
-            console.log(`[GA] [WEBSITE] [${ip}] Error`, err)
-            return next(err)
-          }
-          if (!user) {
-            console.log(`[GA] [WEBSITE] [${ip}] Bad Login`, info)
-            return res.send({ err: info })
-          }
-          req.logIn(user, err => {
-            if (err) {
-              console.log(`[GA] [WEBSITE] [${ip}] Login error:`, err)
-              return res.send({ err: err })
-            }
-            console.log(`[GA] [WEBSITE] [${ip}] Welcome ${user.username}, happy to serve you!`)
-            return res.send({ login: true })
-          })
-        })(req, res, next)
-      })
-
-      .get('/logout', (req, res) => {
-        req.logout(err => {
-          if (err) { return console.error("[GA] [WEBSITE] Logout:", err) }
-          res.redirect('/')
+  
+      var healthDownloader = function(req, res) {
+        res.redirect('/')
+      }
+  
+      var io = new Socket.Server(this.website.server)
+  
+      this.website.app
+        .use(this.logRequest)
+        .use(cors({ origin: '*' }))
+        .use('/EXT_Login.js', express.static(`${this.WebsitePath}/tools/EXT_Login.js`))
+        .use('/EXT_Home.js', express.static(`${this.WebsitePath}/tools/EXT_Home.js`))
+        .use('/EXT_Plugins.js', express.static(`${this.WebsitePath}/tools/EXT_Plugins.js`))
+        .use('/EXT_Terminal.js', express.static(`${this.WebsitePath}/tools/EXT_Terminal.js`))
+        .use('/EXT_MMConfig.js', express.static(`${this.WebsitePath}/tools/EXT_MMConfig.js`))
+        .use('/EXT_Tools.js', express.static(`${this.WebsitePath}/tools/EXT_Tools.js`))
+        .use('/EXT_System.js', express.static(`${this.WebsitePath}/tools/EXT_System.js`))
+        .use('/EXT_About.js', express.static(`${this.WebsitePath}/tools/EXT_About.js`))
+        .use('/EXT_Restart.js', express.static(`${this.WebsitePath}/tools/EXT_Restart.js`))
+        .use('/EXT_Die.js', express.static(`${this.WebsitePath}/tools/EXT_Die.js`))
+        .use('/EXT_Fetch.js', express.static(`${this.WebsitePath}/tools/EXT_Fetch.js`))
+        .use('/3rdParty.js', express.static(`${this.WebsitePath}/tools/3rdParty.js`))
+        .use('/assets', express.static(`${this.WebsitePath}/assets`, options))
+        .use("/jsoneditor" , express.static(`${this.GAPath}/node_modules/jsoneditor`))
+        .use("/xterm" , express.static(`${this.GAPath}/node_modules/xterm`))
+        .use("/xterm-addon-fit" , express.static(`${this.GAPath}/node_modules/xterm-addon-fit`))
+  
+        .get('/', (req, res) => {
+          if(req.user) res.sendFile(`${this.WebsitePath}/Gateway/index.html`)
+          else res.redirect('/login')
         })
-      })
-
-      .get('/AllEXT', (req, res) => {
-        if (req.user) res.send(this.website.EXT)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get('/DescriptionEXT', (req, res) => {
-        if (req.user) res.send(this.website.EXTDescription)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get('/InstalledEXT', (req, res) => {
-        if (req.user) res.send(this.website.EXTInstalled)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get('/ConfiguredEXT', (req, res) => {
-        if (req.user) res.send(this.website.EXTConfigured)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get('/GetMMConfig', (req, res) => {
-        if (req.user) res.send(this.website.MMConfig)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/Terminal" , (req,res) => {
-        if (req.user) {
-          var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-          res.sendFile(`${this.WebsitePath}/Gateway/terminal.html`)
-
-          io.once('connection', async (socket) => {
-            logGA('[' + ip + '] Connected to Terminal Logs:', req.user.username)
-            socket.on('disconnect', (err) => {
-              logGA('[' + ip + '] Disconnected from Terminal Logs:', req.user.username, "[" + err + "]")
-            })
-            var pastLogs = await this.readAllMMLogs(this.website.HyperWatch.logs())
-            io.emit("terminal.logs", pastLogs)
-            this.website.HyperWatch.stream().on('stdData', (data) => {
-              if (typeof data == "string") io.to(socket.id).emit("terminal.logs", data.replace(/\r?\n/g, "\r\n"))
-            })
-          })
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/ptyProcess" , (req,res) => {
-        if (req.user) {
-          var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-          res.sendFile(`${this.WebsitePath}/Gateway/pty.html`)
-          io.once('connection', (client) => {
-            logGA('[' + ip + '] Connected to Terminal:', req.user.username)
-            client.on('disconnect', (err) => {
-              logGA('[' + ip + '] Disconnected from Terminal:', req.user.username, "[" + err + "]")
-            })
-            var cols = 80
-            var rows = 24
-            var ptyProcess = pty.spawn("bash", [], {
-              name: "xterm-color",
-              cols: cols,
-              rows: rows,
-              cmd: process.env.HOME,
-              env: process.env
-            })
-            ptyProcess.on("data", (data) => {
-              io.to(client.id).emit("terminal.incData", data)
-            })
-            client.on('terminal.toTerm', (data) => {
-              ptyProcess.write(data)
-            })
-            client.on('terminal.size', (size) => {
-              ptyProcess.resize(size.cols, size.rows)
-            })
-          })
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/install" , (req,res) => {
-        if (req.user) {
-          var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-          if (req.query.ext && this.website.EXTInstalled.indexOf(req.query.ext) == -1 && this.website.EXT.indexOf(req.query.ext) > -1) {
-            res.sendFile(`${this.WebsitePath}/Gateway/install.html`)
-            io.once('connection', async (socket) => {
-              logGA(`[${ip}] Connected to installer Terminal Logs:`, req.user.username)
-              socket.on('disconnect', (err) => {
-                logGA(`[${ip}] Disconnected from installer Terminal Logs:`, req.user.username, `[${err}]`)
-              })
-              this.website.HyperWatch.stream().on('stdData', (data) => {
-                if (typeof data == "string") io.to(socket.id).emit("terminal.installer", data.replace(/\r?\n/g, "\r\n"))
-              })
-            })
-          }
-          else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/EXTInstall" , (req,res) => {
-        if (req.user) {
-          var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-          if (req.query.EXT && this.website.EXTInstalled.indexOf(req.query.EXT) == -1 && this.website.EXT.indexOf(req.query.EXT) > -1) {
-            console.log(`[GA] [WEBSITE] [${ip}] Request installation:`, req.query.EXT)
+  
+        .get("/version" , (req,res) => {
+            let remoteFile = "https://raw.githubusercontent.com/bugsounet/MMM-GoogleAssistant/prod/package.json"
             var result = {
-              error: false
+              v: require('../package.json').version,
+              rev: require('../package.json').rev,
+              lang: this.website.language,
+              last: 0,
+              imperial: (this.website.MMConfig.units == "imperial") ? true : false,
+              needUpdate: false
             }
-            var modulePath = `${this.root_path}/modules/`
-            var Command= 'cd ' + modulePath + ' && git clone https://github.com/bugsounet/' + req.query.EXT + ' && cd ' + req.query.EXT + ' && npm install'
-
-            var child = exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
-              if (error) {
-                result.error = true
-                console.error("[GA] [WEBSITE] [INSTALL] [FATAL] exec error:", error)
-              } else {
-                this.website.EXTInstalled = this.searchInstalled()
-                console.log("[GA] [WEBSITE] [INSTALL] [DONE]", req.query.EXT)
-              }
-              res.json(result)
-            })
-            child.stdout.pipe(process.stdout)
-            child.stderr.pipe(process.stdout)
-          }
-          else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/delete" , (req,res) => {
-        if (req.user) {
+            fetch(remoteFile)
+              .then(response => response.json())
+              .then(data => {
+                result.last = data.version
+                if (semver.gt(result.last, result.v)) result.needUpdate = true
+                res.send(result)
+              })
+              .catch(e => {
+                console.error("[GA] [WEBSITE] Error on fetch last version number")
+                res.send(result)
+              })
+        })
+  
+        .get("/systemInformation" , async (req, res) => {
+          if (req.user) {
+            this.website.systemInformation.result = await this.website.systemInformation.lib.Get()
+            res.send(this.website.systemInformation.result)
+          } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/translation" , (req,res) => {
+          res.send(this.website.translation)
+        })
+  
+        .get("/homeText", (req,res) => {
+          res.send({text: this.website.homeText})
+        })
+  
+        .get('/EXT', (req, res) => {
+          if(req.user) res.sendFile(`${this.WebsitePath}/Gateway/EXT.html`)
+          else res.redirect('/login')
+        })
+  
+        .get('/login', (req, res) => {
+          if (req.user) res.redirect('/')
+          res.sendFile(`${this.WebsitePath}/Gateway/login.html`)
+        })
+  
+        .post('/auth', (req, res, next) => {
           var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-          if (req.query.ext && this.website.EXTInstalled.indexOf(req.query.ext) > -1 && this.website.EXT.indexOf(req.query.ext) > -1) {
-            res.sendFile(`${this.WebsitePath}/Gateway/delete.html`)
+          passport.authenticate('login', (err, user, info) => {
+            if (err) {
+              console.log(`[GA] [WEBSITE] [${ip}] Error`, err)
+              return next(err)
+            }
+            if (!user) {
+              console.log(`[GA] [WEBSITE] [${ip}] Bad Login`, info)
+              return res.send({ err: info })
+            }
+            req.logIn(user, err => {
+              if (err) {
+                console.log(`[GA] [WEBSITE] [${ip}] Login error:`, err)
+                return res.send({ err: err })
+              }
+              console.log(`[GA] [WEBSITE] [${ip}] Welcome ${user.username}, happy to serve you!`)
+              return res.send({ login: true })
+            })
+          })(req, res, next)
+        })
+  
+        .get('/logout', (req, res) => {
+          req.logout(err => {
+            if (err) { return console.error("[GA] [WEBSITE] Logout:", err) }
+            res.redirect('/')
+          })
+        })
+  
+        .get('/AllEXT', (req, res) => {
+          if (req.user) res.send(this.website.EXT)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get('/DescriptionEXT', (req, res) => {
+          if (req.user) res.send(this.website.EXTDescription)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get('/InstalledEXT', (req, res) => {
+          if (req.user) res.send(this.website.EXTInstalled)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get('/ConfiguredEXT', (req, res) => {
+          if (req.user) res.send(this.website.EXTConfigured)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get('/GetMMConfig', (req, res) => {
+          if (req.user) res.send(this.website.MMConfig)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/Terminal" , (req,res) => {
+          if (req.user) {
+            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+            res.sendFile(`${this.WebsitePath}/Gateway/terminal.html`)
+  
             io.once('connection', async (socket) => {
-              logGA(`[${ip}] Connected to uninstaller Terminal Logs:`, req.user.username)
+              logGA('[' + ip + '] Connected to Terminal Logs:', req.user.username)
               socket.on('disconnect', (err) => {
-                logGA(`[${ip}] Disconnected from uninstaller Terminal Logs:`, req.user.username, `[${err}]`)
+                logGA('[' + ip + '] Disconnected from Terminal Logs:', req.user.username, "[" + err + "]")
               })
+              var pastLogs = await this.readAllMMLogs(this.website.HyperWatch.logs())
+              io.emit("terminal.logs", pastLogs)
               this.website.HyperWatch.stream().on('stdData', (data) => {
-                if (typeof data == "string") io.to(socket.id).emit("terminal.delete", data.replace(/\r?\n/g, "\r\n"))
+                if (typeof data == "string") io.to(socket.id).emit("terminal.logs", data.replace(/\r?\n/g, "\r\n"))
               })
             })
           }
-          else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/EXTDelete" , (req,res) => {
-        if (req.user) {
-          var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-          if (req.query.EXT && this.website.EXTInstalled.indexOf(req.query.EXT) > -1 && this.website.EXT.indexOf(req.query.EXT) > -1) {
-            console.log(`[GA] [WEBSITE] [${ip}] Request delete:`, req.query.EXT)
-            var result = {
-              error: false
-            }
-            var modulePath = `${this.root_path}/modules/`
-            var Command= 'cd ' + modulePath + ' && rm -rfv ' + req.query.EXT
-            var child = exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
-              if (error) {
-                result.error = true
-                console.error("[GA] [WEBSITE] [DELETE] [FATAL] exec error:", error)
-              } else {
-                this.website.EXTInstalled = this.searchInstalled()
-                console.log("[GA] [WEBSITE] [DELETE] [DONE]", req.query.EXT)
-              }
-              res.json(result)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/ptyProcess" , (req,res) => {
+          if (req.user) {
+            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+            res.sendFile(`${this.WebsitePath}/Gateway/pty.html`)
+            io.once('connection', (client) => {
+              logGA('[' + ip + '] Connected to Terminal:', req.user.username)
+              client.on('disconnect', (err) => {
+                logGA('[' + ip + '] Disconnected from Terminal:', req.user.username, "[" + err + "]")
+              })
+              var cols = 80
+              var rows = 24
+              var ptyProcess = pty.spawn("bash", [], {
+                name: "xterm-color",
+                cols: cols,
+                rows: rows,
+                cmd: process.env.HOME,
+                env: process.env
+              })
+              ptyProcess.on("data", (data) => {
+                io.to(client.id).emit("terminal.incData", data)
+              })
+              client.on('terminal.toTerm', (data) => {
+                ptyProcess.write(data)
+              })
+              client.on('terminal.size', (size) => {
+                ptyProcess.resize(size.cols, size.rows)
+              })
             })
-            child.stdout.pipe(process.stdout)
-            child.stderr.pipe(process.stdout)
           }
-          else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/MMConfig" , (req,res) => {
-        if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/mmconfig.html`)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/EXTCreateConfig" , (req,res) => {
-        if (req.user) {
-          if (req.query.ext &&
-            this.website.EXTInstalled.indexOf(req.query.ext) > -1 && // is installed
-            this.website.EXT.indexOf(req.query.ext) > -1 &&  // is an EXT
-            this.website.EXTConfigured.indexOf(req.query.ext) == -1 // is not configured
-          ) {
-            res.sendFile(`${this.WebsitePath}/Gateway/EXTCreateConfig.html`)
-          }
-          else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/EXTModifyConfig" , (req,res) => {
-        if (req.user) {
-          if (req.query.ext &&
-            this.website.EXTInstalled.indexOf(req.query.ext) > -1 && // is installed
-            this.website.EXT.indexOf(req.query.ext) > -1 &&  // is an EXT
-            this.website.EXTConfigured.indexOf(req.query.ext) > -1 // is configured
-          ) {
-            res.sendFile(`${this.WebsitePath}/Gateway/EXTModifyConfig.html`)
-          }
-          else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/EXTDeleteConfig" , (req,res) => {
-        if (req.user) {
-          if (req.query.ext &&
-            this.website.EXTInstalled.indexOf(req.query.ext) == -1 && // is not installed
-            this.website.EXT.indexOf(req.query.ext) > -1 &&  // is an EXT
-            this.website.EXTConfigured.indexOf(req.query.ext) > -1 // is configured
-          ) {
-            res.sendFile(`${this.WebsitePath}/Gateway/EXTDeleteConfig.html`)
-          }
-          else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/EXTGetCurrentConfig" , (req,res) => {
-        if (req.user) {
-          if(!req.query.ext) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-          var index = this.website.MMConfig.modules.map(e => { return e.module }).indexOf(req.query.ext)
-          if (index > -1) {
-            let data = this.website.MMConfig.modules[index]
-            return res.send(data)
-          }
-          res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/EXTGetDefaultConfig" , (req,res) => {
-        if (req.user) {
-          if(!req.query.ext) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-          let data = require(`../website/config/${req.query.ext}/config.js`)
-          res.send(data.default)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/EXTGetDefaultTemplate" , (req,res) => {
-        if (req.user) {
-          if(!req.query.ext) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-          let data = require(`../website/config/${req.query.ext}/config.js`)
-          data.schema = this.makeSchemaTranslate(data.schema, this.website.schemaTranslatation)
-          res.send(data.schema)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/EXTSaveConfig" , (req,res) => {
-        if (req.user) {
-          if(!req.query.config) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-          let data = req.query.config
-          res.send(data)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .post("/writeEXT", async (req,res) => {
-        if (req.user) {
-          console.log("[GA] [WEBSITE] Receiving EXT data ...")
-          let data = JSON.parse(req.body.data)
-          var NewConfig = await this.configAddOrModify(data)
-          var resultSaveConfig = await this.saveConfig(NewConfig)
-          console.log("[GA] [WEBSITE] Write config result:", resultSaveConfig)
-          res.send(resultSaveConfig)
-          if (resultSaveConfig.done) {
-            this.website.MMConfig = await this.readConfig()
-            this.website.EXTConfigured= this.searchConfigured()
-            console.log("[GA] [WEBSITE] Reload config")
-          }
-        } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .post("/deleteEXT", async (req,res) => {
-        if (req.user) {
-          console.log("[GA] [WEBSITE] Receiving EXT data ...", req.body)
-          let EXTName = req.body.data
-          var NewConfig = await this.configDelete(EXTName)
-          var resultSaveConfig = await this.saveConfig(NewConfig)
-          console.log("[GA] [WEBSITE] Write config result:", resultSaveConfig)
-          res.send(resultSaveConfig)
-          if (resultSaveConfig.done) {
-            this.website.MMConfig = await this.readConfig()
-            this.website.EXTConfigured = this.searchConfigured()
-            console.log("[GA] [WEBSITE] Reload config")
-          }
-        } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/Tools" , (req,res) => {
-        if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/tools.html`)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/System" , (req,res) => {
-        if (req.user) {
-          res.sendFile(`${this.WebsitePath}/Gateway/system.html`)
-        } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/About" , (req,res) => {
-        if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/about.html`)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/3rdpartymodules", (req,res) => {
-        if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/3rdpartymodules.html`)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/Restart" , (req,res) => {
-        if (req.user) {
-          res.sendFile(`${this.WebsitePath}/Gateway/restarting.html`)
-          setTimeout(() => this.restartMM() , 1000)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/Die" , (req,res) => {
-        if (req.user) {
-          res.sendFile(`${this.WebsitePath}/Gateway/die.html`)
-          setTimeout(() => this.doClose(), 3000)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/SystemRestart" , (req,res) => {
-        if (req.user) {
-          res.sendFile(`${this.WebsitePath}/Gateway/restarting.html`)
-          setTimeout(() => this.SystemRestart() , 1000)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/SystemDie" , (req,res) => {
-        if (req.user) {
-          res.sendFile(`${this.WebsitePath}/Gateway/die.html`)
-          setTimeout(() => this.SystemDie(), 3000)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/EditMMConfig" , (req,res) => {
-        if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/EditMMConfig.html`)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/GetBackupName" , async (req,res) => {
-        if (req.user) {
-          var names = await this.loadBackupNames()
-          res.send(names)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/GetBackupFile" , async (req,res) => {
-        if (req.user) {
-          let data = req.query.config
-          var file = await this.loadBackupFile(data)
-          res.send(file)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/GetRadioStations", (req,res) => {
-        if (req.user) {
-          if (!this.website.radio) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
-          var allRadio = Object.keys(this.website.radio)
-          res.send(allRadio)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .post("/loadBackup", async (req,res) => {
-        if (req.user) {
-          console.log("[GA] [WEBSITE] Receiving backup data ...")
-          let file = req.body.data
-          var loadFile = await this.loadBackupFile(file)
-          var resultSaveConfig = await this.saveConfig(loadFile)
-          console.log("[GA] [WEBSITE] Write config result:", resultSaveConfig)
-          res.send(resultSaveConfig)
-          if (resultSaveConfig.done) {
-            this.website.MMConfig = await this.readConfig()
-            console.log("[GA] [WEBSITE] Reload config")
-          }
-        } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .post("/writeConfig", async (req,res) => {
-        if (req.user) {
-          console.log("[GA] [WEBSITE] Receiving config data ...")
-          let data = JSON.parse(req.body.data)
-          var resultSaveConfig = await this.saveConfig(data)
-          console.log("[GA] [WEBSITE] Write config result:", resultSaveConfig)
-          res.send(resultSaveConfig)
-          if (resultSaveConfig.done) {
-            this.website.MMConfig = await this.readConfig()
-            console.log("[GA] [WEBSITE] Reload config")
-          }
-        } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/getWebviewTag", (req,res) => {
-        if(req.user) res.send(this.website.webviewTag)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .post("/setWebviewTag", async (req,res) => {
-        if(!this.website.webviewTag && req.user) {
-          console.log("[GA] [WEBSITE] Receiving setWebviewTag demand...")
-          let NewConfig = await this.setWebviewTag()
-          var resultSaveConfig = await this.saveConfig(NewConfig)
-          console.log("[GA] [WEBSITE] Write GA webview config result:", resultSaveConfig)
-          res.send(resultSaveConfig)
-          if (resultSaveConfig.done) {
-            this.website.webviewTag = true
-            this.website.MMConfig = await this.readConfig()
-            console.log("[GA] [WEBSITE] Reload config")
-          }
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/getGAVersion", (req,res) => {
-        if (req.user) {
-          if (this.website.EXTStatus.GA_Ready) this.website.GACheck.ready = true
-          res.send(this.website.GACheck)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/getEXTStatus", (req,res) => {
-        if (req.user) res.send(this.website.EXTStatus)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .post("/EXT-Screen", (req, res) => {
-        if(req.user) {
-          let data = req.body.data
-          if (data == "OFF") {
-            this.sendSocketNotification("SendNoti", "EXT_SCREEN-FORCE_END")
-            return res.send("ok")
-          }
-          if (data == "ON") {
-            this.sendSocketNotification("SendNoti", "EXT_SCREEN-FORCE_WAKEUP")
-            return res.send("ok")
-          }
-          res.send("error")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-GAQuery", (req, res) => {
-        if(req.user) {
-          let data = req.body.data
-          if (!data) return res.send("error")
-          this.sendSocketNotification("REMOTE_ACTIVATE_ASSISTANT", { type: "TEXT", key: data })
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-AlertQuery", (req, res) => {
-        if(req.user) {
-          let data = req.body.data
-          if (!data) return res.send("error")
-          this.sendSocketNotification("SendNoti", {
-            noti: "EXT_ALERT",
-            payload: {
-              type: "information",
-              message: data,
-              sender: req.user ? req.user.username : 'MMM-GoogleAssistant',
-              timer: 30 * 1000,
-              sound: "modules/MMM-GoogleAssistant/website/tools/message.mp3",
-              icon: "modules/MMM-GoogleAssistant/website/assets/img/GA_Small.png"
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/install" , (req,res) => {
+          if (req.user) {
+            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+            if (req.query.ext && this.website.EXTInstalled.indexOf(req.query.ext) == -1 && this.website.EXT.indexOf(req.query.ext) > -1) {
+              res.sendFile(`${this.WebsitePath}/Gateway/install.html`)
+              io.once('connection', async (socket) => {
+                logGA(`[${ip}] Connected to installer Terminal Logs:`, req.user.username)
+                socket.on('disconnect', (err) => {
+                  logGA(`[${ip}] Disconnected from installer Terminal Logs:`, req.user.username, `[${err}]`)
+                })
+                this.website.HyperWatch.stream().on('stdData', (data) => {
+                  if (typeof data == "string") io.to(socket.id).emit("terminal.installer", data.replace(/\r?\n/g, "\r\n"))
+                })
+              })
             }
-          })
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-VolumeSendSpeaker", (req, res) => {
-        if(req.user) {
-          let data = req.body.data
-          if (!data) return res.send("error")
-          this.sendSocketNotification("SendNoti", {
-            noti: "EXT_VOLUME-SPEAKER_SET",
-            payload: data
-          })
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-VolumeSendRecorder", (req, res) => {
-        if(req.user) {
-          let data = req.body.data
-          if (!data) return res.send("error")
-          this.sendSocketNotification("SendNoti", {
-            noti: "EXT_VOLUME-RECORDER_SET",
-            payload: data
-          })
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-SpotifyQuery", (req, res) => {
-        if(req.user) {
-          let result = req.body.data
-          if (!result) return res.send("error")
-          let query = req.body.data.query
-          let type = req.body.data.type
-          if (!query || !type ) return res.send("error")
-          var pl = {
-            type: type,
-            query: query,
-            random: false
+            else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
           }
-          this.sendSocketNotification("SendNoti", {
-            noti: "EXT_SPOTIFY-SEARCH",
-            payload: pl
-          })
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-SpotifyPlay", (req, res) => {
-        if(req.user) {
-          this.sendSocketNotification("SendNoti", "EXT_SPOTIFY-PLAY")
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-SpotifyStop", (req, res) => {
-        if(req.user) {
-          this.sendSocketNotification("SendNoti", "EXT_SPOTIFY-STOP")
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-SpotifyNext", (req, res) => {
-        if(req.user) {
-          this.sendSocketNotification("SendNoti", "EXT_SPOTIFY-NEXT")
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-SpotifyPrevious", (req, res) => {
-        if(req.user) {
-          this.sendSocketNotification("SendNoti", "EXT_SPOTIFY-PREVIOUS")
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-Updates", (req, res) => {
-        if(req.user) {
-          this.sendSocketNotification("SendNoti", "EXT_UPDATES-UPDATE")
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-YouTubeQuery", (req, res) => {
-        if(req.user) {
-          let data = req.body.data
-          if (!data) return res.send("error")
-          if (this.website.EXTStatus["EXT-YouTube"].hello) {
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/EXTInstall" , (req,res) => {
+          if (req.user) {
+            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+            if (req.query.EXT && this.website.EXTInstalled.indexOf(req.query.EXT) == -1 && this.website.EXT.indexOf(req.query.EXT) > -1) {
+              console.log(`[GA] [WEBSITE] [${ip}] Request installation:`, req.query.EXT)
+              var result = {
+                error: false
+              }
+              var modulePath = `${this.root_path}/modules/`
+              var Command= 'cd ' + modulePath + ' && git clone https://github.com/bugsounet/' + req.query.EXT + ' && cd ' + req.query.EXT + ' && npm install'
+  
+              var child = exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
+                if (error) {
+                  result.error = true
+                  console.error("[GA] [WEBSITE] [INSTALL] [FATAL] exec error:", error)
+                } else {
+                  this.website.EXTInstalled = this.searchInstalled()
+                  console.log("[GA] [WEBSITE] [INSTALL] [DONE]", req.query.EXT)
+                }
+                res.json(result)
+              })
+              child.stdout.pipe(process.stdout)
+              child.stderr.pipe(process.stdout)
+            }
+            else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/delete" , (req,res) => {
+          if (req.user) {
+            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+            if (req.query.ext && this.website.EXTInstalled.indexOf(req.query.ext) > -1 && this.website.EXT.indexOf(req.query.ext) > -1) {
+              res.sendFile(`${this.WebsitePath}/Gateway/delete.html`)
+              io.once('connection', async (socket) => {
+                logGA(`[${ip}] Connected to uninstaller Terminal Logs:`, req.user.username)
+                socket.on('disconnect', (err) => {
+                  logGA(`[${ip}] Disconnected from uninstaller Terminal Logs:`, req.user.username, `[${err}]`)
+                })
+                this.website.HyperWatch.stream().on('stdData', (data) => {
+                  if (typeof data == "string") io.to(socket.id).emit("terminal.delete", data.replace(/\r?\n/g, "\r\n"))
+                })
+              })
+            }
+            else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/EXTDelete" , (req,res) => {
+          if (req.user) {
+            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+            if (req.query.EXT && this.website.EXTInstalled.indexOf(req.query.EXT) > -1 && this.website.EXT.indexOf(req.query.EXT) > -1) {
+              console.log(`[GA] [WEBSITE] [${ip}] Request delete:`, req.query.EXT)
+              var result = {
+                error: false
+              }
+              var modulePath = `${this.root_path}/modules/`
+              var Command= 'cd ' + modulePath + ' && rm -rfv ' + req.query.EXT
+              var child = exec(Command, {cwd : modulePath } , (error, stdout, stderr) => {
+                if (error) {
+                  result.error = true
+                  console.error("[GA] [WEBSITE] [DELETE] [FATAL] exec error:", error)
+                } else {
+                  this.website.EXTInstalled = this.searchInstalled()
+                  console.log("[GA] [WEBSITE] [DELETE] [DONE]", req.query.EXT)
+                }
+                res.json(result)
+              })
+              child.stdout.pipe(process.stdout)
+              child.stderr.pipe(process.stdout)
+            }
+            else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/MMConfig" , (req,res) => {
+          if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/mmconfig.html`)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/EXTCreateConfig" , (req,res) => {
+          if (req.user) {
+            if (req.query.ext &&
+              this.website.EXTInstalled.indexOf(req.query.ext) > -1 && // is installed
+              this.website.EXT.indexOf(req.query.ext) > -1 &&  // is an EXT
+              this.website.EXTConfigured.indexOf(req.query.ext) == -1 // is not configured
+            ) {
+              res.sendFile(`${this.WebsitePath}/Gateway/EXTCreateConfig.html`)
+            }
+            else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/EXTModifyConfig" , (req,res) => {
+          if (req.user) {
+            if (req.query.ext &&
+              this.website.EXTInstalled.indexOf(req.query.ext) > -1 && // is installed
+              this.website.EXT.indexOf(req.query.ext) > -1 &&  // is an EXT
+              this.website.EXTConfigured.indexOf(req.query.ext) > -1 // is configured
+            ) {
+              res.sendFile(`${this.WebsitePath}/Gateway/EXTModifyConfig.html`)
+            }
+            else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/EXTDeleteConfig" , (req,res) => {
+          if (req.user) {
+            if (req.query.ext &&
+              this.website.EXTInstalled.indexOf(req.query.ext) == -1 && // is not installed
+              this.website.EXT.indexOf(req.query.ext) > -1 &&  // is an EXT
+              this.website.EXTConfigured.indexOf(req.query.ext) > -1 // is configured
+            ) {
+              res.sendFile(`${this.WebsitePath}/Gateway/EXTDeleteConfig.html`)
+            }
+            else res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/EXTGetCurrentConfig" , (req,res) => {
+          if (req.user) {
+            if(!req.query.ext) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
+            var index = this.website.MMConfig.modules.map(e => { return e.module }).indexOf(req.query.ext)
+            if (index > -1) {
+              let data = this.website.MMConfig.modules[index]
+              return res.send(data)
+            }
+            res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/EXTGetDefaultConfig" , (req,res) => {
+          if (req.user) {
+            if(!req.query.ext) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
+            let data = require(`../website/config/${req.query.ext}/config.js`)
+            res.send(data.default)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/EXTGetDefaultTemplate" , (req,res) => {
+          if (req.user) {
+            if(!req.query.ext) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
+            let data = require(`../website/config/${req.query.ext}/config.js`)
+            data.schema = this.makeSchemaTranslate(data.schema, this.website.schemaTranslatation)
+            res.send(data.schema)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/EXTSaveConfig" , (req,res) => {
+          if (req.user) {
+            if(!req.query.config) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
+            let data = req.query.config
+            res.send(data)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .post("/writeEXT", async (req,res) => {
+          if (req.user) {
+            console.log("[GA] [WEBSITE] Receiving EXT data ...")
+            let data = JSON.parse(req.body.data)
+            var NewConfig = await this.configAddOrModify(data)
+            var resultSaveConfig = await this.saveConfig(NewConfig)
+            console.log("[GA] [WEBSITE] Write config result:", resultSaveConfig)
+            res.send(resultSaveConfig)
+            if (resultSaveConfig.done) {
+              this.website.MMConfig = await this.readConfig()
+              this.website.EXTConfigured= this.searchConfigured()
+              console.log("[GA] [WEBSITE] Reload config")
+            }
+          } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .post("/deleteEXT", async (req,res) => {
+          if (req.user) {
+            console.log("[GA] [WEBSITE] Receiving EXT data ...", req.body)
+            let EXTName = req.body.data
+            var NewConfig = await this.configDelete(EXTName)
+            var resultSaveConfig = await this.saveConfig(NewConfig)
+            console.log("[GA] [WEBSITE] Write config result:", resultSaveConfig)
+            res.send(resultSaveConfig)
+            if (resultSaveConfig.done) {
+              this.website.MMConfig = await this.readConfig()
+              this.website.EXTConfigured = this.searchConfigured()
+              console.log("[GA] [WEBSITE] Reload config")
+            }
+          } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/Tools" , (req,res) => {
+          if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/tools.html`)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/System" , (req,res) => {
+          if (req.user) {
+            res.sendFile(`${this.WebsitePath}/Gateway/system.html`)
+          } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/About" , (req,res) => {
+          if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/about.html`)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/3rdpartymodules", (req,res) => {
+          if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/3rdpartymodules.html`)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/Restart" , (req,res) => {
+          if (req.user) {
+            res.sendFile(`${this.WebsitePath}/Gateway/restarting.html`)
+            setTimeout(() => this.restartMM() , 1000)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/Die" , (req,res) => {
+          if (req.user) {
+            res.sendFile(`${this.WebsitePath}/Gateway/die.html`)
+            setTimeout(() => this.doClose(), 3000)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/SystemRestart" , (req,res) => {
+          if (req.user) {
+            res.sendFile(`${this.WebsitePath}/Gateway/restarting.html`)
+            setTimeout(() => this.SystemRestart() , 1000)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/SystemDie" , (req,res) => {
+          if (req.user) {
+            res.sendFile(`${this.WebsitePath}/Gateway/die.html`)
+            setTimeout(() => this.SystemDie(), 3000)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/EditMMConfig" , (req,res) => {
+          if (req.user) res.sendFile(`${this.WebsitePath}/Gateway/EditMMConfig.html`)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/GetBackupName" , async (req,res) => {
+          if (req.user) {
+            var names = await this.loadBackupNames()
+            res.send(names)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/GetBackupFile" , async (req,res) => {
+          if (req.user) {
+            let data = req.query.config
+            var file = await this.loadBackupFile(data)
+            res.send(file)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/GetRadioStations", (req,res) => {
+          if (req.user) {
+            if (!this.website.radio) return res.status(404).sendFile(`${this.WebsitePath}/Gateway/404.html`)
+            var allRadio = Object.keys(this.website.radio)
+            res.send(allRadio)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .post("/loadBackup", async (req,res) => {
+          if (req.user) {
+            console.log("[GA] [WEBSITE] Receiving backup data ...")
+            let file = req.body.data
+            var loadFile = await this.loadBackupFile(file)
+            var resultSaveConfig = await this.saveConfig(loadFile)
+            console.log("[GA] [WEBSITE] Write config result:", resultSaveConfig)
+            res.send(resultSaveConfig)
+            if (resultSaveConfig.done) {
+              this.website.MMConfig = await this.readConfig()
+              console.log("[GA] [WEBSITE] Reload config")
+            }
+          } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .post("/writeConfig", async (req,res) => {
+          if (req.user) {
+            console.log("[GA] [WEBSITE] Receiving config data ...")
+            let data = JSON.parse(req.body.data)
+            var resultSaveConfig = await this.saveConfig(data)
+            console.log("[GA] [WEBSITE] Write config result:", resultSaveConfig)
+            res.send(resultSaveConfig)
+            if (resultSaveConfig.done) {
+              this.website.MMConfig = await this.readConfig()
+              console.log("[GA] [WEBSITE] Reload config")
+            }
+          } else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/getWebviewTag", (req,res) => {
+          if(req.user) res.send(this.website.webviewTag)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .post("/setWebviewTag", async (req,res) => {
+          if(!this.website.webviewTag && req.user) {
+            console.log("[GA] [WEBSITE] Receiving setWebviewTag demand...")
+            let NewConfig = await this.setWebviewTag()
+            var resultSaveConfig = await this.saveConfig(NewConfig)
+            console.log("[GA] [WEBSITE] Write GA webview config result:", resultSaveConfig)
+            res.send(resultSaveConfig)
+            if (resultSaveConfig.done) {
+              this.website.webviewTag = true
+              this.website.MMConfig = await this.readConfig()
+              console.log("[GA] [WEBSITE] Reload config")
+            }
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/getGAVersion", (req,res) => {
+          if (req.user) {
+            if (this.website.EXTStatus.GA_Ready) this.website.GACheck.ready = true
+            res.send(this.website.GACheck)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/getEXTStatus", (req,res) => {
+          if (req.user) res.send(this.website.EXTStatus)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .post("/EXT-Screen", (req, res) => {
+          if(req.user) {
+            let data = req.body.data
+            if (data == "OFF") {
+              this.sendSocketNotification("SendNoti", "EXT_SCREEN-FORCE_END")
+              return res.send("ok")
+            }
+            if (data == "ON") {
+              this.sendSocketNotification("SendNoti", "EXT_SCREEN-FORCE_WAKEUP")
+              return res.send("ok")
+            }
+            res.send("error")
+          }
+          else res.send("error")
+        })
+  
+        .post("/EXT-GAQuery", (req, res) => {
+          if(req.user) {
+            let data = req.body.data
+            if (!data) return res.send("error")
+            this.sendSocketNotification("REMOTE_ACTIVATE_ASSISTANT", { type: "TEXT", key: data })
+            res.send("ok")
+          }
+          else res.send("error")
+        })
+  
+        .post("/EXT-AlertQuery", (req, res) => {
+          if(req.user) {
+            let data = req.body.data
+            if (!data) return res.send("error")
             this.sendSocketNotification("SendNoti", {
-              noti: "EXT_YOUTUBE-SEARCH",
+              noti: "EXT_ALERT",
+              payload: {
+                type: "information",
+                message: data,
+                sender: req.user ? req.user.username : 'MMM-GoogleAssistant',
+                timer: 30 * 1000,
+                sound: "modules/MMM-GoogleAssistant/website/tools/message.mp3",
+                icon: "modules/MMM-GoogleAssistant/website/assets/img/GA_Small.png"
+              }
+            })
+            res.send("ok")
+          }
+          else res.send("error")
+        })
+  
+        .post("/EXT-VolumeSendSpeaker", (req, res) => {
+          if(req.user) {
+            let data = req.body.data
+            if (!data) return res.send("error")
+            this.sendSocketNotification("SendNoti", {
+              noti: "EXT_VOLUME-SPEAKER_SET",
               payload: data
             })
             res.send("ok")
-          } else {
-            res.send("error")
           }
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-FreeboxTVQuery", (req, res) => {
-        if(this.website.freeteuse && req.user) {
-          let data = req.body.data
-          if (!data) return res.send("error")
-          this.sendSocketNotification("SendNoti", {
-            noti: "EXT_FREEBOXTV-PLAY",
-            payload: data
-          })
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-RadioQuery", (req, res) => {
-        if(req.user) {
-          let data = req.body.data
-          if (!data) return res.send("error")
-          try {
-            var toListen= this.website.radio[data].notificationExec.payload()
+          else res.send("error")
+        })
+  
+        .post("/EXT-VolumeSendRecorder", (req, res) => {
+          if(req.user) {
+            let data = req.body.data
+            if (!data) return res.send("error")
             this.sendSocketNotification("SendNoti", {
-              noti: "EXT_RADIO-START",
-              payload: toListen
+              noti: "EXT_VOLUME-RECORDER_SET",
+              payload: data
             })
-          } catch (e) {
-            res.send("error")
+            res.send("ok")
           }
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/EXT-StopQuery", (req, res) => {
-        if(req.user) {
-          this.sendSocketNotification("SendStop")
-          this.sendSocketNotification("SendNoti", "EXT_STOP")
-          res.send("ok")
-        }
-        else res.send("error")
-      })
-
-      .post("/deleteBackup", async (req,res) => {
-        if(req.user) {
-          console.log("[GA] [WEBSITE] Receiving delete backup demand...")
-          var deleteBackup = await this.deleteBackup()
-          console.log("[GA] [WEBSITE] Delete backup result:", deleteBackup)
-          res.send(deleteBackup)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .post("/readExternalBackup", async (req,res) => {
-        if(req.user) {
-          let data = req.body.data
-          if (!data) return res.send({error: "error"})
-          console.log("[GA] [WEBSITE] Receiving External backup...")
-          var transformExternalBackup = await this.transformExternalBackup(data)
-          res.send({ data: transformExternalBackup })
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .post("/saveExternalBackup", async (req,res) => {
-        if(req.user) {
-          let data = req.body.data
-          if (!data) return res.send({error: "error"})
-          console.log("[GA] [WEBSITE] Receiving External backup...")
-          var linkExternalBackup = await this.saveExternalConfig(data)
-          if (linkExternalBackup.data) {
-            console.log("[GA] [WEBSITE] Generate link number:", linkExternalBackup.data)
-            healthDownloader = (req_, res_) => {
-              if (req_.params[0] == linkExternalBackup.data) {
-                res_.sendFile(`${this.GAPath}/download/${linkExternalBackup.data}.js`)
-                healthDownloader = function(req_, res_) {
-                  res_.redirect('/')
-                }
-                setTimeout(() => {
-                  this.deleteDownload(linkExternalBackup.data)
-                }, 1000 * 60)
-              } else {
-                res_.redirect('/')
-              }
+          else res.send("error")
+        })
+  
+        .post("/EXT-SpotifyQuery", (req, res) => {
+          if(req.user) {
+            let result = req.body.data
+            if (!result) return res.send("error")
+            let query = req.body.data.query
+            let type = req.body.data.type
+            if (!query || !type ) return res.send("error")
+            var pl = {
+              type: type,
+              query: query,
+              random: false
+            }
+            this.sendSocketNotification("SendNoti", {
+              noti: "EXT_SPOTIFY-SEARCH",
+              payload: pl
+            })
+            res.send("ok")
+          }
+          else res.send("error")
+        })
+  
+        .post("/EXT-SpotifyPlay", (req, res) => {
+          if(req.user) {
+            this.sendSocketNotification("SendNoti", "EXT_SPOTIFY-PLAY")
+            res.send("ok")
+          }
+          else res.send("error")
+        })
+  
+        .post("/EXT-SpotifyStop", (req, res) => {
+          if(req.user) {
+            this.sendSocketNotification("SendNoti", "EXT_SPOTIFY-STOP")
+            res.send("ok")
+          }
+          else res.send("error")
+        })
+  
+        .post("/EXT-SpotifyNext", (req, res) => {
+          if(req.user) {
+            this.sendSocketNotification("SendNoti", "EXT_SPOTIFY-NEXT")
+            res.send("ok")
+          }
+          else res.send("error")
+        })
+  
+        .post("/EXT-SpotifyPrevious", (req, res) => {
+          if(req.user) {
+            this.sendSocketNotification("SendNoti", "EXT_SPOTIFY-PREVIOUS")
+            res.send("ok")
+          }
+          else res.send("error")
+        })
+  
+        .post("/EXT-Updates", (req, res) => {
+          if(req.user) {
+            this.sendSocketNotification("SendNoti", "EXT_UPDATES-UPDATE")
+            res.send("ok")
+          }
+          else res.send("error")
+        })
+  
+        .post("/EXT-YouTubeQuery", (req, res) => {
+          if(req.user) {
+            let data = req.body.data
+            if (!data) return res.send("error")
+            if (this.website.EXTStatus["EXT-YouTube"].hello) {
+              this.sendSocketNotification("SendNoti", {
+                noti: "EXT_YOUTUBE-SEARCH",
+                payload: data
+              })
+              res.send("ok")
+            } else {
+              res.send("error")
             }
           }
-          res.send(linkExternalBackup)
-        }
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
+          else res.send("error")
+        })
+  
+        .post("/EXT-FreeboxTVQuery", (req, res) => {
+          if(this.website.freeteuse && req.user) {
+            let data = req.body.data
+            if (!data) return res.send("error")
+            this.sendSocketNotification("SendNoti", {
+              noti: "EXT_FREEBOXTV-PLAY",
+              payload: data
+            })
+            res.send("ok")
+          }
+          else res.send("error")
+        })
+  
+        .post("/EXT-RadioQuery", (req, res) => {
+          if(req.user) {
+            let data = req.body.data
+            if (!data) return res.send("error")
+            try {
+              var toListen= this.website.radio[data].notificationExec.payload()
+              this.sendSocketNotification("SendNoti", {
+                noti: "EXT_RADIO-START",
+                payload: toListen
+              })
+            } catch (e) {
+              res.send("error")
+            }
+            res.send("ok")
+          }
+          else res.send("error")
+        })
+  
+        .post("/EXT-StopQuery", (req, res) => {
+          if(req.user) {
+            this.sendSocketNotification("SendStop")
+            this.sendSocketNotification("SendNoti", "EXT_STOP")
+            res.send("ok")
+          }
+          else res.send("error")
+        })
+  
+        .post("/deleteBackup", async (req,res) => {
+          if(req.user) {
+            console.log("[GA] [WEBSITE] Receiving delete backup demand...")
+            var deleteBackup = await this.deleteBackup()
+            console.log("[GA] [WEBSITE] Delete backup result:", deleteBackup)
+            res.send(deleteBackup)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .post("/readExternalBackup", async (req,res) => {
+          if(req.user) {
+            let data = req.body.data
+            if (!data) return res.send({error: "error"})
+            console.log("[GA] [WEBSITE] Receiving External backup...")
+            var transformExternalBackup = await this.transformExternalBackup(data)
+            res.send({ data: transformExternalBackup })
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .post("/saveExternalBackup", async (req,res) => {
+          if(req.user) {
+            let data = req.body.data
+            if (!data) return res.send({error: "error"})
+            console.log("[GA] [WEBSITE] Receiving External backup...")
+            var linkExternalBackup = await this.saveExternalConfig(data)
+            if (linkExternalBackup.data) {
+              console.log("[GA] [WEBSITE] Generate link number:", linkExternalBackup.data)
+              healthDownloader = (req_, res_) => {
+                if (req_.params[0] == linkExternalBackup.data) {
+                  res_.sendFile(`${this.GAPath}/download/${linkExternalBackup.data}.js`)
+                  healthDownloader = function(req_, res_) {
+                    res_.redirect('/')
+                  }
+                  setTimeout(() => {
+                    this.deleteDownload(linkExternalBackup.data)
+                  }, 1000 * 60)
+                } else {
+                  res_.redirect('/')
+                }
+              }
+            }
+            res.send(linkExternalBackup)
+          }
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/activeVersion", (req,res) => {
+          if (req.user) res.send(this.website.activeVersion)
+          else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
+        })
+  
+        .get("/download/*", (req,res) => {
+          healthDownloader(req, res)
+        })
+  
+        .get("/robots.txt", (req,res) => {
+          res.sendFile(`${this.WebsitePath}/Gateway/robots.txt`)
+        })
 
-      .get("/activeVersion", (req,res) => {
-        if (req.user) res.send(this.website.activeVersion)
-        else res.status(403).sendFile(`${this.WebsitePath}/Gateway/403.html`)
-      })
-
-      .get("/download/*", (req,res) => {
-        healthDownloader(req, res)
-      })
-
-      .get("/robots.txt", (req,res) => {
-        res.sendFile(`${this.WebsitePath}/Gateway/robots.txt`)
-      })
+        resolve()
+    })
   }
 
   /** log any traffic **/
