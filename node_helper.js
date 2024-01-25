@@ -5,6 +5,7 @@
 const fs = require("fs")
 const checker = require("./components/checker.js")
 var NodeHelper = require("node_helper")
+var logGA = (...args) => { /* do nothing */ }
 
 module.exports = NodeHelper.create({
   start: function () {
