@@ -247,11 +247,11 @@ class smarthome {
     this.SmartHome.smarthome.LyricsIsForced = GW["EXT-SpotifyCanvasLyrics"].forced
   
     if (this.SmartHome.EXT["EXT-Screen"]) {
-      logGA("Found: EXT-Screen (action.devices.traits.OnOff)")
+      logGA("[DEVICE] Found: EXT-Screen (action.devices.traits.OnOff)")
       this.SmartHome.device.traits.push("action.devices.traits.OnOff")
     }
     if (this.SmartHome.EXT["EXT-Volume"]) {
-      logGA("Found: EXT-Volume (action.devices.traits.Volume)")
+      logGA("[DEVICE] Found: EXT-Volume (action.devices.traits.Volume)")
       this.SmartHome.device.traits.push("action.devices.traits.Volume")
       this.SmartHome.device.attributes.volumeMaxLevel = 100
       this.SmartHome.device.attributes.volumeCanMuteAndUnmute = true
@@ -259,7 +259,7 @@ class smarthome {
       this.SmartHome.device.attributes.levelStepSize = 5
     }
     if (this.SmartHome.EXT["EXT-Pages"]) {
-      logGA("Found: EXT-Pages (action.devices.traits.InputSelector)")
+      logGA("[DEVICE] Found: EXT-Pages (action.devices.traits.InputSelector)")
       for (let i = 0; i < this.SmartHome.smarthome.MaxPages; i++) {
         logGA("Set: pages",i)
         let input = {}
@@ -273,11 +273,11 @@ class smarthome {
       }
     }
     if (this.SmartHome.EXT["EXT-Alert"]) {
-      logGA("Found: EXT-Alert (action.devices.traits.Locator)")
+      logGA("[DEVICE] Found: EXT-Alert (action.devices.traits.Locator)")
       this.SmartHome.device.traits.push("action.devices.traits.Locator")
     }
     if (this.SmartHome.EXT["EXT-Spotify"]) {
-      logGA("Found: EXT-Spotify (action.devices.traits.AppSelector, action.devices.traits.TransportControl)")
+      logGA("[DEVICE] Found: EXT-Spotify (action.devices.traits.AppSelector, action.devices.traits.TransportControl)")
       this.SmartHome.device.traits.push("action.devices.traits.AppSelector")
       this.SmartHome.device.attributes.availableApplications = []
       let home = {
@@ -315,7 +315,7 @@ class smarthome {
     }
 
     if (this.SmartHome.EXT["EXT-FreeboxTV"]) {
-      logGA("Found: EXT-FreeboxTV (action.devices.traits.Channel)")
+      logGA("[DEVICE] Found: EXT-FreeboxTV (action.devices.traits.Channel)")
       this.SmartHome.device.traits.push("action.devices.traits.Channel")
       let FBTV= {
         key: "EXT-FreeboxTV",
@@ -329,7 +329,7 @@ class smarthome {
       this.SmartHome.device.attributes.availableInputs.push(FBTV)
     }
     if (this.SmartHome.EXT["EXT-SpotifyCanvasLyrics"]) {
-      logGA("Found: EXT-SpotifyCanvasLyrics (action.devices.traits.Channel)")
+      logGA("[DEVICE] Found: EXT-SpotifyCanvasLyrics (action.devices.traits.Channel)")
       this.SmartHome.device.traits.push("action.devices.traits.Channel")
       let SCL= {
         key: "EXT-SpotifyCanvasLyrics",

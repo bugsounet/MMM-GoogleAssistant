@@ -1040,6 +1040,16 @@ class website {
           res.sendFile(`${this.WebsitePath}/Gateway/robots.txt`)
         })
 
+      if(!this.config.CLIENT_ID) {
+        this.website.app
+          .use('/smarthome/assets', express.static(`${this.WebsitePath}/assets`, options))
+          .get("/smarthome/login/", (req,res) => {
+            res.sendFile(`${this.WebsitePath}/SmartHome/disabled.html`)
+          })
+          .get("/smarthome/", (req,res) => {
+            res.sendFile(`${this.WebsitePath}/SmartHome/disabled.html`)
+          })
+      }
       resolve()
     })
   }

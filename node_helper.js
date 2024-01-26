@@ -42,8 +42,8 @@ module.exports = NodeHelper.create({
         this.website.init(payload)
         break
       case "SMARTHOME-INIT":
-        await this.parseSmarthome()
-        await this.smarthome.init()
+        let smarthome = await this.parseSmarthome()
+        if (smarthome) await this.smarthome.init()
         this.website.server()
         break
       case "ACTIVATE_ASSISTANT":
@@ -76,7 +76,7 @@ module.exports = NodeHelper.create({
           return
         }
         this.website.setEXTStatus(payload)
-        this.forceSendSmartHomeData()
+        this.updateSmartHome()
         break
       case "TB_SYSINFO":
         let result = await this.website.website.systemInformation.lib.Get()
@@ -138,7 +138,7 @@ module.exports = NodeHelper.create({
   },
 
   parseSmarthome: async function() {
-    if (!this.config.website.CLIENT_ID) return
+    if (!this.config.website.CLIENT_ID) return false
     return new Promise(async resolve => {
       let bugsounet = await this.libraries("smarthome")
       if (bugsounet) return this.bugsounetError (bugsounet)
@@ -151,12 +151,12 @@ module.exports = NodeHelper.create({
       }
 
       this.smarthome = new this.lib.smarthome(SmarthomeHelperConfig, (...args) => this.sendSocketNotification(...args))
-      resolve()
+      resolve(true)
     })
   },
 
   libraries: function (type) {
-    if (this.config.debug) logGA = (...args) => { console.log("[GA] [LIB]", ...args) }
+    if (this.config.debug) logGA = (...args) => { console.log("[GA] [LIBRARIES]", ...args) }
     let Libraries = []
     let GA= [
       // { "library to load" : "store library name" }
@@ -173,15 +173,7 @@ module.exports = NodeHelper.create({
     ]
   
     let smarthome= [
-      { "./components/smarthome.js" : "smarthome" },
-  
-      //{ "./components/SH_Tools.js": "SHTools" },
-      //{ "./components/SH_Middleware.js": "SmartHome" },
-      //{ "./components/actionsOnGoogle.js": "ActionsOnGoogle" },
-      //{ "./components/DeviceManagement.js": "Device" },
-      //{ "./components/SH_Callbacks.js": "callback" },
-      //{ "./components/SH_Homegraph.js": "homegraph" }
-  
+      { "./components/smarthome.js" : "smarthome" }
     ]
     let errors = 0
   
@@ -225,7 +217,7 @@ module.exports = NodeHelper.create({
       })
       resolve(errors)
       if (errors) {
-        console.error("[GA] [LIB] Some libraries missing!")
+        console.error("[GA] [LIBRARIES] Some libraries missing!")
         if (type == "GA") this.sendSocketNotification("NOT_INITIALIZED", { message: "Library loading Error!" })
       } else console.log(`[GA] [LIB] All ${type} libraries loaded!`)
     })
@@ -236,16 +228,11 @@ module.exports = NodeHelper.create({
     console.error("[GA] [DATA] Try to solve it with `npm run rebuild` in MMM-GoogleAssistant folder")
   },
 
-  forceSendSmartHomeData: function() {
-    if (!this.smarthome) {
-      // library is not loaded ... retry (not needed but...)
-      setTimeout(() => { this.forceSendSmartHomeData() }, 1000)
-      return
-    }
+  updateSmartHome: function() {
+    if (!this.smarthome || !this.config.website.CLIENT_ID) return
     if (this.smarthome.SmartHome.use && this.smarthome.SmartHome.init) {
-      this.smarthome.refreshData() // to check
+      this.smarthome.refreshData()
       this.smarthome.updateGraph()
     }
   }
-
 })
