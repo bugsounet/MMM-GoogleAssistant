@@ -4,8 +4,8 @@
 
 const fs = require("fs")
 const checker = require("./components/checker.js")
-var NodeHelper = require("node_helper")
 var logGA = (...args) => { /* do nothing */ }
+var NodeHelper = require("node_helper")
 
 module.exports = NodeHelper.create({
   start: function () {
@@ -43,6 +43,7 @@ module.exports = NodeHelper.create({
         break
       case "SMARTHOME-INIT":
         await this.parseSmarthome()
+        await this.smarthome.init()
         this.website.server()
         break
       case "ACTIVATE_ASSISTANT":
@@ -75,6 +76,7 @@ module.exports = NodeHelper.create({
           return
         }
         this.website.setEXTStatus(payload)
+        this.forceSendSmartHomeData()
         break
       case "TB_SYSINFO":
         let result = await this.website.website.systemInformation.lib.Get()
@@ -144,10 +146,10 @@ module.exports = NodeHelper.create({
       let SmarthomeHelperConfig = {
         config: this.config.website,
         debug: this.config.debug,
-        assistantLang: this.config.assistantConfig.lang,
-        lib: this.lib
+        lang: config.language,
+        website: this.website
       }
-  
+
       this.smarthome = new this.lib.smarthome(SmarthomeHelperConfig, (...args) => this.sendSocketNotification(...args))
       resolve()
     })
@@ -214,7 +216,7 @@ module.exports = NodeHelper.create({
               logGA(`Loaded: ${libraryToLoad} --> this.lib.${libraryName}`)
             }
           } catch (e) {
-            console.error(`[GA] [LIB] ${libraryToLoad} Loading error!`, e.message)
+            console.error(`[GA] [LIB] ${libraryToLoad} Loading error!`, e.message,e)
             this.sendSocketNotification("ERROR" , `Loading error! library: ${libraryToLoad}`)
             errors++
             this.lib.error = errors
@@ -232,5 +234,18 @@ module.exports = NodeHelper.create({
   bugsounetError: function (bugsounet) {
     console.error(`[GA] [DATA] Warning: ${bugsounet} needed library not loaded !`)
     console.error("[GA] [DATA] Try to solve it with `npm run rebuild` in MMM-GoogleAssistant folder")
+  },
+
+  forceSendSmartHomeData: function() {
+    if (!this.smarthome) {
+      // library is not loaded ... retry (not needed but...)
+      setTimeout(() => { this.forceSendSmartHomeData() }, 1000)
+      return
+    }
+    if (this.smarthome.SmartHome.use && this.smarthome.SmartHome.init) {
+      this.smarthome.refreshData() // to check
+      this.smarthome.updateGraph()
+    }
   }
+
 })

@@ -111,7 +111,6 @@ function SHLanguage(language) {
     case "nn":
       lang = "no"
       break
-    //case "th": ?? Thaï (th)
     default:
       lang = "en"
       break

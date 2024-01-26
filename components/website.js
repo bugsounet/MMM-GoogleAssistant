@@ -168,7 +168,7 @@ class website {
     logGA("Language set", this.website.language)
 
     await this.createWebsite()
-    console.log("[GA] Website Ready")
+    console.log("[GA] Website Ready!")
     this.sendSocketNotification("WEBSITE-INIT")
 /*
     if (this.config.CLIENT_ID) this.lib.SmartHome.initialize(that)
@@ -177,6 +177,7 @@ class website {
   }
 
   server() {
+    console.log("[GA] Loading Server...")
     this.startServer(cb => {
       if (cb) {
         console.log("[GA] Server Ready!")
@@ -1039,7 +1040,7 @@ class website {
           res.sendFile(`${this.WebsitePath}/Gateway/robots.txt`)
         })
 
-        resolve()
+      resolve()
     })
   }
 
@@ -1820,15 +1821,11 @@ class website {
   }
 
   setEXTStatus(EXTs) {
-    if (this.website.initialized && EXTs) {
-      this.website.EXTStatus = EXTs
-      /*
-      if (this.SmartHome.use && this.SmartHome.init) {
-          this.lib.Device.refreshData(this)
-          this.lib.homegraph.updateGraph(this)
-      }
-      */
-    }
+    this.website.EXTStatus = EXTs
+  }
+
+  getEXTStatus() {
+    return this.website.EXTStatus
   }
 }
 

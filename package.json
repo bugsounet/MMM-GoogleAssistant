@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
   "version": "6.1.0",
-  "rev": "240122",
+  "rev": "240126",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
