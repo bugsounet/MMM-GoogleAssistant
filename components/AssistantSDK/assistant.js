@@ -8,7 +8,7 @@ const EmbeddedAssistantClient = require('./embedded-assistant').EmbeddedAssistan
 
 const ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com';
 
-function Assistant(client) {
+function AssistantSDK(client) {
   const sslCreds = grpc.credentials.createSsl();
   const callCreds = grpc.credentials.createFromGoogleCredential(client);
   const combinedCreds = grpc.credentials.combineChannelCredentials(sslCreds, callCreds);
@@ -16,5 +16,5 @@ function Assistant(client) {
   return (new EmbeddedAssistantClient(ASSISTANT_API_ENDPOINT, combinedCreds));
 };
 
-util.inherits(Assistant, EventEmitter);
-module.exports = Assistant;
+util.inherits(AssistantSDK, EventEmitter);
+module.exports = AssistantSDK;

@@ -64,7 +64,6 @@ Module.register("MMM-GoogleAssistant", {
 
   getScripts: function() {
     return [
-      "/modules/MMM-GoogleAssistant/components/GAConfig.js",
       "/modules/MMM-GoogleAssistant/components/activateProcess.js",
       "/modules/MMM-GoogleAssistant/components/assistantResponse.js",
       "/modules/MMM-GoogleAssistant/components/assistantSearch.js",
@@ -102,10 +101,6 @@ Module.register("MMM-GoogleAssistant", {
     }
   },
 
-  start: function () {
-    this.GAConfig = new GAConfig(this)
-  },
-
   getDom: function() {
     var dom = document.createElement("div")
     dom.style.display = 'none'
@@ -122,7 +117,9 @@ Module.register("MMM-GoogleAssistant", {
         break
       case "GA_FORCE_FULLSCREEN":
         if (this.config.responseConfig.useFullscreen) return logGA("Force Fullscreen: Already activated")
-        this.GAConfig.forceFullScreen(this)
+        this.config.responseConfig.useFullscreen= true
+        this.assistantResponse = null
+        this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], this.callbacks)
         logGA("Force Fullscreen: AssistantResponse Reloaded")
         break
       case "GA_STOP":
@@ -165,7 +162,7 @@ Module.register("MMM-GoogleAssistant", {
         })
         break
       case "GA-INIT":
-        this.GAConfig.EXT_Config(this)
+        this.EXT_Config()
         break
       case "WEBSITE-INIT":
         this.sendSocketNotification("SMARTHOME-INIT")
@@ -208,6 +205,141 @@ Module.register("MMM-GoogleAssistant", {
         this.EXT_NotificationsActions.Actions(this, "EXT_STOP")
         break
     }
+  },
+
+  start: function () {
+    const helperConfig = [
+      "debug", "recipes", "assistantConfig", "responseConfig", "website"
+    ]
+
+    if (this.config.debug) logGA = (...args) => { console.log("[GA]", ...args) }
+
+    this.helperConfig = {}
+    for(var i = 0; i < helperConfig.length; i++) {
+      this.helperConfig[helperConfig[i]] = this.config[helperConfig[i]]
+    }
+    this.helperConfig.micConfig = {
+      recorder: "auto",
+      device: "default"
+    }
+
+    this.forceResponse= false
+    this.assistantResponse = null
+    this.globalStopCommands = []
+
+    if (Array.isArray(this.config.otherStopCommands)) {
+      this.globalStopCommands = this.config.otherStopCommands
+    }
+
+    this.GAStatus = {
+      actual: "standby",
+      old : "standby"
+    }
+
+    this.callbacks = {
+      assistantActivate: (payload)=>{
+        this.activateProcess.assistantActivate(this, payload)
+      },
+      postProcess: (response, callback_done, callback_none)=> {
+        this.activateProcess.postProcess(this, response, callback_done, callback_none)
+      },
+      endResponse: ()=>{
+        logGA("Conversation Done")
+      },
+      translate: (text) => {
+        return this.translate(text)
+      },
+      GAStatus: (status) => {
+        this.Hooks.doPlugin(that, "onStatus", {status: status})
+        this.GAStatus = status
+        this.sendNotification("ASSISTANT_" + this.GAStatus.actual.toUpperCase())
+        this.EXT_Actions.Actions(this, this.GAStatus.actual.toUpperCase())
+      },
+      Gateway: (response)=> {
+        return this.Gateway.SendToGateway(this, response)
+      },
+      "sendSocketNotification": (noti, params) => {
+        this.sendSocketNotification(noti, params)
+      }
+    }
+
+    this.Gateway = new Gateway(this)
+    this.Hooks = new Hooks()
+    this.activateProcess = new activateProcess()
+    this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], this.callbacks)
+    this.AssistantSearch = new AssistantSearch(this.helperConfig.assistantConfig)
+
+    this.assistantResponse.prepareGA()
+    this.assistantResponse.prepareBackground ()
+    this.assistantResponse.Loading()
+
+    // create the main command for "stop" (EXT_STOP)
+    var StopCommand = {
+      commands: {
+        "EXT_Stop": {
+          notificationExec: {
+            notification: "EXT_STOP"
+          },
+          soundExec: {
+            chime: "close"
+          },
+          displayResponse: false
+        }
+      }
+    }
+    this.Hooks.parseLoadedRecipe(JSON.stringify(StopCommand))
+    logGA("[HOOK] EXT_Stop Command Added")
+
+    // add default command to globalStopCommand (if needed)
+    if (this.globalStopCommands.indexOf(this.config.stopCommand) == -1) {
+      this.globalStopCommands.push(this.config.stopCommand)
+    }
+
+    // create all transcriptionHooks from globalStopCommands array
+    if (this.globalStopCommands.length) {
+      this.globalStopCommands.forEach((pattern,i) => {
+        var Command = {
+          transcriptionHooks: {}
+        }
+        Command.transcriptionHooks["EXT_Stop"+i] = {
+          pattern: `^(${pattern})($)`,
+          command: "EXT_Stop"
+        }
+        this.Hooks.parseLoadedRecipe(JSON.stringify(Command))
+        logGA(`[HOOK] Add pattern for EXT_Stop command: ${pattern}`)
+      })
+    }
+    else { // should never happen !
+      console.error("[GA] No Stop Commands defined!")
+    }
+
+    this.sendSocketNotification("PRE-INIT", this.helperConfig)
+  },
+
+  async EXT_Config() {
+    this.EXT_Callbacks = new EXT_Callbacks()
+    this.EXT_Actions = new EXT_Actions()
+    this.EXT_NotificationsActions = new EXT_NotificationsActions()
+    this.EXT_OthersRules = new EXT_OthersRules()
+    let DB = new EXT_Database()
+    this.ExtDB = DB.ExtDB()
+    this.EXT = await DB.createDB(this)
+    this.session= {}
+    this.sysInfo = new sysInfoPage(this)
+
+    let LoadTranslate = new EXT_Translations()
+    let EXTTranslate = await LoadTranslate.Load_EXT_Translation(this)
+    let EXTDescription = await LoadTranslate.Load_EXT_Description(this)
+    let VALTranslate = await LoadTranslate.Load_EXT_TrSchemaValidation(this)
+    this.sysInfo.prepare(EXTTranslate)
+
+    this.sendSocketNotification("WEBSITE-INIT", {
+      DB: this.ExtDB,
+      Description: EXTDescription,
+      Translate: EXTTranslate,
+      Schema: VALTranslate,
+      EXTStatus: this.EXT
+    })
   },
 
   /********************************/
