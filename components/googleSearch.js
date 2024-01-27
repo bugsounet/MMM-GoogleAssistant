@@ -5,10 +5,10 @@
 **/
 
 const cheerio = require( "cheerio")
+var logGA = (...args) => { /* do nothing */ }
 
 class GoogleSearch {
   constructor() {
-    var logGA = (...args) => { /* do nothing */ }
     this.defaultUserAgent = "Mozilla/5.0 (Linux x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36 MMM-GoogleAssistant/"+require('../package.json').version;
 
     this.defaultLimit = 5
