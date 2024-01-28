@@ -114,7 +114,7 @@ module.exports = NodeHelper.create({
 
     this.config.micConfig.recorder= "arecord"
 
-    this.searchOnGoogle = new this.lib.googleSearch()
+    this.searchOnGoogle = new this.lib.Assistant.GOOGLESEARCH()
 
     await this.lib.GATools.loadRecipes(this)
     this.sendSocketNotification("GA-INIT")
@@ -160,10 +160,8 @@ module.exports = NodeHelper.create({
     let Libraries = []
     let GA= [
       // { "library to load" : "store library name" }
-      { "./components/assistantConverse.js": "Assistant" },
-      { "./components/screenParser.js" : "ScreenParser" },
+      { "./components/assistant.js": "Assistant" },
       { "./components/GA_Tools.js": "GATools" },
-      { "./components/googleSearch.js": "googleSearch" },
       { "./components/activateAssistant.js": "activateAssistant" }
     ]
    
