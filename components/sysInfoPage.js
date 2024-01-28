@@ -3,8 +3,8 @@ class sysInfoPage {
     this.config = that.config
     this.sendSocketNotification = (...arg) => that.sendSocketNotification(...arg)
     this.translate = (...arg) => that.translate(...arg)
-    this.lock = () => that.EXT_OthersRules.forceLockPagesAndScreen(that)
-    this.unLock = () => that.EXT_OthersRules.forceUnLockPagesAndScreen(that)
+    this.lock = () => that.EXTs.forceLockPagesAndScreen()
+    this.unLock = () => that.EXTsforceUnLockPagesAndScreen()
     this.init = false
     this.showing = false
     this.timerRefresh = null

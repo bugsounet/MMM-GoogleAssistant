@@ -64,17 +64,9 @@ Module.register("MMM-GoogleAssistant", {
 
   getScripts: function() {
     return [
-      "/modules/MMM-GoogleAssistant/components/activateProcess.js",
       "/modules/MMM-GoogleAssistant/components/assistantResponse.js",
       "/modules/MMM-GoogleAssistant/components/assistantSearch.js",
-      "/modules/MMM-GoogleAssistant/components/Gateway.js",
-      "/modules/MMM-GoogleAssistant/components/Hooks.js",
-      "/modules/MMM-GoogleAssistant/components/EXT_Actions.js",
-      "/modules/MMM-GoogleAssistant/components/EXT_Callbacks.js",
-      "/modules/MMM-GoogleAssistant/components/EXT_NotificationsActions.js",
-      "/modules/MMM-GoogleAssistant/components/EXT_OthersRules.js",
-      "/modules/MMM-GoogleAssistant/components/EXT_Database.js",
-      "/modules/MMM-GoogleAssistant/components/EXT_Translations.js",
+      "/modules/MMM-GoogleAssistant/components/EXTs.js",
       "/modules/MMM-GoogleAssistant/components/sysInfoPage.js"
     ]
   },
@@ -108,12 +100,12 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   notificationReceived: function(noti, payload=null, sender=null) {
-    this.Hooks.doPlugin(this, "onNotificationReceived", {notification:noti, payload:payload})
-    if (noti.startsWith("EXT_")) return this.EXT_NotificationsActions.Actions(this,noti,payload,sender)
+    this.doPlugin("onNotificationReceived", {notification:noti, payload:payload})
+    if (noti.startsWith("EXT_")) return this.EXTs.ActionsEXTs(noti,payload,sender)
     switch (noti) {
       case "GA_ACTIVATE":
-        if (payload && payload.type && payload.key) this.activateProcess.assistantActivate(this, payload)
-        else this.activateProcess.assistantActivate(this, { type:"MIC" })
+        if (payload && payload.type && payload.key) this.assistantActivate(payload)
+        else this.assistantActivate({ type:"MIC" })
         break
       case "GA_FORCE_FULLSCREEN":
         if (this.config.responseConfig.useFullscreen) return logGA("Force Fullscreen: Already activated")
@@ -129,10 +121,10 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   socketNotificationReceived: function(noti, payload) {
-    if (noti.startsWith("CB_")) return this.EXT_Callbacks.cb(this,noti,payload)
+    if (noti.startsWith("CB_")) return this.EXTs.callbacks(noti,payload)
     switch(noti) {
       case "LOAD_RECIPE":
-        this.Hooks.parseLoadedRecipe(payload)
+        this.parseLoadedRecipe(payload)
         break
       case "NOT_INITIALIZED":
         this.assistantResponse.fullscreen(true)
@@ -171,8 +163,8 @@ Module.register("MMM-GoogleAssistant", {
         logGA("Initialized.")
         this.assistantResponse.Version(payload)
         this.assistantResponse.status("standby")
-        this.Hooks.doPlugin(this, "onReady")
-        this.EXT.GA_Ready = true
+        this.doPlugin("onReady")
+        this.EXTs.setGA_Ready()
         this.sendNotification("GA_READY")
         break
       case "ASSISTANT_RESULT":
@@ -183,10 +175,10 @@ Module.register("MMM-GoogleAssistant", {
         this.assistantResponse.tunnel(payload)
         break
       case "ASSISTANT_ACTIVATE":
-        this.activateProcess.assistantActivate(this, payload)
+        this.assistantActivate(payload)
         break
       case "GOOGLESEARCH-RESULT":
-        this.Gateway.sendGoogleResult(this, payload)
+        this.sendGoogleResult(payload)
         break
       case "REMOTE_ACTIVATE_ASSISTANT":
         this.notificationReceived("GA_ACTIVATE", payload)
@@ -202,7 +194,7 @@ Module.register("MMM-GoogleAssistant", {
         else this.sendNotification(payload)
         break
       case "SendStop":
-        this.EXT_NotificationsActions.Actions(this, "EXT_STOP")
+        this.EXTs.Actions(this, "EXT_STOP")
         break
     }
   },
@@ -236,12 +228,22 @@ Module.register("MMM-GoogleAssistant", {
       old : "standby"
     }
 
+    this.plugins= {
+      onReady: [],
+      onNotificationReceived: [],
+      onActivate: [],
+      onStatus: []
+    }
+    this.commands= {}
+    this.transcriptionHooks= {}
+    this.responseHooks= {}
+
     this.callbacks = {
       assistantActivate: (payload)=>{
-        this.activateProcess.assistantActivate(this, payload)
+        this.assistantActivate(payload)
       },
       postProcess: (response, callback_done, callback_none)=> {
-        this.activateProcess.postProcess(this, response, callback_done, callback_none)
+        this.postProcess(response, callback_done, callback_none)
       },
       endResponse: ()=>{
         logGA("Conversation Done")
@@ -250,22 +252,19 @@ Module.register("MMM-GoogleAssistant", {
         return this.translate(text)
       },
       GAStatus: (status) => {
-        this.Hooks.doPlugin(this, "onStatus", {status: status})
+        this.doPlugin("onStatus", {status: status})
         this.GAStatus = status
         this.sendNotification("ASSISTANT_" + this.GAStatus.actual.toUpperCase())
-        this.EXT_Actions.Actions(this, this.GAStatus.actual.toUpperCase())
+        this.EXTs.ActionsGA(this.GAStatus.actual.toUpperCase())
       },
       Gateway: (response)=> {
-        return this.Gateway.SendToGateway(this, response)
+        return this.ScanResponse(response)
       },
       "sendSocketNotification": (noti, params) => {
         this.sendSocketNotification(noti, params)
       }
     }
 
-    this.Gateway = new Gateway(this)
-    this.Hooks = new Hooks()
-    this.activateProcess = new activateProcess()
     this.assistantResponse = new AssistantResponse(this.helperConfig["responseConfig"], this.callbacks)
     this.AssistantSearch = new AssistantSearch(this.helperConfig.assistantConfig)
 
@@ -287,7 +286,7 @@ Module.register("MMM-GoogleAssistant", {
         }
       }
     }
-    this.Hooks.parseLoadedRecipe(JSON.stringify(StopCommand))
+    this.parseLoadedRecipe(JSON.stringify(StopCommand))
     logGA("[HOOK] EXT_Stop Command Added")
 
     // add default command to globalStopCommand (if needed)
@@ -305,7 +304,7 @@ Module.register("MMM-GoogleAssistant", {
           pattern: `^(${pattern})($)`,
           command: "EXT_Stop"
         }
-        this.Hooks.parseLoadedRecipe(JSON.stringify(Command))
+        this.parseLoadedRecipe(JSON.stringify(Command))
         logGA(`[HOOK] Add pattern for EXT_Stop command: ${pattern}`)
       })
     }
@@ -317,28 +316,25 @@ Module.register("MMM-GoogleAssistant", {
   },
 
   async EXT_Config() {
-    this.EXT_Callbacks = new EXT_Callbacks()
-    this.EXT_Actions = new EXT_Actions()
-    this.EXT_NotificationsActions = new EXT_NotificationsActions()
-    this.EXT_OthersRules = new EXT_OthersRules()
-    let DB = new EXT_Database()
-    this.ExtDB = DB.ExtDB()
-    this.EXT = await DB.createDB(this)
+    const Tools = {
+      translate: (...args) => this.translate(...args),
+      sendNotification: (...args) => this.sendNotification(...args),
+      sendSocketNotification: (...args) => this.sendSocketNotification(...args),
+      notificationReceived: (...args) => this.notificationReceived(...args)
+    }
+    this.EXTs = new EXTs(Tools)
+    await this.EXTs.init()
     this.session= {}
     this.sysInfo = new sysInfoPage(this)
+    this.sysInfo.prepare(this.EXTs.Get_EXT_Translation())
 
-    let LoadTranslate = new EXT_Translations()
-    let EXTTranslate = await LoadTranslate.Load_EXT_Translation(this)
-    let EXTDescription = await LoadTranslate.Load_EXT_Description(this)
-    let VALTranslate = await LoadTranslate.Load_EXT_TrSchemaValidation(this)
-    this.sysInfo.prepare(EXTTranslate)
-
+    console.log(this.EXTs)
     this.sendSocketNotification("WEBSITE-INIT", {
-      DB: this.ExtDB,
-      Description: EXTDescription,
-      Translate: EXTTranslate,
-      Schema: VALTranslate,
-      EXTStatus: this.EXT
+      DB: this.EXTs.ExtDB,
+      Description: this.EXTs.Get_EXT_Description(),
+      Translate: this.EXTs.Get_EXT_Translation(),
+      Schema: this.EXTs.Get_EXT_TrSchemaValidation(),
+      EXTStatus: this.EXTs.Get_EXT_Status()
     })
   },
 
@@ -366,7 +362,7 @@ Module.register("MMM-GoogleAssistant", {
   tbQuery: function(command, handler) {
     var query = handler.args
     if (!query) handler.reply("TEXT", this.translate("QUERY_HELP"))
-    else this.activateProcess.assistantActivate(this, { type:"TEXT", key: query })
+    else this.assistantActivate({ type:"TEXT", key: query })
   },
 
   tbStopEXT: function(command, handler) {
@@ -462,5 +458,292 @@ Module.register("MMM-GoogleAssistant", {
 
     handler.reply("TEXT", text, {parse_mode:'Markdown'})
     delete this.session[session]
+  },
+
+  /** Activate Process **/
+  assistantActivate: function(payload) {
+    if (this.GAStatus.actual != "standby" && !payload.force) return logGA("Assistant is busy.")
+    this.assistantResponse.clearAliveTimers()
+    if (this.GAStatus.actual== "continue") this.assistantResponse.showTranscription(this.translate("GAContinue"))
+    else this.assistantResponse.showTranscription(this.translate("GABegin"))
+    this.doPlugin("onActivate")
+    this.assistantResponse.fullscreen(true)
+    this.lastQuery = null
+    var options = {
+      type: "TEXT",
+      key: null,
+      lang: this.config.assistantConfig.lang,
+      status: this.GAStatus.old,
+      chime: true
+    }
+    var options = Object.assign({}, options, payload)
+    this.assistantResponse.status(options.type, (options.chime) ? true : false)
+    this.sendSocketNotification("ACTIVATE_ASSISTANT", options)
+  },
+
+  postProcess(response, callback_done=()=>{}, callback_none=()=>{}) {
+    if (response.lastQuery.status == "continue") return callback_none()
+    var foundHook = this.findAllHooks(response)
+    if (foundHook.length > 0) {
+      this.assistantResponse.status("hook")
+      for (var i = 0; i < foundHook.length; i++) {
+        var hook = foundHook[i]
+        this.doCommand(hook.command, hook.params, hook.from)
+      }
+      if (this.forceResponse) {
+        this.forceResponse = false
+        callback_none()
+      } else callback_done()
+    } else {
+      callback_none()
+    }
+  },
+
+  /** scan response **/
+  ScanResponse: function (response) {
+    if (response.screen && (response.screen.links.length > 0 || response.screen.photos.length > 0)) {
+      let opt = {
+        "photos": response.screen.photos,
+        "urls": response.screen.links,
+        "youtube": null
+      }
+      logGA("Send response:", opt)
+      this.notificationReceived("EXT_GATEWAY", opt)
+    } else if (response.text) {
+      if (this.AssistantSearch.GoogleSearch(response.text)) {
+        this.sendSocketNotification("GOOGLESEARCH", response.transcription.transcription)
+      } else if (this.AssistantSearch.YouTubeSearch(response.text)) {
+        logGA("Send response YouTube:", response.transcription.transcription)
+        this.notificationReceived("EXT_GATEWAY", {
+          "photos": [],
+          "urls": [],
+          "youtube": response.transcription.transcription
+        })
+      }
+    }
+  },
+
+  sendGoogleResult: function (link) {
+    if (!link) return console.error("[GA] No link to open!")
+    logGA("Send response:", link)
+    this.notificationReceived("EXT_GATEWAY", {
+      "photos": [],
+      "urls": [ link ],
+      "youtube": null
+    })
+  },
+
+  /** hooks **/
+  findAllHooks: function(response) {
+    var hooks = []
+    hooks = hooks.concat(this.findTranscriptionHook(response))
+    hooks = hooks.concat(this.findResponseHook(response))
+    this.findNativeAction(response)
+    return hooks
+  },
+
+  findResponseHook (response) {
+    var found = []
+    if (response.screen) {
+      var res = []
+      res.links = (response.screen.links) ? response.screen.links : []
+      res.text = (response.screen.text) ? [].push(response.screen.text) : []
+      res.photos = (response.screen.photos) ? response.screen.photos : []
+      for (var k in this.responseHooks) {
+        if (!this.responseHooks.hasOwnProperty(k)) continue
+        var hook = this.responseHooks[k]
+        if (!hook.where || !hook.pattern || !hook.command) continue
+        var pattern = new RegExp(hook.pattern, "ig")
+        var f = pattern.exec(res[hook.where])
+        if (f) {
+          found.push({
+            "from": k,
+            "params":f,
+            "command":hook.command
+          })
+          logGA("ResponseHook matched:", k)
+        }
+      }
+    }
+    return found
+  },
+
+  findTranscriptionHook (response) {
+    var foundHook = []
+    var transcription = (response.transcription) ? response.transcription.transcription : ""
+    for (var k in this.transcriptionHooks) {
+      if (!this.transcriptionHooks.hasOwnProperty(k)) continue
+      var hook = this.transcriptionHooks[k]
+      if (hook.pattern && hook.command) {
+        var pattern = new RegExp(hook.pattern, "ig")
+        var found = pattern.exec(transcription)
+        if (found) {
+          foundHook.push({
+            "from":k,
+            "params":found,
+            "command":hook.command
+          })
+          logGA("TranscriptionHook matched:", k)
+        }
+      } else {
+        logGA(`TranscriptionHook:${k} has invalid format`)
+        continue
+      }
+    }
+    return foundHook
+  },
+
+  doCommand (commandId, originalParam, from) {
+    if (this.commands.hasOwnProperty(commandId)) {
+      var command = this.commands[commandId]
+      if (command.displayResponse) this.forceResponse = true
+    } else {
+      logGA(`Command ${commandId} is not found.`)
+      return
+    }
+    var param = (typeof originalParam == "object") ? Object.assign({}, originalParam) : originalParam
+
+    if (command.hasOwnProperty("notificationExec")) {
+      var ne = command.notificationExec
+      if (ne.notification) {
+        var fnen = (typeof ne.notification == "function") ?  ne.notification(param, from) : ne.notification
+        var nep = (ne.payload) ? ((typeof ne.payload == "function") ?  ne.payload(param, from) : ne.payload) : null
+        var fnep = (typeof nep == "object") ? Object.assign({}, nep) : nep
+        logGA(`Command ${commandId} is executed (notificationExec).`)
+        this.sendNotification(fnen, fnep)
+      }
+    }
+
+    if (command.hasOwnProperty("shellExec")) {
+      var se = command.shellExec
+      if (se.exec) {
+        var fs = (typeof se.exec == "function") ? se.exec(param, from) : se.exec
+        var so = (se.options) ? ((typeof se.options == "function") ? se.options(param, from) : se.options) : null
+        var fo = (typeof so == "function") ? so(param, key) : so
+        if (fs) {
+          logGA(`Command ${commandId} is executed (shellExec).`)
+          this.sendSocketNotification("SHELLEXEC", {command:fs, options:fo})
+        }
+      }
+    }
+
+    if (command.hasOwnProperty("moduleExec")) {
+      var me = command.moduleExec
+      var mo = (typeof me.module == 'function') ? me.module(param, from) : me.module
+      var m = (Array.isArray(mo)) ? mo : new Array(mo)
+      if (typeof me.exec == "function") {
+        MM.getModules().enumerate((mdl)=>{
+          if (m.length == 0 || (m.indexOf(mdl.name) >=0)) {
+            logGA(`Command ${commandId} is executed (moduleExec) for :`, mdl.name)
+            me.exec(mdl, param, from)
+          }
+        })
+      }
+    }
+
+    if (command.hasOwnProperty("soundExec")) {
+      var snde = command.soundExec
+      if (snde.chime && typeof snde.chime == 'string') {
+        if (snde.chime == "open") this.assistantResponse.playChime("open")
+        if (snde.chime == "close") this.assistantResponse.playChime("close")
+        if (snde.chime == "opening") this.assistantResponse.playChime("opening")
+        if (snde.chime == "closing") this.assistantResponse.playChime("closing")
+      }
+      if (snde.sound && typeof snde.sound == 'string') {
+        this.assistantResponse.playChime(snde.sound, true)
+      }
+    }
+  },
+
+  parseLoadedRecipe(payload) {
+    let reviver = (key, value) => {
+      if (typeof value === 'string' && value.indexOf('__FUNC__') === 0) {
+        value = value.slice(8)
+        let functionTemplate = `(${value})`
+        return eval(functionTemplate)
+      }
+      return value
+    }
+    var p = JSON.parse(payload, reviver)
+
+    if (p.hasOwnProperty("commands")) {
+      this.registerCommandsObject(p.commands)
+    }
+    if (p.hasOwnProperty("transcriptionHooks")) {
+      this.registerTranscriptionHooksObject(p.transcriptionHooks)
+    }
+    if (p.hasOwnProperty("responseHooks")) {
+      this.registerResponseHooksObject(p.responseHooks)
+    }
+    if (p.hasOwnProperty("plugins")) {
+      this.registerPluginsObject(p.plugins)
+    }
+  },
+
+  doPlugin(pluginName, args) { // to verify
+    if (this.plugins.hasOwnProperty(pluginName)) {
+      var plugins = this.plugins[pluginName]
+      if (Array.isArray(plugins) && plugins.length > 0) {
+        for (var i = 0; i < plugins.length; i++) {
+          var job = plugins[i]
+          this.doCommand(job, args, pluginName)
+        }
+      }
+    }
+  },
+
+  registerPluginsObject (obj) {
+    for (var pop in this.plugins) {
+      if (obj.hasOwnProperty(pop)) {
+        var candi = []
+        if (Array.isArray(obj[pop])) {
+          candi = candi.concat(obj[pop])
+        } else {
+          candi.push(obj[pop].toString())
+        }
+        for (var i = 0; i < candi.length; i++) {
+          this.registerPlugin(pop, candi[i])
+        }
+      }
+    }
+  },
+
+  registerPlugin(plugin, command) {
+    if (this.plugins.hasOwnProperty(plugin)) {
+      if (Array.isArray(command)) {
+        this.plugins[plugin].concat(command)
+      }
+      this.plugins[plugin].push(command)
+    }
+  },
+
+  registerCommandsObject (obj) {
+    this.commands = Object.assign({}, this.commands, obj)
+  },
+
+  registerTranscriptionHooksObject (obj) {
+    this.transcriptionHooks = Object.assign({}, this.transcriptionHooks, obj)
+  },
+
+  registerResponseHooksObject (obj) {
+    this.responseHooks = Object.assign({}, this.responseHooks, obj)
+  },
+
+  findNativeAction (response) {
+    var action = (response.action) ? response.action : null
+    if (!action || !action.inputs) return
+    action.inputs.forEach(input => {
+      if (input.intent == "action.devices.EXECUTE") {
+        input.payload.commands.forEach(command => {
+          command.execution.forEach(exec => {
+            logGA("Native Action: " + exec.command, exec.params)
+            if (exec.command == "action.devices.commands.SetVolume") {
+              logGA("Volume Control:", exec.params.volumeLevel)
+              this.sendNotification("EXT_VOLUME-SPEAKER_SET", exec.params.volumeLevel)
+            }
+          })
+        })
+      }
+    })
   }
 })
