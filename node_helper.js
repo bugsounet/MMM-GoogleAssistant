@@ -32,6 +32,7 @@ module.exports = NodeHelper.create({
         this.initGA()
         break
       case "WEBSITE-INIT":
+        this.lib.HyperWatch.enable()
         let Version = {
           version: require('./package.json').version,
           rev: require('./package.json').rev,
@@ -161,6 +162,7 @@ module.exports = NodeHelper.create({
     let Libraries = []
     let GA= [
       // { "library to load" : "store library name" }
+      { "./components/hyperwatch.js": "HyperWatch" },
       { "./components/assistant.js": "Assistant" }
     ]
    

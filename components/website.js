@@ -17,7 +17,6 @@ const http = require("http")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const Socket = require("socket.io")
-const hyperwatch = require("./hyperwatch")
 
 var logGA = (...args) => { /* do nothing */ }
 
@@ -383,9 +382,9 @@ class website {
               socket.on('disconnect', (err) => {
                 logGA('[' + ip + '] Disconnected from Terminal Logs:', req.user.username, "[" + err + "]")
               })
-              var pastLogs = await this.readAllMMLogs(this.website.HyperWatch.logs())
+              var pastLogs = await this.readAllMMLogs(this.lib.HyperWatch.logs())
               io.emit("terminal.logs", pastLogs)
-              this.website.HyperWatch.stream().on('stdData', (data) => {
+              this.lib.HyperWatch.stream().on('stdData', (data) => {
                 if (typeof data == "string") io.to(socket.id).emit("terminal.logs", data.replace(/\r?\n/g, "\r\n"))
               })
             })
@@ -435,7 +434,7 @@ class website {
                 socket.on('disconnect', (err) => {
                   logGA(`[${ip}] Disconnected from installer Terminal Logs:`, req.user.username, `[${err}]`)
                 })
-                this.website.HyperWatch.stream().on('stdData', (data) => {
+                this.lib.HyperWatch.stream().on('stdData', (data) => {
                   if (typeof data == "string") io.to(socket.id).emit("terminal.installer", data.replace(/\r?\n/g, "\r\n"))
                 })
               })
@@ -484,7 +483,7 @@ class website {
                 socket.on('disconnect', (err) => {
                   logGA(`[${ip}] Disconnected from uninstaller Terminal Logs:`, req.user.username, `[${err}]`)
                 })
-                this.website.HyperWatch.stream().on('stdData', (data) => {
+                this.lib.HyperWatch.stream().on('stdData', (data) => {
                   if (typeof data == "string") io.to(socket.id).emit("terminal.delete", data.replace(/\r?\n/g, "\r\n"))
                 })
               })
@@ -1079,29 +1078,27 @@ class website {
 
     /** Create Server **/
     this.config.listening = await this.purposeIP()
-    this.website.HyperWatch = hyperwatch(
-      this.website.server
-        .listen(8081, "0.0.0.0", () => {
-          console.log("[GA] [WEBSITE] [SERVER] Start listening on port 8081")
-          console.log(`[GA] [WEBSITE] [SERVER] Available locally at http://${this.config.listening}:8081`)
-          this.website.initialized= true
-          callback(true)
+    this.website.server
+      .listen(8081, "0.0.0.0", () => {
+        console.log("[GA] [WEBSITE] [SERVER] Start listening on port 8081")
+        console.log(`[GA] [WEBSITE] [SERVER] Available locally at http://${this.config.listening}:8081`)
+        this.website.initialized= true
+        callback(true)
+      })
+      .on("error", err => {
+        console.error("[GA] [WEBSITE] [SERVER] Can't start web server!")
+        console.error("[GA] [WEBSITE] [SERVER] Error:",err.message)
+        this.sendSocketNotification("SendNoti", {
+          noti: "EXT_ALERT",
+          payload: {
+            type: "error",
+            message: "Can't start web server!",
+            timer: 10000
+          }
         })
-        .on("error", err => {
-          console.error("[GA] [WEBSITE] [SERVER] Can't start web server!")
-          console.error("[GA] [WEBSITE] [SERVER] Error:",err.message)
-          this.sendSocketNotification("SendNoti", {
-            noti: "EXT_ALERT",
-            payload: {
-              type: "error",
-              message: "Can't start web server!",
-              timer: 10000
-            }
-          })
-          this.website.initialized= false
-          callback(false)
-        })
-    )
+        this.website.initialized= false
+        callback(false)
+      })
   }
 
   /*************/
