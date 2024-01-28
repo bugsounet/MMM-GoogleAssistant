@@ -1,10 +1,10 @@
 class sysInfoPage {
-  constructor(that) {
-    this.config = that.config
-    this.sendSocketNotification = (...arg) => that.sendSocketNotification(...arg)
-    this.translate = (...arg) => that.translate(...arg)
-    this.lock = () => that.EXTs.forceLockPagesAndScreen()
-    this.unLock = () => that.EXTsforceUnLockPagesAndScreen()
+  constructor(Tools) {
+    this.translate = (...args) => Tools.translate(...args)
+    this.sendSocketNotification = (...args) => Tools.sendSocketNotification(...args)
+    this.lock = () => Tools.lock()
+    this.unLock = () => Tools.unLock()
+
     this.init = false
     this.showing = false
     this.timerRefresh = null
@@ -91,7 +91,7 @@ class sysInfoPage {
     console.log("[GA] SysInfo Loaded !")
   }
 
-  prepare(translate) {
+  prepare() {
     var wrapper = document.createElement("div")
     wrapper.id= "GA_SYSINFO"
     wrapper.classList.add("hidden")
@@ -186,7 +186,7 @@ class sysInfoPage {
 
               var Node = document.createElement("div")
               Node.id = "GA-SYSINFO_VERSION-NODE"
-              Node.textContent = translate["System_NodeVersion"]
+              Node.textContent = this.translate("GW_System_NodeVersion")
               Sysinfo_version_list.appendChild(Node)
                 var Node_Value = document.createElement("div")
                 Node_Value.id = "GA-SYSINFO_VERSION-NODE-VALUE"
@@ -195,7 +195,7 @@ class sysInfoPage {
 
               var NPM = document.createElement("div")
               NPM.id = "GA-SYSINFO_VERSION-NPM"
-              NPM.textContent = translate["System_NPMVersion"]
+              NPM.textContent = this.translate("GW_System_NPMVersion")
               Sysinfo_version_list.appendChild(NPM)
                 var NPM_Value = document.createElement("div")
                 NPM_Value.id = "GA-SYSINFO_VERSION-NPM-VALUE"
@@ -204,7 +204,7 @@ class sysInfoPage {
 
               var OS = document.createElement("div")
               OS.id = "GA-SYSINFO_VERSION-OS"
-              OS.textContent = translate["System_OSVersion"]
+              OS.textContent = this.translate("GW_System_OSVersion")
               Sysinfo_version_list.appendChild(OS)
                 var OS_Value = document.createElement("div")
                 OS_Value.id = "GA-SYSINFO_VERSION-OS-VALUE"
@@ -213,7 +213,7 @@ class sysInfoPage {
 
               var Kernel = document.createElement("div")
               Kernel.id = "GA-SYSINFO_VERSION-KERNEL"
-              Kernel.textContent = translate["System_KernelVersion"]
+              Kernel.textContent = this.translate("GW_System_KernelVersion")
               Sysinfo_version_list.appendChild(Kernel)
                 var Kernel_Value = document.createElement("div")
                 Kernel_Value.id = "GA-SYSINFO_VERSION-KERNEL-VALUE"
@@ -244,7 +244,7 @@ class sysInfoPage {
 
               var Type = document.createElement("div")
               Type.id = "GA-SYSINFO_CPU-TYPE"
-              Type.textContent = translate["System_TypeCPU"]
+              Type.textContent = this.translate("GW_System_TypeCPU")
               Sysinfo_cpu_list.appendChild(Type)
                 var Type_Value = document.createElement("div")
                 Type_Value.id = "GA-SYSINFO_CPU-TYPE-VALUE"
@@ -253,7 +253,7 @@ class sysInfoPage {
 
               var Speed = document.createElement("div")
               Speed.id = "GA-SYSINFO_CPU-SPEED"
-              Speed.textContent = translate["System_SpeedCPU"]
+              Speed.textContent = this.translate("GW_System_SpeedCPU")
               Sysinfo_cpu_list.appendChild(Speed)
                 var Speed_Value = document.createElement("div")
                 Speed_Value.id = "GA-SYSINFO_CPU-SPEED-VALUE"
@@ -262,7 +262,7 @@ class sysInfoPage {
 
               var Usage = document.createElement("div")
               Usage.id = "GA-SYSINFO_CPU-USAGE"
-              Usage.textContent = translate["System_CurrentLoadCPU"]
+              Usage.textContent = this.translate("GW_System_CurrentLoadCPU")
               Sysinfo_cpu_list.appendChild(Usage)
                 var Usage_Progress = document.createElement("div")
                 Usage_Progress.id = "GA-SYSINFO_CPU-USAGE-PROGRESS"
@@ -274,7 +274,7 @@ class sysInfoPage {
                   Usage_Progress.appendChild(Usage_ProgressBar)
               var Governor = document.createElement("div")
               Governor.id = "GA-SYSINFO_CPU-GOVERNOR"
-              Governor.textContent = translate["System_GovernorCPU"]
+              Governor.textContent = this.translate("GW_System_GovernorCPU")
               Sysinfo_cpu_list.appendChild(Governor)
                 var Governor_Value = document.createElement("div")
                 Governor_Value.id = "GA-SYSINFO_CPU-GOVERNOR-VALUE"
@@ -283,7 +283,7 @@ class sysInfoPage {
 
               var Temp = document.createElement("div")
               Temp.id = "GA-SYSINFO_CPU-TEMP"
-              Temp.textContent = translate["System_TempCPU"]
+              Temp.textContent = this.translate("GW_System_TempCPU")
               Sysinfo_cpu_list.appendChild(Temp)
                 var Temp_Progress = document.createElement("div")
                 Temp_Progress.id = "GA-SYSINFO_CPU-TEMP-PROGRESS"
@@ -317,7 +317,7 @@ class sysInfoPage {
 
               var Active = document.createElement("div")
               Active.id = "GA-SYSINFO_MEMORY-ACTIVE"
-              Active.textContent = translate["System_TypeMemory"]
+              Active.textContent = this.translate("GW_System_TypeMemory")
               Sysinfo_memory_list.appendChild(Active)
 
                 var Active_Progress = document.createElement("div")
@@ -336,7 +336,7 @@ class sysInfoPage {
 
               var Swap = document.createElement("div")
               Swap.id = "GA-SYSINFO_MEMORY-SWAP"
-              Swap.textContent = translate["System_SwapMemory"]
+              Swap.textContent = this.translate("GW_System_SwapMemory")
               Sysinfo_memory_list.appendChild(Swap)
               
                 var Swap_Progress = document.createElement("div")

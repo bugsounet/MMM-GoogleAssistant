@@ -320,15 +320,16 @@ Module.register("MMM-GoogleAssistant", {
       translate: (...args) => this.translate(...args),
       sendNotification: (...args) => this.sendNotification(...args),
       sendSocketNotification: (...args) => this.sendSocketNotification(...args),
-      notificationReceived: (...args) => this.notificationReceived(...args)
+      notificationReceived: (...args) => this.notificationReceived(...args),
+      lock: () => this.EXTs.forceLockPagesAndScreen(),
+      unLock: () => this.EXTs.forceUnLockPagesAndScreen()
     }
     this.EXTs = new EXTs(Tools)
     await this.EXTs.init()
     this.session= {}
-    this.sysInfo = new sysInfoPage(this)
-    this.sysInfo.prepare(this.EXTs.Get_EXT_Translation())
+    this.sysInfo = new sysInfoPage(Tools)
+    this.sysInfo.prepare()
 
-    console.log(this.EXTs)
     this.sendSocketNotification("WEBSITE-INIT", {
       DB: this.EXTs.ExtDB,
       Description: this.EXTs.Get_EXT_Description(),
