@@ -250,7 +250,7 @@ Module.register("MMM-GoogleAssistant", {
         return this.translate(text)
       },
       GAStatus: (status) => {
-        this.Hooks.doPlugin(that, "onStatus", {status: status})
+        this.Hooks.doPlugin(this, "onStatus", {status: status})
         this.GAStatus = status
         this.sendNotification("ASSISTANT_" + this.GAStatus.actual.toUpperCase())
         this.EXT_Actions.Actions(this, this.GAStatus.actual.toUpperCase())
