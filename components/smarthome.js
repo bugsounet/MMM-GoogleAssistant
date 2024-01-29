@@ -13,7 +13,8 @@ class smarthome {
     this.website = config.website
     this.config = config.config
     this.language = config.lang
-    this.sendSocketNotification = (...args) => cb(...args)
+    this.sendSocketNotification = (...args) => cb.sendSocketNotification(...args)
+    this.restart = () => cb.restart()
 
     if (config.debug) logGA = (...args) => { console.log("[GA] [SMARTHOME]", ...args) }
 
@@ -846,7 +847,7 @@ class smarthome {
         break
       case "Reboot":
         logGA("[CALLBACK] Send Reboot")
-        setTimeout(() => that.lib.EXTTools.restartMM() , 8000) // !!! to correct !!!
+        setTimeout(() => this.restart() , 8000)
         break
       case "Locate":
         logGA("[CALLBACK] Send Locate")

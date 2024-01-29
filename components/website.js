@@ -131,19 +131,6 @@ class website {
 
     this.website.systemInformation.lib = new this.lib.SystemInformation(this.website.translation)
     this.website.systemInformation.result = await this.website.systemInformation.lib.initData()
-    /*
-    if (that.config.website.CLIENT_ID) {
-      that.SmartHome.lang = that.lib.SHTools.SHLanguage(this.website.language)
-      that.SmartHome.use = true
-      that.SmartHome.user.user = that.config.website.username
-      that.SmartHome.user.password = that.config.website.password
-      that.lib.homegraph.init(that)
-      that.lib.Device.create(that)
-    } else {
-      console.log("[GA] no CLIENT_ID found in your config!")
-      console.warn("[GA] SmartHome functionality is disabled")
-    }
-    */
 
     if (!this.config.username && !this.config.password) {
       console.error("[GA] Your have not defined user/password in config!")
@@ -169,10 +156,6 @@ class website {
     await this.createWebsite()
     console.log("[GA] Website Ready!")
     this.sendSocketNotification("WEBSITE-INIT")
-/*
-    if (this.config.CLIENT_ID) this.lib.SmartHome.initialize(that)
-    else this.lib.SmartHome.disable(that)
-*/
   }
 
   server() {

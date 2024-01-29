@@ -154,7 +154,12 @@ module.exports = NodeHelper.create({
         website: this.website
       }
 
-      this.smarthome = new this.lib.smarthome(SmarthomeHelperConfig, (...args) => this.sendSocketNotification(...args))
+      let smarthomeCallbacks = {
+        sendSocketNotification: (...args) => this.sendSocketNotification(...args),
+        restart: () => this.lib.EXTTools.restartMM()
+      }
+
+      this.smarthome = new this.lib.smarthome(SmarthomeHelperConfig, smarthomeCallbacks)
       resolve(true)
     })
   },
