@@ -55,7 +55,7 @@ module.exports = NodeHelper.create({
         this.shellExec(payload)
         break
       case "GOOGLESEARCH":
-        this.searchOnGoogle.search(this, payload)
+        this.searchOnGoogle.search(payload)
         break
       case "HELLO":
         if (!this.website) {
@@ -115,8 +115,10 @@ module.exports = NodeHelper.create({
     if (bugsounet) return this.bugsounetError (bugsounet)
 
     this.config.micConfig.recorder= "arecord"
-
-    this.searchOnGoogle = new this.lib.Assistant.GOOGLESEARCH()
+    const Tools = {
+      sendSocketNotification: (...args) => this.sendSocketNotification(...args),
+    }
+    this.searchOnGoogle = new this.lib.googleSearch(Tools, this.config.debug)
 
     await this.loadRecipes()
     this.sendSocketNotification("GA-INIT")
@@ -163,7 +165,9 @@ module.exports = NodeHelper.create({
     let GA= [
       // { "library to load" : "store library name" }
       { "./components/hyperwatch.js": "HyperWatch" },
-      { "./components/assistant.js": "Assistant" }
+      { "./components/googleSearch.js": "googleSearch" },
+      { "./components/assistant.js": "Assistant" },
+      { "./components/screenParser.js": "ScreenParser" }
     ]
    
     let website= [
@@ -300,14 +304,14 @@ module.exports = NodeHelper.create({
     assistantConfig.debug = this.config.debug
     assistantConfig.lang = payload.lang
     assistantConfig.micConfig = this.config.micConfig
-    this.assistant = new this.lib.Assistant.ASSISTANT(assistantConfig, (obj)=>{ this.sendSocketNotification("TUNNEL", obj) })
+    this.assistant = new this.lib.Assistant(assistantConfig, (obj)=>{ this.sendSocketNotification("TUNNEL", obj) })
 
     var parserConfig = {
       responseOutputCSS: this.config.responseConfig.responseOutputCSS,
       responseOutputURI: "tmp/responseOutput.html",
       responseOutputZoom: this.config.responseConfig.zoom.responseOutput
     }
-    var parser = new this.lib.Assistant.SCREENPARSER(parserConfig, this.config.debug)
+    var parser = new this.lib.ScreenParser(parserConfig, this.config.debug)
     var result = null
     this.assistant.activate(payload, (response)=> {
       response.lastQuery = payload
