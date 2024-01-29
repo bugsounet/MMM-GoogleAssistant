@@ -979,7 +979,7 @@ class EXTs {
       let Type
       if (YouTube[1] == "watch") Type = "id"
       if (YouTube[1] == "playlist") Type = "playlist"
-      if (!Type) return console.log("[EXT_NotificationsActions] [GA:EXT:YouTube] Unknow Type !" , YouTube)
+      if (!Type) return console.log("[EXTs] [GA:EXT:YouTube] Unknow Type !" , YouTube)
       if (this.EXT["EXT-YouTube"].hello) {
         if (Type == "playlist") {
           this.sendNotification("EXT_ALERT",{
