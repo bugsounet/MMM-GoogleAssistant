@@ -38,7 +38,7 @@ class smarthome {
     this.WebsitePath = `${this.GAPath}/website`
     this.SmartHomePath = `${this.WebsitePath}/SmartHome`
     this.tokensDir = `${this.WebsitePath}/tokens/`
-    this.waitBeforeInitDevice = 5 * 1000
+    this.waitBeforeInitDevice = 10 * 1000
   }
 
   async init() {
