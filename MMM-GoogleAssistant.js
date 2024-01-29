@@ -194,7 +194,7 @@ Module.register("MMM-GoogleAssistant", {
         else this.sendNotification(payload)
         break
       case "SendStop":
-        this.EXTs.Actions(this, "EXT_STOP")
+        this.EXTs.ActionsEXTs("EXT_STOP")
         break
     }
   },
