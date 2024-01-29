@@ -1,28 +1,30 @@
-/** Launch an app, Logs all std in an Array **/
+/** Logs all std in an Array **/
 /** emit event "stdData" on new entry **/
 /** based From @thlorenz/hyperwatch github **/
-/** v1.0.0 **/
-/** 29.05.2022 **/
+/** v1.1.0 **/
+/** 28.01.2024 **/
 /** @bugsounet **/
 
-var maxbuflen = 500
-var enabled = true
-var allLogs = []
-var emitter = require('events').EventEmitter
-var em = new emitter()
+/** HyperWatch **/
 
-function buffer(args) {
-  if (!enabled) return
+var emitter = require('events').EventEmitter
+var HyperWatch_maxbuflen = 500
+var HyperWatch_enabled = false
+var HyperWatch_allLogs = []
+var HyperWatch_em = new emitter()
+
+function HyperWatch_buffer(args) {
+  if (!HyperWatch_enabled) return
   if (args[0] && typeof args[0] == "string") {
-    allLogs.push(args[0])
-    em.emit("stdData", args[0])
-    if (allLogs.length > maxbuflen) allLogs.shift()
+    HyperWatch_allLogs.push(args[0])
+    HyperWatch_em.emit("stdData", args[0])
+    if (HyperWatch_allLogs.length > HyperWatch_maxbuflen) HyperWatch_allLogs.shift()
   }
 }
 
-function destroyBufferButOne() {
-  if (!allLogs.length) return
-  allLogs= allLogs.slice(-2)
+function HyperWatch_destroyBufferButOne() {
+  if (!HyperWatch_allLogs.length) return
+  HyperWatch_allLogs= HyperWatch_allLogs.slice(-2)
 }
 
 +function redirectStderr () {
@@ -30,7 +32,7 @@ function destroyBufferButOne() {
   var stderr_write = stderr.write
   stderr.write = function () {
     stderr_write.apply(stderr, arguments)
-    buffer(arguments)
+    HyperWatch_buffer(arguments)
   }
 }()
 
@@ -39,46 +41,43 @@ function destroyBufferButOne() {
   var stdout_write = stdout.write
   stdout.write = function () {
     stdout_write.apply(stdout, arguments)
-    buffer(arguments)
+    HyperWatch_buffer(arguments)
   }
 }()
 
-function HyperWatch(app) {
-  console.log("[GA] [HyperWatch] Logger is", enabled ? "enabled" : "disabled")
-  return {
-    disable: function () {
-      if (!enabled) console.log("[GA] [HyperWatch] Logger is already disabled")
-      else {
-        console.log("[GA] [HyperWatch] Logger is now disabled")
-        destroyBufferButOne()
-        enabled = false
-      }
-    },
-    enable: function () {
-      if (enabled) console.log("[GA] [HyperWatch] Logger is already enabled")
-      else {
-        enabled = true
-        console.log("[GA] [HyperWatch] Logger is now enabled")
-      }
-    },
-    scrollback: function (n) {
-      if (!n || n == 0) return console.log("[GA] [HyperWatch] scrollback can't be null")
-      if (n < 50) return console.log("[GA] [HyperWatch] scrollback must be > 50")
-      if (n == maxbuflen) console.log("[GA] [HyperWatch] scrollback already", maxbuflen)
-      else {
-        maxbuflen = n
-        console.log("[GA] [HyperWatch] scrollback is now", maxbuflen)
-      }
-    },
-    stream: function () {
-      return em
-    },
-    status: function () {
-      return enabled
-    },
-    logs: function () {
-      return allLogs
+const HyperWatch = {
+  disable: function () {
+    if (!HyperWatch_enabled) console.log("[GA] [HyperWatch] Logger is already disabled")
+    else {
+      console.log("[GA] [HyperWatch] Logger is now disabled")
+      HyperWatch_destroyBufferButOne()
+      HyperWatch_enabled = false
     }
+  },
+  enable: function () {
+    if (HyperWatch_enabled) console.log("[GA] [HyperWatch] Logger is already enabled")
+    else {
+      HyperWatch_enabled = true
+      console.log("[GA] [HyperWatch] Logger is now enabled")
+    }
+  },
+  scrollback: function (n) {
+    if (!n || n == 0) return console.log("[GA] [HyperWatch] scrollback can't be null")
+    if (n < 50) return console.log("[GA] [HyperWatch] scrollback must be > 50")
+    if (n == HyperWatch_maxbuflen) console.log("[GA] [HyperWatch] scrollback already", HyperWatch_maxbuflen)
+    else {
+      HyperWatch_maxbuflen = n
+      console.log("[GA] [HyperWatch] scrollback is now", HyperWatch_maxbuflen)
+    }
+  },
+  stream: function () {
+    return HyperWatch_em
+  },
+  status: function () {
+    return HyperWatch_enabled
+  },
+  logs: function () {
+    return HyperWatch_allLogs
   }
 }
 

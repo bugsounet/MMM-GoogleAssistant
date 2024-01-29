@@ -1,9 +1,8 @@
 "use strict"
-
 var logGA = (...args) => { /* do nothing */ }
-const HTMLParser = require("node-html-parser")
 const path = require("path")
 const fs = require("fs")
+const HTMLParser = require("node-html-parser")
 const Entities = require('html-entities')
 
 class SCREENPARSER {
@@ -77,6 +76,6 @@ class SCREENPARSER {
     logGA("[LINKS] Found:", screen.links.length)
     return screen
   }
-}
+} 
 
 module.exports = SCREENPARSER

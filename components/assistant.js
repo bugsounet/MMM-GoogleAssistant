@@ -1,6 +1,6 @@
 "use strict"
 var logGA = (...args) => { /* do nothing */ }
-const GoogleAssistant = require("./googleAssistant")
+const AssistantSDK = require("./AssistantSDK.js")
 const BufferToMP3 = require("./BufferToMP3")
 const Recorder = require("./lpcm16")
 const path = require("path")
@@ -77,7 +77,7 @@ class ASSISTANT {
   }
 
   start (conversation) {
-    this.assistant = new GoogleAssistant(this.assistantConfig.auth)
+    this.assistant = new AssistantSDK(this.assistantConfig.auth)
     this.assistant
     .on('ready', () => {
       this.assistant.start(this.assistantConfig.conversationConfig)

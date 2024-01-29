@@ -1,14 +1,11 @@
-/** GoogleSearch
- * based from https://github.com/PatNeedham/google-it
- * recoded/simplified for my own use
- * @bugsounet 04/2023
-**/
-
+"use strict"
+var logGA = (...args) => { /* do nothing */ }
 const cheerio = require( "cheerio")
 
 class GoogleSearch {
-  constructor() {
-    var logGA = (...args) => { /* do nothing */ }
+  constructor(Tools, debug) {
+    if (debug) logGA = (...args) => { console.log("[GA] [GoogleSearch]", ...args) }
+    this.sendSocketNotification = (...args) => Tools.sendSocketNotification(...args)
     this.defaultUserAgent = "Mozilla/5.0 (Linux x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36 MMM-GoogleAssistant/"+require('../package.json').version;
 
     this.defaultLimit = 5
@@ -66,9 +63,8 @@ class GoogleSearch {
     })
   }
 
-  search (that, text) {
+  search (text) {
     if (!text) return
-    if (that.config.debug) logGA = (...args) => { console.log("[GA] [GoogleSearch]", ...args) }
     var finalResult = []
     this.googleIt({ query: text })
       .then(results => {
@@ -80,21 +76,21 @@ class GoogleSearch {
 
           if (finalResult.length) {
             logGA("Results:",finalResult)
-            that.sendSocketNotification("GOOGLESEARCH-RESULT", finalResult[0])
+            this.sendSocketNotification("GOOGLESEARCH-RESULT", finalResult[0])
           } else {
             logGA("No Results found!")
-            that.sendSocketNotification("ERROR", "[GoogleSearch] No Results found!")
+            this.sendSocketNotification("ERROR", "[GoogleSearch] No Results found!")
           }
         } else {
           logGA("No Results found!")
-          that.sendSocketNotification("ERROR", "[GoogleSearch] No Results found!")
+          this.sendSocketNotification("ERROR", "[GoogleSearch] No Results found!")
         }
       })
       .catch(e => {
         console.error("[GA] [GOOGLE_SEARCH] [ERROR] " + e)
-        that.sendSocketNotification("ERROR", "[GoogleSearch] Sorry, an error occurred!")
+        this.sendSocketNotification("ERROR", "[GoogleSearch] Sorry, an error occurred!")
       })
   }
-};
+}; 
 
 module.exports = GoogleSearch

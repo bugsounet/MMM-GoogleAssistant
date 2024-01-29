@@ -2,7 +2,8 @@ const fs = require("fs")
 const path = require("path")
 const { exec } = require("child_process")
 const si = require("systeminformation")
-const wirelessTools = require("./wirelessTools")
+
+// see to add fetch from website ?
 
 class systemInfo {
   constructor(translate) {
@@ -227,7 +228,7 @@ class systemInfo {
           }
 
           if (this.System["NETWORK"].type == "wireless") {
-            await wirelessTools.status(this.System["NETWORK"].name, (err, status) => {
+            await this.wirelessStatus(this.System["NETWORK"].name, (err, status) => {
               if (err) {
                 console.error("[GA] [SYSTEMINFO] WirelessTools Error", err.message)
                 resolve()
@@ -355,6 +356,56 @@ class systemInfo {
         resolve()
       })
     })
+  }
+
+  /** wirelessTools **/
+  wirelessStatus(Interface, callback) {
+    return exec('iwconfig ' + Interface, this.parse_wirelessStatus_interface(callback))
+  }
+
+  parse_wirelessStatus_interface(callback) {
+    return (error, stdout, stderr) => {
+      if (error) callback(error)
+      else callback(error, this.parse_wirelessStatus_block(stdout.trim()))
+    }
+  }
+
+  parse_wirelessStatus_block(block) {
+    var match
+
+    // Skip out of the block is invalid
+    if (!block) return
+
+    var parsed = {
+      interface: block.match(/^([^\s]+)/)[1]
+    }
+
+    if ((match = block.match(/ESSID[:|=]\s*"([^"]+)"/))) {
+      parsed.ssid = match[1]
+    }
+
+    if ((match = block.match(/Frequency[:|=]\s*([0-9\.]+)/))) {
+      parsed.frequency = parseFloat(match[1])
+    }
+
+    if ((match = block.match(/Bit Rate[:|=]\s*([0-9]+)/))) {
+      parsed.rate = parseInt(match[1], 10)
+    }
+
+    if ((match = block.match(/Link Quality[:|=]\s*([0-9]+)/))) {
+      parsed.quality = parseInt(match[1], 10)
+    }
+
+    if ((match = block.match(/Signal level[:|=]\s*(-?[0-9]+)/))) {
+      parsed.signalLevel = parseInt(match[1], 10)
+      if (parsed.signalLevel >= -50) parsed.barLevel = 4
+      else if (parsed.signalLevel < -50 && parsed.signalLevel >= -60) parsed.barLevel = 3
+      else if (parsed.signalLevel < -60 && parsed.signalLevel >= -67) parsed.barLevel = 2
+      else if (parsed.signalLevel < -67 && parsed.signalLevel >= -70) parsed.barLevel = 1
+      else parsed.barLevelLevel = 0
+    }
+
+    return parsed
   }
 }
 

@@ -10,7 +10,6 @@ PleaseRotateOptions = {
 
 // define all vars
 var translation= {}
-var actualSetting = {}
 var versionGW = {}
 
 // Load rules
@@ -18,7 +17,6 @@ window.addEventListener("load", async event => {
   versionGW = await getGatewayVersion()
   translation = await loadTranslation()
 
-  actualSetting = await getGatewaySetting()
   $('html').prop("lang", versionGW.lang)
   forceMobileRotate()
   GatewaySetting()
