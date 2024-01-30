@@ -320,6 +320,7 @@ Module.register("MMM-GoogleAssistant", {
       translate: (...args) => this.translate(...args),
       sendNotification: (...args) => this.sendNotification(...args),
       sendSocketNotification: (...args) => this.sendSocketNotification(...args),
+      socketNotificationReceived: (...args) => this.socketNotificationReceived(...args),
       notificationReceived: (...args) => this.notificationReceived(...args),
       lock: () => this.EXTs.forceLockPagesAndScreen(),
       unLock: () => this.EXTs.forceUnLockPagesAndScreen()
