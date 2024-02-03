@@ -530,6 +530,7 @@ class EXTs {
       this.VALTranslate["EXT-Updates_AutoRestart"] = this.translate("VAL_EXT-Updates_AutoRestart")
       this.VALTranslate["EXT-Updates_Log"] = this.translate("VAL_EXT-Updates_Log")
       this.VALTranslate["EXT-Updates_Timeout"] = this.translate("VAL_EXT-Updates_Timeout")
+      this.VALTranslate["EXT-Updates_Welcome"] = this.translate("VAL_EXT-Updates_Welcome")
       this.VALTranslate["EXT-Volume_Start"] = this.translate("VAL_EXT-Volume_Start")
       this.VALTranslate["EXT-Volume_Sync"] = this.translate("VAL_EXT-Volume_Sync")
       this.VALTranslate["EXT-Welcome_Welcome"] = this.translate("VAL_EXT-Welcome_Welcome")
