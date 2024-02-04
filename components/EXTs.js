@@ -7,6 +7,7 @@ class EXTs {
     this.sendNotification = (...args) => Tools.sendNotification(...args)
     this.sendSocketNotification = (...args) => Tools.sendSocketNotification(...args)
     this.notificationReceived = (...args) => Tools.notificationReceived(...args)
+    this.socketNotificationReceived = (...args) => Tools.socketNotificationReceived(...args)
 
     this.ExtDB = [
       "EXT-Alert",
@@ -53,6 +54,9 @@ class EXTs {
 
   async init() {
     return new Promise(async resolve => {
+      try {
+        await this.checkModules()
+      } catch (e) { return }
       this.createDB()
       await this.Load_EXT_Translation()
       await this.Load_EXT_Description()
@@ -526,6 +530,7 @@ class EXTs {
       this.VALTranslate["EXT-Updates_AutoRestart"] = this.translate("VAL_EXT-Updates_AutoRestart")
       this.VALTranslate["EXT-Updates_Log"] = this.translate("VAL_EXT-Updates_Log")
       this.VALTranslate["EXT-Updates_Timeout"] = this.translate("VAL_EXT-Updates_Timeout")
+      this.VALTranslate["EXT-Updates_Welcome"] = this.translate("VAL_EXT-Updates_Welcome")
       this.VALTranslate["EXT-Volume_Start"] = this.translate("VAL_EXT-Volume_Start")
       this.VALTranslate["EXT-Volume_Sync"] = this.translate("VAL_EXT-Volume_Sync")
       this.VALTranslate["EXT-Welcome_Welcome"] = this.translate("VAL_EXT-Welcome_Welcome")
@@ -728,25 +733,34 @@ class EXTs {
     return false
   }
 
-  checkModulesTB() {
-    return new Promise(resolve => {
-      var nb=0
-      MM.getModules().withClass("EXT-Telegrambot MMM-TelegramBot").enumerate((module)=> {
-        nb++
-        if (nb >= 2) resolve(true)
+  /** checkModules **/
+  checkModules() {
+    var TB=0
+    var PIR=0
+    var RC=0
+    return new Promise((resolve,reject) => {
+      MM.getModules().withClass("EXT-Telegrambot MMM-TelegramBot").enumerate(module=> {
+        TB++
+        if (TB >= 2) {
+          this.socketNotificationReceived("NOT_INITIALIZED", { message: "You can't start MMM-GoogleAssistant with MMM-TelegramBot and EXT-TelegramBot!"})
+          return reject(true)
+        }
       })
-      resolve(false)
-    })
-  }
-
-  checkModulePir() {
-    return new Promise(resolve => {
-      var nb=0
-      MM.getModules().withClass("MMM-Pir").enumerate((module)=> {
-        nb++
-        if (nb >= 2) resolve(true)
+      MM.getModules().withClass("MMM-Pir").enumerate(module=> {
+        PIR++
+        if (PIR >= 1) {
+          this.socketNotificationReceived("NOT_INITIALIZED", { message: "You can't start MMM-GoogleAssistant with MMM-Pir. Please use EXT-Screen and EXT-Pir"})
+          return reject(true)
+        }
       })
-      resolve(false)
+      MM.getModules().withClass("MMM-Remote-Control").enumerate(module=> {
+        RC++
+        if (RC >= 1) {
+          this.socketNotificationReceived("NOT_INITIALIZED", { message: "You can't start MMM-GoogleAssistant with MMM-Remote-Control"})
+          return reject(true)
+        }
+      })
+      resolve(true)
     })
   }
 
