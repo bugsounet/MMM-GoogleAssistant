@@ -6,7 +6,8 @@ var defaultConfig = {
     autoUpdate: true,
     autoRestart: true,
     logToConsole: true,
-    timeout: 2*60*1000
+    timeout: 2*60*1000,
+    welcome: true
   }
 }
 
@@ -53,6 +54,11 @@ var schema = {
           "type": "number",
           "title": "{EXT-Updates_Timeout}",
           "default": 120000
+        },
+        "welcome": {
+          "type": "boolean",
+          "title": "{EXT-Updates_Welcome}",
+          "default": true
         }
       }
     }

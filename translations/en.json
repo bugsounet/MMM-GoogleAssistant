@@ -433,6 +433,7 @@
   "VAL_EXT-Updates_AutoRestart": "Restart MagicMirror² after update automatically.",
   "VAL_EXT-Updates_Log": "This feature is needed for user who don't use PM2 ! Log process and result in console",
   "VAL_EXT-Updates_Timeout": "Maximum execution time of an update in ms (default: 2 mins)",
+  "VAL_EXT-Updates_Welcome": "Informs MagicMirror² PID process number at startup (need EXT-Alert or EXT-TelegramBot)",
   "VAL_EXT-Volume_Start": "Define start volume [0-100]",
   "VAL_EXT-Volume_Sync": "Sync volume with external mixer",
   "VAL_EXT-Welcome_Welcome": "Your assistant welcome",

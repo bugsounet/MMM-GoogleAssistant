@@ -432,6 +432,7 @@
   "VAL_EXT-Updates_AutoRestart": "Redémarrer automatiquement MagicMirror² après la mise à jour.",
   "VAL_EXT-Updates_Log": "Journaliser le processus de mise à jour et le résultat dans la console",
   "VAL_EXT-Updates_Timeout": "Temps d'exécution maximal d'une mise à jour en ms (par défaut : 2 min)",
+  "VAL_EXT-Updates_Welcome": "Informe du numéro de processus (PID) de MagicMirror² au démarrage (besoin d'EXT-Alert ou EXT-TelegramBot)",
   "VAL_EXT-Volume_Start": "Défini le réglage du volume au démarrage [0-100]",
   "VAL_EXT-Volume_Sync": "Synchronisation avec la table de mixage du système",
   "VAL_EXT-Welcome_Welcome": "Votre demande de bienvenue",
