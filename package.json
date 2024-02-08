@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
-  "version": "6.1.1",
-  "rev": "240202",
+  "version": "6.1.2",
+  "rev": "240208",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -46,6 +46,7 @@
   "homepage": "https://wiki.bugsounet.fr/MMM-GoogleAssistant",
   "dependencies": {
     "@colors/colors": "^1.6.0",
+    "@electron/rebuild": "^3.6.0",
     "@grpc/grpc-js": "^1.9.14",
     "actions-on-google": "^3.0.0",
     "cheerio": "^1.0.0-rc.12",
@@ -58,7 +59,6 @@
     "is-valid-domain": "^0.1.6",
     "jsoneditor": "^10.0.0",
     "lodash": "^4.17.21",
-    "magicmirror-rebuild": "^1.0.9",
     "mkdirp": "^3.0.1",
     "node-html-parser": "^6.1.12",
     "node-pty": "^1.0.0",
