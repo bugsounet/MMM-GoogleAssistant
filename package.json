@@ -47,7 +47,7 @@
   "dependencies": {
     "@colors/colors": "^1.6.0",
     "@electron/rebuild": "^3.6.0",
-    "@grpc/grpc-js": "^1.9.14",
+    "@grpc/grpc-js": "^1.10.0",
     "actions-on-google": "^3.0.0",
     "cheerio": "^1.0.0-rc.12",
     "cli-spinner": "^0.2.10",
