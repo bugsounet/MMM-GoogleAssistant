@@ -101,7 +101,7 @@ Module.register("MMM-GoogleAssistant", {
 
   notificationReceived: function(noti, payload=null, sender=null) {
     this.doPlugin("onNotificationReceived", {notification:noti, payload:payload})
-    if (noti.startsWith("EXT_")) return this.EXTs.ActionsEXTs(noti,payload,sender)
+    if (noti.startsWith("EXT_") && this.EXTs) return this.EXTs.ActionsEXTs(noti,payload,sender)
     switch (noti) {
       case "GA_ACTIVATE":
         if (payload && payload.type && payload.key) this.assistantActivate(payload)
