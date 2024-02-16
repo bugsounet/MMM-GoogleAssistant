@@ -7,78 +7,79 @@
 
 /** HyperWatch **/
 
-var emitter = require('events').EventEmitter
-var HyperWatch_maxbuflen = 500
-var HyperWatch_enabled = false
-var HyperWatch_allLogs = []
-var HyperWatch_em = new emitter()
+var emitter = require("events").EventEmitter;
 
-function HyperWatch_buffer(args) {
-  if (!HyperWatch_enabled) return
-  if (args[0] && typeof args[0] == "string") {
-    HyperWatch_allLogs.push(args[0])
-    HyperWatch_em.emit("stdData", args[0])
-    if (HyperWatch_allLogs.length > HyperWatch_maxbuflen) HyperWatch_allLogs.shift()
+var HyperWatch_maxbuflen = 500;
+var HyperWatch_enabled = false;
+var HyperWatch_allLogs = [];
+var HyperWatch_em = new emitter();
+
+function HyperWatch_buffer (args) {
+  if (!HyperWatch_enabled) return;
+  if (args[0] && typeof args[0] === "string") {
+    HyperWatch_allLogs.push(args[0]);
+    HyperWatch_em.emit("stdData", args[0]);
+    if (HyperWatch_allLogs.length > HyperWatch_maxbuflen) HyperWatch_allLogs.shift();
   }
 }
 
-function HyperWatch_destroyBufferButOne() {
-  if (!HyperWatch_allLogs.length) return
-  HyperWatch_allLogs= HyperWatch_allLogs.slice(-2)
+function HyperWatch_destroyBufferButOne () {
+  if (!HyperWatch_allLogs.length) return;
+  HyperWatch_allLogs = HyperWatch_allLogs.slice(-2);
 }
 
-+function redirectStderr () {
-  var stderr = process.stderr
-  var stderr_write = stderr.write
++(function redirectStderr () {
+  var stderr = process.stderr;
+  var stderr_write = stderr.write;
   stderr.write = function () {
-    stderr_write.apply(stderr, arguments)
-    HyperWatch_buffer(arguments)
-  }
-}()
+    stderr_write.apply(stderr, arguments);
+    HyperWatch_buffer(arguments);
+  };
+}())
 
-+function redirectStdout () {
-  var stdout = process.stdout
-  var stdout_write = stdout.write
++ (function redirectStdout () {
+  var stdout = process.stdout;
+  var stdout_write = stdout.write;
   stdout.write = function () {
-    stdout_write.apply(stdout, arguments)
-    HyperWatch_buffer(arguments)
-  }
-}()
+    stdout_write.apply(stdout, arguments);
+    HyperWatch_buffer(arguments);
+  };
+}());
 
 const HyperWatch = {
-  disable: function () {
-    if (!HyperWatch_enabled) console.log("[GA] [HyperWatch] Logger is already disabled")
+  disable () {
+    if (!HyperWatch_enabled) console.log("[GA] [HyperWatch] Logger is already disabled");
     else {
-      console.log("[GA] [HyperWatch] Logger is now disabled")
-      HyperWatch_destroyBufferButOne()
-      HyperWatch_enabled = false
+      console.log("[GA] [HyperWatch] Logger is now disabled");
+      HyperWatch_destroyBufferButOne();
+      HyperWatch_enabled = false;
     }
   },
-  enable: function () {
-    if (HyperWatch_enabled) console.log("[GA] [HyperWatch] Logger is already enabled")
+  enable () {
+    if (HyperWatch_enabled) console.log("[GA] [HyperWatch] Logger is already enabled");
     else {
-      HyperWatch_enabled = true
-      console.log("[GA] [HyperWatch] Logger is now enabled")
+      HyperWatch_enabled = true;
+      console.log("[GA] [HyperWatch] Logger is now enabled");
     }
   },
-  scrollback: function (n) {
-    if (!n || n == 0) return console.log("[GA] [HyperWatch] scrollback can't be null")
-    if (n < 50) return console.log("[GA] [HyperWatch] scrollback must be > 50")
-    if (n == HyperWatch_maxbuflen) console.log("[GA] [HyperWatch] scrollback already", HyperWatch_maxbuflen)
+  scrollback (n) {
+    if (!n || n == 0) return console.log("[GA] [HyperWatch] scrollback can't be null");
+    if (n < 50) return console.log("[GA] [HyperWatch] scrollback must be > 50");
+    if (n == HyperWatch_maxbuflen) console.log("[GA] [HyperWatch] scrollback already", HyperWatch_maxbuflen);
     else {
-      HyperWatch_maxbuflen = n
-      console.log("[GA] [HyperWatch] scrollback is now", HyperWatch_maxbuflen)
+      HyperWatch_maxbuflen = n;
+      console.log("[GA] [HyperWatch] scrollback is now", HyperWatch_maxbuflen);
     }
   },
-  stream: function () {
-    return HyperWatch_em
+  stream () {
+    return HyperWatch_em;
   },
-  status: function () {
-    return HyperWatch_enabled
+  status () {
+    return HyperWatch_enabled;
   },
-  logs: function () {
-    return HyperWatch_allLogs
+  logs () {
+    return HyperWatch_allLogs;
   }
-}
+};
 
 module.exports = HyperWatch;
