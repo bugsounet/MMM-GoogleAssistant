@@ -227,7 +227,7 @@ class systemInfo {
             });
           }
 
-          if (this.System["NETWORK"].type == "wireless") {
+          if (this.System["NETWORK"].type === "wireless") {
             await this.wirelessStatus(this.System["NETWORK"].name, (err, status) => {
               if (err) {
                 console.error("[GA] [SYSTEMINFO] WirelessTools Error", err.message);
@@ -249,27 +249,27 @@ class systemInfo {
   }
 
   convert (octet, FixTo) {
-    octet = Math.abs(parseInt(octet, 10));
-    if (!octet) return "0b";
+    const Octet = Math.abs(parseInt(octet, 10));
+    if (!Octet) return "0b";
     var def = [[1, "b"], [1024, "Kb"], [1024 * 1024, "Mb"], [1024 * 1024 * 1024, "Gb"], [1024 * 1024 * 1024 * 1024, "Tb"]];
     for (var i = 0; i < def.length; i++) {
-      if (octet < def[i][0]) return (octet / def[i - 1][0]).toFixed(FixTo) + def[i - 1][1];
+      if (Octet < def[i][0]) return (Octet / def[i - 1][0]).toFixed(FixTo) + def[i - 1][1];
     }
   }
 
-  getDHM (seconds) {
-    if (seconds == 0) return "Loading...";
-    var days = Math.floor(seconds / 86400);
-    seconds = seconds - (days * 86400);
-    var hours = Math.floor(seconds / 3600);
-    seconds = seconds - (hours * 3600);
-    var minutes = Math.floor(seconds / 60);
+  getDHM (seconds) {
+    if (seconds === 0) return "Loading...";
+    var Days = Math.floor(seconds / 86400);
+    var Seconds = seconds - (Days * 86400);
+    var hours = Math.floor(Seconds / 3600);
+    Seconds = Seconds - (hours * 3600);
+    var minutes = Math.floor(Seconds / 60);
 
-    if (days > 0) {
-      if (days > 1) days = `${days} ${this.translate.System_DAYS} `;
-      else days = `${days} ${this.translate.System_DAY} `;
+    if (Days > 0) {
+      if (Days > 1) Days = `${Days} ${this.translate.System_DAYS} `;
+      else Days = `${Days} ${this.translate.System_DAY} `;
     }
-    else days = "";
+    else Days = "";
     if (hours > 0) {
       if (hours > 1) hours = `${hours} ${this.translate.System_HOURS} `;
       else hours = `${hours} ${this.translate.System_HOUR} `;
@@ -277,7 +277,7 @@ class systemInfo {
     else hours = "";
     if (minutes > 1) minutes = `${minutes} ${this.translate.System_MINUTES}`;
     else minutes = `${minutes} ${this.translate.System_MINUTE}`;
-    return days + hours + minutes;
+    return Days + hours + minutes;
   }
 
   uptimed () {
@@ -308,16 +308,16 @@ class systemInfo {
             return resolve();
           }
           try {
-            var data = JSON.parse(data);
+            var Data = JSON.parse(data);
           } catch (e) {
             console.error("[GA] [SYSTEMINFO] readFile data error!", e.toString());
             return resolve();
           }
           console.log("[GA] [SYSTEMINFO] Read Uptimed");
-          this.System["UPTIME"].recordCurrent = data.system;
-          this.System["UPTIME"].recordMM = data.MM;
-          this.System["UPTIME"].recordCurrentDHM = this.getDHM(data.system);
-          this.System["UPTIME"].recordMMDHM = this.getDHM(data.MM);
+          this.System["UPTIME"].recordCurrent = Data.system;
+          this.System["UPTIME"].recordMM = Data.MM;
+          this.System["UPTIME"].recordCurrentDHM = this.getDHM(Data.system);
+          this.System["UPTIME"].recordMMDHM = this.getDHM(Data.MM);
           resolve();
         });
       } else {
@@ -370,6 +370,7 @@ class systemInfo {
     };
   }
 
+  /* eslint-disable no-useless-escape */
   parse_wirelessStatus_block (block) {
     var match;
 
