@@ -136,7 +136,7 @@ class website {
       console.error("[GA] Your have not defined user/password in config!");
       console.error("[GA] Using default credentials");
     } else {
-      if ((this.config.username == this.website.user.username) || (this.config.password == this.website.user.password)) {
+      if ((this.config.username === this.website.user.username) || (this.config.password === this.website.user.password)) {
         console.warn("[GA] WARN: You are using default username or default password");
         console.warn("[GA] WARN: Don't forget to change it!");
       }
@@ -260,7 +260,7 @@ class website {
             rev: require("../package.json").rev,
             lang: this.website.language,
             last: 0,
-            imperial: (this.website.MMConfig.units == "imperial") ? true : false,
+            imperial: (this.website.MMConfig.units === "imperial") ? true : false,
             needUpdate: false
           };
           fetch(remoteFile)
@@ -410,7 +410,7 @@ class website {
         .get("/install", (req, res) => {
           if (req.user) {
             var ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-            if (req.query.ext && this.website.EXTInstalled.indexOf(req.query.ext) == -1 && this.website.EXT.indexOf(req.query.ext) > -1) {
+            if (req.query.ext && this.website.EXTInstalled.indexOf(req.query.ext) === -1 && this.website.EXT.indexOf(req.query.ext) > -1) {
               res.sendFile(`${this.WebsitePath}/Gateway/install.html`);
               io.once("connection", async (socket) => {
                 logGA(`[${ip}] Connected to installer Terminal Logs:`, req.user.username);
@@ -430,7 +430,7 @@ class website {
         .get("/EXTInstall", (req, res) => {
           if (req.user) {
             var ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-            if (req.query.EXT && this.website.EXTInstalled.indexOf(req.query.EXT) == -1 && this.website.EXT.indexOf(req.query.EXT) > -1) {
+            if (req.query.EXT && this.website.EXTInstalled.indexOf(req.query.EXT) === -1 && this.website.EXT.indexOf(req.query.EXT) > -1) {
               console.log(`[GA] [WEBSITE] [${ip}] Request installation:`, req.query.EXT);
               var result = {
                 error: false
@@ -514,7 +514,7 @@ class website {
             if (req.query.ext
               && this.website.EXTInstalled.indexOf(req.query.ext) > -1 // is installed
               && this.website.EXT.indexOf(req.query.ext) > -1 // is an EXT
-              && this.website.EXTConfigured.indexOf(req.query.ext) == -1 // is not configured
+              && this.website.EXTConfigured.indexOf(req.query.ext) === -1 // is not configured
             ) {
               res.sendFile(`${this.WebsitePath}/Gateway/EXTCreateConfig.html`);
             }
@@ -540,7 +540,7 @@ class website {
         .get("/EXTDeleteConfig", (req, res) => {
           if (req.user) {
             if (req.query.ext
-              && this.website.EXTInstalled.indexOf(req.query.ext) == -1 // is not installed
+              && this.website.EXTInstalled.indexOf(req.query.ext) === -1 // is not installed
               && this.website.EXT.indexOf(req.query.ext) > -1 // is an EXT
               && this.website.EXTConfigured.indexOf(req.query.ext) > -1 // is configured
             ) {
@@ -774,11 +774,11 @@ class website {
         .post("/EXT-Screen", (req, res) => {
           if (req.user) {
             let data = req.body.data;
-            if (data == "OFF") {
+            if (data === "OFF") {
               this.sendSocketNotification("SendNoti", "EXT_SCREEN-FORCE_END");
               return res.send("ok");
             }
-            if (data == "ON") {
+            if (data === "ON") {
               this.sendSocketNotification("SendNoti", "EXT_SCREEN-FORCE_WAKEUP");
               return res.send("ok");
             }
@@ -991,7 +991,7 @@ class website {
             if (linkExternalBackup.data) {
               console.log("[GA] [WEBSITE] Generate link number:", linkExternalBackup.data);
               healthDownloader = (req_, res_) => {
-                if (req_.params[0] == linkExternalBackup.data) {
+                if (req_.params[0] === linkExternalBackup.data) {
                   res_.sendFile(`${this.GAPath}/download/${linkExternalBackup.data}.js`);
                   healthDownloader = function (req_, res_) {
                     res_.redirect("/");
@@ -1163,7 +1163,7 @@ class website {
     ext.find((m) => {
       if (fs.existsSync(`${this.root_path}/modules/${m}/package.json`)) {
         let name = require(`${this.root_path}/modules/${m}/package.json`).name;
-        if (name == m) Installed.push(m);
+        if (name === m) Installed.push(m);
         else console.warn(`[GA] [WEBSITE] Found: ${m} but in package.json name is not the same: ${name}`);
       }
     });
@@ -1236,8 +1236,7 @@ class website {
               var Search = FunctionSearch.exec(line);
               if (Search) {
                 var reviverFunction = this.reviver(Search);
-                line = reviverFunction;
-                return fs.appendFileSync(outputFile, `${line}\n`);
+                return fs.appendFileSync(outputFile, `${reviverFunction}\n`);
               }
               fs.appendFileSync(outputFile, `${line}\n`);
             });
@@ -1298,8 +1297,7 @@ class website {
             var Search = FunctionSearch.exec(line);
             if (Search) {
               var reviverFunction = this.reviver(Search);
-              line = reviverFunction;
-              return fs.appendFileSync(outputFile, `${line}\n`);
+              return fs.appendFileSync(outputFile, `${reviverFunction}\n`);
             }
             fs.appendFileSync(outputFile, `${line}\n`);
           });
@@ -1337,7 +1335,7 @@ class website {
           console.log("[GA] [WEBSITE] [externalBackup]", err);
           resolve({ error: "Error when writing external tmp backup file" });
         } else {
-          result = await this.readTMPBackupConfig(tmpFile);
+          const result = await this.readTMPBackupConfig(tmpFile);
           resolve(result);
         }
       });
@@ -1416,27 +1414,27 @@ class website {
   /** get default ip address **/
   getIP () {
     return new Promise((resolve) => {
+      var Interfaces = [];
       si.networkInterfaceDefault()
         .then((defaultInt) => {
           si.networkInterfaces().then((data) => {
-            var Interfaces = [];
             var int = 0;
             data.forEach((Interface) => {
               var info = {};
-              if (Interface.type == "wireless") {
+              if (Interface.type === "wireless") {
                 info = {
                   ip: Interface.ip4 ? Interface.ip4 : "unknow",
-                  default: (Interface.iface == defaultInt) ? true : false
+                  default: (Interface.iface === defaultInt) ? true : false
                 };
               }
-              if (Interface.type == "wired") {
+              if (Interface.type === "wired") {
                 info = {
                   ip: Interface.ip4 ? Interface.ip4 : "unknow",
-                  default: (Interface.iface == defaultInt) ? true : false
+                  default: (Interface.iface === defaultInt) ? true : false
                 };
               }
-              if (Interface.iface != "lo") Interfaces.push(info);
-              if (int == data.length - 1) resolve(Interfaces);
+              if (Interface.iface !== "lo") Interfaces.push(info);
+              if (int === data.length - 1) resolve(Interfaces);
               else int += 1;
             });
           });
@@ -1486,11 +1484,11 @@ class website {
             }
           } else {
 
-            if (Object.prototype.toString.call(result[key]) == "[object Array]") {
+            if (Object.prototype.toString.call(result[key]) === "[object Array]") {
               result[key] = this.configStartMerge([], result[key], item[key]);
-            } else if (Object.prototype.toString.call(result[key]) == "[object Object]") {
+            } else if (Object.prototype.toString.call(result[key]) === "[object Object]") {
               result[key] = this.configStartMerge({}, result[key], item[key]);
-            } else if (Object.prototype.toString.call(result[key]) == "[object Function]") {
+            } else if (Object.prototype.toString.call(result[key]) === "[object Function]") {
               let tmp = JSON.stringify(item[key], this.replacer, 2);
               tmp = tmp.slice(0, -1);
               tmp = tmp.slice(1);
@@ -1600,7 +1598,7 @@ class website {
                 result[key] = item[key];
               }
             } else {
-              if ((key == "title" || key == "description") && result[key]) {
+              if ((key === "title" || key === "description") && result[key]) {
                 result[key] = translate(item[key]);
               }
               else result[key] = item[key];
@@ -1626,7 +1624,7 @@ class website {
 
   /** set plugin as used and search version/rev **/
   async setActiveVersion (module) {
-    if (this.website.activeVersion[module] != undefined) {
+    if (this.website.activeVersion[module] !== undefined) {
       this.sendSocketNotification("ERROR", `Already Activated: ${module}`);
       console.error(`Already Activated: ${module}`);
       return;
@@ -1700,21 +1698,19 @@ class website {
     return result;
   }
 
-  getHomeText () {
-    return new Promise(async (resolve) => {
-      var Home = null;
-      let lang = this.website.language;
-      let langHome = `${this.WebsitePath}/home/${lang}.home`;
-      let defaultHome = `${this.WebsitePath}/home/default.home`;
-      if (fs.existsSync(langHome)) {
-        console.log(`[GA] [WEBSITE] [TRANSLATION] [HOME] Use: ${lang}.home`);
-        Home = await this.readThisFile(langHome);
-      } else {
-        console.log("[GA] [WEBSITE] [TRANSLATION] [HOME] Use: default.home");
-        Home = await this.readThisFile(defaultHome);
-      }
-      resolve(Home);
-    });
+  async getHomeText () {
+    var Home = null;
+    let lang = this.website.language;
+    let langHome = `${this.WebsitePath}/home/${lang}.home`;
+    let defaultHome = `${this.WebsitePath}/home/default.home`;
+    if (fs.existsSync(langHome)) {
+      console.log(`[GA] [WEBSITE] [TRANSLATION] [HOME] Use: ${lang}.home`);
+      Home = await this.readThisFile(langHome);
+    } else {
+      console.log("[GA] [WEBSITE] [TRANSLATION] [HOME] Use: default.home");
+      Home = await this.readThisFile(defaultHome);
+    }
+    return Home;
   }
 
   readThisFile (file) {
@@ -1731,7 +1727,7 @@ class website {
 
   MMConfigAddress () {
     return new Promise((resolve) => {
-      if (this.website.MMConfig.address == "0.0.0.0") {
+      if (this.website.MMConfig.address === "0.0.0.0") {
         this.website.errorInit = true;
         console.error("[GA] Error: You can't use '0.0.0.0' in MagicMirror address config");
         this.sendSocketNotification("ERROR", "You can't use '0.0.0.0' in MagicMirror address config");
