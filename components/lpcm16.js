@@ -43,8 +43,8 @@ class LPCM16 {
       // On some Windows machines, sox is installed using the "sox" binary
       // instead of "rec"
       case "sox":
-        var cmd = "sox";
-        var cmdArgs = [
+        cmd = "sox";
+        cmdArgs = [
           "-q", // show no progress
           "-t",
           "waveaudio", // audio type
