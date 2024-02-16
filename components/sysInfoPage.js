@@ -1,3 +1,5 @@
+/* global logGA, removeAnimateCSS, addAnimateCSS */
+
 class sysInfoPage {
   constructor (Tools) {
     this.translate = (...args) => Tools.translate(...args);
@@ -470,14 +472,14 @@ class sysInfoPage {
     Information.textContent = this.translate("GW_System_WirelessInfo");
     Sysinfo_network_list.appendChild(Information);
 
-    var Speed = document.createElement("div");
-    Speed.id = "GA-SYSINFO_NETWORK-SPEED";
-    Speed.textContent = this.translate("GW_System_SpeedNetwork");
-    Sysinfo_network_list.appendChild(Speed);
-    var Speed_Value = document.createElement("div");
-    Speed_Value.id = "GA-SYSINFO_NETWORK-SPEED-VALUE";
-    Speed_Value.textContent = this.System.NETWORK.speed;
-    Speed.appendChild(Speed_Value);
+    var networkSpeed = document.createElement("div");
+    networkSpeed.id = "GA-SYSINFO_NETWORK-SPEED";
+    networkSpeed.textContent = this.translate("GW_System_SpeedNetwork");
+    Sysinfo_network_list.appendChild(networkSpeed);
+    var networkSpeed_Value = document.createElement("div");
+    networkSpeed_Value.id = "GA-SYSINFO_NETWORK-SPEED-VALUE";
+    networkSpeed_Value.textContent = this.System.NETWORK.speed;
+    networkSpeed.appendChild(networkSpeed_Value);
 
     var Duplex = document.createElement("div");
     Duplex.id = "GA-SYSINFO_NETWORK-DUPLEX";
@@ -759,7 +761,7 @@ class sysInfoPage {
     var Signal = document.getElementById("GA-SYSINFO_NETWORK-SIGNAL-VALUE");
     Signal.textContent = `${this.System.NETWORK.signalLevel} dBm`;
     var bar = document.getElementById("GA-SYSINFO_NETWORK_BAR");
-    if (this.System.NETWORK.type == "wired") {
+    if (this.System.NETWORK.type === "wired") {
       bar.classList.add("hidden");
       information.classList.remove("hidden");
       Speed_.classList.remove("hidden");
@@ -776,7 +778,7 @@ class sysInfoPage {
       quality.classList.add("hidden");
       Signal_.classList.add("hidden");
       Signal.classList.add("hidden");
-    } else if (this.System.NETWORK.type == "wireless") {
+    } else if (this.System.NETWORK.type === "wireless") {
       bar.classList.remove("hidden");
       information.classList.remove("hidden");
       Speed_.classList.add("hidden");
