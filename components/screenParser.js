@@ -8,7 +8,7 @@ const Entities = require("html-entities");
 class SCREENPARSER {
   constructor (config, debug) {
     this.config = config;
-    if (debug == true) logGA = (...args) => { console.log("[GA] [SCREEN_PARSER]", ...args); };
+    if (debug === true) logGA = (...args) => { console.log("[GA] [SCREEN_PARSER]", ...args); };
   }
 
   parse (response, endCallback = () => {}) {
@@ -55,6 +55,7 @@ class SCREENPARSER {
     }
   }
 
+  /* eslint-disable no-useless-escape */
   parseScreenLink (screen) {
     var decode = Entities.decode;
     var html = screen.originalContent;
