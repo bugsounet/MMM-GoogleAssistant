@@ -63,7 +63,7 @@ class smarthome {
         this.send("Alert", "[HOMEGRAPH] smarthome.json: corrupt!");
         return;
       }
-      if (content.type && content.type == "service_account") {
+      if (content.type && content.type === "service_account") {
         this.SmartHome.homegraph = googleapis.google.homegraph({
           version: "v1",
           auth: new GoogleAuthLibrary.GoogleAuth({
@@ -123,7 +123,7 @@ class smarthome {
         .post("/smarthome/login/", (req, res) => {
           let form = req.body;
           let args = req.query;
-          if (form["username"] && form["password"] && args["state"] && args["response_type"] && args["response_type"] == "code" && args["client_id"] == this.config.CLIENT_ID) {
+          if (form["username"] && form["password"] && args["state"] && args["response_type"] && args["response_type"] === "code" && args["client_id"] === this.config.CLIENT_ID) {
             let user = this.get_user(form["username"], form["password"]);
             if (!user) return res.sendFile("this.SmartHomePath}/login.html");
             this.SmartHome.last_code = this.random_string(8);
@@ -143,14 +143,14 @@ class smarthome {
 
         .post("/smarthome/token/", (req, res) => {
           let form = req.body;
-          if (form["grant_type"] && form["grant_type"] == "authorization_code" && form["code"] && form["code"] == this.SmartHome.last_code) {
+          if (form["grant_type"] && form["grant_type"] === "authorization_code" && form["code"] && form["code"] === this.SmartHome.last_code) {
             let time = (new Date(Date.now())).getTime() / 1000;
             if (time - this.SmartHome.last_code_time > 10) {
               logGA("[TOKEN] Invalid code (timeout)");
               res.status(403).sendFile(`${this.SmartHomePath}/403.html`);
             } else {
               let access_token = this.random_string(32);
-              fs.writeFileSync(`${tokensDir}/${access_token}`, this.SmartHome.last_code_user, { encoding: "utf8" });
+              fs.writeFileSync(`${this.tokensDir}/${access_token}`, this.SmartHome.last_code_user, { encoding: "utf8" });
               logGA("|TOKEN] Send Token:", access_token);
               res.json({ access_token: access_token });
             }
@@ -481,9 +481,8 @@ class smarthome {
         if (params["on"]) this.send("screen", "ON");
         else this.send("screen", "OFF");
         return { status: "SUCCESS", states: { on: params["on"], online: true } };
-        break;
       case "action.devices.commands.volumeRelative":
-        let level = 0;
+        var level = 0;
         if (params.volumeRelativeLevel > 0) {
           level = data.Volume + 5;
           if (level > 100) level = 100;
@@ -494,24 +493,21 @@ class smarthome {
           this.send("volumeDown");
         }
         return { status: "SUCCESS", states: { online: true, currentVolume: level, isMuted: data.VolumeIsMuted } };
-        break;
       case "action.devices.commands.setVolume":
         this.send("volume", params.volumeLevel);
         return { status: "SUCCESS", states: { online: true, currentVolume: params.volumeLevel, isMuted: data.VolumeIsMuted } };
-        break;
       case "action.devices.commands.mute":
         this.send("volumeMute", params.mute);
         return { status: "SUCCESS", states: { online: true, isMuted: params.mute, currentVolume: data.Volume } };
-        break;
       case "action.devices.commands.SetInput":
-        let input = params.newInput.split(" ");
-        if (input == "Stop") {
+        var input = params.newInput.split(" ");
+        if (input === "Stop") {
           this.send("Stop");
           params.newInput = `page ${data.Page}`;
-        } else if (input == "EXT-FreeboxTV") {
+        } else if (input === "EXT-FreeboxTV") {
           this.send("TVPlay");
           params.newInput = input;
-        } else if (input == "EXT-SpotifyCanvasLyrics") {
+        } else if (input === "EXT-SpotifyCanvasLyrics") {
           if (!data.LyricsIsForced && !data.Lyrics) this.send("SpotifyLyricsOn");
           else if (data.LyricsIsForced) {
             this.send("SpotifyLyricsOff");
@@ -522,51 +518,40 @@ class smarthome {
           this.send("setPage", input[1]);
         }
         return { status: "SUCCESS", states: { online: true, currentInput: params.newInput } };
-        break;
       case "action.devices.commands.NextInput":
         this.send("setNextPage");
         return { status: "SUCCESS", states: { online: true } };
-        break;
       case "action.devices.commands.PreviousInput":
         this.send("setPreviousPage");
         return { status: "SUCCESS", states: { online: true } };
-        break;
       case "action.devices.commands.Reboot":
         this.send("Reboot");
         return {};
-        break;
       case "action.devices.commands.Locate":
         this.send("Locate");
         return { status: "SUCCESS" };
-        break;
       case "action.devices.commands.mediaStop":
         this.send("Stop");
         return {};
-        break;
       case "action.devices.commands.mediaNext":
         this.send("SpotifyNext");
         return {};
-        break;
       case "action.devices.commands.mediaPrevious":
         this.send("SpotifyPrevious");
         return {};
-        break;
       case "action.devices.commands.mediaPause":
         if (data.SpotifyIsPlaying) this.send("SpotifyPause");
         return {};
-        break;
       case "action.devices.commands.mediaResume":
         if (!data.SpotifyIsPlaying) this.send("SpotifyPlay");
         return {};
-        break;
       case "action.devices.commands.appSelect":
-        if (params.newApplication == "spotify") {
+        if (params.newApplication === "spotify") {
           if (!data.SpotifyIsConnected && !data.SpotifyIsPlaying) {
             this.send("SpotifyPlay");
           }
         }
         return { status: "SUCCESS", states: { online: true, currentApplication: params.newApplication } };
-        break;
       case "action.devices.commands.relativeChannel":
         if (params.relativeChannelChange > 0) {
           this.send("TVNext");
@@ -574,16 +559,14 @@ class smarthome {
           this.send("TVPrevious");
         }
         return { status: "SUCCESS" };
-        break;
       default:
         return { status: "ERROR" };
-        break;
     }
   }
 
   /** Tools **/
   get_user (username, password) {
-    if ((username == this.SmartHome.user.user) && (password == this.SmartHome.user.password)) {
+    if ((username === this.SmartHome.user.user) && (password === this.SmartHome.user.password)) {
       return this.SmartHome.user;
     } else {
       return null;
@@ -591,7 +574,7 @@ class smarthome {
   }
 
   get_userOnly (username) {
-    if (username == this.SmartHome.user.user) {
+    if (username === this.SmartHome.user.user) {
       return this.SmartHome.user;
     } else {
       return null;
@@ -599,7 +582,7 @@ class smarthome {
   }
 
   get_device (device_id, device) {
-    if (device_id == "MMM-GoogleAssistant") {
+    if (device_id === "MMM-GoogleAssistant") {
       let data = device;
       data["id"] = device_id;
       return data;
@@ -628,7 +611,7 @@ class smarthome {
     if (!headers) return null;
     const auth = headers.authorization;
     let parts = auth.split(" ", 2);
-    if (auth && parts.length == 2 && parts[0].toLowerCase() == "bearer") {
+    if (auth && parts.length === 2 && parts[0].toLowerCase() === "bearer") {
       return parts[1];
     } else {
       return null;
@@ -791,7 +774,7 @@ class smarthome {
       };
       try {
         const res = await this.SmartHome.homegraph.devices.reportStateAndNotification(body);
-        if (res.status != 200) logGA("[HOMEGRAPH] [ReportState]", res.data, state, res.status, res.statusText);
+        if (res.status !== 200) logGA("[HOMEGRAPH] [ReportState]", res.data, state, res.status, res.statusText);
       } catch (e) {
         console.error("[GA] [SMARTHOME] [HOMEGRAPH] [ReportState]", e.code ? e.code : e, e.errors ? e.errors : "");
       }
