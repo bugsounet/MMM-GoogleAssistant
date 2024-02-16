@@ -63,9 +63,9 @@ const HyperWatch = {
     }
   },
   scrollback (n) {
-    if (!n || n == 0) return console.log("[GA] [HyperWatch] scrollback can't be null");
+    if (!n || n === 0) return console.log("[GA] [HyperWatch] scrollback can't be null");
     if (n < 50) return console.log("[GA] [HyperWatch] scrollback must be > 50");
-    if (n == HyperWatch_maxbuflen) console.log("[GA] [HyperWatch] scrollback already", HyperWatch_maxbuflen);
+    if (n === HyperWatch_maxbuflen) console.log("[GA] [HyperWatch] scrollback already", HyperWatch_maxbuflen);
     else {
       HyperWatch_maxbuflen = n;
       console.log("[GA] [HyperWatch] scrollback is now", HyperWatch_maxbuflen);
