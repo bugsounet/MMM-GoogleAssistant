@@ -113,7 +113,7 @@ module.exports = NodeHelper.create({
 
     await checker.checkConfigDeepMerge();
     let bugsounet = await this.libraries("GA");
-    if (bugsounet) return this.bugsounetError(bugsounet);
+    if (bugsounet) return this.bugsounetError(bugsounet, "Assistant");
 
     this.config.micConfig.recorder = "arecord";
     const Tools = {
@@ -128,7 +128,7 @@ module.exports = NodeHelper.create({
   async parseWebsite () {
     const bugsounet = await this.libraries("website");
     return new Promise((resolve) => {
-      if (bugsounet) return this.bugsounetError(bugsounet);
+      if (bugsounet) return this.bugsounetError(bugsounet, "Website");
       let WebsiteHelperConfig = {
         config: this.config.website,
         debug: this.config.debug,
@@ -145,7 +145,7 @@ module.exports = NodeHelper.create({
     if (!this.config.website.CLIENT_ID) return false;
     const bugsounet = await this.libraries("smarthome");
     return new Promise((resolve) => {
-      if (bugsounet) return this.bugsounetError(bugsounet);
+      if (bugsounet) return this.bugsounetError(bugsounet, "Smarthome");
 
       let SmarthomeHelperConfig = {
         config: this.config.website,
@@ -228,9 +228,10 @@ module.exports = NodeHelper.create({
     });
   },
 
-  bugsounetError (bugsounet) {
-    console.error(`[GA] [DATA] Warning: ${bugsounet} needed library not loaded !`);
+  bugsounetError (bugsounet, family) {
+    console.error(`[GA] [DATA] [${family}] Warning: ${bugsounet} needed library not loaded !`);
     console.error("[GA] [DATA] Try to solve it with `npm run rebuild` in MMM-GoogleAssistant folder");
+    this.sendSocketNotification("WARNING", `[${family}] Try to solve it with 'npm run rebuild' in MMM-GoogleAssistant folder`);
   },
 
   updateSmartHome () {
@@ -285,8 +286,8 @@ module.exports = NodeHelper.create({
     exec(command, (e, so, se) => {
       logGA("command:", command);
       if (e) {
-        console.log(`[GA] [SHELL_EXEC] Error:${e}`);
-        this.sendSocketNotification("WARNING", { message: "ShellExecError" });
+        console.error(`[GA] [SHELL_EXEC] ${e}`);
+        this.sendSocketNotification("WARNING", "ShellExecError");
       }
       logGA("RESULT", {
         executed: payload,
