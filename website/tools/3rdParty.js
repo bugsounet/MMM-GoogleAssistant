@@ -1,10 +1,12 @@
+/* global window, getGatewayVersion, loadTranslation, $, doTranslateNavBar */
+
 /** 3rd Party Module
 * @bugsounet
 **/
 
 // rotate rules
 
-PleaseRotateOptions = {
+var PleaseRotateOptions = {
   startOnPageLoad: false
 };
 
@@ -19,8 +21,6 @@ window.addEventListener("load", async (event) => {
 
   $("html").prop("lang", versionGW.lang);
   $(document).prop("title", "MagicMirror² 3rd Party Modules");
-
-  //forceMobileRotate()
 
   doTranslateNavBar();
 });

@@ -1,9 +1,11 @@
+/* global forceMobileRotate, alertify, window, getGatewayVersion, loadTranslation, $, doTranslateNavBar, checkWebviewTag, checkEXTStatus, loadBackupNames, loadDataInstalledEXT, loadRadio */
+
 /** EXT tools
 * @bugsounet
 **/
 
 // rotate rules
-PleaseRotateOptions = {
+var PleaseRotateOptions = {
   startOnPageLoad: false
 };
 
@@ -148,7 +150,7 @@ async function doTools () {
       } else {
         $.post("/EXT-Screen", { data: "ON" })
           .done(function (back) {
-            if (back == "error") {
+            if (back === "error") {
               alertify.error(translation.Warn_Error);
             } else {
               alertify.success(translation.RequestDone);
@@ -180,7 +182,7 @@ async function doTools () {
       $.post("/EXT-AlertQuery", { data: $("#Alert-Query").val() })
         .done(function (back) {
           $("#Alert-Query").val("");
-          if (back == "error") {
+          if (back === "error") {
             alertify.error(translation.Warn_Error);
           } else {
             alertify.success(translation.RequestDone);
@@ -206,7 +208,7 @@ async function doTools () {
     document.getElementById("Volume-Send").onclick = function () {
       $.post("/EXT-VolumeSendSpeaker", { data: $("#Volume-Query").val() })
         .done(function (back) {
-          if (back == "error") {
+          if (back === "error") {
             alertify.error(translation.Warn_Error);
           } else {
             alertify.success(translation.RequestDone);
@@ -232,7 +234,7 @@ async function doTools () {
     document.getElementById("Volume-Send-Record").onclick = function () {
       $.post("/EXT-VolumeSendRecorder", { data: $("#Volume-Query-Record").val() })
         .done(function (back) {
-          if (back == "error") {
+          if (back === "error") {
             alertify.error(translation.Warn_Error);
           } else {
             alertify.success(translation.RequestDone);
@@ -259,8 +261,8 @@ async function doTools () {
       if (Object.keys(updateModules).length) {
         $("#Update-Box").css("display", "block");
         for (const [key, value] of Object.entries(updateModules)) {
-          if ($(`#${key}`).length == 0) $("#Update-Modules-Box").append(`<br><span id='${key}'>${key}</span>`);
-          if (key.startsWith("EXT-") || key == "MMM-GoogleAssistant") ++needUpdate;
+          if ($(`#${key}`).length === 0) $("#Update-Modules-Box").append(`<br><span id='${key}'>${key}</span>`);
+          if (key.startsWith("EXT-") || key === "MMM-GoogleAssistant") ++needUpdate;
         }
         $("#Update-Modules-Box").css("display", "block");
       }
@@ -271,7 +273,7 @@ async function doTools () {
       $("#Update-Confirm").addClass("disabled");
       $.post("/EXT-Updates")
         .done(function (back) {
-          if (back == "error") {
+          if (back === "error") {
             alertify.error(translation.Warn_Error);
           } else {
             alertify.success(translation.RequestDone);
@@ -323,7 +325,7 @@ async function doTools () {
       })
         .done(function (back) {
           $("#Spotify-Query").val("");
-          if (back == "error") {
+          if (back === "error") {
             alertify.error(translation.Warn_Error);
           } else {
             alertify.success(translation.RequestDone);
@@ -437,7 +439,7 @@ async function doTools () {
     $.post("/EXT-GAQuery", { data: $("#GoogleAssistant-Query").val() })
       .done(function (back) {
         $("#GoogleAssistant-Query").val("");
-        if (back == "error") {
+        if (back === "error") {
           alertify.error(translation.Warn_Error);
         } else {
           alertify.success(translation.RequestDone);
@@ -466,7 +468,7 @@ async function doTools () {
       $.post("/EXT-YouTubeQuery", { data: $("#YouTube-Query").val() })
         .done(function (back) {
           $("#YouTube-Query").val("");
-          if (back == "error") {
+          if (back === "error") {
             alertify.error(translation.Warn_Error);
           } else {
             alertify.success(translation.RequestDone);
@@ -502,7 +504,7 @@ async function doTools () {
     document.getElementById("Radio-Send").onclick = function () {
       $.post("/EXT-RadioQuery", { data: $("#Radio-Query").val() })
         .done(function (back) {
-          if (back == "error") {
+          if (back === "error") {
             alertify.error(translation.Warn_Error);
           } else {
             alertify.success(translation.RequestDone);
@@ -515,12 +517,12 @@ async function doTools () {
   }
 
   // FreeboxTV query
-  if (EXTStatus["EXT-FreeboxTV"].hello && versionGW.lang == "fr") {
+  if (EXTStatus["EXT-FreeboxTV"].hello && versionGW.lang === "fr") {
     $("#FreeboxTV-Box").css("display", "block");
     document.getElementById("FreeboxTV-Send").onclick = function () {
       $.post("/EXT-FreeboxTVQuery", { data: $("#FreeboxTV-Query").val() })
         .done(function (back) {
-          if (back == "error") {
+          if (back === "error") {
             alertify.error(translation.Warn_Error);
           } else {
             alertify.success(translation.RequestDone);
@@ -538,7 +540,7 @@ async function doTools () {
   document.getElementById("Stop-Send").onclick = function () {
     $.post("/EXT-StopQuery")
       .done(function (back) {
-        if (back == "error") {
+        if (back === "error") {
           alertify.error(translation.Warn_Error);
         } else {
           alertify.success(translation.RequestDone);
