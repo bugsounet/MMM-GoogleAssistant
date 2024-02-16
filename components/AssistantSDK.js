@@ -1,6 +1,5 @@
 "use strict";
 /* global AssistantSDK */
-/* eslint-disable jsdoc/require-jsdoc */
 
 const EventEmitter = require("events");
 const util = require("util");
