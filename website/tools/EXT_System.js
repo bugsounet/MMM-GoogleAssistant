@@ -17,6 +17,7 @@ var System = {};
 var SystemInterval = null;
 var SystemFirstScan = true;
 var activeVersion = [];
+var system = {};
 
 // Load rules
 window.addEventListener("load", async (event) => {
@@ -33,7 +34,7 @@ async function doSystem (cb = null) {
   clearInterval(SystemInterval);
   SystemInterval = null;
 
-  var system = await checkSystem();
+  system = await checkSystem();
   activeVersion = await getActiveVersion();
 
   progressOrText(system);
@@ -396,11 +397,12 @@ function checkPartColor (id, value) {
 
 function makeProgress (Value, Progress, Text, Display, i = 0) {
   $(Text).text(Display);
-  if (i <= Value) {
-    i = i + 1;
-    $(Progress).css("width", `${i}%`);
+  var percent = i;
+  if (percent <= Value) {
+    percent = percent + 1;
+    $(Progress).css("width", `${percent}%`);
     setTimeout(() => {
-      this.makeProgress(Value, Progress, Text, Display, i);
+      this.makeProgress(Value, Progress, Text, Display, percent);
     }, 10);
   } else {
     $(Progress).css("width", `${Value}%`);
