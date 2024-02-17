@@ -1,10 +1,12 @@
+/* global window, getGatewayVersion, loadTranslation, $, forceMobileRotate, doTranslateNavBar, alertify, loadMMConfig, JSONEditor, loadBackupNames, loadBackupConfig, FileReaderJS, saveAs */
+
 /** EXT tools
 * @bugsounet
 **/
 
 // rotate rules
 
-PleaseRotateOptions = {
+var PleaseRotateOptions = {
   startOnPageLoad: false
 };
 
@@ -91,8 +93,10 @@ async function EditMMConfigJSEditor () {
   };
 
   if (window.location.search) {
+    /* eslint-disable no-useless-escape */
     conf = decodeURIComponent(window.location.search.match(/(\?|&)config\=([^&]*)/)[2]);
-    if (conf == "default") config = await loadMMConfig();
+    /* eslint-enable no-useless-escape */
+    if (conf === "default") config = await loadMMConfig();
     else {
       options = {
         mode: "code",
@@ -116,7 +120,7 @@ async function EditMMConfigJSEditor () {
     $("#backup").append($("<option>", {
       value: backup,
       text: backup,
-      selected: (backup == conf) ? true : false
+      selected: (backup === conf) ? true : false
     }));
   });
   const container = document.getElementById("jsoneditor");
