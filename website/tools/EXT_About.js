@@ -1,10 +1,12 @@
+/* global window, getGatewayVersion, $, forceMobileRotate, doTranslateNavBar, loadTranslation */
+
 /** EXT About
 * @bugsounet
 **/
 
 // rotate rules
 
-PleaseRotateOptions = {
+var PleaseRotateOptions = {
   startOnPageLoad: false
 };
 
@@ -40,7 +42,7 @@ function GatewaySetting () {
 
   for (let tr = 1; tr <= 10; tr++) {
     let trans = `About_Info_Translator${tr}`;
-    if (tr == 1 && translation[trans]) {
+    if (tr === 1 && translation[trans]) {
       $("#Translators").text(translation.About_Info_Translator);
       $("#translatorsBox").css("display", "flex");
     }
