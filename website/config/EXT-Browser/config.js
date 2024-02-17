@@ -9,62 +9,62 @@ var defaultConfig = {
     scrollInterval: 1000,
     scrollStart: 5000
   }
-}
+};
 
 var schema = {
-  "title": "EXT-Browser",
-  "description": "{PluginDescription}",
-  "type": "object",
-  "properties": {
-    "module": {
-      "type": "string",
-      "title": "{PluginName}",
-      "default": "EXT-Browser"
+  title: "EXT-Browser",
+  description: "{PluginDescription}",
+  type: "object",
+  properties: {
+    module: {
+      type: "string",
+      title: "{PluginName}",
+      default: "EXT-Browser"
     },
-    "disabled": {
-      "type": "boolean",
-      "title": "{PluginDisable}",
-      "default": false
+    disabled: {
+      type: "boolean",
+      title: "{PluginDisable}",
+      default: false
     },
-    "config": {
-      "type": "object",
-      "title": "{PluginConfiguration}",
-      "properties": {
-        "debug": {
-          "type": "boolean",
-          "title": "{PluginDebug}",
-          "default": false
+    config: {
+      type: "object",
+      title: "{PluginConfiguration}",
+      properties: {
+        debug: {
+          type: "boolean",
+          title: "{PluginDebug}",
+          default: false
         },
-        "displayDelay": {
-          "type": "number",
-          "title": "{EXT-Browser_Delay}",
-          "default": 60000
+        displayDelay: {
+          type: "number",
+          title: "{EXT-Browser_Delay}",
+          default: 60000
         },
-        "scrollActivate": {
-          "type": "boolean",
-          "title": "{EXT-Browser_Scroll}",
-          "default": false
+        scrollActivate: {
+          type: "boolean",
+          title: "{EXT-Browser_Scroll}",
+          default: false
         },
-        "scrollStep": {
-          "type": "number",
-          "title": "{EXT-Browser_Step}",
-          "default": 25
+        scrollStep: {
+          type: "number",
+          title: "{EXT-Browser_Step}",
+          default: 25
         },
-        "scrollInterval": {
-          "type": "number",
-          "title": "{EXT-Browser_Interval}",
-          "default": 1000
+        scrollInterval: {
+          type: "number",
+          title: "{EXT-Browser_Interval}",
+          default: 1000
         },
-        "scrollStart": {
-          "type": "number",
-          "title": "{EXT-Browser_Start}",
-          "default": 5000
+        scrollStart: {
+          type: "number",
+          title: "{EXT-Browser_Start}",
+          default: 5000
         }
       }
     }
   },
-  "required": ["module"]
-}
+  required: ["module"]
+};
 
 /*
 var fr = {
@@ -103,5 +103,5 @@ var fr = {
 }
 */
 
-exports.default = defaultConfig
-exports.schema = schema
+exports.default = defaultConfig;
+exports.schema = schema;

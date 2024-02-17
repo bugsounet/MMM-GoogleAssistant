@@ -11,23 +11,23 @@ var defaultConfig = {
     castName: "MagicMirror",
     port: 8569
   }
-}
+};
 
 var schema = {
-  "title": "EXT-YouTubeCast",
-  "description": "{PluginDescription}",
-  "type": "object",
-  "properties": {
-    "module": {
-      "type": "string",
-      "title": "{PluginName}",
-      "default": "EXT-YouTubeCast"
+  title: "EXT-YouTubeCast",
+  description: "{PluginDescription}",
+  type: "object",
+  properties: {
+    module: {
+      type: "string",
+      title: "{PluginName}",
+      default: "EXT-YouTubeCast"
     },
-    "position": {
-      "type": "string",
-      "title": "{PluginPosition}",
-      "default": "top_center",
-      "enum": [
+    position: {
+      type: "string",
+      title: "{PluginPosition}",
+      default: "top_center",
+      enum: [
         "top_bar",
         "top_left",
         "top_center",
@@ -43,56 +43,56 @@ var schema = {
         "fullscreen_below"
       ]
     },
-    "disabled": {
-      "type": "boolean",
-      "title": "{PluginDisable}",
-      "default": false
+    disabled: {
+      type: "boolean",
+      title: "{PluginDisable}",
+      default: false
     },
-    "config": {
-      "type": "object",
-      "title": "{PluginConfiguration}",
-      "properties": {
-        "debug": {
-          "type": "boolean",
-          "title": "{PluginDebug}",
-          "default": false
+    config: {
+      type: "object",
+      title: "{PluginConfiguration}",
+      properties: {
+        debug: {
+          type: "boolean",
+          title: "{PluginDebug}",
+          default: false
         },
-        "fullscreen": {
-          "type": "boolean",
-          "title": "{EXT-YouTube_Fullscreen}",
-          "default": false
+        fullscreen: {
+          type: "boolean",
+          title: "{EXT-YouTube_Fullscreen}",
+          default: false
         },
-        "width": {
-          "type": "string",
-          "title": "{EXT-YouTube_Width}",
-          "default": "30vw"
+        width: {
+          type: "string",
+          title: "{EXT-YouTube_Width}",
+          default: "30vw"
         },
-        "height": {
-          "type": "string",
-          "title": "{EXT-YouTube_Height}",
-          "default": "30vh"
+        height: {
+          type: "string",
+          title: "{EXT-YouTube_Height}",
+          default: "30vh"
         },
-        "alwaysDisplayed": {
-          "type": "boolean",
-          "title": "{EXT-YouTube_Display}",
-          "default": true
+        alwaysDisplayed: {
+          type: "boolean",
+          title: "{EXT-YouTube_Display}",
+          default: true
         },
-        "castName": {
-          "type": "string",
-          "title": "{EXT-YouTubeCast_Name}",
-          "default": "MagicMirror"
+        castName: {
+          type: "string",
+          title: "{EXT-YouTubeCast_Name}",
+          default: "MagicMirror"
         },
-        "port": {
-          "type": "number",
-          "title": "{EXT-YouTubeCast_Port}",
-          "default": 8569
+        port: {
+          type: "number",
+          title: "{EXT-YouTubeCast_Port}",
+          default: 8569
         }
       },
-      "required": ["castName", "port"]
+      required: ["castName", "port"]
     }
   },
-  "required": ["module", "config", "position"]
-}
+  required: ["module", "config", "position"]
+};
 
-exports.default = defaultConfig
-exports.schema = schema
+exports.default = defaultConfig;
+exports.schema = schema;

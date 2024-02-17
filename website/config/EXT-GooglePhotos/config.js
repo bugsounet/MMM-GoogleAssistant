@@ -1,6 +1,6 @@
 var defaultConfig = {
-  module: 'EXT-GooglePhotos',
-  position: 'top_left',
+  module: "EXT-GooglePhotos",
+  position: "top_left",
   disabled: false,
   config: {
     debug: false,
@@ -16,23 +16,23 @@ var defaultConfig = {
     moduleWidth: 300,
     uploadAlbum: null
   }
-}
+};
 
 var schema = {
-  "title": "EXT-GooglePhotos",
-  "description": "{PluginDescription}",
-  "type": "object",
-  "properties": {
-    "module": {
-      "type": "string",
-      "title": "{PluginName}",
-      "default": "EXT-GooglePhotos"
+  title: "EXT-GooglePhotos",
+  description: "{PluginDescription}",
+  type: "object",
+  properties: {
+    module: {
+      type: "string",
+      title: "{PluginName}",
+      default: "EXT-GooglePhotos"
     },
-    "position": {
-      "type": "string",
-      "title": "{PluginPosition}",
-      "default": "top_left",
-      "enum": [
+    position: {
+      type: "string",
+      title: "{PluginPosition}",
+      default: "top_left",
+      enum: [
         "top_bar",
         "top_left",
         "top_center",
@@ -48,91 +48,91 @@ var schema = {
         "fullscreen_below"
       ]
     },
-    "disabled": {
-      "type": "boolean",
-      "title": "{PluginDisable}",
-      "default": false
+    disabled: {
+      type: "boolean",
+      title: "{PluginDisable}",
+      default: false
     },
-    "config": {
-      "type": "object",
-      "title": "{PluginConfiguration}",
-      "properties": {
-        "debug": {
-          "type": "boolean",
-          "title": "{PluginDebug}",
-          "default": false
+    config: {
+      type: "object",
+      title: "{PluginConfiguration}",
+      properties: {
+        debug: {
+          type: "boolean",
+          title: "{PluginDebug}",
+          default: false
         },
-        "displayType": {
-          "type": "number",
-          "title": "{EXT-GooglePhotos_Type}",
-          "default": 0,
-          "enum": [ 0 , 1 ],
-          "minimum": 0,
-          "maximum": 1
+        displayType: {
+          type: "number",
+          title: "{EXT-GooglePhotos_Type}",
+          default: 0,
+          enum: [0, 1],
+          minimum: 0,
+          maximum: 1
         },
-        "displayDelay": {
-          "type": "number",
-          "title": "{EXT-GooglePhotos_Delay}",
-          "default": 10000
+        displayDelay: {
+          type: "number",
+          title: "{EXT-GooglePhotos_Delay}",
+          default: 10000
         },
-        "displayInfos": {
-          "type": "boolean",
-          "title": "{EXT-GooglePhotos_Infos}",
-          "default": true
+        displayInfos: {
+          type: "boolean",
+          title: "{EXT-GooglePhotos_Infos}",
+          default: true
         },
-        "displayBackground": {
-          "type": "boolean",
-          "title": "{EXT-GooglePhotos_Background}",
-          "default": true
+        displayBackground: {
+          type: "boolean",
+          title: "{EXT-GooglePhotos_Background}",
+          default: true
         },
-        "albums": {
-          "type": "array",
-          "title": "{EXT-GooglePhotos_Albums}",
-          "default": [],
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "type": "string"
+        albums: {
+          type: "array",
+          title: "{EXT-GooglePhotos_Albums}",
+          default: [],
+          minItems: 1,
+          uniqueItems: true,
+          items: {
+            type: "string"
           }
         },
-        "sort": {
-          "type": "string",
-          "title": "{EXT-GooglePhotos_Sort}",
-          "default": "new",
-          "enum": [ "new", "old" , "random" ]
+        sort: {
+          type: "string",
+          title: "{EXT-GooglePhotos_Sort}",
+          default: "new",
+          enum: ["new", "old", "random"]
         },
-        "hiResolution": {
-          "type": "boolean",
-          "title": "{EXT-GooglePhotos_HD}",
-          "default": true
+        hiResolution: {
+          type: "boolean",
+          title: "{EXT-GooglePhotos_HD}",
+          default: true
         },
-        "timeFormat": {
-          "type": "string",
-          "title": "{EXT-GooglePhotos_Format}",
-          "default": "DD/MM/YYYY HH:mm",
-          "enum": [ "DD/MM/YYYY HH:mm", "DD/MM/YYYY" , "YYYY/DD/MM HH:mm" , "YYYY/DD/MM"  ]
+        timeFormat: {
+          type: "string",
+          title: "{EXT-GooglePhotos_Format}",
+          default: "DD/MM/YYYY HH:mm",
+          enum: ["DD/MM/YYYY HH:mm", "DD/MM/YYYY", "YYYY/DD/MM HH:mm", "YYYY/DD/MM"]
         },
-        "moduleHeight": {
-          "type": "number",
-          "title": "{EXT-GooglePhotos_Height}",
-          "default": 10000
+        moduleHeight: {
+          type: "number",
+          title: "{EXT-GooglePhotos_Height}",
+          default: 10000
         },
-        "moduleWidth": {
-          "type": "number",
-          "title": "{EXT-GooglePhotos_Width}",
-          "default": 10000
+        moduleWidth: {
+          type: "number",
+          title: "{EXT-GooglePhotos_Width}",
+          default: 10000
         },
-        "uploadAlbum": {
-          "type": ["string", "null"],
-          "title": "{EXT-GooglePhotos_uploadAlbum}",
-          "default": null
+        uploadAlbum: {
+          type: ["string", "null"],
+          title: "{EXT-GooglePhotos_uploadAlbum}",
+          default: null
         }
       },
-      "required": ["albums"]
+      required: ["albums"]
     }
   },
-  "required": ["module", "config", "position"]
-}
+  required: ["module", "config", "position"]
+};
 
-exports.default = defaultConfig
-exports.schema = schema
+exports.default = defaultConfig;
+exports.schema = schema;

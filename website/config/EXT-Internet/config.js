@@ -1,6 +1,6 @@
 var defaultConfig = {
-  module: 'EXT-Internet',
-  position: 'top_left',
+  module: "EXT-Internet",
+  position: "top_left",
   disabled: false,
   config: {
     debug: false,
@@ -10,23 +10,23 @@ var defaultConfig = {
     showAlert: true,
     needRestart: false
   }
-}
+};
 
 var schema = {
-  "title": "EXT-Internet",
-  "description": "{PluginDescription}",
-  "type": "object",
-  "properties": {
-    "module": {
-      "type": "string",
-      "title": "{PluginName}",
-      "default": "EXT-Internet"
+  title: "EXT-Internet",
+  description: "{PluginDescription}",
+  type: "object",
+  properties: {
+    module: {
+      type: "string",
+      title: "{PluginName}",
+      default: "EXT-Internet"
     },
-    "position": {
-      "type": "string",
-      "title": "{PluginPosition}",
-      "default": "top_left",
-      "enum": [
+    position: {
+      type: "string",
+      title: "{PluginPosition}",
+      default: "top_left",
+      enum: [
         "top_bar",
         "top_left",
         "top_center",
@@ -42,50 +42,50 @@ var schema = {
         "fullscreen_below"
       ]
     },
-    "disabled": {
-      "type": "boolean",
-      "title": "{PluginDisable}",
-      "default": false
+    disabled: {
+      type: "boolean",
+      title: "{PluginDisable}",
+      default: false
     },
-    "config": {
-      "type": "object",
-      "title": "{PluginConfiguration}",
-      "properties": {
-        "debug": {
-          "type": "boolean",
-          "title": "{PluginDebug}",
-          "default": false
+    config: {
+      type: "object",
+      title: "{PluginConfiguration}",
+      properties: {
+        debug: {
+          type: "boolean",
+          title: "{PluginDebug}",
+          default: false
         },
-        "displayPing": {
-          "type": "boolean",
-          "title": "{EXT-Internet_Ping}",
-          "default": true
+        displayPing: {
+          type: "boolean",
+          title: "{EXT-Internet_Ping}",
+          default: true
         },
-        "delay": {
-          "type": "number",
-          "title": "{EXT-Internet_Delay}",
-          "default": 30000
+        delay: {
+          type: "number",
+          title: "{EXT-Internet_Delay}",
+          default: 30000
         },
-        "scan": {
-          "type": "string",
-          "title": "{EXT-Internet_Scan}",
-          "default": "google.fr"
+        scan: {
+          type: "string",
+          title: "{EXT-Internet_Scan}",
+          default: "google.fr"
         },
-        "showAlert": {
-          "type": "boolean",
-          "title": "{EXT-Internet_Alert}",
-          "default": true
+        showAlert: {
+          type: "boolean",
+          title: "{EXT-Internet_Alert}",
+          default: true
         },
-        "needRestart": {
-          "type": "boolean",
-          "title": "{EXT-Internet_Restart}",
-          "default": false
+        needRestart: {
+          type: "boolean",
+          title: "{EXT-Internet_Restart}",
+          default: false
         }
       }
     }
   },
-  "required": ["module", "position", "config"]
-}
+  required: ["module", "position", "config"]
+};
 
-exports.default = defaultConfig
-exports.schema = schema
+exports.default = defaultConfig;
+exports.schema = schema;

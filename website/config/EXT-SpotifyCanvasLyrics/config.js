@@ -1,26 +1,26 @@
 var defaultConfig = {
-  module: 'EXT-SpotifyCanvasLyrics',
+  module: "EXT-SpotifyCanvasLyrics",
   disabled: false
-}
+};
 
 var schema = {
-  "title": "EXT-SpotifyCanvasLyrics",
-  "description": "{PluginDescription}",
-  "type": "object",
-  "properties": {
-    "module": {
-      "type": "string",
-      "title": "{PluginName}",
-      "default": "EXT-SpotifyCanvasLyrics"
+  title: "EXT-SpotifyCanvasLyrics",
+  description: "{PluginDescription}",
+  type: "object",
+  properties: {
+    module: {
+      type: "string",
+      title: "{PluginName}",
+      default: "EXT-SpotifyCanvasLyrics"
     },
-    "disabled": {
-      "type": "boolean",
-      "title": "{PluginDisable}",
-      "default": false
+    disabled: {
+      type: "boolean",
+      title: "{PluginDisable}",
+      default: false
     }
   },
-  "required": ["module"]
-}
+  required: ["module"]
+};
 
-exports.default = defaultConfig
-exports.schema = schema
+exports.default = defaultConfig;
+exports.schema = schema;

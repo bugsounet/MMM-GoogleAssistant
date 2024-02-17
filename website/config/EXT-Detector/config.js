@@ -27,23 +27,23 @@ var defaultConfig = {
       }
     ]
   }
-}
+};
 
 var schema = {
-  "title": "EXT-Detector",
-  "description": "{PluginDescription}",
-  "type": "object",
-  "properties": {
-    "module": {
-      "type": "string",
-      "title": "{PluginName}",
-      "default": "EXT-Detector"
+  title: "EXT-Detector",
+  description: "{PluginDescription}",
+  type: "object",
+  properties: {
+    module: {
+      type: "string",
+      title: "{PluginName}",
+      default: "EXT-Detector"
     },
-    "position": {
-      "type": "string",
-      "title": "{PluginPosition}",
-      "default": "top_right",
-      "enum": [
+    position: {
+      type: "string",
+      title: "{PluginPosition}",
+      default: "top_right",
+      enum: [
         "top_bar",
         "top_left",
         "top_center",
@@ -59,63 +59,63 @@ var schema = {
         "fullscreen_below"
       ]
     },
-    "disabled": {
-      "type": "boolean",
-      "title": "{PluginDisable}",
-      "default": false
+    disabled: {
+      type: "boolean",
+      title: "{PluginDisable}",
+      default: false
     },
-    "configDeepMerge": {
-      "type": "boolean",
-      "title": "{PluginConfigDeepMerge}",
-      "default": true
+    configDeepMerge: {
+      type: "boolean",
+      title: "{PluginConfigDeepMerge}",
+      default: true
     },
-    "config": {
-      "type": "object",
-      "title": "{PluginConfiguration}",
-      "properties": {
-        "debug": {
-          "type": "boolean",
-          "title": "{PluginDebug}",
-          "default": false
+    config: {
+      type: "object",
+      title: "{PluginConfiguration}",
+      properties: {
+        debug: {
+          type: "boolean",
+          title: "{PluginDebug}",
+          default: false
         },
-        "useIcon": {
-          "type": "boolean",
-          "title": "{EXT-Detector_Icon}",
-          "default": true
+        useIcon: {
+          type: "boolean",
+          title: "{EXT-Detector_Icon}",
+          default: true
         },
-        "touchOnly": {
-          "type": "boolean",
-          "title": "{EXT-Detector_Touch}",
-          "default": false
+        touchOnly: {
+          type: "boolean",
+          title: "{EXT-Detector_Touch}",
+          default: false
         },
-        "porcupineAccessKey": {
-          "type": ["string", "null" ],
-          "title": "{EXT-Detector_AccessKey}",
-          "default": null
+        porcupineAccessKey: {
+          type: ["string", "null"],
+          title: "{EXT-Detector_AccessKey}",
+          default: null
         },
-        "porcupineCustomModel": {
-          "type": ["string", "null" ],
-          "title": "{EXT-Detector_CustomModel}",
-          "default": null
+        porcupineCustomModel: {
+          type: ["string", "null"],
+          title: "{EXT-Detector_CustomModel}",
+          default: null
         },
-        "detectors": {
-          "type": "array",
-          "title": "{EXT-Detector_Detector}",
-          "default": [],
-          "minItems": 1,
-          "items": {
-            "properties": {
-              "detector": {
-                "type": "string",
-                "title": "{EXT-Detector_Engine}",
-                "enum": ["Snowboy","Porcupine"],
-                "default": "Snowboy"
+        detectors: {
+          type: "array",
+          title: "{EXT-Detector_Detector}",
+          default: [],
+          minItems: 1,
+          items: {
+            properties: {
+              detector: {
+                type: "string",
+                title: "{EXT-Detector_Engine}",
+                enum: ["Snowboy", "Porcupine"],
+                default: "Snowboy"
               },
-              "Model": {
-                "type": "string",
-                "title": "{EXT-Detector_Keyword}",
-                "default": "jarvis",
-                "enum": [ 
+              Model: {
+                type: "string",
+                title: "{EXT-Detector_Keyword}",
+                default: "jarvis",
+                enum: [
                   "smart_mirror",
                   "jarvis",
                   "computer",
@@ -138,11 +138,11 @@ var schema = {
                   "custom"
                 ]
               },
-              "Sensitivity": {
-                "title": "{EXT-Detector_Sensitivity}",
-                "type": ["number", "null"],
-                "default": null,
-                "enum": [
+              Sensitivity: {
+                title: "{EXT-Detector_Sensitivity}",
+                type: ["number", "null"],
+                default: null,
+                enum: [
                   null,
                   0,
                   0.1,
@@ -158,28 +158,28 @@ var schema = {
                 ]
               }
             },
-            "required": ["detector", "Model", "Sensitivity"]
+            required: ["detector", "Model", "Sensitivity"]
           },
-          "additionalItems": {
-            "properties": {
-              "detector": {
-                "type": "string"
+          additionalItems: {
+            properties: {
+              detector: {
+                type: "string"
               },
-              "Model": {
-                "type": "string"
+              Model: {
+                type: "string"
               },
-              "Sensitivity": {
-                "type": ["number", "null"]
+              Sensitivity: {
+                type: ["number", "null"]
               }
             }
           }
         }
       },
-      "required": ["porcupineAccessKey"]
+      required: ["porcupineAccessKey"]
     }
   },
-  "required": ["module", "position", "config", "configDeepMerge"]
-}
+  required: ["module", "position", "config", "configDeepMerge"]
+};
 
-exports.default = defaultConfig
-exports.schema = schema
+exports.default = defaultConfig;
+exports.schema = schema;

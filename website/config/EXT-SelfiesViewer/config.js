@@ -1,5 +1,5 @@
 var defaultConfig = {
-  module: 'EXT-SelfiesViewer',
+  module: "EXT-SelfiesViewer",
   disabled: false,
   position: "top_center",
   config: {
@@ -10,28 +10,28 @@ var defaultConfig = {
     displayBackground: true,
     sortBy: "new"
   }
-}
+};
 
 var schema = {
-  "title": "EXT-SelfiesViewer",
-  "description": "{PluginDescription}",
-  "type": "object",
-  "properties": {
-    "module": {
-      "type": "string",
-      "title": "{PluginName}",
-      "default": "EXT-SelfiesViewer"
+  title: "EXT-SelfiesViewer",
+  description: "{PluginDescription}",
+  type: "object",
+  properties: {
+    module: {
+      type: "string",
+      title: "{PluginName}",
+      default: "EXT-SelfiesViewer"
     },
-    "disabled": {
-      "type": "boolean",
-      "title": "{PluginDisable}",
-      "default": false
+    disabled: {
+      type: "boolean",
+      title: "{PluginDisable}",
+      default: false
     },
-    "position": {
-      "type": "string",
-      "title": "{PluginPosition}",
-      "default": "top_right",
-      "enum": [
+    position: {
+      type: "string",
+      title: "{PluginPosition}",
+      default: "top_right",
+      enum: [
         "top_bar",
         "top_left",
         "top_center",
@@ -47,43 +47,43 @@ var schema = {
         "fullscreen_below"
       ]
     },
-    "config": {
-      "type": "object",
-      "title": "{PluginConfiguration}",
-      "properties": {
-        "debug": {
-          "type": "boolean",
-          "title": "{PluginDebug}",
-          "default": false
+    config: {
+      type: "object",
+      title: "{PluginConfiguration}",
+      properties: {
+        debug: {
+          type: "boolean",
+          title: "{PluginDebug}",
+          default: false
         },
-        "moduleWidth": {
-          "type": "number",
-          "title": "{EXT-SelfiesViewer_moduleWidth}",
-          "default": 300
+        moduleWidth: {
+          type: "number",
+          title: "{EXT-SelfiesViewer_moduleWidth}",
+          default: 300
         },
-        "moduleHeight": {
-          "type": "number",
-          "title": "{EXT-SelfiesViewer_moduleHeight}",
-          "default": 250
+        moduleHeight: {
+          type: "number",
+          title: "{EXT-SelfiesViewer_moduleHeight}",
+          default: 250
         },
-        "displayDelay": {
-          "type": "number",
-          "title": "{EXT-SelfiesViewer_displayDelay}",
-          "default": 10000,
-          "enum": [5000,10000,15000,20000,25000,30000,35000,40000,45000,50000,55000,60000],
-          "minimum": 5000,
-          "maximum": 60000
+        displayDelay: {
+          type: "number",
+          title: "{EXT-SelfiesViewer_displayDelay}",
+          default: 10000,
+          enum: [5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000, 55000, 60000],
+          minimum: 5000,
+          maximum: 60000
         },
-        "displayBackground": {
-          "type": "boolean",
-          "title": "{EXT-SelfiesViewer_displayBackground}",
-          "default": false
+        displayBackground: {
+          type: "boolean",
+          title: "{EXT-SelfiesViewer_displayBackground}",
+          default: false
         },
-        "sortBy": {
-          "type": "string",
-          "title": "{EXT-SelfiesViewer_sortBy}",
-          "default": "new",
-          "enum": [
+        sortBy: {
+          type: "string",
+          title: "{EXT-SelfiesViewer_sortBy}",
+          default: "new",
+          enum: [
             "new",
             "old",
             "random"
@@ -92,8 +92,8 @@ var schema = {
       }
     }
   },
-  "required": ["module", "config"]
-}
+  required: ["module", "config"]
+};
 
-exports.default = defaultConfig
-exports.schema = schema
+exports.default = defaultConfig;
+exports.schema = schema;

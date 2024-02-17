@@ -59,42 +59,42 @@ var defaultConfig = {
       }
     ]
   }
-}
+};
 
 var schema = {
-  "title": "EXT-StreamDeck",
-  "description": "{PluginDescription}",
-  "type": "object",
-  "properties": {
-    "module": {
-      "type": "string",
-      "title": "{PluginName}",
-      "default": "EXT-StreamDeck"
+  title: "EXT-StreamDeck",
+  description: "{PluginDescription}",
+  type: "object",
+  properties: {
+    module: {
+      type: "string",
+      title: "{PluginName}",
+      default: "EXT-StreamDeck"
     },
-    "disabled": {
-      "type": "boolean",
-      "title": "{PluginDisable}",
-      "default": false
+    disabled: {
+      type: "boolean",
+      title: "{PluginDisable}",
+      default: false
     },
-    "config": {
-      "type": "object",
-      "title": "{PluginConfiguration}",
-      "properties": {
-        "debug": {
-          "type": "boolean",
-          "title": "{PluginDebug}",
-          "default": false
+    config: {
+      type: "object",
+      title: "{PluginConfiguration}",
+      properties: {
+        debug: {
+          type: "boolean",
+          title: "{PluginDebug}",
+          default: false
         },
-        "device": {
-          "type": ["string", "null"],
-          "title": "{EXT-StreamDeck_device}",
-          "default": null
+        device: {
+          type: ["string", "null"],
+          title: "{EXT-StreamDeck_device}",
+          default: null
         },
-        "Brightness": {
-          "type": "number",
-          "title": "{EXT-StreamDeck_brightness}",
-          "default": 100,
-          "enum": [
+        Brightness: {
+          type: "number",
+          title: "{EXT-StreamDeck_brightness}",
+          default: 100,
+          enum: [
             0,
             5,
             10,
@@ -118,11 +118,11 @@ var schema = {
             100
           ]
         },
-        "EcoBrightness": {
-          "type": "number",
-          "title": "{EXT-StreamDeck_ecobrightness}",
-          "default": 10,
-          "enum": [
+        EcoBrightness: {
+          type: "number",
+          title: "{EXT-StreamDeck_ecobrightness}",
+          default: 10,
+          enum: [
             0,
             5,
             10,
@@ -146,11 +146,11 @@ var schema = {
             100
           ]
         },
-        "EcoTime": {
-          "type": "number",
-          "title": "{EXT-StreamDeck_ecotime}",
-          "default": 10000,
-          "enum": [
+        EcoTime: {
+          type: "number",
+          title: "{EXT-StreamDeck_ecotime}",
+          default: 10000,
+          enum: [
             5000,
             10000,
             15000,
@@ -159,22 +159,22 @@ var schema = {
             30000
           ]
         },
-        "keyFinder": {
-          "type": "boolean",
-          "title": "{EXT-Keyboard_keyFinder}",
-          "default": false
+        keyFinder: {
+          type: "boolean",
+          title: "{EXT-Keyboard_keyFinder}",
+          default: false
         },
-        "keys": {
-          "type": "array",
-          "title": "{EXT-Keyboard_keys}",
-          "default": [],
-          "minItems": 1,
-          "items": {
-            "properties": {
-              "key": {
-                 "type": "number",
-                 "title": "{EXT-Keyboard_keycode}",
-                 "enum": [
+        keys: {
+          type: "array",
+          title: "{EXT-Keyboard_keys}",
+          default: [],
+          minItems: 1,
+          items: {
+            properties: {
+              key: {
+                type: "number",
+                title: "{EXT-Keyboard_keycode}",
+                enum: [
                   0,
                   1,
                   2,
@@ -210,51 +210,51 @@ var schema = {
                   32
                 ]
               },
-              "logo": {
-                 "type": "string",
-                 "title": "{EXT-StreamDeck_logo}",
+              logo: {
+                type: "string",
+                title: "{EXT-StreamDeck_logo}"
               },
-              "notification": {
-                "type": ["string", "null"],
-                "title": "{EXT-Keyboard_notification}",
+              notification: {
+                type: ["string", "null"],
+                title: "{EXT-Keyboard_notification}"
               },
-              "payload": {
-                "type": ["string", "null"],
-                "title": "{EXT-Keyboard_payload}",
-                "default": null
+              payload: {
+                type: ["string", "null"],
+                title: "{EXT-Keyboard_payload}",
+                default: null
               },
-              "command": {
-                "title": "{EXT-Keyboard_command}",
-                "type": ["string", "null"],
-                "default": null
+              command: {
+                title: "{EXT-Keyboard_command}",
+                type: ["string", "null"],
+                default: null
               },
-              "sound": {
-                "title": "{EXT-Keyboard_sound}",
-                "type": ["string", "null"],
-                "default": null
+              sound: {
+                title: "{EXT-Keyboard_sound}",
+                type: ["string", "null"],
+                default: null
               }
             },
-            "required": ["key", "logo"]
+            required: ["key", "logo"]
           },
-          "additionalItems": {
-            "properties": {
-              "key": {
-                "type": "number"
+          additionalItems: {
+            properties: {
+              key: {
+                type: "number"
               },
-              "logo": {
-                "type": "string"
+              logo: {
+                type: "string"
               },
-              "notification": {
-                "type": ["string", "null"]
+              notification: {
+                type: ["string", "null"]
               },
-              "payload": {
-                "type": ["string", "null"]
+              payload: {
+                type: ["string", "null"]
               },
-              "command": {
-                "type": ["string", "null"]
+              command: {
+                type: ["string", "null"]
               },
-              "sound": {
-                "type": ["string", "null"]
+              sound: {
+                type: ["string", "null"]
               }
             }
           }
@@ -262,8 +262,8 @@ var schema = {
       }
     }
   },
-  "required": ["module", "config"]
-}
+  required: ["module", "config"]
+};
 
-exports.default = defaultConfig
-exports.schema = schema
+exports.default = defaultConfig;
+exports.schema = schema;
