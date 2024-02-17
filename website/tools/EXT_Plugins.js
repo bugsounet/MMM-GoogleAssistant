@@ -1,10 +1,14 @@
+/* global window, getGatewayVersion, loadTranslation, $, forceMobileRotate, doTranslateNavBar, loadDataAllEXT, loadDataDescriptionEXT, loadDataInstalledEXT,
+ * loadDataConfiguredEXT, alert, io, Terminal, FitAddon, alertify, jQuery, loadPluginConfig, loadPluginTemplate, JSONEditor, loadPluginCurrentConfig,
+ * loadPluginTemplate, configMerge */
+
 /** EXT tools
 * @bugsounet
 **/
 
 // rotate rules
 
-PleaseRotateOptions = {
+var PleaseRotateOptions = {
   startOnPageLoad: false
 };
 
@@ -63,17 +67,17 @@ async function createEXTTable () {
     Content += `<tr><td class="text-nowrap fs-6 text-start click" data-bs-toggle="tooltip" style="cursor: pointer;" data-href="https://wiki.bugsounet.fr/${pluginsName}" title="${translation.Plugins_Table_Wiki} ${pluginsName}">${pluginsName}</td><td>${DescEXT[pluginsName]}</td>`;
 
     // EXT install link
-    if (InstEXT.indexOf(pluginsName) == -1) Content += `<td align="center"><a class="btn btn-primary btn-sm" role="button" data-bs-toggle="tooltip" title="${translation.Plugins_Table_Install} ${pluginsName}" href="/install?ext=${pluginsName}">${translation.Install}</a></td>`;
+    if (InstEXT.indexOf(pluginsName) === -1) Content += `<td align="center"><a class="btn btn-primary btn-sm" role="button" data-bs-toggle="tooltip" title="${translation.Plugins_Table_Install} ${pluginsName}" href="/install?ext=${pluginsName}">${translation.Install}</a></td>`;
     // EXT delete link
     else Content += `<td align="center"><a class="btn btn-danger btn-sm" role="button" data-bs-toggle="tooltip" title="${translation.Plugins_Table_Delete} ${pluginsName}" href="/delete?ext=${pluginsName}">${translation.Delete}</a></td>`;
 
-    if (InstEXT.indexOf(pluginsName) == -1) {
-      if (ConfigEXT.indexOf(pluginsName) == -1) Content += "<td></td>";
+    if (InstEXT.indexOf(pluginsName) === -1) {
+      if (ConfigEXT.indexOf(pluginsName) === -1) Content += "<td></td>";
       // config delete link
       else Content += `<td align="center"><a class="btn btn-danger btn-sm pulse animated infinite" data-bs-toggle="tooltip" title="${translation.Plugins_Table_DeleteConfig}" role="button" href="/EXTDeleteConfig?ext=${pluginsName}">${translation.Delete}</a></td>`;
     } else {
       // configure link
-      if (ConfigEXT.indexOf(pluginsName) == -1) Content += `<td align="center"><a class="btn btn-warning btn-sm pulse animated infinite" data-bs-toggle="tooltip" title="${translation.Plugins_Table_Configure}" role="button" href="/EXTCreateConfig?ext=${pluginsName}">${translation.Configure}</a></td>`;
+      if (ConfigEXT.indexOf(pluginsName) === -1) Content += `<td align="center"><a class="btn btn-warning btn-sm pulse animated infinite" data-bs-toggle="tooltip" title="${translation.Plugins_Table_Configure}" role="button" href="/EXTCreateConfig?ext=${pluginsName}">${translation.Configure}</a></td>`;
       // modify link
       else Content += `<td align="center"><a class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="${translation.Plugins_Table_Modify}" role="button" href="/EXTModifyConfig?ext=${pluginsName}">${translation.Modify}</a></td>`;
     }
@@ -95,7 +99,9 @@ async function createEXTTable () {
 }
 
 function doDelete () {
+  /* eslint-disable no-useless-escape */
   var EXT = decodeURIComponent(window.location.search.match(/(\?|&)ext\=([^&]*)/)[2]);
+  /* eslint-enable no-useless-escape */
   $(document).prop("title", translation.Plugins);
   $("#TerminalHeader").text(translation.Plugins_Delete_TerminalHeader);
   var socketDelete = io();
@@ -144,7 +150,9 @@ function doDelete () {
 }
 
 function doInstall () {
+  /* eslint-disable no-useless-escape */
   var EXT = decodeURIComponent(window.location.search.match(/(\?|&)ext\=([^&]*)/)[2]);
+  /* eslint-enable no-useless-escape */
   $(document).prop("title", translation.Plugins);
   $("#TerminalHeader").text(translation.Plugins_Install_TerminalHeader);
   var socketInstall = io();
@@ -279,7 +287,9 @@ async function EXTConfigJSEditor () {
   $("#done").css("display", "none");
   $("#error").css("display", "none");
   $("#buttonGrp").removeClass("invisible");
+  /* eslint-disable no-useless-escape */
   var EXT = decodeURIComponent(window.location.search.match(/(\?|&)ext\=([^&]*)/)[2]);
+  /* eslint-enable no-useless-escape */
   $("#EXTName").text(EXT);
   var plugin = await loadPluginConfig(EXT);
   var template = await loadPluginTemplate(EXT);
@@ -295,17 +305,17 @@ async function EXTConfigJSEditor () {
       var errors = [];
 
       /** Special rules for EXT-Detector **/
-      if (EXT == "EXT-Detector" && json && json.config && Array.isArray(json.config.detectors)) {
+      if (EXT === "EXT-Detector" && json && json.config && Array.isArray(json.config.detectors)) {
         var SnowboyValidator = ["smart_mirror", "jarvis", "computer", "snowboy", "subex", "neo_ya", "hey_extreme", "view_glass"];
         var PorcupineValidator = ["jarvis", "americano", "blueberry", "bumblebee", "grapefruit", "grasshopper", "hey google", "hey siri", "ok google", "picovoice", "porcupine", "terminator", "custom"];
         json.config.detectors.forEach((detector, index) => {
-          if (detector.detector == "Snowboy" && SnowboyValidator.indexOf(detector.Model) == -1) {
+          if (detector.detector === "Snowboy" && SnowboyValidator.indexOf(detector.Model) === -1) {
             errors.push({
               path: ["config", "detectors", index, "Model"],
               message: `${detector.Model} is not comptatible with Snowboy detector`
             });
           }
-          if (detector.detector == "Porcupine" && PorcupineValidator.indexOf(detector.Model) == -1) {
+          if (detector.detector === "Porcupine" && PorcupineValidator.indexOf(detector.Model) === -1) {
             errors.push({
               path: ["config", "detectors", index, "Model"],
               message: `${detector.Model} is not comptatible with Porcupine detector`
@@ -315,7 +325,7 @@ async function EXTConfigJSEditor () {
       }
 
       /** Rules for not change module name **/
-      if (json && json.module && json.module != EXT) {
+      if (json && json.module && json.module !== EXT) {
         errors.push({
           path: ["module"],
           message: `${translation.ErrModule} ${EXT}`
@@ -375,7 +385,9 @@ async function EXTModifyConfigJSEditor () {
   $("#buttonGrp2").removeClass("invisible");
   var EXT = undefined;
   if (window.location.search) {
+    /* eslint-disable no-useless-escape */
     EXT = decodeURIComponent(window.location.search.match(/(\?|&)ext\=([^&]*)/)[2]);
+    /* eslint-enable no-useless-escape */
   }
   $("#EXTName").text(EXT);
   var plugin = await loadPluginCurrentConfig(EXT);
@@ -393,17 +405,17 @@ async function EXTModifyConfigJSEditor () {
       var errors = [];
 
       /** Special rules for EXT-Detector **/
-      if (EXT == "EXT-Detector" && json && json.config && Array.isArray(json.config.detectors)) {
+      if (EXT === "EXT-Detector" && json && json.config && Array.isArray(json.config.detectors)) {
         var SnowboyValidator = ["smart_mirror", "jarvis", "computer", "snowboy", "subex", "neo_ya", "hey_extreme", "view_glass"];
         var PorcupineValidator = ["jarvis", "americano", "blueberry", "bumblebee", "grapefruit", "grasshopper", "hey google", "hey siri", "ok google", "picovoice", "porcupine", "terminator", "custom"];
         json.config.detectors.forEach((detector, index) => {
-          if (detector.detector == "Snowboy" && SnowboyValidator.indexOf(detector.Model) == -1) {
+          if (detector.detector === "Snowboy" && SnowboyValidator.indexOf(detector.Model) === -1) {
             errors.push({
               path: ["config", "detectors", index, "Model"],
               message: `${detector.Model} ${translation.Plugins_Error_Snowboy}`
             });
           }
-          if (detector.detector == "Porcupine" && PorcupineValidator.indexOf(detector.Model) == -1) {
+          if (detector.detector === "Porcupine" && PorcupineValidator.indexOf(detector.Model) === -1) {
             errors.push({
               path: ["config", "detectors", index, "Model"],
               message: `${detector.Model} ${translation.Plugins_Error_Porcupine}`
@@ -413,7 +425,7 @@ async function EXTModifyConfigJSEditor () {
       }
 
       /** Rules for not change module name **/
-      if (json && json.module && json.module != EXT) {
+      if (json && json.module && json.module !== EXT) {
         errors.push({
           path: ["module"],
           message: `${translation.ErrModule} ${EXT}`
@@ -484,7 +496,9 @@ async function EXTDeleteConfigJSEditor () {
   $("#error").css("display", "none");
   $("#buttonGrp").removeClass("invisible");
   $("#confirm").css("display", "block");
+  /* eslint-disable no-useless-escape */
   var EXT = decodeURIComponent(window.location.search.match(/(\?|&)ext\=([^&]*)/)[2]);
+  /* eslint-enable no-useless-escape */
   $("#EXTName").text(EXT);
   var plugin = await loadPluginCurrentConfig(EXT);
   const container = document.getElementById("jsoneditor");
