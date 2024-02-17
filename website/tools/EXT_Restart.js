@@ -1,3 +1,5 @@
+/* global window, getGatewayVersion, loadTranslation, $ */
+
 /** EXT tools
 * @bugsounet
 **/
@@ -28,7 +30,7 @@ function doRestart () {
   function checkPage (callback) {
     fetch(locationGW)
       .then((response) => {
-        if (response.status == 200) return callback();
+        if (response.status === 200) return callback();
       })
       .catch((err) => {});
   }
