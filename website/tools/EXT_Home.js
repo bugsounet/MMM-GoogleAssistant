@@ -1,10 +1,12 @@
+/* global window, getGatewayVersion, loadTranslation, getHomeText, $, forceMobileRotate, doTranslateNavBar */
+
 /** EXT tools
 * @bugsounet
 **/
 
 // rotate rules
 
-PleaseRotateOptions = {
+var PleaseRotateOptions = {
   startOnPageLoad: false
 };
 
