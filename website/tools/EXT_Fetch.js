@@ -1,3 +1,5 @@
+/* global $, alertify, translation, PleaseRotate, location */
+
 /** fetch datas **/
 function getHomeText () {
   return new Promise((resolve) => {
@@ -76,6 +78,7 @@ function checkGA () {
 }
 
 function checkEXTStatus () {
+  var ErrEXTStatus = 0;
   return new Promise((resolve) => {
     $.getJSON("/getEXTStatus", (Status) => {
       //console.log("EXTStatus", Status)
@@ -89,8 +92,8 @@ function checkEXTStatus () {
       })
       .fail((err) => {
         ErrEXTStatus++;
-        if (ErrEXTStatus == 1) alertify.error("EXTStatus: Connexion Lost!");
-        if (err.status == 403) $(location).attr("href", "/");
+        if (ErrEXTStatus === 1) alertify.error("EXTStatus: Connexion Lost!");
+        if (err.status === 403) $(location).attr("href", "/");
       });
   });
 }
@@ -233,7 +236,7 @@ function loadRadio () {
     })
       .fail(function (err) {
         if (!err.status) alertify.error("Connexion Lost!");
-        if (err.status == 404) resolve([]);
+        if (err.status === 404) resolve([]);
         else alertify.warning(`[loadRadio] Server return Error ${err.status} (${err.statusText})`);
       });
   });
@@ -245,7 +248,7 @@ function hasPluginConnected (obj, key, value) {
     for (var p in obj) {
       if (obj.hasOwnProperty(p) && this.hasPluginConnected(obj[p], key, value)) {
         //logGW("check", key+":"+value, "in", p)
-        if (obj[p][key] == value) {
+        if (obj[p][key] === value) {
           //logGW(p, "is connected")
           return true;
         }
@@ -314,15 +317,15 @@ function doTranslateNavBar () {
   $("#accordionSidebar").removeClass("invisible");
   $("li.active").removeClass("active");
   var path = location.pathname;
-  if (path == "/install"
-    || path == "/delete"
-    || path == "/EXTModifyConfig"
-    || path == "/EXTCreateConfig"
+  if (path === "/install"
+    || path === "/delete"
+    || path === "/EXTModifyConfig"
+    || path === "/EXTCreateConfig"
   ) path = "/EXT";
-  if (path == "/EditMMConfig") path = "/MMConfig";
-  if (path == "/Die" || path == "/Restart") path = "/Tools";
-  if (path == "/SystemDie" || path == "/SystemRestart") path = "/System";
-  if (path == "/ptyProcess") path = "/Terminal";
+  if (path === "/EditMMConfig") path = "/MMConfig";
+  if (path === "/Die" || path === "/Restart") path = "/Tools";
+  if (path === "/SystemDie" || path === "/SystemRestart") path = "/System";
+  if (path === "/ptyProcess") path = "/Terminal";
   $(`a[href="${path}"]`).closest("a").addClass("active");
 }
 
