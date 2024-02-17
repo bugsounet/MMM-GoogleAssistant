@@ -1,10 +1,12 @@
+/* global forceMobileRotate, window, getGatewayVersion, loadTranslation, $, doTranslateNavBar, checkSystem, getActiveVersion */
+
 /** EXT System
 * @bugsounet
 **/
 
 // rotate rules
 
-PleaseRotateOptions = {
+var PleaseRotateOptions = {
   startOnPageLoad: false
 };
 
@@ -31,7 +33,7 @@ async function doSystem (cb = null) {
   clearInterval(SystemInterval);
   SystemInterval = null;
 
-  system = await checkSystem();
+  var system = await checkSystem();
   activeVersion = await getActiveVersion();
 
   progressOrText(system);
@@ -39,7 +41,7 @@ async function doSystem (cb = null) {
     progressOrText(system);
   });
 
-  SystemInterval = setInterval(async () => {
+  SystemInterval = setInterval(() => {
     doSystem();
   }, 15000);
 
@@ -266,7 +268,7 @@ async function doSystem (cb = null) {
   }
   SystemFirstScan = false;
 
-  if (system.NETWORK.type == "wireless") {
+  if (system.NETWORK.type === "wireless") {
     $("#SpeedArea").addClass("visually-hidden");
     $("#DuplexArea").addClass("visually-hidden");
     $("#wired-icon").addClass("visually-hidden");
@@ -284,7 +286,7 @@ async function doSystem (cb = null) {
     $("#quality").text(system.NETWORK.quality);
     $("#signalLevel").text(system.NETWORK.signalLevel);
     $("#frequency").text(system.NETWORK.frequency);
-  } else if (system.NETWORK.type == "wired") {
+  } else if (system.NETWORK.type === "wired") {
     $("#SpeedArea").removeClass("visually-hidden");
     $("#DuplexArea").removeClass("visually-hidden");
     $("#wirelessSignal").addClass("visually-hidden");
