@@ -18,6 +18,4 @@ jobs:
         uses: actions/checkout@v4
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v3
-        with:
-          node-version: 20
         
