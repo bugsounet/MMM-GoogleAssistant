@@ -1,40 +1,42 @@
+/* global window, getGatewayVersion, loadTranslation, getHomeText, $, forceMobileRotate, doTranslateNavBar */
+
 /** EXT tools
 * @bugsounet
 **/
 
 // rotate rules
 
-PleaseRotateOptions = {
+var PleaseRotateOptions = {
   startOnPageLoad: false
-}
+};
 
 // define all vars
-var translation= {}
-var versionGW = {}
-var homeText = {}
+var translation = {};
+var versionGW = {};
+var homeText = {};
 
 // Load rules
-window.addEventListener("load", async event => {
-  versionGW = await getGatewayVersion()
-  translation = await loadTranslation()
-  homeText = await getHomeText()
+window.addEventListener("load", async (event) => {
+  versionGW = await getGatewayVersion();
+  translation = await loadTranslation();
+  homeText = await getHomeText();
 
-  $('html').prop("lang", versionGW.lang)
-  forceMobileRotate()
-  doIndex()
-  doTranslateNavBar()
+  $("html").prop("lang", versionGW.lang);
+  forceMobileRotate();
+  doIndex();
+  doTranslateNavBar();
   // @todo Add ID in src
-  $("#HomeText").html(homeText.text)
-})
+  $("#HomeText").html(homeText.text);
+});
 
-function doIndex() {
-  $(document).prop('title', translation.Home)
-  $('#welcome').text(translation.Home_Welcome)
+function doIndex () {
+  $(document).prop("title", translation.Home);
+  $("#welcome").text(translation.Home_Welcome);
   if (versionGW.needUpdate) {
-    $('#alert').removeClass('invisible')
-    $('#alert').removeClass('alert-success')
-    $('#alert').addClass('alert-warning')
-    $('#messageText').text(translation.Update + " v"+versionGW.last)
+    $("#alert").removeClass("invisible");
+    $("#alert").removeClass("alert-success");
+    $("#alert").addClass("alert-warning");
+    $("#messageText").text(`${translation.Update} v${versionGW.last}`);
   }
 }
 

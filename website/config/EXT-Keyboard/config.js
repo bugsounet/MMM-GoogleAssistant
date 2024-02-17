@@ -21,86 +21,86 @@ var defaultConfig = {
       }
     ]
   }
-}
+};
 
 var schema = {
-  "title": "EXT-Keyboard",
-  "description": "{PluginDescription}",
-  "type": "object",
-  "properties": {
-    "module": {
-      "type": "string",
-      "title": "{PluginName}",
-      "default": "EXT-Keyboard"
+  title: "EXT-Keyboard",
+  description: "{PluginDescription}",
+  type: "object",
+  properties: {
+    module: {
+      type: "string",
+      title: "{PluginName}",
+      default: "EXT-Keyboard"
     },
-    "disabled": {
-      "type": "boolean",
-      "title": "{PluginDisable}",
-      "default": false
+    disabled: {
+      type: "boolean",
+      title: "{PluginDisable}",
+      default: false
     },
-    "config": {
-      "type": "object",
-      "title": "{PluginConfiguration}",
-      "properties": {
-        "debug": {
-          "type": "boolean",
-          "title": "{PluginDebug}",
-          "default": false
+    config: {
+      type: "object",
+      title: "{PluginConfiguration}",
+      properties: {
+        debug: {
+          type: "boolean",
+          title: "{PluginDebug}",
+          default: false
         },
-        "keyFinder": {
-          "type": "boolean",
-          "title": "{EXT-Keyboard_keyFinder}",
-          "default": false
+        keyFinder: {
+          type: "boolean",
+          title: "{EXT-Keyboard_keyFinder}",
+          default: false
         },
-        "keys": {
-          "type": "array",
-          "title": "{EXT-Keyboard_keys}",
-          "default": [],
-          "minItems": 1,
-          "items": {
-            "properties": {
-              "keyCode": {
-                 "type": "number",
-                 "title": "{EXT-Keyboard_keycode}",
+        keys: {
+          type: "array",
+          title: "{EXT-Keyboard_keys}",
+          default: [],
+          minItems: 1,
+          items: {
+            properties: {
+              keyCode: {
+                type: "number",
+                title: "{EXT-Keyboard_keycode}"
               },
-              "notification": {
-                "type": ["string", "null"],
-                "title": "{EXT-Keyboard_notification}",
+              notification: {
+                type: ["string", "null"],
+                title: "{EXT-Keyboard_notification}"
               },
-              "payload": {
-                "type": ["string", "null"],
-                "title": "{EXT-Keyboard_payload}",
-                "default": null
+              payload: {
+                type: ["string", "null"],
+                title: "{EXT-Keyboard_payload}",
+                default: null
               },
-              "command": {
-                "title": "{EXT-Keyboard_command}",
-                "type": ["string", "null"],
-                "default": null
+              command: {
+                title: "{EXT-Keyboard_command}",
+                type: ["string", "null"],
+                default: null
               },
-              "sound": {
-                "title": "{EXT-Keyboard_sound}",
-                "type": ["string", "null"],
-                "default": null
+              sound: {
+                title: "{EXT-Keyboard_sound}",
+                type: ["string", "null"],
+                default: null
               }
             },
-            "required": ["keyCode"]
+            required: ["keyCode"]
           },
-          "additionalItems": {
-            "properties": {
-              "keyCode": {
-                "type": "number"
+          additionalItems: {
+            properties: {
+              keyCode: {
+                type: "number"
               },
-              "notification": {
-                "type": ["string", "null"]
+              notification: {
+                type: ["string", "null"]
               },
-              "payload": {
-                "type": ["string", "null"]
+              payload: {
+                type: ["string", "null"]
               },
-              "command": {
-                "type": ["string", "null"]
+              command: {
+                type: ["string", "null"]
               },
-              "sound": {
-                "type": ["string", "null"]
+              sound: {
+                type: ["string", "null"]
               }
             }
           }
@@ -108,8 +108,8 @@ var schema = {
       }
     }
   },
-  "required": ["module", "config"]
-}
+  required: ["module", "config"]
+};
 
-exports.default = defaultConfig
-exports.schema = schema
+exports.default = defaultConfig;
+exports.schema = schema;

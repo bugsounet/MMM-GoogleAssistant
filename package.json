@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
-  "version": "6.1.2",
-  "rev": "240210",
+  "version": "6.2.0",
+  "rev": "240217",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -19,7 +19,9 @@
     "smarthome": "sudo node installer/setup && npm run certbot",
     "certbot": "sudo installer/certbot.sh",
     "project": "installer/check_ProjectID.sh",
-    "migrate": "node installer/migrate.js"
+    "migrate": "node installer/migrate.js",
+    "lint": "eslint *.js installer/*.js components/*.js website/tools/*.js website/config/*/*.js components/AssistantSDK/*.js --resolve-plugins-relative-to . --no-eslintrc --config .eslintrc.js",
+    "lint:fix": "eslint *.js installer/*.js components/*.js website/tools/*.js website/config/*/*.js components/AssistantSDK/*.js --resolve-plugins-relative-to . --no-eslintrc --config .eslintrc.js --fix"
   },
   "engines": {
     "node": ">=18"
@@ -75,5 +77,10 @@
     "systeminformation": "^5.21.24",
     "xterm": "^5.3.0",
     "xterm-addon-fit": "^0.8.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "@stylistic/eslint-plugin": "^1.6.2",
+    "eslint-plugin-import": "^2.29.1"
   }
 }

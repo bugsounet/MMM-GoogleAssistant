@@ -1,31 +1,31 @@
 var defaultConfig = {
-  module: 'EXT-RadioPlayer',
-  position: 'top_right',
+  module: "EXT-RadioPlayer",
+  position: "top_right",
   animateIn: "flipInX",
   animateOut: "flipOutX",
   disabled: false,
   config: {
     debug: false,
     minVolume: 30,
-    maxVolume: 75,
+    maxVolume: 75
   }
-}
+};
 
 var schema = {
-  "title": "EXT-RadioPlayer",
-  "description": "{PluginDescription}",
-  "type": "object",
-  "properties": {
-    "module": {
-      "type": "string",
-      "title": "{PluginName}",
-      "default": "EXT-RadioPlayer"
+  title: "EXT-RadioPlayer",
+  description: "{PluginDescription}",
+  type: "object",
+  properties: {
+    module: {
+      type: "string",
+      title: "{PluginName}",
+      default: "EXT-RadioPlayer"
     },
-    "position": {
-      "type": "string",
-      "title": "{PluginPosition}",
-      "default": "top_right",
-      "enum": [
+    position: {
+      type: "string",
+      title: "{PluginPosition}",
+      default: "top_right",
+      enum: [
         "top_bar",
         "top_left",
         "top_center",
@@ -41,11 +41,11 @@ var schema = {
         "fullscreen_below"
       ]
     },
-    "animateIn": {
-      "type": "string",
-      "title": "{PluginAnimateIn}",
-      "default": "flipInX",
-      "enum": [
+    animateIn: {
+      type: "string",
+      title: "{PluginAnimateIn}",
+      default: "flipInX",
+      enum: [
         "bounce",
         "flash",
         "pulse",
@@ -103,11 +103,11 @@ var schema = {
         "slideInUp"
       ]
     },
-    "animateOut": {
-      "type": "string",
-      "title": "{PluginAnimateOut}",
-      "default": "flipOutX",
-      "enum": [
+    animateOut: {
+      type: "string",
+      title: "{PluginAnimateOut}",
+      default: "flipOutX",
+      enum: [
         "backOutDown",
         "backOutLeft",
         "backOutRight",
@@ -152,39 +152,39 @@ var schema = {
         "slideOutUp"
       ]
     },
-    "disabled": {
-      "type": "boolean",
-      "title": "{PluginDisable}",
-      "default": false
+    disabled: {
+      type: "boolean",
+      title: "{PluginDisable}",
+      default: false
     },
-    "config": {
-      "type": "object",
-      "title": "{PluginConfiguration}",
-      "properties": {
-        "debug": {
-          "type": "boolean",
-          "title": "{PluginDebug}",
-          "default": false
+    config: {
+      type: "object",
+      title: "{PluginConfiguration}",
+      properties: {
+        debug: {
+          type: "boolean",
+          title: "{PluginDebug}",
+          default: false
         },
-        "minVolume": {
-          "type": "number",
-          "title": "{EXT-RadioPlayer_Min}",
-          "default": 30,
-          "minimum": 0,
-          "maximum": 100
+        minVolume: {
+          type: "number",
+          title: "{EXT-RadioPlayer_Min}",
+          default: 30,
+          minimum: 0,
+          maximum: 100
         },
-        "maxVolume": {
-          "type": "number",
-          "title": "{EXT-RadioPlayer_Max}",
-          "default": 75,
-          "minimum": 1,
-          "maximum": 100
+        maxVolume: {
+          type: "number",
+          title: "{EXT-RadioPlayer_Max}",
+          default: 75,
+          minimum: 1,
+          maximum: 100
         }
       }
     }
   },
-  "required": ["module", "config", "position"]
-}
+  required: ["module", "config", "position"]
+};
 
-exports.default = defaultConfig
-exports.schema = schema
+exports.default = defaultConfig;
+exports.schema = schema;

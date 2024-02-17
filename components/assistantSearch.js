@@ -8,9 +8,11 @@
  * it-IT
  */
 
+/* global logGA */
+
 class AssistantSearch {
   constructor (config) {
-    logGA("AssistantSearch for", config.lang)
+    logGA("AssistantSearch for", config.lang);
     var GoogleSearchDB = {
       // de (maybe to complete)
       "de-DE": [
@@ -29,7 +31,7 @@ class AssistantSearch {
         "Ecco cosa ho trovato sul web."
       ],
       // fr
-      "fr-FR" : [
+      "fr-FR": [
         "Voici le premier résultat de recherche",
         "Voici ce que j'ai trouvé",
         "Voilà un résultat venant du Web",
@@ -62,7 +64,7 @@ class AssistantSearch {
         "Hier is een zoekresultaat",
         "Ik heb dit gevonden over je zoekopdracht"
       ]
-    }
+    };
     var YouTubeSearchDB = {
       // de (maybe to complete)
       "de-DE": [
@@ -81,7 +83,7 @@ class AssistantSearch {
         "Ecco un risultato da YouTube."
       ],
       // fr
-      "fr-FR" : [
+      "fr-FR": [
         "Voilà ce que propose YouTube",
         "Voici un résultat provenant de YouTube",
         "J'ai trouvé ça sur YouTube",
@@ -114,36 +116,36 @@ class AssistantSearch {
         "Hier is een resultaat",
         "Hier is een zoekresultaat"
       ]
-    }
-    this.GoogleDB = GoogleSearchDB[config.lang]
-    this.YouTubeDB = YouTubeSearchDB[config.lang]
+    };
+    this.GoogleDB = GoogleSearchDB[config.lang];
+    this.YouTubeDB = YouTubeSearchDB[config.lang];
     if (this.GoogleDB) {
-      this.GoogleDB = this.GoogleDB.map(text => text.toLowerCase())
-      logGA("AssistantSearch Google: Loaded")
+      this.GoogleDB = this.GoogleDB.map((text) => text.toLowerCase());
+      logGA("AssistantSearch Google: Loaded");
     }
-    else console.warn("[GA] AssistantSearch Google: lang not found!")
+    else console.warn("[GA] AssistantSearch Google: lang not found!");
     if (this.YouTubeDB) {
-      this.YouTubeDB = this.YouTubeDB.map(text => text.toLowerCase())
-      logGA("AssistantSearch YouTube: Loaded")
+      this.YouTubeDB = this.YouTubeDB.map((text) => text.toLowerCase());
+      logGA("AssistantSearch YouTube: Loaded");
     }
-    else console.warn("[GA] AssistantSearch YouTube: lang not found!")
+    else console.warn("[GA] AssistantSearch YouTube: lang not found!");
   }
 
-  GoogleSearch(text) {
-    if (!this.GoogleDB) return false
+  GoogleSearch (text) {
+    if (!this.GoogleDB) return false;
     if (this.GoogleDB.includes(text.toLowerCase())) {
-      logGA("GoogleDB Found:", text)
-      return true
+      logGA("GoogleDB Found:", text);
+      return true;
     }
-    else return false
+    else return false;
   }
 
-  YouTubeSearch(text) {
-    if (!this.YouTubeDB) return false
+  YouTubeSearch (text) {
+    if (!this.YouTubeDB) return false;
     if (this.YouTubeDB.includes(text.toLowerCase())) {
-      logGA("YouTubeDB Found:", text)
-      return true
+      logGA("YouTubeDB Found:", text);
+      return true;
     }
-    else return false
+    else return false;
   }
 }

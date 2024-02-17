@@ -1,8 +1,9 @@
-var Spinner = require('cli-spinner').Spinner;
 const path = require("path");
-const { spawn } = require("child_process")
-const pressAnyKey = require('press-any-key');
-const { readdirSync } = require ('fs');
+const { spawn } = require("child_process");
+const { readdirSync } = require("fs");
+const Spinner = require("cli-spinner").Spinner;
+const pressAnyKey = require("press-any-key");
+
 const resolved = path.resolve(__dirname, "../..");
 const Directories = getDirectories(resolved);
 
@@ -41,56 +42,57 @@ const db = [
   "EXT-YouTubeCast"
 ];
 
-var skip = 0
-var updated = 0
-var failed = 0
-var total = Directories.length
+var skip = 0;
+var updated = 0;
+var failed = 0;
+var total = Directories.length;
 
 console.log("Start Refreshing and Updating MMM-GoogleAssistant and EXTs\n");
 main();
 
-function getDirectories(source) {
+function getDirectories (source) {
   const directories = readdirSync(source, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name)
-  return directories
+    .filter((dirent) => dirent.isDirectory())
+    .map((dirent) => dirent.name);
+  return directories;
 }
 
-function Update(module) {
-  return new Promise(resolve => {
+function Update (module) {
+  return new Promise((resolve) => {
     console.log("❤ Found:", module);
-    const modulePath = resolved + "/" + module
-    var command = "npm run clean && npm run update"
+    const modulePath = `${resolved}/${module}`;
+    var command = "npm run clean && npm run update";
 
     const spinner = new Spinner(`Updating: ${module}...`);
     spinner.setSpinnerString(18);
     spinner.start();
-    const updateModule = spawn(command, { cwd: modulePath, shell: true })
+    const updateModule = spawn(command, { cwd: modulePath, shell: true });
 
-    updateModule.stdout.on('data', (data) => {
+    updateModule.stdout.on("data", (data) => {
+
       /* For debug
       process.stdout.write('\r');
       console.log(data.toString());
       */
     });
 
-    updateModule.stderr.on('data', (data) => {
-      console.error("\n❗ " + data.toString());
+    updateModule.stderr.on("data", (data) => {
+      console.error(`\n❗ ${data.toString()}`);
     });
 
-    updateModule.on('exit', (code) => {
+    updateModule.on("exit", (code) => {
       spinner.stop();
-      process.stdout.write('\r');
+      process.stdout.write("\r");
       if (!code) {
-        let version = require(modulePath + "/package.json").version
-        let rev = require(modulePath + "/package.json").rev
+        let version = require(`${modulePath}/package.json`).version;
+        let rev = require(`${modulePath}/package.json`).rev;
         console.log(`✅ Update of ${module}: Version: ${version} (${rev})`);
         console.log("---");
-        updated++
+        updated++;
         resolve();
       } else {
         console.error("❌ Failed: Error Detected!");
-        failed++
+        failed++;
         pressAnyKey("Press any key to continue, or CTRL+C to exit", {
           ctrlC: "reject"
         })
@@ -99,12 +101,12 @@ function Update(module) {
             resolve();
           })
           .catch(() => {
-            Result()
+            Result();
             process.exit();
-          })
+          });
       }
     });
-  })
+  });
 }
 
 async function main () {
@@ -115,7 +117,7 @@ async function main () {
     else {
       console.log("✋ Skipped:", module);
       console.log("---");
-      skip++
+      skip++;
     }
   }
   Result();

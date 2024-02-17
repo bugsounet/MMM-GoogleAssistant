@@ -12,23 +12,23 @@ var defaultConfig = {
     username: null,
     password: null
   }
-}
+};
 
 var schema = {
-  "title": "EXT-YouTube",
-  "description": "{PluginDescription}",
-  "type": "object",
-  "properties": {
-    "module": {
-      "type": "string",
-      "title": "{PluginName}",
-      "default": "EXT-YouTube"
+  title: "EXT-YouTube",
+  description: "{PluginDescription}",
+  type: "object",
+  properties: {
+    module: {
+      type: "string",
+      title: "{PluginName}",
+      default: "EXT-YouTube"
     },
-    "position": {
-      "type": "string",
-      "title": "{PluginPosition}",
-      "default": "top_center",
-      "enum": [
+    position: {
+      type: "string",
+      title: "{PluginPosition}",
+      default: "top_center",
+      enum: [
         "top_bar",
         "top_left",
         "top_center",
@@ -44,66 +44,66 @@ var schema = {
         "fullscreen_below"
       ]
     },
-    "disabled": {
-      "type": "boolean",
-      "title": "{PluginDisable}",
-      "default": false
+    disabled: {
+      type: "boolean",
+      title: "{PluginDisable}",
+      default: false
     },
-    "config": {
-      "type": "object",
-      "title": "{PluginConfiguration}",
-      "properties": {
-        "debug": {
-          "type": "boolean",
-          "title": "{PluginDebug}",
-          "default": false
+    config: {
+      type: "object",
+      title: "{PluginConfiguration}",
+      properties: {
+        debug: {
+          type: "boolean",
+          title: "{PluginDebug}",
+          default: false
         },
-        "fullscreen": {
-          "type": "boolean",
-          "title": "{EXT-YouTube_Fullscreen}",
-          "default": false
+        fullscreen: {
+          type: "boolean",
+          title: "{EXT-YouTube_Fullscreen}",
+          default: false
         },
-        "width": {
-          "type": "string",
-          "title": "{EXT-YouTube_Width}",
-          "default": "30vw"
+        width: {
+          type: "string",
+          title: "{EXT-YouTube_Width}",
+          default: "30vw"
         },
-        "height": {
-          "type": "string",
-          "title": "{EXT-YouTube_Height}",
-          "default": "30vh"
+        height: {
+          type: "string",
+          title: "{EXT-YouTube_Height}",
+          default: "30vh"
         },
-        "useSearch": {
-          "type": "boolean",
-          "title": "{EXT-YouTube_Search}",
-          "default": true
+        useSearch: {
+          type: "boolean",
+          title: "{EXT-YouTube_Search}",
+          default: true
         },
-        "alwaysDisplayed": {
-          "type": "boolean",
-          "title": "{EXT-YouTube_Display}",
-          "default": true
+        alwaysDisplayed: {
+          type: "boolean",
+          title: "{EXT-YouTube_Display}",
+          default: true
         },
-        "displayHeader": {
-          "type": "boolean",
-          "title": "{EXT-YouTube_Header}",
-          "default": true
+        displayHeader: {
+          type: "boolean",
+          title: "{EXT-YouTube_Header}",
+          default: true
         },
-        "username": {
-          "type": [ "string", "null" ],
-          "title": "{EXT-YouTube_Username}",
-          "default": null
+        username: {
+          type: ["string", "null"],
+          title: "{EXT-YouTube_Username}",
+          default: null
         },
-        "password": {
-          "type": [ "string", "null" ],
-          "title": "{EXT-YouTube_Password}",
-          "default": null
+        password: {
+          type: ["string", "null"],
+          title: "{EXT-YouTube_Password}",
+          default: null
         }
       },
-      "required": ["username", "password"]
+      required: ["username", "password"]
     }
   },
-  "required": ["module", "config", "position"]
-}
+  required: ["module", "config", "position"]
+};
 
-exports.default = defaultConfig
-exports.schema = schema
+exports.default = defaultConfig;
+exports.schema = schema;
