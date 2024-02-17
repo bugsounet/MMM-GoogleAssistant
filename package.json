@@ -19,7 +19,9 @@
     "smarthome": "sudo node installer/setup && npm run certbot",
     "certbot": "sudo installer/certbot.sh",
     "project": "installer/check_ProjectID.sh",
-    "migrate": "node installer/migrate.js"
+    "migrate": "node installer/migrate.js",
+    "lint": "eslint *.js installer/*.js components/*.js components/AssistantSDK/*.js --resolve-plugins-relative-to . --no-eslintrc --config .eslintrc.js",
+    "lint:fix": "eslint *.js installer/*.js components/*.js components/AssistantSDK/*.js --resolve-plugins-relative-to . --no-eslintrc --config .eslintrc.js --fix"
   },
   "engines": {
     "node": ">=18"
