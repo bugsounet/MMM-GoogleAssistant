@@ -1,3 +1,4 @@
+/* global window, getGatewayVersion, $, loadTranslation */
 /** EXT tools
 * @bugsounet
 **/
