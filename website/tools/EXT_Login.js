@@ -1,3 +1,5 @@
+/* global window, getGatewayVersion, loadTranslation, $, alertify, location */
+
 /** EXT tools
 * @bugsounet
 **/
@@ -24,7 +26,7 @@ function doLogin () {
   $("#Login-submit").text(translation.Login_Login);
 
   $("#login").on("input change", function () {
-    if ($("#username").val() != "" && $("#password").val() != "") $("#Login-submit").removeClass("disabled");
+    if ($("#username").val() !== "" && $("#password").val() !== "") $("#Login-submit").removeClass("disabled");
     else $("#Login-submit").addClass("disabled");
   });
 
