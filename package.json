@@ -20,8 +20,8 @@
     "certbot": "sudo installer/certbot.sh",
     "project": "installer/check_ProjectID.sh",
     "migrate": "node installer/migrate.js",
-    "lint": "eslint *.js installer/*.js components/*.js website/tools/*.js website/config/*/*.js components/AssistantSDK/*.js --resolve-plugins-relative-to . --no-eslintrc --config .eslintrc.js",
-    "lint:fix": "eslint *.js installer/*.js components/*.js website/tools/*.js website/config/*/*.js components/AssistantSDK/*.js --resolve-plugins-relative-to . --no-eslintrc --config .eslintrc.js --fix"
+    "lint": "eslint *.js installer/*.js components/*.js website/tools/*.js website/config/*/*.js components/AssistantSDK/*.js --config eslint.config.js",
+    "lint:fix": "eslint *.js installer/*.js components/*.js website/tools/*.js website/config/*/*.js components/AssistantSDK/*.js --config eslint.config.js --fix"
   },
   "engines": {
     "node": ">=18"
@@ -79,8 +79,9 @@
     "xterm-addon-fit": "^0.8.0"
   },
   "devDependencies": {
-    "eslint": "^8.56.0",
+    "@eslint/js": "^8.56.0",
     "@stylistic/eslint-plugin": "^1.6.2",
+    "eslint": "^8.56.0",
     "eslint-plugin-import": "^2.29.1"
   }
 }
