@@ -14,5 +14,5 @@ jobs:
         run: npm prune
 
       - name: Run ESLint
-        run: npx eslint *.js installer/*.js components/*.js website/tools/*.js website/config/*/*.js components/AssistantSDK/*.js --config .eslintrc.js
+        run: npx eslint *.js installer/*.js components/*.js website/tools/*.js website/config/*/*.js components/AssistantSDK/*.js --config eslint.config.js
         continue-on-error: false
