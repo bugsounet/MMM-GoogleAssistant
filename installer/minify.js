@@ -24,7 +24,13 @@ let commentOut = "**/";
  */
 function searchFiles () {
   let components = globSync("../components/*.js");
+  let AssistantSDK = globSync("../components/AssistantSDK/*.js");
+  let websiteConfigs = globSync("../website/config/*/*.js");
+  let websiteTools = globSync("../website/tools/*.js");
   files = files.concat(components);
+  files = files.concat(AssistantSDK);
+  files = files.concat(websiteConfigs);
+  files = files.concat(websiteTools);
   console.log(`Found: ${files.length} files to minify\n`);
 }
 
