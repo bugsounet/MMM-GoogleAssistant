@@ -23,7 +23,7 @@
     "lint": "eslint *.js installer/*.js components/*.js website/tools/*.js website/config/*/*.js components/AssistantSDK/*.js --config eslint.config.js",
     "lint:fix": "eslint *.js installer/*.js components/*.js website/tools/*.js website/config/*/*.js components/AssistantSDK/*.js --config eslint.config.js --fix",
     "test": "npm run lint",
-    "test:minify": "node installer/minify.js"
+    "test:minify": "cd installer && node minify.js"
   },
   "engines": {
     "node": ">=18"
