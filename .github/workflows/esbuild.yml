@@ -1,0 +1,18 @@
+name: "ESBuild Testing"
+
+on: [pull_request]
+
+jobs:
+  eslint:
+    name: Run esbuild
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: npm prune
+
+      - name: Run ESBuild
+        run: npm run test:minify
+        continue-on-error: false
