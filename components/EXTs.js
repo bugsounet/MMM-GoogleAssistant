@@ -609,6 +609,12 @@ class EXTs {
         this.onStartPlugin(module);
         break;
       default:
+        logGA(`[EXTs] Hi, who are you ${module}?`);
+        this.sendNotification("EXT_ALERT", {
+          message: `Unknow EXT: Who is ${module} !?`,
+          type: "warning",
+          timer: 10000
+        });
         break;
     }
   }

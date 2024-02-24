@@ -1,10 +1,10 @@
-name: "ESLint Testing"
+name: "ESBuild Testing"
 
 on: [pull_request]
 
 jobs:
   eslint:
-    name: Run eslint scanning
+    name: Run esbuild
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -13,6 +13,6 @@ jobs:
       - name: Install Dependencies
         run: npm prune
 
-      - name: Run ESLint
-        run: npm run test
+      - name: Run ESBuild
+        run: npm run test:minify
         continue-on-error: false
