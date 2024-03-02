@@ -29,6 +29,7 @@
     "node": ">=18"
   },
   "keywords": [
+    "MMM-GoogleAssistant",
     "magic mirror",
     "module",
     "google assistant",
