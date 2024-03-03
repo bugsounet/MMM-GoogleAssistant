@@ -58,6 +58,7 @@ Module.register("MMM-GoogleAssistant", {
     },
     recipes: [],
     website: {
+      use: true,
       username: "admin",
       password: "admin",
       CLIENT_ID: null
@@ -352,11 +353,13 @@ Module.register("MMM-GoogleAssistant", {
       description: this.translate("STOP_HELP"),
       callback: "tbStopEXT"
     });
-    commander.add({
-      command: "sysinfo",
-      description: this.translate("TB_SYSINFO_DESCRIPTION"),
-      callback: "cmd_sysinfo"
-    });
+    if (this.config.website.use) {
+      commander.add({
+        command: "sysinfo",
+        description: this.translate("TB_SYSINFO_DESCRIPTION"),
+        callback: "cmd_sysinfo"
+      });
+    }
   },
 
   tbQuery (command, handler) {

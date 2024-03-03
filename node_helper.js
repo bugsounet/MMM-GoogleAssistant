@@ -33,7 +33,6 @@ module.exports = NodeHelper.create({
         this.initGA();
         break;
       case "WEBSITE-INIT":
-        this.lib.HyperWatch.enable();
         var Version = {
           version: require("./package.json").version,
           rev: require("./package.json").rev,
@@ -41,8 +40,13 @@ module.exports = NodeHelper.create({
         };
         this.sendSocketNotification("INITIALIZED", Version);
         console.log("[GA] Assistant Ready!");
-        await this.parseWebsite();
-        this.website.init(payload);
+        if (this.config.website.use) {
+          this.lib.HyperWatch.enable();
+          await this.parseWebsite();
+          this.website.init(payload);
+        } else {
+          console.warn("[GA] Website disabled");
+        }
         break;
       case "SMARTHOME-INIT":
         var smarthome = await this.parseSmarthome();
@@ -59,27 +63,35 @@ module.exports = NodeHelper.create({
         this.searchOnGoogle.search(payload);
         break;
       case "HELLO":
-        if (!this.website) {
-          // library is not loaded ... retry (not needed but...)
-          setTimeout(() => { this.socketNotificationReceived("HELLO", payload); }, 1000);
-          return;
+        if (this.config.website.use) {
+          if (!this.website) {
+            // library is not loaded ... retry (not needed but...)
+            setTimeout(() => { this.socketNotificationReceived("HELLO", payload); }, 1000);
+            return;
+          }
+          this.website.setActiveVersion(payload);
         }
-        this.website.setActiveVersion(payload);
         break;
       case "RESTART":
-        this.website.restartMM();
+        if (this.config.website.use) {
+          this.website.restartMM();
+        }
         break;
       case "CLOSE":
-        this.website.doClose();
+        if (this.config.website.use) {
+          this.website.doClose();
+        }
         break;
       case "EXTStatus":
-        if (!this.website) {
-          // library is not loaded ... retry (not needed but...)
-          setTimeout(() => { this.socketNotificationReceived("EXTStatus", payload); }, 1000);
-          return;
+        if (this.config.website.use) {
+          if (!this.website) {
+            // library is not loaded ... retry (not needed but...)
+            setTimeout(() => { this.socketNotificationReceived("EXTStatus", payload); }, 1000);
+            return;
+          }
+          this.website.setEXTStatus(payload);
+          this.updateSmartHome();
         }
-        this.website.setEXTStatus(payload);
-        this.updateSmartHome();
         break;
       case "TB_SYSINFO":
         var result = await this.website.website.systemInformation.lib.Get();
