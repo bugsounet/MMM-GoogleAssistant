@@ -181,11 +181,12 @@ module.exports = NodeHelper.create({
     let Libraries = [];
     let GA = [
       // { "library to load" : "store library name" }
-      { "./components/hyperwatch.js": "HyperWatch" },
       { "./components/googleSearch.js": "googleSearch" },
       { "./components/assistant.js": "Assistant" },
       { "./components/screenParser.js": "ScreenParser" }
     ];
+
+    if (this.config.website.use) GA.push({ "./components/hyperwatch.js": "HyperWatch" });
 
     let website = [
       { "./components/systemInformation.js": "SystemInformation" },
