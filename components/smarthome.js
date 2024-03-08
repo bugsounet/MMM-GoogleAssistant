@@ -263,7 +263,7 @@ class smarthome {
     if (this.SmartHome.EXT["EXT-Pages"]) {
       logGA("[DEVICE] Found: EXT-Pages (action.devices.traits.InputSelector)");
       for (let i = 0; i < this.SmartHome.smarthome.MaxPages; i++) {
-        logGA("Set: pages", i);
+        logGA("[DEVICE] Set: pages", i);
         let input = {};
         input.key = `page ${i}`;
         input.names = [];

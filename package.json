@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
-  "version": "6.2.1",
-  "rev": "240221",
+  "version": "6.2.2",
+  "rev": "240308",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "node": ">=18"
   },
   "keywords": [
+    "MMM-GoogleAssistant",
     "magic mirror",
     "module",
     "google assistant",
@@ -59,14 +60,14 @@
     "express-session": "^1.18.0",
     "glob": "^10.3.10",
     "google-auth-library": "^9.6.3",
-    "html-entities": "^2.4.0",
+    "html-entities": "^2.5.2",
     "is-valid-domain": "^0.1.6",
     "jsoneditor": "^10.0.1",
     "lodash": "^4.17.21",
     "mkdirp": "^3.0.1",
     "node-html-parser": "^6.1.12",
     "node-pty": "^1.0.0",
-    "open": "^10.0.3",
+    "open": "^10.0.4",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "pm2": "^5.3.1",
@@ -81,9 +82,9 @@
     "xterm-addon-fit": "^0.8.0"
   },
   "devDependencies": {
-    "@eslint/js": "^8.56.0",
-    "@stylistic/eslint-plugin": "^1.6.2",
-    "eslint": "^8.56.0",
+    "@eslint/js": "^8.57.0",
+    "@stylistic/eslint-plugin": "^1.6.3",
+    "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1"
   }
 }
