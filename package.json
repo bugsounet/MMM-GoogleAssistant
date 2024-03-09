@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
-  "version": "6.2.2",
-  "rev": "240308",
+  "version": "6.2.3",
+  "rev": "240309",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -65,6 +65,7 @@
     "jsoneditor": "^10.0.1",
     "lodash": "^4.17.21",
     "mkdirp": "^3.0.1",
+    "nan": "^2.19",
     "node-html-parser": "^6.1.12",
     "node-pty": "^1.0.0",
     "open": "^10.0.4",
