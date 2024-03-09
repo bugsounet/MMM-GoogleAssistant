@@ -67,7 +67,7 @@
     "mkdirp": "^3.0.1",
     "node-html-parser": "^6.1.12",
     "node-pty": "^1.0.0",
-    "open": "^10.0.4",
+    "open": "^10.1.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "pm2": "^5.3.1",
