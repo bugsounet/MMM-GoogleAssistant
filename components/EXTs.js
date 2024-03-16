@@ -23,6 +23,7 @@ class EXTs {
       "EXT-GooglePhotos",
       "EXT-Governor",
       "EXT-Internet",
+      "EXT-FireTVRemote",
       "EXT-Keyboard",
       "EXT-Librespot",
       "EXT-MusicPlayer",
