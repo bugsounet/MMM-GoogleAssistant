@@ -59,7 +59,7 @@
     "esbuild": "^0.20.2",
     "express-session": "^1.18.0",
     "glob": "^10.3.10",
-    "google-auth-library": "^9.6.3",
+    "google-auth-library": "^9.7.0",
     "html-entities": "^2.5.2",
     "is-valid-domain": "^0.1.6",
     "jsoneditor": "^10.0.1",
