@@ -1,0 +1,24 @@
+name: "Complete build Testing"
+
+on: [pull_request]
+
+jobs:
+  build:
+    name: Run complete build testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Clone MagicMirror²
+        run: cd && git clone https://github.com/MagicMirrorOrg/MagicMirror && cd MagicMirror && npm install
+
+      - name: Move Project to MagicMirror²
+        run: mv ../MMM-GoogleAssistant ../MagicMirror/modules/
+
+      - name: Install Dependencies
+        run: cd ../MagicMirror && npm prune
+
+      - name: Run ESBuild
+        run: cd ../MagicMirror && npm run test:minify
+        continue-on-error: false
