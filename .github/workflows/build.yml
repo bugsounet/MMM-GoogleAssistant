@@ -1,0 +1,21 @@
+name: "MagicMirror² and MMM-GoogleAssistant build Testing"
+
+on: [pull_request]
+
+jobs:
+  build:
+    name: Test install MMM-GoogleAssistant
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Clone MagicMirror²
+        run: cd && git clone https://github.com/MagicMirrorOrg/MagicMirror && cd MagicMirror && npm install
+
+      - name: Copy MMM-GoogleAssistant to MagicMirror²
+        run: cp -R ../MMM-GoogleAssistant ~/MagicMirror/modules/
+
+      - name: Install MMM-GoogleAssistant
+        run: cd ~/MagicMirror/modules/MMM-GoogleAssistant && npm install
+        continue-on-error: false
