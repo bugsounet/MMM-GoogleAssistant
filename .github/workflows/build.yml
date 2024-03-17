@@ -14,7 +14,7 @@ jobs:
         run: cd && git clone https://github.com/MagicMirrorOrg/MagicMirror && cd MagicMirror && npm install
 
       - name: Move Project to MagicMirror²
-        run: pwd && mv ../MMM-GoogleAssistant ../MagicMirror/modules/
+        run: mv ../MMM-GoogleAssistant ~/MagicMirror/modules/
 
       - name: Install Dependencies
         run: cd ../MagicMirror && npm prune
