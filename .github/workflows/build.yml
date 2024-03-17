@@ -16,9 +16,6 @@ jobs:
       - name: Move Project to MagicMirror²
         run: mv ../MMM-GoogleAssistant ~/MagicMirror/modules/
 
-      - name: Install Dependencies
-        run: cd ../MagicMirror && npm prune
-
-      - name: Run ESBuild
-        run: cd ../MagicMirror && npm run test:minify
+      - name: Install MMM-GoogleAssistant
+        run: cd ~/MagicMirror/modules/MMM-GoogleAssistant && npm install
         continue-on-error: false
