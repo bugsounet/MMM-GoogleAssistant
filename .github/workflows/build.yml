@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Clone MagicMirror²
-        run: cd && git clone https://github.com/MagicMirrorOrg/MagicMirror && cd MagicMirror && npm install
+        run: cd && ls -la && git clone https://github.com/MagicMirrorOrg/MagicMirror && cd MagicMirror && npm install
 
       - name: Move Project to MagicMirror²
         run: mv ../MMM-GoogleAssistant ../MagicMirror/modules/
