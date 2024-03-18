@@ -1,0 +1,25 @@
+name: "Test: MagicMirror² and MMM-GoogleAssistant build Testing v2"
+
+on: [pull_request]
+
+jobs:
+  build:
+    name: Test install MMM-GoogleAssistant
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MM²
+        uses: actions/checkout@v4
+        with:
+          repository: MagicMirrorOrg/MagicMirror
+
+      - name: Install MM²
+        run: npm install
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          path: MagicMirror/modules/MMM-GoogleAssistant
+
+      - name: Install MMM-GoogleAssistant
+        run: npm install
+        continue-on-error: false
