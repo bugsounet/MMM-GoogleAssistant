@@ -22,4 +22,6 @@ jobs:
 
       - name: Install MMM-GoogleAssistant
         run: npm install
+        with:
+          path: MagicMirror/modules/MMM-GoogleAssistant
         continue-on-error: false
