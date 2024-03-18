@@ -311,6 +311,7 @@ class EXTs {
       this.EXTDescription["EXT-Bring"] = this.translate("EXT-Bring");
       this.EXTDescription["EXT-Browser"] = this.translate("EXT-Browser");
       this.EXTDescription["EXT-Detector"] = this.translate("EXT-Detector");
+      this.EXTDescription["EXT-FireTVRemote"] = this.translate("EXT-FireTVRemote");
       this.EXTDescription["EXT-FreeboxTV"] = this.translate("EXT-FreeboxTV");
       this.EXTDescription["EXT-GooglePhotos"] = this.translate("EXT-GooglePhotos");
       this.EXTDescription["EXT-Governor"] = this.translate("EXT-Governor");

@@ -224,6 +224,7 @@
   "EXT-Bring": "Show your current shopping list of Bring!",
   "EXT-Browser": "Display any internet web page like a real browser in fullscreen",
   "EXT-Detector": "Multi-keyword listener for MMM-GoogleAssistant",
+  "EXT-FireTVRemote": "Coming soon: Control your mirror with Amazon remote control",
   "EXT-FreeboxTV": "Display Channel from French Internet Provider: Free",
   "EXT-GooglePhotos": "Display your album directory with Google photos API in background or in MagicMirror² position",
   "EXT-Governor": "CPU governor enables the operating system to scale the CPU frequency up or down in order to save power or improve performance.",
