@@ -3,6 +3,7 @@ var defaultConfig = {
   disabled: false,
   config: {
     debug: false,
+    style: 1,
     ignore: []
   }
 };
@@ -30,6 +31,14 @@ var schema = {
           type: "boolean",
           title: "{PluginDebug}",
           default: false
+        },
+        style: {
+          type: "number",
+          title: "{EXT-Alert_style}",
+          default: 1,
+          enum: [0, 1, 2],
+          minimum: 0,
+          maximum: 2
         },
         ignore: {
           type: "array",

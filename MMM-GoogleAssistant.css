@@ -59,19 +59,6 @@
   left: 0;
 }
 
-/*
-#GoogleAssistant.in {
-  visibility: visible;
-  opacity: 1;
-}
-
-#GoogleAssistant.out {
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s 0.5s, opacity 0.5s linear;
-}
-*/
-
 #GoogleAssistant.hidden {
   display: none
 }

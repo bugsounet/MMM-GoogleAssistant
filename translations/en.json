@@ -263,6 +263,7 @@
   "VAL_PluginPosition": "Plugin position",
   "VAL_PluginConfigDeepMerge": "Automatically merge with the default configuration if a feature is missing in the configuration",
   "VAL_EXT-Alert_ignore": "Plugin list to ignore notifications",
+  "VAL_EXT-Alert_style": "Notification Style",
   "VAL_EXT-Background_Model": "Choose your model",
   "VAL_EXT-Background_Image": "Choose your personal image, if don't want model",
   "VAL_EXT-Bring_List": "What is your list name in Bring!",

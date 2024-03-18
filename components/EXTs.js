@@ -360,6 +360,7 @@ class EXTs {
       this.VALTranslate.PluginConfiguration = this.translate("VAL_PluginConfiguration");
       this.VALTranslate.PluginDebug = this.translate("VAL_PluginDebug");
       this.VALTranslate["EXT-Alert_ignore"] = this.translate("VAL_EXT-Alert_ignore");
+      this.VALTranslate["EXT-Alert_style"] = this.translate("VAL_EXT-Alert_style");
       this.VALTranslate["EXT-Background_Model"] = this.translate("VAL_EXT-Background_Model");
       this.VALTranslate["EXT-Background_Image"] = this.translate("VAL_EXT-Background_Image");
       this.VALTranslate["EXT-Bring_List"] = this.translate("VAL_EXT-Bring_List");

@@ -263,6 +263,7 @@
   "VAL_PluginPosition": "Position du plugin",
   "VAL_PluginConfigDeepMerge": "Fusionner automatiquement avec la configuration par défaut si une fonctionnalitée manque dans la configuration",
   "VAL_EXT-Alert_ignore": "Liste les plugins/modules à ignorer pour ne pas afficher leurs notifications",
+  "VAL_EXT-Alert_style": "Style des notifications",
   "VAL_EXT-Background_Model": "Choisir votre modèle",
   "VAL_EXT-Background_Image": "Choisir votre image personnelle, si vous ne voulez pas de modèle",
   "VAL_EXT-Bring_List": "Quel est le nom de votre liste de courses dans Bring!",
