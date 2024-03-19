@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
   "version": "6.2.4",
-  "rev": "240318",
+  "rev": "240319",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "embedded",
     "assistant for device",
     "voice control",
-    "smarthome"
+    "smart home"
   ],
   "author": "bugsounet",
   "license": "MIT",
