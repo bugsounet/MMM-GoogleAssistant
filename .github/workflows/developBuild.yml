@@ -1,4 +1,4 @@
-name: "MagicMirror² and MMM-GoogleAssistant build Testing"
+name: "MagicMirror² (develop) and MMM-GoogleAssistant build Testing"
 
 on: [pull_request]
 
