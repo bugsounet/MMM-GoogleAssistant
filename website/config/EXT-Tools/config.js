@@ -1,5 +1,5 @@
 var defaultConfig = {
-  module: "EXT-Tools",
+  module: "EXT-Touch",
   position: "top_left",
   disabled: false
 };
@@ -12,7 +12,7 @@ var schema = {
     module: {
       type: "string",
       title: "{PluginName}",
-      default: "EXT-Detector"
+      default: "EXT-Touch"
     },
     position: {
       type: "string",
