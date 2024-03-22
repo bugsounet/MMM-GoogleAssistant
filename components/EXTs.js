@@ -61,11 +61,16 @@ class EXTs {
   async init () {
     try {
       await this.checkModules();
-    } catch (e) { return; }
+      this.sendSocketNotification("NOMODULE-ERROR");
+    } catch (err) {
+      this.sendSocketNotification("MODULE-ERROR", err);
+      return false;
+    }
     this.createDB();
     await this.Load_EXT_Translation();
     await this.Load_EXT_Description();
     await this.Load_EXT_TrSchemaValidation();
+    return true;
   }
 
   async createDB () {
@@ -753,26 +758,30 @@ class EXTs {
     var TB = 0;
     var PIR = 0;
     var RC = 0;
+    let error = null;
     return new Promise((resolve, reject) => {
       MM.getModules().withClass("EXT-Telegrambot MMM-TelegramBot").enumerate((module) => {
         TB++;
         if (TB >= 2) {
-          this.socketNotificationReceived("NOT_INITIALIZED", { message: "You can't start MMM-GoogleAssistant with MMM-TelegramBot and EXT-TelegramBot!" });
-          return reject(true);
+          error = "You can't start MMM-GoogleAssistant with MMM-TelegramBot and EXT-TelegramBot!";
+          this.socketNotificationReceived("NOT_INITIALIZED", { message: error });
+          return reject(error);
         }
       });
       MM.getModules().withClass("MMM-Pir").enumerate((module) => {
         PIR++;
         if (PIR >= 1) {
+          error = "You can't start MMM-GoogleAssistant with MMM-Pir. Please use EXT-Screen and EXT-Pir";
           this.socketNotificationReceived("NOT_INITIALIZED", { message: "You can't start MMM-GoogleAssistant with MMM-Pir. Please use EXT-Screen and EXT-Pir" });
-          return reject(true);
+          return reject(error);
         }
       });
       MM.getModules().withClass("MMM-Remote-Control").enumerate((module) => {
         RC++;
         if (RC >= 1) {
-          this.socketNotificationReceived("NOT_INITIALIZED", { message: "You can't start MMM-GoogleAssistant with MMM-Remote-Control" });
-          return reject(true);
+          error = "You can't start MMM-GoogleAssistant with MMM-Remote-Control";
+          this.socketNotificationReceived("NOT_INITIALIZED", { message: error });
+          return reject(error);
         }
       });
       resolve(true);
