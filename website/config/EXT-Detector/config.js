@@ -6,7 +6,6 @@ var defaultConfig = {
   config: {
     debug: false,
     useIcon: true,
-    touchOnly: false,
     porcupineAccessKey: null,
     porcupineCustomModel: null,
     detectors: [
@@ -82,11 +81,6 @@ var schema = {
           type: "boolean",
           title: "{EXT-Detector_Icon}",
           default: true
-        },
-        touchOnly: {
-          type: "boolean",
-          title: "{EXT-Detector_Touch}",
-          default: false
         },
         porcupineAccessKey: {
           type: ["string", "null"],

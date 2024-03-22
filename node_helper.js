@@ -101,6 +101,17 @@ module.exports = NodeHelper.create({
       case "GET-SYSINFO":
         this.sendSocketNotification("SYSINFO-RESULT", await this.website.website.systemInformation.lib.Get());
         break;
+      case "MODULE-ERROR":
+        console.error("[GA] ----------------------------------------");
+        console.error("[GA] [!]", payload);
+        console.error("[GA] ----------------------------------------");
+        console.error("[GA] [!] MagicMirror² will shutdown now!");
+        console.error("[GA] ----------------------------------------");
+        setTimeout(() => {process.exit();},5000);
+        break;
+      case "NOMODULE-ERROR":
+        console.log("[GA] ALL Modules scanned");
+        break;
     }
   },
 

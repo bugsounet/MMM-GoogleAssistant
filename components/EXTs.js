@@ -23,6 +23,7 @@ class EXTs {
       "EXT-GooglePhotos",
       "EXT-Governor",
       "EXT-Internet",
+      "EXT-FireTVRemote",
       "EXT-Keyboard",
       "EXT-Librespot",
       "EXT-MusicPlayer",
@@ -40,6 +41,7 @@ class EXTs {
       "EXT-SpotifyCanvasLyrics",
       "EXT-StreamDeck",
       "EXT-TelegramBot",
+      "EXT-Touch",
       "EXT-Updates",
       "EXT-Volume",
       "EXT-Welcome",
@@ -59,11 +61,16 @@ class EXTs {
   async init () {
     try {
       await this.checkModules();
-    } catch (e) { return; }
+      this.sendSocketNotification("NOMODULE-ERROR");
+    } catch (err) {
+      this.sendSocketNotification("MODULE-ERROR", err);
+      return false;
+    }
     this.createDB();
     await this.Load_EXT_Translation();
     await this.Load_EXT_Description();
     await this.Load_EXT_TrSchemaValidation();
+    return true;
   }
 
   async createDB () {
@@ -310,6 +317,7 @@ class EXTs {
       this.EXTDescription["EXT-Bring"] = this.translate("EXT-Bring");
       this.EXTDescription["EXT-Browser"] = this.translate("EXT-Browser");
       this.EXTDescription["EXT-Detector"] = this.translate("EXT-Detector");
+      this.EXTDescription["EXT-FireTVRemote"] = this.translate("EXT-FireTVRemote");
       this.EXTDescription["EXT-FreeboxTV"] = this.translate("EXT-FreeboxTV");
       this.EXTDescription["EXT-GooglePhotos"] = this.translate("EXT-GooglePhotos");
       this.EXTDescription["EXT-Governor"] = this.translate("EXT-Governor");
@@ -333,6 +341,7 @@ class EXTs {
       this.EXTDescription["EXT-SpotifyCanvasLyrics"] = this.translate("EXT-SpotifyCanvasLyrics");
       this.EXTDescription["EXT-StreamDeck"] = this.translate("EXT-StreamDeck");
       this.EXTDescription["EXT-TelegramBot"] = this.translate("EXT-TelegramBot");
+      this.EXTDescription["EXT-Touch"] = this.translate("EXT-Touch");
       this.EXTDescription["EXT-Updates"] = this.translate("EXT-Updates");
       this.EXTDescription["EXT-Volume"] = this.translate("EXT-Volume");
       this.EXTDescription["EXT-Welcome"] = this.translate("EXT-Welcome");
@@ -359,6 +368,7 @@ class EXTs {
       this.VALTranslate.PluginConfiguration = this.translate("VAL_PluginConfiguration");
       this.VALTranslate.PluginDebug = this.translate("VAL_PluginDebug");
       this.VALTranslate["EXT-Alert_ignore"] = this.translate("VAL_EXT-Alert_ignore");
+      this.VALTranslate["EXT-Alert_style"] = this.translate("VAL_EXT-Alert_style");
       this.VALTranslate["EXT-Background_Model"] = this.translate("VAL_EXT-Background_Model");
       this.VALTranslate["EXT-Background_Image"] = this.translate("VAL_EXT-Background_Image");
       this.VALTranslate["EXT-Bring_List"] = this.translate("VAL_EXT-Bring_List");
@@ -561,6 +571,7 @@ class EXTs {
       case "LISTEN":
       case "THINK":
         if (this.EXT["EXT-Detector"].hello) this.sendNotification("EXT_DETECTOR-STOP");
+        if (this.EXT["EXT-Touch"].hello) this.sendNotification("EXT_TOUCH-BLINK");
         if (this.EXT["EXT-Screen"].hello && !this.hasPluginConnected(this.EXT, "connected", true)) {
           if (!this.EXT["EXT-Screen"].power) this.sendNotification("EXT_SCREEN-WAKEUP");
           this.sendNotification("EXT_SCREEN-LOCK", { show: true });
@@ -577,6 +588,7 @@ class EXTs {
         break;
       case "STANDBY":
         if (this.EXT["EXT-Detector"].hello) this.sendNotification("EXT_DETECTOR-START");
+        if (this.EXT["EXT-Touch"].hello) this.sendNotification("EXT_TOUCH-START");
         if (this.EXT["EXT-Screen"].hello && !this.hasPluginConnected(this.EXT, "connected", true)) {
           this.sendNotification("EXT_SCREEN-UNLOCK", { show: true });
           if (this.EXT["EXT-Motion"].hello && !this.EXT["EXT-Motion"].started) this.sendNotification("EXT_MOTION-INIT");
@@ -624,6 +636,7 @@ class EXTs {
     if (!plugin) return;
     if (plugin === "EXT-Background") this.sendNotification("GA_FORCE_FULLSCREEN");
     if (plugin === "EXT-Detector") setTimeout(() => this.sendNotification("EXT_DETECTOR-START"), 300);
+    if (plugin === "EXT-Touch") this.sendNotification("EXT_TOUCH-START");
     if (plugin === "EXT-Pages") this.sendNotification("EXT_PAGES-Gateway");
     if (plugin === "EXT-Pir") this.sendNotification("EXT_PIR-START");
     if (plugin === "EXT-Bring") this.sendNotification("EXT_BRING-START");
@@ -745,26 +758,30 @@ class EXTs {
     var TB = 0;
     var PIR = 0;
     var RC = 0;
+    let error = null;
     return new Promise((resolve, reject) => {
       MM.getModules().withClass("EXT-Telegrambot MMM-TelegramBot").enumerate((module) => {
         TB++;
         if (TB >= 2) {
-          this.socketNotificationReceived("NOT_INITIALIZED", { message: "You can't start MMM-GoogleAssistant with MMM-TelegramBot and EXT-TelegramBot!" });
-          return reject(true);
+          error = "You can't start MMM-GoogleAssistant with MMM-TelegramBot and EXT-TelegramBot!";
+          this.socketNotificationReceived("NOT_INITIALIZED", { message: error });
+          return reject(error);
         }
       });
       MM.getModules().withClass("MMM-Pir").enumerate((module) => {
         PIR++;
         if (PIR >= 1) {
+          error = "You can't start MMM-GoogleAssistant with MMM-Pir. Please use EXT-Screen and EXT-Pir";
           this.socketNotificationReceived("NOT_INITIALIZED", { message: "You can't start MMM-GoogleAssistant with MMM-Pir. Please use EXT-Screen and EXT-Pir" });
-          return reject(true);
+          return reject(error);
         }
       });
       MM.getModules().withClass("MMM-Remote-Control").enumerate((module) => {
         RC++;
         if (RC >= 1) {
-          this.socketNotificationReceived("NOT_INITIALIZED", { message: "You can't start MMM-GoogleAssistant with MMM-Remote-Control" });
-          return reject(true);
+          error = "You can't start MMM-GoogleAssistant with MMM-Remote-Control";
+          this.socketNotificationReceived("NOT_INITIALIZED", { message: error });
+          return reject(error);
         }
       });
       resolve(true);
@@ -887,12 +904,14 @@ class EXTs {
       case "EXT_INTERNET-DOWN":
         if (!this.EXT["EXT-Internet"].hello) return console.error("[GA] [EXTs] Warn Internet don't say to me HELLO!");
         if (this.EXT["EXT-Detector"].hello) this.sendNotification("EXT_DETECTOR-STOP");
+        if (this.EXT["EXT-Touch"].hello) this.sendNotification("EXT_TOUCH-STOP");
         if (this.EXT["EXT-Spotify"].hello) this.sendNotification("EXT_SPOTIFY-MAIN_STOP");
         if (this.EXT["EXT-GooglePhotos"].hello) this.sendNotification("EXT_GOOGLEPHOTOS-STOP");
         break;
       case "EXT_INTERNET-UP":
         if (!this.EXT["EXT-Internet"].hello) return console.error("[GA] [EXTs] Warn Internet don't say to me HELLO!");
         if (this.EXT["EXT-Detector"].hello) this.sendNotification("EXT_DETECTOR-START");
+        if (this.EXT["EXT-Touch"].hello) this.sendNotification("EXT_TOUCH-START");
         if (this.EXT["EXT-Spotify"].hello) this.sendNotification("EXT_SPOTIFY-MAIN_START");
         if (this.EXT["EXT-GooglePhotos"].hello) this.sendNotification("EXT_GOOGLEPHOTOS-START");
         break;

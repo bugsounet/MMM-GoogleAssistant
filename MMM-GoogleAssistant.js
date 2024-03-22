@@ -325,7 +325,8 @@ Module.register("MMM-GoogleAssistant", {
       unLock: () => this.EXTs.forceUnLockPagesAndScreen()
     };
     this.EXTs = new EXTs(Tools);
-    await this.EXTs.init();
+    let init = await this.EXTs.init();
+    if (!init) return;
     this.session = {};
     this.sysInfo = new sysInfoPage(Tools);
     this.sysInfo.prepare();

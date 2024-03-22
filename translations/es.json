@@ -209,7 +209,6 @@
   "VAL_EXT-Browser_Interval": "Intervalo de tiempo para el siguiente desplazamiento",
   "VAL_EXT-Browser_Start": "Retraso antes del desplazamiento hacia abajo en ms (después de cargar la url)",
   "VAL_EXT-Detector_Icon": "Mostrar el icono de Google y animarlo cuando se buscan palabras",
-  "VAL_EXT-Detector_Touch": "Activar MMM-GoogleAssistant tocando el icono de Google exclusivamente, y no escuchar órdenes",
   "VAL_EXT-Detector_Detector": "Matriz de detectores",
   "VAL_EXT-Detector_Engine": "Matriz de detectores",
   "VAL_EXT-Detector_Keyword": "Nombre de la palabra clave",

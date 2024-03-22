@@ -270,7 +270,6 @@
   "VAL_EXT-Browser_Interval": "Sonraki kaydırma Adımı için kaydırma aralığı",
   "VAL_EXT-Browser_Start": "MS cinsinden aşağı kaydırmadan önceki gecikme (url yüklendikten sonra)",
   "VAL_EXT-Detector_Icon": "Google Simgesini görüntüleyin ve anahtar kelime keşfedildiğinde onu canlandırın",
-  "VAL_EXT-Detector_Touch": "MMM-GoogleAssistant'ı yalnızca Google Simgesine dokunarak etkinleştirin ve hiçbir anahtar kelimeyi dinlemeyin",
   "VAL_EXT-Detector_Detector": "Dedektör dizisi",
   "VAL_EXT-Detector_Engine": "Dedektör dizisi",
   "VAL_EXT-Detector_Keyword": "Anahtar kelime adı",

@@ -194,7 +194,6 @@
   "VAL_EXT-Browser_Interval": "Intervallo Scorrimento ",
   "VAL_EXT-Browser_Start": "Ritardo scorrimento in ms (dopo caricamento)",
   "VAL_EXT-Detector_Icon": "Mostra icona google quando la keyword è riconosciuta.",
-  "VAL_EXT-Detector_Touch": "Attiva Google Assistant via touchscreen (NO Keyword)",
   "VAL_EXT-Detector_Detector": "Lista riconoscitori",
   "VAL_EXT-Detector_Engine": "Lista riconoscitori",
   "VAL_EXT-Detector_Keyword": "Nome Keyword",

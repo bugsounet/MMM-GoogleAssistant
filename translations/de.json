@@ -274,7 +274,6 @@
   "VAL_EXT-Browser_Interval": "Interval bis zum nächsten Scrolling-Schritt",
   "VAL_EXT-Browser_Start": "Verzögerung bis zum Herunterscrollen in Millisekunden (nach dem Laden der Webseite).",
   "VAL_EXT-Detector_Icon": "Google Symbol anzeigen und bei Keyword-Erkennung animieren.",
-  "VAL_EXT-Detector_Touch": "MMM-GoogleAssistant nur bei Berührung des Google Symbols aktivieren (keine Keyword-Erkennung).",
   "VAL_EXT-Detector_Detector": "Detektoren-Array",
   "VAL_EXT-Detector_Engine": "Detektoren-Array",
   "VAL_EXT-Detector_Keyword": "Keyword Name",
