@@ -248,6 +248,7 @@
   "EXT-SpotifyCanvasLyrics": "Create a server for displaying any Lyrics and Canvas from Spotify",
   "EXT-StreamDeck" : "Control your mirror with a StreamDeck by elgato©",
   "EXT-TelegramBot": "You can remote-control plugins within Telegram.",
+  "EXT-Touch": "Coming Soon: Activate MMM-GoogleAssistant with a Touch Screen",
   "EXT-Updates": "This plugin allow to auto-update if an update is detected.",
   "EXT-Volume": "Control the sound volume level of your mirror.",
   "EXT-Welcome": "Allow to send a welcome on start of MagicMirror².",
