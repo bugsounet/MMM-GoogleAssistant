@@ -107,7 +107,7 @@ module.exports = NodeHelper.create({
         console.error("[GA] ----------------------------------------");
         console.error("[GA] [!] MagicMirror² will shutdown now!");
         console.error("[GA] ----------------------------------------");
-        process.exit();
+        setTimeout(() => {process.exit()},5000);
         break;
       case "NOMODULE-ERROR":
         console.log("[GA] ALL Modules scanned");
