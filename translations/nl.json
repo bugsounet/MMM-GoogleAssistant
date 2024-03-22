@@ -269,7 +269,6 @@
   "VAL_EXT-Browser_Interval": "Scroll interval voor volgende scrollStap",
   "VAL_EXT-Browser_Start": "Vertraging voor het naar beneden scrollen in ms (nadat url geladen is)",
   "VAL_EXT-Detector_Icon": "Toon het Google Icoon en beweeg het als het keyword is vastgesteld",
-  "VAL_EXT-Detector_Touch": "Activeer MMM-GoogleAssistant door het Google Icoon aan te raken en schakel keywords uit",
   "VAL_EXT-Detector_Detector": "Reeks van detectors",
   "VAL_EXT-Detector_Engine": "Reeks van detectors",
   "VAL_EXT-Detector_Keyword": "Keyword naam",

@@ -248,7 +248,7 @@
   "EXT-SpotifyCanvasLyrics": "Créez un serveur pour afficher les paroles et les canvas de Spotify",
   "EXT-StreamDeck" : "Contrôle votre mirroir avec un StreamDeck par elgato©",
   "EXT-TelegramBot": "Permet de contrôler à distance les plugins dans Telegram.",
-  "EXT-Touch": "Permet d'activer MMM-GoogleAssistant avec un écran tatile",
+  "EXT-Touch": "Permet d'activer MMM-GoogleAssistant avec un écran tatile en appuyant uniquement sur l'icône Google.",
   "EXT-Updates": "Ce plugin permet de mettre à jour automatiquement si une mise à jour est détectée.",
   "EXT-Volume": "Contrôle le niveau sonore de votre miroir.",
   "EXT-Welcome": "Permet d'envoyer un message de bienvenue au démarrage de MagicMirror².",
