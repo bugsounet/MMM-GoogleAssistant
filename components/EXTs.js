@@ -811,7 +811,10 @@ class EXTs {
         if (!this.EXT["EXT-Screen"].hello) return console.log("[GA] [EXTs] Warn Screen don't say to me HELLO!");
         this.EXT["EXT-Screen"].power = payload;
         if (this.EXT["EXT-Pages"].hello) {
-          if (this.EXT["EXT-Screen"].power) this.sendNotification("EXT_PAGES-RESUME");
+          if (this.EXT["EXT-Screen"].power) {
+            this.sendNotification("EXT_PAGES-RESUME");
+            this.sendNotification("EXT_PAGES-HOME");
+          }
           else this.sendNotification("EXT_PAGES-PAUSE");
         }
         break;
