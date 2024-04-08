@@ -634,7 +634,7 @@ class EXTs {
   /** Rule when a plugin send Hello **/
   onStartPlugin (plugin) {
     if (!plugin) return;
-    if (plugin === "EXT-Background") this.sendNotification("GA_FORCE_FULLSCREEN");
+    if (plugin === "EXT-Background") this.notificationReceived("GA_FORCE_FULLSCREEN");
     if (plugin === "EXT-Detector") setTimeout(() => this.sendNotification("EXT_DETECTOR-START"), 300);
     if (plugin === "EXT-Touch") this.sendNotification("EXT_TOUCH-START");
     if (plugin === "EXT-Pages") this.sendNotification("EXT_PAGES-Gateway");
