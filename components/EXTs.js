@@ -634,7 +634,7 @@ class EXTs {
   /** Rule when a plugin send Hello **/
   onStartPlugin (plugin) {
     if (!plugin) return;
-    if (plugin === "EXT-Background") this.sendNotification("GA_FORCE_FULLSCREEN");
+    if (plugin === "EXT-Background") this.notificationReceived("GA_FORCE_FULLSCREEN");
     if (plugin === "EXT-Detector") setTimeout(() => this.sendNotification("EXT_DETECTOR-START"), 300);
     if (plugin === "EXT-Touch") this.sendNotification("EXT_TOUCH-START");
     if (plugin === "EXT-Pages") this.sendNotification("EXT_PAGES-Gateway");
@@ -811,7 +811,10 @@ class EXTs {
         if (!this.EXT["EXT-Screen"].hello) return console.log("[GA] [EXTs] Warn Screen don't say to me HELLO!");
         this.EXT["EXT-Screen"].power = payload;
         if (this.EXT["EXT-Pages"].hello) {
-          if (this.EXT["EXT-Screen"].power) this.sendNotification("EXT_PAGES-RESUME");
+          if (this.EXT["EXT-Screen"].power) {
+            this.sendNotification("EXT_PAGES-RESUME");
+            this.sendNotification("EXT_PAGES-HOME");
+          }
           else this.sendNotification("EXT_PAGES-PAUSE");
         }
         break;
