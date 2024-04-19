@@ -37,6 +37,7 @@ try {
   this.assistant = new GoogleAssistant(config.auth);
 } catch (error) {
   console.log("[GA]", error.toString());
+  process.exit();
 }
 
 this.assistant
