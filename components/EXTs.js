@@ -43,6 +43,7 @@ class EXTs {
       "EXT-TelegramBot",
       "EXT-Touch",
       "EXT-Updates",
+      "EXT-VLCServer",
       "EXT-Volume",
       "EXT-Welcome",
       "EXT-YouTube",
