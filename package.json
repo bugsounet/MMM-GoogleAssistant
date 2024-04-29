@@ -62,7 +62,7 @@
     "google-auth-library": "^9.8.0",
     "html-entities": "^2.5.2",
     "is-valid-domain": "^0.1.6",
-    "jsoneditor": "^10.0.2",
+    "jsoneditor": "^10.0.3",
     "lodash": "^4.17.21",
     "mkdirp": "^3.0.1",
     "node-html-parser": "^6.1.13",
