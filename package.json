@@ -5,7 +5,7 @@
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
-    "preinstall": "installer/preinstall.sh -d 'pulseaudio nginx certbot python3 python-is-python3 python3-certbot-nginx make build-essential'",
+    "preinstall": "installer/preinstall.sh -d 'pulseaudio nginx certbot python3 python3-pip python-is-python3 python3-certbot-nginx make build-essential'",
     "postinstall": "installer/postinstall.sh -r -b -m",
     "update": "installer/update.sh",
     "rebuild": "installer/rebuild.sh",
