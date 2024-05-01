@@ -650,8 +650,8 @@ class sysInfoPage {
   }
 
   toggle () {
-    if (this.showing) this.hide()
-    else this.show()
+    if (this.showing) this.hide();
+    else this.show();
   }
 
   updateSystemData (data) {

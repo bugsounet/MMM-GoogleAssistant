@@ -119,7 +119,7 @@ Module.register("MMM-GoogleAssistant", {
         if (this.assistantResponse.response && this.GAStatus.actual === "reply") this.assistantResponse.conversationForceEnd();
         break;
       case "GA_SYSINFO":
-        this.sysInfo.toggle()
+        this.sysInfo.toggle();
         break;
     }
   },
