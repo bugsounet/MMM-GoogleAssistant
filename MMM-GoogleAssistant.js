@@ -118,6 +118,9 @@ Module.register("MMM-GoogleAssistant", {
       case "GA_STOP":
         if (this.assistantResponse.response && this.GAStatus.actual === "reply") this.assistantResponse.conversationForceEnd();
         break;
+      case "GA_SYSINFO":
+        this.sysInfo.toggle()
+        break;
     }
   },
 
