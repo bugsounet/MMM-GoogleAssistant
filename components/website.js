@@ -39,6 +39,7 @@ const mainBranch = {
   "EXT-Photos": "master",
   "EXT-Pir": "master",
   "EXT-RadioPlayer": "master",
+  "EXT-RemoteControler": "dev",
   "EXT-Screen": "master",
   "EXT-Selfies": "master",
   "EXT-SelfiesFlash": "main",

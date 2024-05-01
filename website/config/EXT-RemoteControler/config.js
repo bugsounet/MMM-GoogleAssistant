@@ -1,17 +1,17 @@
 var defaultConfig = {
-  module: "EXT-FireTVRemote",
+  module: "EXT-RemoteControler",
   position: "top_left",
   disabled: false
 };
 var schema = {
-  title: "EXT-FireTVRemote",
+  title: "EXT-RemoteControler",
   description: "{PluginDescription}",
   type: "object",
   properties: {
     module: {
       type: "string",
       title: "{PluginName}",
-      default: "EXT-FireTVRemote"
+      default: "EXT-RemoteControler"
     },
     position: {
       type: "string",
