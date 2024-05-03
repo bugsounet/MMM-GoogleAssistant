@@ -363,7 +363,47 @@ Module.register("MMM-GoogleAssistant", {
         description: this.translate("TB_SYSINFO_DESCRIPTION"),
         callback: "cmd_sysinfo"
       });
+      commander.add({
+        command: "reboot",
+        description: this.translate("GW_System_Box_Restart"),
+        callback: "tbReboot"
+      });
+      commander.add({
+        command: "die",
+        description: this.translate("GW_System_Box_Shutdown"),
+        callback: "tbDie"
+      });
+      commander.add({
+        command: "close",
+        description: this.translate("GW_Tools_Die"),
+        callback: "tbClose"
+      });
+      commander.add({
+        command: "restart",
+        description: this.translate("GW_Tools_Restart"),
+        callback: "tbRestart"
+      });
     }
+  },
+
+  tbReboot (command, handler) {
+    handler.reply("TEXT", this.translate("GW_System_Box_Restart"));
+    this.sendSocketNotification("REBOOT");
+  },
+
+  tbDie (command, handler) {
+    handler.reply("TEXT", this.translate("GW_System_Box_Shutdown"));
+    this.sendSocketNotification("DIE");
+  },
+
+  tbClose (command, handler) {
+    handler.reply("TEXT", this.translate("GW_Tools_Die"));
+    this.sendSocketNotification("CLOSE");
+  },
+
+  tbRestart (command, handler) {
+    handler.reply("TEXT", this.translate("GW_Tools_Restart"));
+    this.sendSocketNotification("RESTART");
   },
 
   tbQuery (command, handler) {

@@ -72,6 +72,16 @@ module.exports = NodeHelper.create({
           this.website.setActiveVersion(payload);
         }
         break;
+      case "REBOOT":
+        if (this.config.website.use) {
+          this.website.SystemRestart();
+        }
+        break;
+      case "DIE":
+        if (this.config.website.use) {
+          this.website.SystemDie();
+        }
+        break;
       case "RESTART":
         if (this.config.website.use) {
           this.website.restartMM();
