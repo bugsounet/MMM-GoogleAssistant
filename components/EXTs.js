@@ -23,7 +23,6 @@ class EXTs {
       "EXT-GooglePhotos",
       "EXT-Governor",
       "EXT-Internet",
-      "EXT-FireTVRemote",
       "EXT-Keyboard",
       "EXT-Librespot",
       "EXT-MusicPlayer",
@@ -32,6 +31,7 @@ class EXTs {
       "EXT-Photos",
       "EXT-Pir",
       "EXT-RadioPlayer",
+      "EXT-RemoteControler",
       "EXT-Screen",
       "EXT-Selfies",
       "EXT-SelfiesFlash",
@@ -43,6 +43,7 @@ class EXTs {
       "EXT-TelegramBot",
       "EXT-Touch",
       "EXT-Updates",
+      "EXT-VLCServer",
       "EXT-Volume",
       "EXT-Welcome",
       "EXT-YouTube",
@@ -317,7 +318,6 @@ class EXTs {
       this.EXTDescription["EXT-Bring"] = this.translate("EXT-Bring");
       this.EXTDescription["EXT-Browser"] = this.translate("EXT-Browser");
       this.EXTDescription["EXT-Detector"] = this.translate("EXT-Detector");
-      this.EXTDescription["EXT-FireTVRemote"] = this.translate("EXT-FireTVRemote");
       this.EXTDescription["EXT-FreeboxTV"] = this.translate("EXT-FreeboxTV");
       this.EXTDescription["EXT-GooglePhotos"] = this.translate("EXT-GooglePhotos");
       this.EXTDescription["EXT-Governor"] = this.translate("EXT-Governor");
@@ -330,6 +330,7 @@ class EXTs {
       this.EXTDescription["EXT-Photos"] = this.translate("EXT-Photos");
       this.EXTDescription["EXT-Pir"] = this.translate("EXT-Pir");
       this.EXTDescription["EXT-RadioPlayer"] = this.translate("EXT-RadioPlayer");
+      this.EXTDescription["EXT-RemoteControler"] = this.translate("EXT-RemoteControler");
       this.EXTDescription["EXT-Selfies"] = this.translate("EXT-Selfies");
       this.EXTDescription["EXT-SelfiesFlash"] = this.translate("EXT-SelfiesFlash");
       this.EXTDescription["EXT-SelfiesSender"] = this.translate("EXT-SelfiesSender");
@@ -343,6 +344,7 @@ class EXTs {
       this.EXTDescription["EXT-TelegramBot"] = this.translate("EXT-TelegramBot");
       this.EXTDescription["EXT-Touch"] = this.translate("EXT-Touch");
       this.EXTDescription["EXT-Updates"] = this.translate("EXT-Updates");
+      this.EXTDescription["EXT-VLCServer"] = this.translate("EXT-VLCServer");
       this.EXTDescription["EXT-Volume"] = this.translate("EXT-Volume");
       this.EXTDescription["EXT-Welcome"] = this.translate("EXT-Welcome");
       this.EXTDescription["EXT-YouTube"] = this.translate("EXT-YouTube");

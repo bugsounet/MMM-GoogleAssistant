@@ -649,6 +649,11 @@ class sysInfoPage {
     }
   }
 
+  toggle () {
+    if (this.showing) this.hide();
+    else this.show();
+  }
+
   updateSystemData (data) {
     this.System = Object.assign({}, this.System, data);
     this.refreshData();
