@@ -1,8 +1,12 @@
 var defaultConfig = {
   module: "EXT-VLCServer",
-  position: "top_left",
-  disabled: false
+  disabled: false,
+  config: {
+    debug: false,
+    vlcPath: "/usr/bin"
+  }
 };
+
 var schema = {
   title: "EXT-VLCServer",
   description: "{PluginDescription}",
@@ -13,33 +17,29 @@ var schema = {
       title: "{PluginName}",
       default: "EXT-VLCServer"
     },
-    position: {
-      type: "string",
-      title: "{PluginPosition}",
-      default: "top_right",
-      enum: [
-        "top_bar",
-        "top_left",
-        "top_center",
-        "top_right",
-        "upper_third",
-        "middle_center",
-        "lower_third",
-        "bottom_left",
-        "bottom_center",
-        "bottom_right",
-        "bottom_bar",
-        "fullscreen_above",
-        "fullscreen_below"
-      ]
-    },
     disabled: {
       type: "boolean",
       title: "{PluginDisable}",
       default: false
+    },
+    config: {
+      type: "object",
+      title: "{PluginConfiguration}",
+      properties: {
+        debug: {
+          type: "boolean",
+          title: "{PluginDebug}",
+          default: false
+        },
+        vlcPath: {
+          type: "string",
+          title: "Default VLC Path",
+          default: "/usr/bin",
+        }
+      }
     }
   },
-  required: ["module", "position"]
+  required: ["module"]
 };
 
 exports.default = defaultConfig;

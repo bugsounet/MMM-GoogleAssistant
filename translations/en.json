@@ -250,7 +250,7 @@
   "EXT-TelegramBot": "You can remote-control plugins within Telegram.",
   "EXT-Touch": "Activate MMM-GoogleAssistant with a Touch Screen by Touching the Google Icon",
   "EXT-Updates": "This plugin allow to auto-update if an update is detected.",
-  "EXT-VLCServer": "Coming soon: Media Server for playing any media",
+  "EXT-VLCServer": "Media Server for playing any media",
   "EXT-Volume": "Control the sound volume level of your mirror.",
   "EXT-Welcome": "Allow to send a welcome on start of MagicMirror².",
   "EXT-YouTube": "This plugins allows to play YouTube video (reserved to donator).",

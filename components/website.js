@@ -50,7 +50,7 @@ const mainBranch = {
   "EXT-StreamDeck": "main",
   "EXT-TelegramBot": "master",
   "EXT-Updates": "master",
-  "EXT-VLCServer": "dev",
+  "EXT-VLCServer": "main",
   "EXT-Volume": "master",
   "EXT-Welcome": "master",
   "EXT-YouTube": "master",
