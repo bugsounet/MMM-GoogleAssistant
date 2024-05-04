@@ -34,7 +34,7 @@ var schema = {
         vlcPath: {
           type: "string",
           title: "Default VLC Path",
-          default: "/usr/bin",
+          default: "/usr/bin"
         }
       }
     }
