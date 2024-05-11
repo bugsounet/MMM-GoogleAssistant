@@ -69,8 +69,7 @@ Module.register("MMM-GoogleAssistant", {
     return [
       "/modules/MMM-GoogleAssistant/components/assistantResponse.js",
       "/modules/MMM-GoogleAssistant/components/assistantSearch.js",
-      "/modules/MMM-GoogleAssistant/components/EXTs.js",
-      "/modules/MMM-GoogleAssistant/components/sysInfoPage.js"
+      "/modules/MMM-GoogleAssistant/components/EXTs.js"
     ];
   },
 
@@ -118,14 +117,15 @@ Module.register("MMM-GoogleAssistant", {
       case "GA_STOP":
         if (this.assistantResponse.response && this.GAStatus.actual === "reply") this.assistantResponse.conversationForceEnd();
         break;
+      /*
       case "GA_SYSINFO":
         this.sysInfo.toggle();
         break;
+      */
     }
   },
 
   socketNotificationReceived (noti, payload) {
-    if (noti.startsWith("CB_")) return this.EXTs.callbacks(noti, payload);
     switch (noti) {
       case "LOAD_RECIPE":
         this.parseLoadedRecipe(payload);
@@ -160,9 +160,6 @@ Module.register("MMM-GoogleAssistant", {
       case "GA-INIT":
         this.EXT_Config();
         break;
-      case "WEBSITE-INIT":
-        this.sendSocketNotification("SMARTHOME-INIT");
-        break;
       case "INITIALIZED":
         logGA("Initialized.");
         this.assistantResponse.Version(payload);
@@ -184,15 +181,14 @@ Module.register("MMM-GoogleAssistant", {
       case "GOOGLESEARCH-RESULT":
         this.sendGoogleResult(payload);
         break;
-      case "REMOTE_ACTIVATE_ASSISTANT":
-        this.notificationReceived("GA_ACTIVATE", payload);
-        break;
+      /*
       case "TB_SYSINFO-RESULT":
         this.show_sysinfo(payload);
         break;
       case "SYSINFO-RESULT":
         this.sysInfo.updateSystemData(payload);
         break;
+      */
       case "SendNoti":
         if (payload.payload && payload.noti) this.sendNotification(payload.noti, payload.payload);
         else this.sendNotification(payload);
@@ -330,17 +326,12 @@ Module.register("MMM-GoogleAssistant", {
     this.EXTs = new EXTs(Tools);
     let init = await this.EXTs.init();
     if (!init) return;
+    this.sendNotification("EXT_DB", this.EXTs.Get_DB())
     this.session = {};
-    this.sysInfo = new sysInfoPage(Tools);
-    this.sysInfo.prepare();
+    //this.sysInfo = new sysInfoPage(Tools);
+    //this.sysInfo.prepare();
 
-    this.sendSocketNotification("WEBSITE-INIT", {
-      DB: this.EXTs.ExtDB,
-      Description: this.EXTs.Get_EXT_Description(),
-      Translate: this.EXTs.Get_EXT_Translation(),
-      Schema: this.EXTs.Get_EXT_TrSchemaValidation(),
-      EXTStatus: this.EXTs.Get_EXT_Status()
-    });
+    this.sendSocketNotification("INIT")
   },
 
   /********************************/
@@ -357,6 +348,7 @@ Module.register("MMM-GoogleAssistant", {
       description: this.translate("STOP_HELP"),
       callback: "tbStopEXT"
     });
+    /*
     if (this.config.website.use) {
       commander.add({
         command: "sysinfo",
@@ -384,8 +376,10 @@ Module.register("MMM-GoogleAssistant", {
         callback: "tbRestart"
       });
     }
+    */
   },
 
+/*
   tbReboot (command, handler) {
     handler.reply("TEXT", this.translate("GW_System_Box_Restart"));
     this.sendSocketNotification("REBOOT");
@@ -405,7 +399,7 @@ Module.register("MMM-GoogleAssistant", {
     handler.reply("TEXT", this.translate("GW_Tools_Restart"));
     this.sendSocketNotification("RESTART");
   },
-
+*/
   tbQuery (command, handler) {
     var query = handler.args;
     if (!query) handler.reply("TEXT", this.translate("QUERY_HELP"));
@@ -417,6 +411,7 @@ Module.register("MMM-GoogleAssistant", {
     handler.reply("TEXT", this.translate("STOP_EXT"));
   },
 
+/*
   cmd_sysinfo (command, handler) {
     if (handler.args) {
       var args = handler.args.toLowerCase().split(" ");
@@ -433,7 +428,7 @@ Module.register("MMM-GoogleAssistant", {
       }
     }
 
-    /** try to manage session ... */
+    / try to manage session ...
     let chatId = handler.message.chat.id;
     let userId = handler.message.from.id;
     let messageId = handler.message.message_id;
@@ -441,7 +436,8 @@ Module.register("MMM-GoogleAssistant", {
     this.session[sessionId] = handler;
     this.sendSocketNotification("TB_SYSINFO", sessionId);
   },
-
+*/
+/*
   show_sysinfo (result) {
     let session = result.sessionId;
     let handler = this.session[session];
@@ -507,6 +503,7 @@ Module.register("MMM-GoogleAssistant", {
     handler.reply("TEXT", text, { parse_mode: "Markdown" });
     delete this.session[session];
   },
+*/
 
   /*
    * Activate Process
