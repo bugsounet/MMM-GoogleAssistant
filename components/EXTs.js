@@ -202,7 +202,7 @@ class EXTs {
       logGA("[EXTs] Connected:", extName, "[browserOrPhoto Mode]");
       this.EXT[extName].connected = true;
       this.lockPagesByGW(extName);
-      this.sendNotification("EXT_STATUS", this.EXT);
+      if (this.EXT["EXT-Website"].hello) this.sendNotification("EXT_STATUS", this.EXT);
       return;
     }
 
@@ -513,7 +513,7 @@ class EXTs {
         logGA("[EXTs] Sorry, i don't understand what is", noti, payload || "");
         break;
     }
-    this.sendNotification("EXT_STATUS", this.EXT);
+    if (this.EXT["EXT-Website"].hello) this.sendNotification("EXT_STATUS", this.EXT);
     logGA("[EXTs] Status:", this.EXT);
   }
 
