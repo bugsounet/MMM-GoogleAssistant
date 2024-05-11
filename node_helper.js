@@ -50,7 +50,7 @@ module.exports = NodeHelper.create({
       case "GOOGLESEARCH":
         this.searchOnGoogle.search(payload);
         break;
-      /* to recode
+        /* to recode
       case "REBOOT":
         if (this.config.website.use) {
           this.website.SystemRestart();

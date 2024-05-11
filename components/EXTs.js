@@ -101,7 +101,7 @@ class EXTs {
     return this.EXT;
   }
 
-  Get_DB() {
+  Get_DB () {
     return this.ExtDB;
   }
 

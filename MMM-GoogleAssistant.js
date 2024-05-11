@@ -326,12 +326,12 @@ Module.register("MMM-GoogleAssistant", {
     this.EXTs = new EXTs(Tools);
     let init = await this.EXTs.init();
     if (!init) return;
-    this.sendNotification("EXT_DB", this.EXTs.Get_DB())
+    this.sendNotification("EXT_DB", this.EXTs.Get_DB());
     this.session = {};
     //this.sysInfo = new sysInfoPage(Tools);
     //this.sysInfo.prepare();
 
-    this.sendSocketNotification("INIT")
+    this.sendSocketNotification("INIT");
   },
 
   /********************************/
@@ -379,7 +379,7 @@ Module.register("MMM-GoogleAssistant", {
     */
   },
 
-/*
+  /*
   tbReboot (command, handler) {
     handler.reply("TEXT", this.translate("GW_System_Box_Restart"));
     this.sendSocketNotification("REBOOT");
@@ -411,7 +411,7 @@ Module.register("MMM-GoogleAssistant", {
     handler.reply("TEXT", this.translate("STOP_EXT"));
   },
 
-/*
+  /*
   cmd_sysinfo (command, handler) {
     if (handler.args) {
       var args = handler.args.toLowerCase().split(" ");
@@ -437,7 +437,7 @@ Module.register("MMM-GoogleAssistant", {
     this.sendSocketNotification("TB_SYSINFO", sessionId);
   },
 */
-/*
+  /*
   show_sysinfo (result) {
     let session = result.sessionId;
     let handler = this.session[session];
