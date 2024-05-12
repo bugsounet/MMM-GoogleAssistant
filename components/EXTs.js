@@ -299,6 +299,7 @@ class EXTs {
     var TB = 0;
     var PIR = 0;
     var RC = 0;
+    var AL = 0;
     let error = null;
     return new Promise((resolve, reject) => {
       MM.getModules().withClass("EXT-Telegrambot MMM-TelegramBot").enumerate((module) => {
@@ -321,6 +322,15 @@ class EXTs {
         RC++;
         if (RC >= 1) {
           error = "You can't start MMM-GoogleAssistant with MMM-Remote-Control";
+          this.socketNotificationReceived("NOT_INITIALIZED", { message: error });
+          return reject(error);
+        }
+      });
+      MM.getModules().enumerate((module) => {
+        let name = module.name.toLowerCase();
+        if (name.includes("alexa")) AL++;
+        if (AL >=1) {
+          error = "MMM-GoogleAssistant vs Alexa... Ready Fight! Alexa is K.O";
           this.socketNotificationReceived("NOT_INITIALIZED", { message: error });
           return reject(error);
         }
