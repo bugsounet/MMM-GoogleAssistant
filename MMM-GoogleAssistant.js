@@ -347,57 +347,54 @@ Module.register("MMM-GoogleAssistant", {
       callback: "tbStopEXT"
     });
     /*
-    if (this.config.website.use) {
-      commander.add({
-        command: "sysinfo",
-        description: this.translate("TB_SYSINFO_DESCRIPTION"),
-        callback: "cmd_sysinfo"
-      });
-      commander.add({
-        command: "reboot",
-        description: this.translate("GW_System_Box_Restart"),
-        callback: "tbReboot"
-      });
-      commander.add({
-        command: "die",
-        description: this.translate("GW_System_Box_Shutdown"),
-        callback: "tbDie"
-      });
-      commander.add({
-        command: "close",
-        description: this.translate("GW_Tools_Die"),
-        callback: "tbClose"
-      });
-      commander.add({
-        command: "restart",
-        description: this.translate("GW_Tools_Restart"),
-        callback: "tbRestart"
-      });
-    }
+    commander.add({
+      command: "sysinfo",
+      description: this.translate("TB_SYSINFO_DESCRIPTION"),
+      callback: "cmd_sysinfo"
+    });
     */
+    commander.add({
+      command: "reboot",
+      description: this.translate("SystemRestart"),
+      callback: "tbReboot"
+    });
+    commander.add({
+      command: "shutdown",
+      description: this.translate("SystemShutdown"),
+      callback: "tbShutdown"
+    });
+    commander.add({
+      command: "close",
+      description: this.translate("MMClose"),
+      callback: "tbClose"
+    });
+    commander.add({
+      command: "restart",
+      description: this.translate("MMRestart"),
+      callback: "tbRestart"
+    });
   },
 
-  /*
   tbReboot (command, handler) {
-    handler.reply("TEXT", this.translate("GW_System_Box_Restart"));
+    handler.reply("TEXT", this.translate("SystemRestart"));
     this.sendSocketNotification("REBOOT");
   },
 
-  tbDie (command, handler) {
-    handler.reply("TEXT", this.translate("GW_System_Box_Shutdown"));
-    this.sendSocketNotification("DIE");
+  tbShutdown (command, handler) {
+    handler.reply("TEXT", this.translate("SystemShutdown"));
+    this.sendSocketNotification("SHUTDOWN");
   },
 
   tbClose (command, handler) {
-    handler.reply("TEXT", this.translate("GW_Tools_Die"));
+    handler.reply("TEXT", this.translate("MMClose"));
     this.sendSocketNotification("CLOSE");
   },
 
   tbRestart (command, handler) {
-    handler.reply("TEXT", this.translate("GW_Tools_Restart"));
+    handler.reply("TEXT", this.translate("MMRestart"));
     this.sendSocketNotification("RESTART");
   },
-*/
+
   tbQuery (command, handler) {
     var query = handler.args;
     if (!query) handler.reply("TEXT", this.translate("QUERY_HELP"));
