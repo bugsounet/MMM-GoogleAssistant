@@ -1,6 +1,6 @@
 "use strict";
-const { exec } = require("child_process");
-const fs = require("fs");
+const { exec } = require("node:child_process");
+const fs = require("node:fs");
 
 function checkConfigDeepMerge () {
   let file = `${global.root_path}/config/config.js`;

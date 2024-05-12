@@ -2,8 +2,8 @@
 // Module : MMM-GoogleAssistant
 //
 
-const fs = require("fs");
-const { exec } = require("child_process");
+const fs = require("node:fs");
+const { exec } = require("node:child_process");
 var NodeHelper = require("node_helper");
 const checker = require("./components/checker.js");
 
@@ -25,33 +25,23 @@ module.exports = NodeHelper.create({
           setTimeout(() => process.exit(), 5000);
           return;
         }
-        if (this.website) return;
-        this.alreadyInitialized = true;
+        console.log(`[GA] MMM-GoogleAssistant Version: ${require("./package.json").version} rev: ${require("./package.json").rev}`);
         this.config = payload;
-        console.log("[GA] MMM-GoogleAssistant Version:", require("./package.json").version, "rev:", require("./package.json").rev);
+        if (this.config.debug) logGA = (...args) => { console.log("[GA]", ...args); };
+        this.alreadyInitialized = true;
         this.config.assistantConfig["modulePath"] = __dirname;
         this.initGA();
         break;
-      case "WEBSITE-INIT":
+      case "INIT":
         var Version = {
           version: require("./package.json").version,
           rev: require("./package.json").rev,
           lang: this.config.assistantConfig.lang
         };
+        this.controler = new this.lib.Controler();
+        await this.controler.check_PM2_Process();
         this.sendSocketNotification("INITIALIZED", Version);
         console.log("[GA] Assistant Ready!");
-        if (this.config.website.use) {
-          this.lib.HyperWatch.enable();
-          await this.parseWebsite();
-          this.website.init(payload);
-        } else {
-          console.warn("[GA] Website disabled");
-        }
-        break;
-      case "SMARTHOME-INIT":
-        var smarthome = await this.parseSmarthome();
-        if (smarthome) await this.smarthome.init();
-        this.website.server();
         break;
       case "ACTIVATE_ASSISTANT":
         this.activate(payload);
@@ -62,54 +52,17 @@ module.exports = NodeHelper.create({
       case "GOOGLESEARCH":
         this.searchOnGoogle.search(payload);
         break;
-      case "HELLO":
-        if (this.config.website.use) {
-          if (!this.website) {
-            // library is not loaded ... retry (not needed but...)
-            setTimeout(() => { this.socketNotificationReceived("HELLO", payload); }, 1000);
-            return;
-          }
-          this.website.setActiveVersion(payload);
-        }
-        break;
       case "REBOOT":
-        if (this.config.website.use) {
-          this.website.SystemRestart();
-        }
+        this.controler.SystemRestart();
         break;
-      case "DIE":
-        if (this.config.website.use) {
-          this.website.SystemDie();
-        }
+      case "SHUTDOWN":
+        this.controler.SystemShutdown();
         break;
       case "RESTART":
-        if (this.config.website.use) {
-          this.website.restartMM();
-        }
+        this.controler.restartMM();
         break;
       case "CLOSE":
-        if (this.config.website.use) {
-          this.website.doClose();
-        }
-        break;
-      case "EXTStatus":
-        if (this.config.website.use) {
-          if (!this.website) {
-            // library is not loaded ... retry (not needed but...)
-            setTimeout(() => { this.socketNotificationReceived("EXTStatus", payload); }, 1000);
-            return;
-          }
-          this.website.setEXTStatus(payload);
-          this.updateSmartHome();
-        }
-        break;
-      case "TB_SYSINFO":
-        var result = await this.website.website.systemInformation.lib.Get();
-        result.sessionId = payload;
-        this.sendSocketNotification("TB_SYSINFO-RESULT", result);
-        break;
-      case "GET-SYSINFO":
-        this.sendSocketNotification("SYSINFO-RESULT", await this.website.website.systemInformation.lib.Get());
+        this.controler.doClose();
         break;
       case "MODULE-ERROR":
         console.error("[GA] ----------------------------------------");
@@ -158,63 +111,16 @@ module.exports = NodeHelper.create({
     this.sendSocketNotification("GA-INIT");
   },
 
-  async parseWebsite () {
-    const bugsounet = await this.libraries("website");
-    return new Promise((resolve) => {
-      if (bugsounet) return this.bugsounetError(bugsounet, "Website");
-      let WebsiteHelperConfig = {
-        config: this.config.website,
-        debug: this.config.debug,
-        assistantLang: this.config.assistantConfig.lang,
-        lib: this.lib
-      };
-
-      this.website = new this.lib.website(WebsiteHelperConfig, (...args) => this.sendSocketNotification(...args));
-      resolve();
-    });
-  },
-
-  async parseSmarthome () {
-    if (!this.config.website.CLIENT_ID) return false;
-    const bugsounet = await this.libraries("smarthome");
-    return new Promise((resolve) => {
-      if (bugsounet) return this.bugsounetError(bugsounet, "Smarthome");
-
-      let SmarthomeHelperConfig = {
-        config: this.config.website,
-        debug: this.config.debug,
-        lang: config.language,
-        website: this.website
-      };
-
-      let smarthomeCallbacks = {
-        sendSocketNotification: (...args) => this.sendSocketNotification(...args),
-        restart: () => this.website.restartMM()
-      };
-
-      this.smarthome = new this.lib.smarthome(SmarthomeHelperConfig, smarthomeCallbacks);
-      resolve(true);
-    });
-  },
-
   libraries (type) {
-    if (this.config.debug) logGA = (...args) => { console.log("[GA] [LIBRARIES]", ...args); };
     let Libraries = [];
     let GA = [
       // { "library to load" : "store library name" }
       { "./components/googleSearch.js": "googleSearch" },
       { "./components/assistant.js": "Assistant" },
-      { "./components/screenParser.js": "ScreenParser" }
+      { "./components/screenParser.js": "ScreenParser" },
+      { "./components/controler.js": "Controler" }
     ];
 
-    if (this.config.website.use) GA.push({ "./components/hyperwatch.js": "HyperWatch" });
-
-    let website = [
-      { "./components/systemInformation.js": "SystemInformation" },
-      { "./components/website.js": "website" }
-    ];
-
-    let smarthome = [{ "./components/smarthome.js": "smarthome" }];
     let errors = 0;
 
     switch (type) {
@@ -222,16 +128,8 @@ module.exports = NodeHelper.create({
         logGA("Loading GA Libraries...");
         Libraries = GA;
         break;
-      case "website":
-        logGA("Loading website Libraries...");
-        Libraries = website;
-        break;
-      case "smarthome":
-        logGA("Loading smarhome Libraries...");
-        Libraries = smarthome;
-        break;
       default:
-        console.log(`${type}: Unknow library database...`);
+        console.log(`[GA] ${type}: Unknow library database...`);
         return;
     }
 
@@ -244,7 +142,7 @@ module.exports = NodeHelper.create({
           try {
             if (!this.lib[libraryName]) {
               this.lib[libraryName] = require(libraryToLoad);
-              logGA(`Loaded: ${libraryToLoad} --> this.lib.${libraryName}`);
+              logGA(`[LIB] Loaded: ${libraryToLoad} --> this.lib.${libraryName}`);
             }
           } catch (e) {
             console.error(`[GA] [LIB] ${libraryToLoad} Loading error!`, e.message, e);
@@ -256,7 +154,7 @@ module.exports = NodeHelper.create({
       });
       resolve(errors);
       if (errors) {
-        console.error("[GA] [LIBRARIES] Some libraries missing!");
+        console.error("[GA] [LIB] Some libraries missing!");
         if (type === "GA") this.sendSocketNotification("NOT_INITIALIZED", { message: "Library loading Error!" });
       } else console.log(`[GA] [LIB] All ${type} libraries loaded!`);
     });
@@ -268,16 +166,7 @@ module.exports = NodeHelper.create({
     this.sendSocketNotification("WARNING", `[${family}] Try to solve it with 'npm run rebuild' in MMM-GoogleAssistant folder`);
   },
 
-  updateSmartHome () {
-    if (!this.smarthome || !this.config.website.CLIENT_ID) return;
-    if (this.smarthome.SmartHome.use && this.smarthome.SmartHome.init) {
-      this.smarthome.refreshData();
-      this.smarthome.updateGraph();
-    }
-  },
-
   loadRecipes () {
-    if (this.config.debug) logGA = (...args) => { console.log("[GA] [RECIPES]", ...args); };
     return new Promise((resolve) => {
       if (this.config.recipes) {
         let replacer = (key, value) => {
@@ -306,24 +195,23 @@ module.exports = NodeHelper.create({
         else console.log("[GA] Recipes loaded but {$nb_Err} detected!");
         resolve();
       } else {
-        logGA("No Recipes to Load...");
+        logGA("[RECIPES] No Recipes to Load...");
         resolve();
       }
     });
   },
 
   shellExec (payload) {
-    if (this.config.debug) logGA = (...args) => { console.log("[GA] [SHELL_EXEC]", ...args); };
     var command = payload.command;
     if (!command) return console.error("[GA] [SHELLEXEC] no command to execute!");
-    command += (payload.options) ? (` ${payload.options}`) : "";
+    command += (payload.options) ? (`${payload.options}`) : "";
     exec(command, (e, so, se) => {
-      logGA("command:", command);
+      logGA("[SHELLEXEC] command:", command);
       if (e) {
-        console.error(`[GA] [SHELL_EXEC] ${e}`);
+        console.error(`[GA] [SHELL_EXEC] ${e.message}`);
         this.sendSocketNotification("WARNING", "ShellExecError");
       }
-      logGA("RESULT", {
+      logGA("[SHELL_EXEC] RESULT", {
         executed: payload,
         result: {
           error: e,
@@ -335,8 +223,7 @@ module.exports = NodeHelper.create({
   },
 
   activate (payload) {
-    if (this.config.debug) logGA = (...args) => { console.log("[GA] [ACTIVATE_ASSISTANT]", ...args); };
-    logGA("QUERY:", payload);
+    logGA("[ACTIVATE_ASSISTANT] QUERY:", payload);
     var assistantConfig = Object.assign({}, this.config.assistantConfig);
     assistantConfig.debug = this.config.debug;
     assistantConfig.lang = payload.lang;
@@ -364,11 +251,11 @@ module.exports = NodeHelper.create({
       if (response.screen) {
         parser.parse(response, (result) => {
           delete result.screen.originalContent;
-          logGA("RESULT", result);
+          logGA("[ACTIVATE_ASSISTANT] RESULT", result);
           this.sendSocketNotification("ASSISTANT_RESULT", result);
         });
       } else {
-        logGA("RESULT", response);
+        logGA("[ACTIVATE_ASSISTANT] RESULT", response);
         this.sendSocketNotification("ASSISTANT_RESULT", response);
       }
     });
