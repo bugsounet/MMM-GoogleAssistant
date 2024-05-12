@@ -64,16 +64,6 @@ module.exports = NodeHelper.create({
       case "CLOSE":
         this.controler.doClose();
         break;
-      /*
-      case "TB_SYSINFO":
-        var result = await this.website.website.systemInformation.lib.Get();
-        result.sessionId = payload;
-        this.sendSocketNotification("TB_SYSINFO-RESULT", result);
-        break;
-      case "GET-SYSINFO":
-        this.sendSocketNotification("SYSINFO-RESULT", await this.website.website.systemInformation.lib.Get());
-        break;
-      */
       case "MODULE-ERROR":
         console.error("[GA] ----------------------------------------");
         console.error("[GA] [!]", payload);
