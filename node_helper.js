@@ -25,10 +25,10 @@ module.exports = NodeHelper.create({
           setTimeout(() => process.exit(), 5000);
           return;
         }
-        if (this.website) return;
-        this.alreadyInitialized = true;
+        console.log(`[GA] MMM-GoogleAssistant Version: ${require("./package.json").version} rev: ${require("./package.json").rev}`);
         this.config = payload;
-        console.log("[GA] MMM-GoogleAssistant Version:", require("./package.json").version, "rev:", require("./package.json").rev);
+        if (this.config.debug) logGA = (...args) => { console.log("[GA]", ...args); };
+        this.alreadyInitialized = true;
         this.config.assistantConfig["modulePath"] = __dirname;
         this.initGA();
         break;
@@ -38,6 +38,8 @@ module.exports = NodeHelper.create({
           rev: require("./package.json").rev,
           lang: this.config.assistantConfig.lang
         };
+        this.controler = new this.lib.Controler();
+        await this.controler.check_PM2_Process();
         this.sendSocketNotification("INITIALIZED", Version);
         console.log("[GA] Assistant Ready!");
         break;
@@ -130,13 +132,13 @@ module.exports = NodeHelper.create({
   },
 
   libraries (type) {
-    if (this.config.debug) logGA = (...args) => { console.log("[GA] [LIBRARIES]", ...args); };
     let Libraries = [];
     let GA = [
       // { "library to load" : "store library name" }
       { "./components/googleSearch.js": "googleSearch" },
       { "./components/assistant.js": "Assistant" },
-      { "./components/screenParser.js": "ScreenParser" }
+      { "./components/screenParser.js": "ScreenParser" },
+      { "./components/controler.js": "Controler" }
     ];
 
     let errors = 0;
@@ -147,7 +149,7 @@ module.exports = NodeHelper.create({
         Libraries = GA;
         break;
       default:
-        console.log(`${type}: Unknow library database...`);
+        console.log(`[GA] ${type}: Unknow library database...`);
         return;
     }
 
@@ -160,7 +162,7 @@ module.exports = NodeHelper.create({
           try {
             if (!this.lib[libraryName]) {
               this.lib[libraryName] = require(libraryToLoad);
-              logGA(`Loaded: ${libraryToLoad} --> this.lib.${libraryName}`);
+              logGA(`[LIB] Loaded: ${libraryToLoad} --> this.lib.${libraryName}`);
             }
           } catch (e) {
             console.error(`[GA] [LIB] ${libraryToLoad} Loading error!`, e.message, e);
@@ -172,7 +174,7 @@ module.exports = NodeHelper.create({
       });
       resolve(errors);
       if (errors) {
-        console.error("[GA] [LIBRARIES] Some libraries missing!");
+        console.error("[GA] [LIB] Some libraries missing!");
         if (type === "GA") this.sendSocketNotification("NOT_INITIALIZED", { message: "Library loading Error!" });
       } else console.log(`[GA] [LIB] All ${type} libraries loaded!`);
     });
@@ -185,7 +187,6 @@ module.exports = NodeHelper.create({
   },
 
   loadRecipes () {
-    if (this.config.debug) logGA = (...args) => { console.log("[GA] [RECIPES]", ...args); };
     return new Promise((resolve) => {
       if (this.config.recipes) {
         let replacer = (key, value) => {
@@ -214,24 +215,23 @@ module.exports = NodeHelper.create({
         else console.log("[GA] Recipes loaded but {$nb_Err} detected!");
         resolve();
       } else {
-        logGA("No Recipes to Load...");
+        logGA("[RECIPES] No Recipes to Load...");
         resolve();
       }
     });
   },
 
   shellExec (payload) {
-    if (this.config.debug) logGA = (...args) => { console.log("[GA] [SHELL_EXEC]", ...args); };
     var command = payload.command;
     if (!command) return console.error("[GA] [SHELLEXEC] no command to execute!");
-    command += (payload.options) ? (` ${payload.options}`) : "";
+    command += (payload.options) ? (`${payload.options}`) : "";
     exec(command, (e, so, se) => {
-      logGA("command:", command);
+      logGA("[SHELLEXEC] command:", command);
       if (e) {
-        console.error(`[GA] [SHELL_EXEC] ${e}`);
+        console.error(`[GA] [SHELL_EXEC] ${e.message}`);
         this.sendSocketNotification("WARNING", "ShellExecError");
       }
-      logGA("RESULT", {
+      logGA("[SHELL_EXEC] RESULT", {
         executed: payload,
         result: {
           error: e,
@@ -243,8 +243,7 @@ module.exports = NodeHelper.create({
   },
 
   activate (payload) {
-    if (this.config.debug) logGA = (...args) => { console.log("[GA] [ACTIVATE_ASSISTANT]", ...args); };
-    logGA("QUERY:", payload);
+    logGA("[ACTIVATE_ASSISTANT] QUERY:", payload);
     var assistantConfig = Object.assign({}, this.config.assistantConfig);
     assistantConfig.debug = this.config.debug;
     assistantConfig.lang = payload.lang;
@@ -272,11 +271,11 @@ module.exports = NodeHelper.create({
       if (response.screen) {
         parser.parse(response, (result) => {
           delete result.screen.originalContent;
-          logGA("RESULT", result);
+          logGA("[ACTIVATE_ASSISTANT] RESULT", result);
           this.sendSocketNotification("ASSISTANT_RESULT", result);
         });
       } else {
-        logGA("RESULT", response);
+        logGA("[ACTIVATE_ASSISTANT] RESULT", response);
         this.sendSocketNotification("ASSISTANT_RESULT", response);
       }
     });

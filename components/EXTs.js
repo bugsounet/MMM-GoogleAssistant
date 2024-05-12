@@ -2,9 +2,6 @@
 /** EXTs Management **/
 /*********************/
 
-/* global logGA, configMerge */
-/* eslint-disable no-useless-escape */
-
 class EXTs {
   constructor (Tools) {
     this.translate = (...args) => Tools.translate(...args);
