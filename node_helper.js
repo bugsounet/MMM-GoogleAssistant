@@ -52,28 +52,18 @@ module.exports = NodeHelper.create({
       case "GOOGLESEARCH":
         this.searchOnGoogle.search(payload);
         break;
-        /* to recode
       case "REBOOT":
-        if (this.config.website.use) {
-          this.website.SystemRestart();
-        }
+        this.controler.SystemRestart();
         break;
-      case "DIE":
-        if (this.config.website.use) {
-          this.website.SystemDie();
-        }
+      case "SHUTDOWN":
+        this.controler.SystemShutdown();
         break;
       case "RESTART":
-        if (this.config.website.use) {
-          this.website.restartMM();
-        }
+        this.controler.restartMM();
         break;
       case "CLOSE":
-        if (this.config.website.use) {
-          this.website.doClose();
-        }
+        this.controler.doClose();
         break;
-      */
       /*
       case "TB_SYSINFO":
         var result = await this.website.website.systemInformation.lib.Get();

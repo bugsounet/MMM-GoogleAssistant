@@ -1,3 +1,4 @@
+const { exec, spawn } = require("node:child_process");
 const pm2 = require("pm2");
 
 class Controler {
@@ -24,6 +25,7 @@ class Controler {
           }
           list.forEach((pm) => {
             if (pm.pm2_env.version === global.version && pm.pm2_env.status === "online" && pm.pm2_env.pm_cwd.includes(`${global.root_path}/`)) {
+              this.usePM2 = true;
               this.PM2Process = pm.name;
               console.log("[GA] You are using PM2 with", this.PM2Process);
               resolve(true);
@@ -73,15 +75,15 @@ class Controler {
     else process.exit();
   }
 
-  /** Restart or Die the Pi **/
-  SystemRestart () {
+  /** Reboot or shutdown the Pi **/
+  SystemReboot () {
     console.log("[GA] Restarting OS...");
     exec("sudo reboot now", (err, stdout, stderr) => {
       if (err) console.error("[GA] Error when restarting OS!", err);
     });
   }
 
-  SystemDie () {
+  SystemShutdown () {
     console.log("[GA] Shutdown OS...");
     exec("sudo shutdown now", (err, stdout, stderr) => {
       if (err) console.error("[GA] Error when Shutdown OS!", err);

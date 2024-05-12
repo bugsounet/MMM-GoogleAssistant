@@ -341,10 +341,18 @@ class EXTs {
         this.gatewayEXT(payload);
         break;
       case "EXT_GATEWAY-Restart":
-        this.sendSocketNotification("RESTART");
+        if ((sender.name === "EXT-Updates" && this.EXT["EXT-Updates"].hello) || (sender.name === "EXT-Website" && this.EXT["EXT-Website"].hello)) {
+          this.sendSocketNotification("RESTART");
+        }
         break;
       case "EXT_GATEWAY-Close":
-        this.sendSocketNotification("CLOSE");
+        if (sender.name === "EXT-Website" && this.EXT["EXT-Website"].hello) this.sendSocketNotification("CLOSE");
+        break;
+      case "EXT-GATEWAY-Reboot":
+        if (sender.name === "EXT-Website" && this.EXT["EXT-Website"].hello) this.sendSocketNotification("REBOOT");
+        break;
+      case "EXT-GATEWAY-Shutdown":
+        if (sender.name === "EXT-Website" && this.EXT["EXT-Website"].hello) this.sendSocketNotification("SHUTDOWN");
         break;
       case "EXT_SCREEN-POWER":
         if (!this.EXT["EXT-Screen"].hello) return console.log("[GA] [EXTs] Warn Screen don't say to me HELLO!");
