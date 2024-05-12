@@ -5,8 +5,6 @@
  * support: https://forum.bugsounet.fr
  */
 
-/* global AssistantResponse, AssistantSearch, EXTs, sysInfoPage */
-
 var logGA = (...args) => { /* do nothing */ };
 
 Module.register("MMM-GoogleAssistant", {
