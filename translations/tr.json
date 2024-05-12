@@ -19,5 +19,9 @@
   "ShellExecError": "ShellExec bazı Hatalar döndürüyor",
   "ShellExecDone": "ShellExec başarıyla yürütüldü",
 
-  "EXTStop": "Tüm Genişletilmiş Süreçler artık durduruldu"
+  "EXTStop": "Tüm Genişletilmiş Süreçler artık durduruldu",
+  "SystemRestart": "Sisteminizi yeniden başlatın",
+  "SystemShutdown": "Sisteminizi kapatın",
+  "MMClose": "Sihirli aynayı kapatın",
+  "MMRestart": "Sihirli Aynayı yeniden başlatın"
 }

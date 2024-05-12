@@ -20,5 +20,7 @@
   "ShellExecError": "ShellExec devolvió errores",
   "ShellExecDone": "ShellExec se ejecutó correctamente",
 
-  "EXTStop": "Detenidos todos los procesos Extra"
+  "EXTStop": "Detenidos todos los procesos Extra",
+  "MMClose": "Apagar MagicMirror²",
+  "MMRestart": "Reiniciar MagicMirror²"
 }

@@ -16,5 +16,9 @@
   "GAErrorCredentials": "[FATAL] Assistant: credentials.json niet aanwezig",
   "GAErrorTokenGA": "[FATAL] Token Assistant: tokenGA.json niet aanwezig",
 
-  "EXTStop": "Alle uitgebreide weergaven zijn gestopt"
+  "EXTStop": "Alle uitgebreide weergaven zijn gestopt",
+  "SystemRestart": "Herstart uw systeem",
+  "SystemShutdown": "Zet uw systeem uit",
+  "MMClose": "MagicMirror² uitschakelen",
+  "MMRestart": "Herstart MagicMirror²"
 }

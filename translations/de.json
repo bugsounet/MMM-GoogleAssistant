@@ -20,5 +20,9 @@
   "ShellExecError": "ShellExec gibt Fehler zurück.",
   "ShellExecDone": "ShellExec erfolgreich ausgeführt.",
 
-  "EXTStop": "Alle erweiterten Prozesse werden beendet."
+  "EXTStop": "Alle erweiterten Prozesse werden beendet.",
+  "SystemRestart": "System neu starten",
+  "SystemShutdown": "System herunterfahren",
+  "MMClose": "MagicMirror² ausschalten",
+  "MMRestart": "MagicMirror² neustarten"
 }

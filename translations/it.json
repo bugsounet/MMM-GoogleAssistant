@@ -15,5 +15,7 @@
   "ShellExecError": "ShellExec riporta degli Errori",
   "ShellExecDone": "ShellExec eseguito con successo",
 
-  "EXTStop": "Tutti i processi Extended sono ora fermi"
+  "EXTStop": "Tutti i processi Extended sono ora fermi",
+  "MMClose": "Spegni MagicMirror²",
+  "MMRestart": "Riavvia MagicMirror²"
 }
