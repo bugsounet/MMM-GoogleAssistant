@@ -195,8 +195,8 @@ class EXTs {
       if (this.EXT["EXT-Bring"].hello) this.sendNotification("EXT_BRING-STOP");
     }
 
-    if (this.browserOrPhotoIsConnected()) {
-      logGA("[EXTs] Connected:", extName, "[browserOrPhoto Mode]");
+    if (this.byPassIsConnected()) {
+      logGA("[EXTs] Connected:", extName, "[byPass Mode]");
       this.EXT[extName].connected = true;
       this.lockPagesByGW(extName);
       if (this.EXT["EXT-Website"].hello) this.sendNotification("EXT_STATUS", this.EXT);
@@ -261,10 +261,12 @@ class EXTs {
     if (this.EXT["EXT-Screen"].hello) this.sendNotification("EXT_SCREEN-UNLOCK");
   }
 
-  browserOrPhotoIsConnected () {
+  // exception with EXT-Browser, EXT-Photos, EXT-Website
+  byPassIsConnected () {
     if ((this.EXT["EXT-Browser"].hello && this.EXT["EXT-Browser"].connected)
-      || (this.EXT["EXT-Photos"].hello && this.EXT["EXT-Photos"].connected)) {
-      logGA("[EXTs] browserOrPhoto", true);
+      || (this.EXT["EXT-Photos"].hello && this.EXT["EXT-Photos"].connected)
+      || (this.EXT["EXT-Website"].hello && this.EXT["EXT-Website"].connected)) {
+      logGA("[EXTs] byPass", true);
       return true;
     }
     return false;
@@ -512,7 +514,14 @@ class EXTs {
         this.EXT["EXT-Pages"].actual = payload.Actual;
         this.EXT["EXT-Pages"].total = payload.Total;
         break;
-
+      case "EXT_WEBSITE-CONNECTED":
+        if (!this.EXT["EXT-Website"].hello) return console.error("[GA] [EXTs] Warn Website don't say to me HELLO!");
+        this.connectEXT("EXT-Website");
+        break;
+      case "EXT_WEBSITE-DISCONNECTED":
+        if (!this.EXT["EXT-Website"].hello) return console.error("[GA] [EXTs] Warn Website don't say to me HELLO!");
+        this.disconnectEXT("EXT-Website");
+        break;
       /** Warn if not in db **/
       default:
         logGA("[EXTs] Sorry, i don't understand what is", noti, payload || "");
