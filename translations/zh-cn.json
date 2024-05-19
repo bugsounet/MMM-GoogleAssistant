@@ -19,14 +19,5 @@
   "ShellExecError": "ShellExec 返回一些错误",
   "ShellExecDone": "ShellExec 执行成功"
  
-  "EXTStop": "现在所有扩展进程都已停止",
-
-  "GW_About_Info_Translator1": "@fuyechun",
-
-  "GW_System_DAY" : "天",
-  "GW_System_DAYS" : "天",
-  "GW_System_HOUR" : "小时",
-  "GW_System_HOURS" : "小时",
-  "GW_System_MINUTE" : "分钟",
-  "GW_System_MINUTES" : "分钟"
+  "EXTStop": "现在所有扩展进程都已停止"
 }
