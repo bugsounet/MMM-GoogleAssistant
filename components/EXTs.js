@@ -640,7 +640,7 @@ class EXTs {
   }
 
   /** Send Assistant Volume control **/
-  sendVolume(volume) {
+  sendVolume (volume) {
     if (this.EXT["EXT-Volume"].hello) {
       logGA("Volume Control:", volume);
       this.sendNotification("EXT_VOLUME-SPEAKER_SET", volume);
