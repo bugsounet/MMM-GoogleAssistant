@@ -638,4 +638,12 @@ class EXTs {
       logGA("[EXTs] Forced connected: EXT-Browser");
     }
   }
+
+  /** Send Assistant Volume control **/
+  sendVolume(volume) {
+    if (this.EXT["EXT-Volume"].hello) {
+      logGA("Volume Control:", volume);
+      this.sendNotification("EXT_VOLUME-SPEAKER_SET", volume);
+    }
+  }
 }
