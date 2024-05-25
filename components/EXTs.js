@@ -52,7 +52,7 @@ class EXTs {
     this.EXT = {
       GA_Ready: false
     };
-    this.sendStatusTimeout = null
+    this.sendStatusTimeout = null;
     console.log("[GA] EXTs Ready");
   }
 
@@ -344,7 +344,7 @@ class EXTs {
   /** Notification Actions **/
   ActionsEXTs (noti, payload, sender) {
     if (!this.EXT.GA_Ready) return console.log("[GA] [EXTs] MMM-GoogleAssistant is not ready");
-    clearTimeout(this.sendStatusTimeout)
+    clearTimeout(this.sendStatusTimeout);
     switch (noti) {
       case "EXT_HELLO":
         this.helloEXT(payload);
@@ -543,7 +543,7 @@ class EXTs {
     if (this.EXT["EXT-Website"].hello || this.EXT["EXT-SmartHome"].hello) {
       this.sendStatusTimeout = setTimeout(() => {
         this.sendNotification("EXT_STATUS", this.EXT);
-      }, 300)
+      }, 300);
     }
     logGA("[EXTs] Status:", this.EXT);
   }
