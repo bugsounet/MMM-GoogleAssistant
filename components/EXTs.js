@@ -34,6 +34,7 @@ class EXTs {
       "EXT-SelfiesFlash",
       "EXT-SelfiesSender",
       "EXT-SelfiesViewer",
+      "EXT-SmartHome",
       "EXT-Spotify",
       "EXT-SpotifyCanvasLyrics",
       "EXT-StreamDeck",
@@ -51,6 +52,7 @@ class EXTs {
     this.EXT = {
       GA_Ready: false
     };
+    this.sendStatusTimeout = null;
     console.log("[GA] EXTs Ready");
   }
 
@@ -199,7 +201,7 @@ class EXTs {
       logGA("[EXTs] Connected:", extName, "[byPass Mode]");
       this.EXT[extName].connected = true;
       this.lockPagesByGW(extName);
-      if (this.EXT["EXT-Website"].hello) this.sendNotification("EXT_STATUS", this.EXT);
+      if (this.EXT["EXT-Website"].hello || this.EXT["EXT-SmartHome"].hello) this.sendNotification("EXT_STATUS", this.EXT);
       return;
     }
 
@@ -342,6 +344,7 @@ class EXTs {
   /** Notification Actions **/
   ActionsEXTs (noti, payload, sender) {
     if (!this.EXT.GA_Ready) return console.log("[GA] [EXTs] MMM-GoogleAssistant is not ready");
+    clearTimeout(this.sendStatusTimeout);
     switch (noti) {
       case "EXT_HELLO":
         this.helloEXT(payload);
@@ -537,7 +540,11 @@ class EXTs {
         logGA("[EXTs] Sorry, i don't understand what is", noti, payload || "");
         break;
     }
-    if (this.EXT["EXT-Website"].hello) this.sendNotification("EXT_STATUS", this.EXT);
+    if (this.EXT["EXT-Website"].hello || this.EXT["EXT-SmartHome"].hello) {
+      this.sendStatusTimeout = setTimeout(() => {
+        this.sendNotification("EXT_STATUS", this.EXT);
+      }, 300);
+    }
     logGA("[EXTs] Status:", this.EXT);
   }
 
@@ -629,6 +636,14 @@ class EXTs {
       this.EXT["EXT-Browser"].connected = true;
       this.sendNotification("EXT_BROWSER-OPEN", firstURL);
       logGA("[EXTs] Forced connected: EXT-Browser");
+    }
+  }
+
+  /** Send Assistant Volume control **/
+  sendVolume (volume) {
+    if (this.EXT["EXT-Volume"].hello) {
+      logGA("Volume Control:", volume);
+      this.sendNotification("EXT_VOLUME-SPEAKER_SET", volume);
     }
   }
 }
