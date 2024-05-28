@@ -302,6 +302,7 @@ class EXTs {
     var PIR = 0;
     var RC = 0;
     var AL = 0;
+    var PA = 0;
     let error = null;
     return new Promise((resolve, reject) => {
       MM.getModules().withClass("EXT-Telegrambot MMM-TelegramBot").enumerate((module) => {
@@ -324,6 +325,14 @@ class EXTs {
         RC++;
         if (RC >= 1) {
           error = "You can't start MMM-GoogleAssistant with MMM-Remote-Control";
+          this.socketNotificationReceived("NOT_INITIALIZED", { message: error });
+          return reject(error);
+        }
+      });
+      MM.getModules().withClass("MMM-pages").enumerate((module) => {
+        PA++;
+        if (PA >= 1) {
+          error = "You can't start MMM-GoogleAssistant with MMM-pages. Please use EXT-Pages";
           this.socketNotificationReceived("NOT_INITIALIZED", { message: error });
           return reject(error);
         }
