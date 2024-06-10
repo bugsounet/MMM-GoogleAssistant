@@ -48,7 +48,7 @@
     "@grpc/grpc-js": "^1.10.9",
     "cheerio": "^1.0.0-rc.12",
     "cli-spinner": "^0.2.10",
-    "esbuild": "^0.21.4",
+    "esbuild": "^0.21.5",
     "glob": "^10.4.1",
     "google-auth-library": "^9.10.0",
     "html-entities": "^2.5.2",
