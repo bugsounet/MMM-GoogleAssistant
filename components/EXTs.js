@@ -80,8 +80,7 @@ class EXTs {
     this.EXT["EXT-Motion"].started = false;
     this.EXT["EXT-Pir"].started = false;
     this.EXT["EXT-Screen"].power = true;
-    this.EXT["EXT-Updates"].update = {};
-    this.EXT["EXT-Updates"].npm = {};
+    this.EXT["EXT-Updates"].module = {};
     this.EXT["EXT-Spotify"].remote = false;
     this.EXT["EXT-Spotify"].play = false;
     this.EXT["EXT-Volume"].speaker = 0;
@@ -490,7 +489,7 @@ class EXTs {
         if (this.EXT["EXT-GooglePhotos"].hello) this.sendNotification("EXT_GOOGLEPHOTOS-START");
         break;
       case "EXT_UPDATES-MODULE_UPDATE":
-        if (!this.EXT || !this.EXT["EXT-Updates"].hello) return console.error("[GA] [EXTs] Warn UN don't say to me HELLO!");
+        if (!this.EXT || !this.EXT["EXT-Updates"].hello) return console.error("[GA] [EXTs] Warn Updates don't say to me HELLO!");
         this.EXT["EXT-Updates"].module = payload;
         break;
       case "EXT_VOLUME_GET":
