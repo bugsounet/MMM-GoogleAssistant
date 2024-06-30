@@ -38,6 +38,7 @@ class EXTs {
       "EXT-Spotify",
       "EXT-SpotifyCanvasLyrics",
       "EXT-StreamDeck",
+      "EXT-SysInfo",
       "EXT-TelegramBot",
       "EXT-Touch",
       "EXT-Updates",
