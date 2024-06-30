@@ -5,7 +5,6 @@
 
 rebuild=0
 minify=0
-bugsounet=0
 change=0
 
 while getopts ":rmb" option; do
