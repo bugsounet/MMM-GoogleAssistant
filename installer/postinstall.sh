@@ -7,7 +7,7 @@ rebuild=0
 minify=0
 change=0
 
-while getopts ":rmb" option; do
+while getopts ":rm" option; do
   case $option in
     r) # -r option for magicmirror rebuild
        rebuild=1;;
