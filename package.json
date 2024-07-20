@@ -45,7 +45,7 @@
   },
   "homepage": "https://wiki.bugsounet.fr/MMM-GoogleAssistant",
   "dependencies": {
-    "@grpc/grpc-js": "^1.10.11",
+    "@grpc/grpc-js": "^1.11.1",
     "cheerio": "^1.0.0-rc.12",
     "cli-spinner": "^0.2.10",
     "esbuild": "^0.23.0",
