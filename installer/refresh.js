@@ -7,50 +7,10 @@ const pressAnyKey = require("press-any-key");
 const resolved = path.resolve(__dirname, "../..");
 const Directories = getDirectories(resolved);
 
-const db = [
-  "MMM-GoogleAssistant",
-  "EXT-Alert",
-  "EXT-Background",
-  "EXT-Bring",
-  "EXT-Browser",
-  "EXT-Detector",
-  "EXT-FreeboxTV",
-  "EXT-GooglePhotos",
-  "EXT-Governor",
-  "EXT-Internet",
-  "EXT-Keyboard",
-  "EXT-Librespot",
-  "EXT-MusicPlayer",
-  "EXT-Motion",
-  "EXT-Pages",
-  "EXT-Photos",
-  "EXT-Pir",
-  "EXT-RadioPlayer",
-  "EXT-RemoteControler",
-  "EXT-Screen",
-  "EXT-Selfies",
-  "EXT-SelfiesFlash",
-  "EXT-SelfiesSender",
-  "EXT-SelfiesViewer",
-  "EXT-SmartHome",
-  "EXT-Spotify",
-  "EXT-SpotifyCanvasLyrics",
-  "EXT-StreamDeck",
-  "EXT-TelegramBot",
-  "EXT-Touch",
-  "EXT-Updates",
-  "EXT-VLCServer",
-  "EXT-Volume",
-  "EXT-Website",
-  "EXT-Welcome",
-  "EXT-YouTube",
-  "EXT-YouTubeCast"
-];
-
 var skip = 0;
 var updated = 0;
 var failed = 0;
-var total = Directories.length;
+var total = Directories.length -1;
 
 console.log("Start Refreshing and Updating MMM-GoogleAssistant and EXTs\n");
 main();
@@ -116,17 +76,18 @@ function Update (module) {
 
 async function main () {
   for (const module of Directories) {
-    if (db.indexOf(module) !== -1) {
+    if (module.startsWith("EXT-") || module === "MMM-GoogleAssistant") {
       await Update(module);
-    }
-    else {
-      console.log("✋ Skipped:", module);
-      console.log("---");
-      skip++;
+    } else {
+      if (module === "default") continue;
+      else {
+        console.log("✋ Skipped:", module);
+        console.log("---");
+        skip++;
+      }
     }
   }
   Result();
-
 }
 
 function Result () {
