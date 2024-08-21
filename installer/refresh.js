@@ -95,4 +95,5 @@ function Result () {
   console.log(`➤ Updated: ${updated}/${total}`);
   console.log(`➤ Failed: ${failed}/${total}`);
   console.log(`➤ Skipped: ${skip}/${total}`);
+  console.log("🛠️ For personalized assistance, visit https://www.bugsounet.fr and create a ticket.");
 }
