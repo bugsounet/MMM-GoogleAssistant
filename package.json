@@ -1,7 +1,7 @@
 {
   "name": "MMM-GoogleAssistant",
-  "version": "7.1.2",
-  "rev": "240907",
+  "version": "7.2.0",
+  "rev": "240913",
   "description": "An embedded Google Assistant on MagicMirror.",
   "main": "MMM-GoogleAssistant.js",
   "scripts": {
@@ -46,7 +46,7 @@
   "homepage": "https://wiki.bugsounet.fr/MMM-GoogleAssistant",
   "dependencies": {
     "@grpc/grpc-js": "^1.11.2",
-    "cheerio": "^1.0.0",
+    "buscar.io": "^1.8.1",
     "cli-spinner": "^0.2.10",
     "esbuild": "^0.23.1",
     "glob": "^10.4.5",
