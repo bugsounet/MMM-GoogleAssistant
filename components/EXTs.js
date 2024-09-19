@@ -13,32 +13,24 @@ class EXTs {
     this.ExtDB = [
       "EXT-Alert",
       "EXT-Background",
-      "EXT-Bring",
       "EXT-Browser",
       "EXT-Detector",
       "EXT-FreeboxTV",
       "EXT-GooglePhotos",
       "EXT-Governor",
-      "EXT-Internet",
       "EXT-Keyboard",
       "EXT-Librespot",
       "EXT-MusicPlayer",
-      "EXT-Motion",
       "EXT-Pages",
       "EXT-Photos",
       "EXT-Pir",
       "EXT-RadioPlayer",
-      "EXT-RemoteControler",
+      "EXT-RemoteControler", // keep or not ??
       "EXT-Screen",
-      "EXT-Selfies",
-      "EXT-SelfiesFlash",
-      "EXT-SelfiesSender",
-      "EXT-SelfiesViewer",
       "EXT-SmartHome",
       "EXT-Spotify",
-      "EXT-SpotifyCanvasLyrics",
+      "EXT-SpotifyCanvasLyrics", // keep or not ??
       "EXT-StreamDeck",
-      "EXT-SysInfo",
       "EXT-TelegramBot",
       "EXT-Touch",
       "EXT-Updates",
@@ -78,7 +70,6 @@ class EXTs {
     }));
 
     /** special rules **/
-    this.EXT["EXT-Motion"].started = false;
     this.EXT["EXT-Pir"].started = false;
     this.EXT["EXT-Screen"].power = true;
     this.EXT["EXT-Updates"].module = {};
@@ -116,7 +107,6 @@ class EXTs {
         if (this.EXT["EXT-Screen"].hello && !this.hasPluginConnected(this.EXT, "connected", true)) {
           if (!this.EXT["EXT-Screen"].power) this.sendNotification("EXT_SCREEN-WAKEUP");
           this.sendNotification("EXT_SCREEN-LOCK", { show: true });
-          if (this.EXT["EXT-Motion"].hello && this.EXT["EXT-Motion"].started) this.sendNotification("EXT_MOTION-DESTROY");
           if (this.EXT["EXT-Pir"].hello && this.EXT["EXT-Pir"].started) this.sendNotification("EXT_PIR-STOP");
           if (this.EXT["EXT-StreamDeck"].hello) this.sendNotification("EXT_STREAMDECK-ON");
         }
@@ -132,7 +122,6 @@ class EXTs {
         if (this.EXT["EXT-Touch"].hello) this.sendNotification("EXT_TOUCH-START");
         if (this.EXT["EXT-Screen"].hello && !this.hasPluginConnected(this.EXT, "connected", true)) {
           this.sendNotification("EXT_SCREEN-UNLOCK", { show: true });
-          if (this.EXT["EXT-Motion"].hello && !this.EXT["EXT-Motion"].started) this.sendNotification("EXT_MOTION-INIT");
           if (this.EXT["EXT-Pir"].hello && !this.EXT["EXT-Pir"].started) this.sendNotification("EXT_PIR-START");
           if (this.EXT["EXT-StreamDeck"].hello) this.sendNotification("EXT_STREAMDECK-OFF");
         }
@@ -180,7 +169,6 @@ class EXTs {
     if (plugin === "EXT-Touch") this.sendNotification("EXT_TOUCH-START");
     if (plugin === "EXT-Pages") this.sendNotification("EXT_PAGES-Gateway");
     if (plugin === "EXT-Pir") this.sendNotification("EXT_PIR-START");
-    if (plugin === "EXT-Bring") this.sendNotification("EXT_BRING-START");
   }
 
   /** Connect rules **/
@@ -191,10 +179,8 @@ class EXTs {
     if (this.EXT["EXT-Screen"].hello && !this.hasPluginConnected(this.EXT, "connected", true)) {
       if (!this.EXT["EXT-Screen"].power) this.sendNotification("EXT_SCREEN-WAKEUP");
       this.sendNotification("EXT_SCREEN-LOCK");
-      if (this.EXT["EXT-Motion"].hello && this.EXT["EXT-Motion"].started) this.sendNotification("EXT_MOTION-DESTROY");
       if (this.EXT["EXT-Pir"].hello && this.EXT["EXT-Pir"].started) this.sendNotification("EXT_PIR-STOP");
       if (this.EXT["EXT-StreamDeck"].hello) this.sendNotification("EXT_STREAMDECK-ON");
-      if (this.EXT["EXT-Bring"].hello) this.sendNotification("EXT_BRING-STOP");
     }
 
     if (this.byPassIsConnected()) {
@@ -228,10 +214,8 @@ class EXTs {
     setTimeout(() => { // wait 1 sec before scan ...
       if (this.EXT["EXT-Screen"].hello && !this.hasPluginConnected(this.EXT, "connected", true)) {
         this.sendNotification("EXT_SCREEN-UNLOCK");
-        if (this.EXT["EXT-Motion"].hello && !this.EXT["EXT-Motion"].started) this.sendNotification("EXT_MOTION-INIT");
         if (this.EXT["EXT-Pir"].hello && !this.EXT["EXT-Pir"].started) this.sendNotification("EXT_PIR-START");
         if (this.EXT["EXT-StreamDeck"].hello) this.sendNotification("EXT_STREAMDECK-OFF");
-        if (this.EXT["EXT-Bring"].hello) this.sendNotification("EXT_BRING-START");
       }
       if (this.EXT["EXT-Pages"].hello && !this.hasPluginConnected(this.EXT, "connected", true)) this.sendNotification("EXT_PAGES-UNLOCK");
       logGA("[EXTs] Disconnected:", extName);
@@ -475,20 +459,6 @@ class EXTs {
         if (!this.EXT["EXT-Photos"].hello) return console.error("[GA] [EXTs] Warn Photos don't say to me HELLO!");
         this.disconnectEXT("EXT-Photos");
         break;
-      case "EXT_INTERNET-DOWN":
-        if (!this.EXT["EXT-Internet"].hello) return console.error("[GA] [EXTs] Warn Internet don't say to me HELLO!");
-        if (this.EXT["EXT-Detector"].hello) this.sendNotification("EXT_DETECTOR-STOP");
-        if (this.EXT["EXT-Touch"].hello) this.sendNotification("EXT_TOUCH-STOP");
-        if (this.EXT["EXT-Spotify"].hello) this.sendNotification("EXT_SPOTIFY-MAIN_STOP");
-        if (this.EXT["EXT-GooglePhotos"].hello) this.sendNotification("EXT_GOOGLEPHOTOS-STOP");
-        break;
-      case "EXT_INTERNET-UP":
-        if (!this.EXT["EXT-Internet"].hello) return console.error("[GA] [EXTs] Warn Internet don't say to me HELLO!");
-        if (this.EXT["EXT-Detector"].hello) this.sendNotification("EXT_DETECTOR-START");
-        if (this.EXT["EXT-Touch"].hello) this.sendNotification("EXT_TOUCH-START");
-        if (this.EXT["EXT-Spotify"].hello) this.sendNotification("EXT_SPOTIFY-MAIN_START");
-        if (this.EXT["EXT-GooglePhotos"].hello) this.sendNotification("EXT_GOOGLEPHOTOS-START");
-        break;
       case "EXT_UPDATES-MODULE_UPDATE":
         if (!this.EXT || !this.EXT["EXT-Updates"].hello) return console.error("[GA] [EXTs] Warn Updates don't say to me HELLO!");
         this.EXT["EXT-Updates"].module = payload;
@@ -505,14 +475,6 @@ class EXTs {
         if (this.EXT["EXT-SpotifyCanvasLyrics"].forced && this.EXT["EXT-Spotify"].remote && this.EXT["EXT-Spotify"].play) this.connectEXT("EXT-SpotifyCanvasLyrics");
         if (!this.EXT["EXT-SpotifyCanvasLyrics"].forced && this.EXT["EXT-SpotifyCanvasLyrics"].connected) this.disconnectEXT("EXT-SpotifyCanvasLyrics");
         break;
-      case "EXT_MOTION-STARTED":
-        if (!this.EXT["EXT-Motion"].hello) return console.error("[GA] [EXTs] Warn Motion don't say to me HELLO!");
-        this.EXT["EXT-Motion"].started = true;
-        break;
-      case "EXT_MOTION-STOPPED":
-        if (!this.EXT["EXT-Motion"].hello) return console.error("[GA] [EXTs] Warn Motion don't say to me HELLO!");
-        this.EXT["EXT-Motion"].started = false;
-        break;
       case "EXT_PIR-STARTED":
         if (!this.EXT["EXT-Pir"].hello) return console.error("[GA] [EXTs] Warn Pir don't say to me HELLO!");
         this.EXT["EXT-Pir"].started = true;
@@ -520,16 +482,6 @@ class EXTs {
       case "EXT_PIR-STOPPED":
         if (!this.EXT["EXT-Pir"].hello) return console.error("[GA] [EXTs] Warn Pir don't say to me HELLO!");
         this.EXT["EXT-Pir"].started = false;
-        break;
-      case "EXT_SELFIES-START":
-        if (!this.EXT["EXT-Selfies"].hello) return console.error("[GA] [EXTs] Warn Selfies don't say to me HELLO!");
-        this.connectEXT("EXT-Selfies");
-        if (this.EXT["EXT-Motion"].hello && this.EXT["EXT-Motion"].started) this.sendNotification("EXT_MOTION-DESTROY");
-        break;
-      case "EXT_SELFIES-END":
-        if (!this.EXT["EXT-Selfies"].hello) return console.error("[GA] [EXTs Warn Selfies don't say to me HELLO!");
-        this.disconnectEXT("EXT-Selfies");
-        if (this.EXT["EXT-Motion"].hello && !this.EXT["EXT-Motion"].started) this.sendNotification("EXT_MOTION-INIT");
         break;
       case "EXT_PAGES-NUMBER_IS":
         if (!this.EXT["EXT-Pages"].hello) return console.error("[GA] [EXTs] Warn Pages don't say to me HELLO!");
