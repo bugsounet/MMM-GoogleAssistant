@@ -29,7 +29,6 @@ class EXTs {
       "EXT-Screen",
       "EXT-SmartHome",
       "EXT-Spotify",
-      "EXT-SpotifyCanvasLyrics", // keep or not ??
       "EXT-StreamDeck",
       "EXT-TelegramBot",
       "EXT-Touch",
@@ -78,7 +77,6 @@ class EXTs {
     this.EXT["EXT-Volume"].speaker = 0;
     this.EXT["EXT-Volume"].isMuted = false;
     this.EXT["EXT-Volume"].recorder = 0;
-    this.EXT["EXT-SpotifyCanvasLyrics"].forced = false;
     this.EXT["EXT-Pages"].actual = 0;
     this.EXT["EXT-Pages"].total = 0;
   }
@@ -400,12 +398,10 @@ class EXTs {
       case "EXT_SPOTIFY-CONNECTED":
         if (!this.EXT["EXT-Spotify"].hello) return console.error("[GA] [EXTs] Warn Spotify don't say to me HELLO!");
         this.EXT["EXT-Spotify"].remote = true;
-        if (this.EXT["EXT-SpotifyCanvasLyrics"].hello && this.EXT["EXT-SpotifyCanvasLyrics"].forced) this.connectEXT("EXT-SpotifyCanvasLyrics");
         break;
       case "EXT_SPOTIFY-DISCONNECTED":
         if (!this.EXT["EXT-Spotify"].hello) return console.error("[GA] [EXTs] Warn Spotify don't say to me HELLO!");
         this.EXT["EXT-Spotify"].remote = false;
-        if (this.EXT["EXT-SpotifyCanvasLyrics"].hello && this.EXT["EXT-SpotifyCanvasLyrics"].forced) this.disconnectEXT("EXT-SpotifyCanvasLyrics");
         break;
       case "EXT_SPOTIFY-PLAYING":
         if (!this.EXT["EXT-Spotify"].hello) return console.error("[GA] [EXTs] Warn Spotify don't say to me HELLO!");
@@ -468,12 +464,6 @@ class EXTs {
         this.EXT["EXT-Volume"].speaker = payload.Speaker;
         this.EXT["EXT-Volume"].isMuted = payload.SpeakerIsMuted;
         this.EXT["EXT-Volume"].recorder = payload.Recorder;
-        break;
-      case "EXT_SPOTIFY-SCL_FORCED":
-        if (!this.EXT["EXT-SpotifyCanvasLyrics"].hello) return console.error("[GA] [EXTs] Warn Spotify don't say to me HELLO!");
-        this.EXT["EXT-SpotifyCanvasLyrics"].forced = payload;
-        if (this.EXT["EXT-SpotifyCanvasLyrics"].forced && this.EXT["EXT-Spotify"].remote && this.EXT["EXT-Spotify"].play) this.connectEXT("EXT-SpotifyCanvasLyrics");
-        if (!this.EXT["EXT-SpotifyCanvasLyrics"].forced && this.EXT["EXT-SpotifyCanvasLyrics"].connected) this.disconnectEXT("EXT-SpotifyCanvasLyrics");
         break;
       case "EXT_PIR-STARTED":
         if (!this.EXT["EXT-Pir"].hello) return console.error("[GA] [EXTs] Warn Pir don't say to me HELLO!");
