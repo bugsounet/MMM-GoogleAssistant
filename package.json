@@ -48,7 +48,7 @@
     "@grpc/grpc-js": "^1.11.2",
     "buscar.io": "^1.8.1",
     "cli-spinner": "^0.2.10",
-    "esbuild": "^0.23.1",
+    "esbuild": "^0.24.0",
     "glob": "^10.4.5",
     "google-auth-library": "^9.14.1",
     "html-entities": "^2.5.2",
