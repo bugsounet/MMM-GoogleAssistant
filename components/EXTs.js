@@ -281,7 +281,6 @@ class EXTs {
   /** checkModules **/
   checkModules () {
     var TB = 0;
-    var PIR = 0;
     var RC = 0;
     var AL = 0;
     var PA = 0;
@@ -292,14 +291,6 @@ class EXTs {
         if (TB >= 2) {
           error = "You can't start MMM-GoogleAssistant with MMM-TelegramBot and EXT-TelegramBot!";
           this.socketNotificationReceived("NOT_INITIALIZED", { message: error });
-          return reject(error);
-        }
-      });
-      MM.getModules().withClass("MMM-Pir").enumerate((module) => {
-        PIR++;
-        if (PIR >= 1) {
-          error = "You can't start MMM-GoogleAssistant with MMM-Pir. Please use EXT-Screen and EXT-Pir";
-          this.socketNotificationReceived("NOT_INITIALIZED", { message: "You can't start MMM-GoogleAssistant with MMM-Pir. Please use EXT-Screen and EXT-Pir" });
           return reject(error);
         }
       });
