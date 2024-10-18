@@ -24,7 +24,7 @@ class Controler {
             return;
           }
           list.forEach((pm) => {
-            if (pm.pm2_env.version === global.version && pm.pm2_env.status === "online" && pm.pm2_env.pm_cwd.includes(`${global.root_path}/`)) {
+            if (pm.pm2_env.version === global.version && pm.pm2_env.status === "online" && pm.pm2_env.pm_cwd.includes(`${global.root_path}`)) {
               this.usePM2 = true;
               this.PM2Process = pm.name;
               console.log("[GA] You are using PM2 with", this.PM2Process);
